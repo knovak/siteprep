@@ -796,3 +796,43 @@ The native resilience browser matrix asserts the error text alongside stale
 state clearing and recovery. Set `FLINGS_EVIDENCE` to a dated receipt path to
 preserve the historical default record. The anonymous hosted probe and its
 read-only limitations are described in `../../notes/hosted-public-retry-20261021.md`.
+
+## Page order, section bar and button variants — November 11, 2026
+
+`../../notes/critique-20261111.md` lists the review this change came from.
+
+The organizer page for one fling now runs: state, activities and events,
+members and organizers, discussions/polls/payments, messages, then a
+"Backup & deletion" section holding the three recovery panels. A
+`nav.section-nav` under the state row links to `#plan`, `#members`,
+`#coordination`, `#messages` and `#backup` and stays at the top of the window.
+On the member page the invitations come first and the coordination panel sits
+under them in the same column.
+
+While the organizer workspace re-checks sign-in on window focus, its records
+are still hidden with the `hidden` attribute, as before. The wrapper
+`div.fling-body` now holds the height the records had (`min-height`, measured
+when the re-check starts), so the document does not shrink and the scroll
+position survives. Do not hide the records with `visibility: hidden` instead:
+the stock Button has `transition-all`, which animates the inherited
+`visibility`, and a button that is still mid-transition refuses focus. That
+broke the return of keyboard focus after a coordination save in
+`test/coordination-browser.mjs`. Organizer confirmations render in
+`output.page-notice`, fixed to the bottom of the window; an organizer error
+scrolls its alert into view. `html` carries scroll padding for the section bar
+and the confirmation message.
+
+`app/globals.css` no longer sets `background` or `color` on `button`. That
+rule sits outside any cascade layer and overrode every Button variant, so
+`outline` and `destructive` rendered the same as the default. Keep colour out
+of that rule. `--input` and `--destructive` are mapped to the application
+palette: control borders are at least 3.4:1 against the page, panel and card
+backgrounds, and destructive text at least 5.9:1 against its tint. State
+badges take a `state-<value>` class; the stylesheet capitalises and colours
+them, and the stored lower-case text stays in the document.
+
+Verified locally on Chromium at 1280 px and 390 px with the existing browser
+scripts, plus `npm run typecheck`, `npm test` and `npm run build`. Firefox and
+WebKit were not available for this change, so the three-engine matrix was not
+repeated. `npm run lint` reports the `member-page.tsx` ref-during-render error
+that was already present.

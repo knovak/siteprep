@@ -485,3 +485,16 @@ anonymous Chromium/WebKit status-failure and keyboard-retry checks passed,
 closing the two WebKit malformed-JSON findings. Recorded the actual deployment
 and retained the original failed receipt. No hosted business write, sign-in,
 message, restore, deletion or audience change occurred; Phase 6 remains open.
+
+## 2026-11-11 — Critique, visible button variants and organizer page order
+
+Reviewed the application for interaction, completeness, appearance and code
+structure and recorded 53 suggestions in `notes/critique-20261111.md`.
+Implemented two areas from it. Buttons now show their declared variants,
+checkboxes and field borders are visible, panels are spaced and states are
+labelled in colour. The organizer page puts activities and members first, has
+a section bar, keeps its scroll position across the focus re-check and shows
+confirmations at the bottom of the window; the member page puts invitations
+first. Typecheck, 177 unit tests and the Sites build pass; the local browser
+scripts pass on Chromium only. No schema, access rule, stored data or
+production release changed. The other suggestions remain open.

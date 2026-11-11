@@ -67,7 +67,7 @@ export default function RecoveryCheckPanel({
   }
   return (
     <section className="profile-panel" aria-label="Check a gathering backup">
-      <h2>Check an edited backup</h2>
+      <h3>Check an edited backup</h3>
       <p>
         Preserve your original export and choose an edited copy to check.
         Checking sends the file to this private workspace for validation; the

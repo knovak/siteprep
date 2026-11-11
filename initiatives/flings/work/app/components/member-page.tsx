@@ -331,7 +331,10 @@ export default function MemberPage({
           {!data && (
             <div className="actions">
               {credentials.current && (
-                <Button disabled={reloading} onClick={() => void reloadMember()}>
+                <Button
+                  disabled={reloading}
+                  onClick={() => void reloadMember()}
+                >
                   Reload member page
                 </Button>
               )}
@@ -361,117 +364,129 @@ export default function MemberPage({
               This fling is closed. You can still correct your contact details.
             </div>
           )}
-          <CoordinationPanel endpoint={'member/' + encodeURIComponent(data.profile.id) + '/coordination'} parentRevision={data.fling.revision} request={call} refresh={refresh} preview={!!previewMember}/>
           <div className="member-grid">
-            <section aria-labelledby="activities-title">
-              <h2 id="activities-title" className="section-title">
-                Your activities <span>{data.activities.length}</span>
-              </h2>
-              {data.activities.length === 0 && <p>No current invitations.</p>}
-              {data.activities.map((a) => (
-                <article className="activity" key={a.id}>
-                  <span className={'badge ' + a.invitation}>
-                    {a.state === 'cancelled'
-                      ? 'Cancelled'
-                      : a.invitation === 'accepted'
-                        ? 'You’re going'
-                        : a.invitation === 'declined'
-                          ? 'Declined'
-                          : 'Invited'}
-                  </span>
-                  <h2>{a.title}</h2>
-                  <p>{a.summary}</p>
-                  {a.details && <p className="details">{a.details}</p>}
-                  {data.events
-                    .filter((e) => e.activity === a.id)
-                    .map((e) => (
-                      <div className="event" key={e.id}>
-                        <h3>{e.title}</h3>
-                        <p>
-                          <time dateTime={e.starts}>
-                            {new Intl.DateTimeFormat('en-US', {
-                              timeZone: e.zone,
-                              dateStyle: 'medium',
-                              timeStyle: 'short',
-                            }).format(new Date(e.starts))}
-                            {' ('}
-                            {utcOffset(e.starts, e.zone)}
-                            {')'}
-                          </time>{' '}
-                          {e.ends && (
-                            <>
-                              {' '}
-                              –{' '}
-                              <time dateTime={e.ends}>
-                                {new Intl.DateTimeFormat('en-US', {
-                                  timeZone: e.zone,
-                                  dateStyle: 'medium',
-                                  timeStyle: 'short',
-                                }).format(new Date(e.ends))}
-                                {' ('}
-                                {utcOffset(e.ends, e.zone)}
-                                {')'}
-                              </time>{' '}
-                            </>
-                          )}
-                          · {e.zone}
-                        </p>
-                        <p>{e.summary}</p>
-                        {e.invitation_location && (
-                          <p>{e.invitation_location}</p>
-                        )}
-                        {e.location_name && <p>{e.location_name}</p>}
-                        {e.location_address && <p>{e.location_address}</p>}
-                        {e.location_url && (
-                          <a
-                            href={e.location_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            referrerPolicy="no-referrer"
-                          >
-                            Location link
-                          </a>
-                        )}
-                        {e.changed_at !== null && (
-                          <p className="muted small">
-                            Updated{' '}
-                            {new Intl.DateTimeFormat('en-US', {
-                              timeZone: e.zone,
-                              dateStyle: 'medium',
-                              timeStyle: 'short',
-                            }).format(new Date(e.changed_at))}{' '}
+            <div className="member-main">
+              <section aria-labelledby="activities-title">
+                <h2 id="activities-title" className="section-title">
+                  Your activities <span>{data.activities.length}</span>
+                </h2>
+                {data.activities.length === 0 && <p>No current invitations.</p>}
+                {data.activities.map((a) => (
+                  <article className="activity" key={a.id}>
+                    <span className={'badge ' + a.invitation}>
+                      {a.state === 'cancelled'
+                        ? 'Cancelled'
+                        : a.invitation === 'accepted'
+                          ? 'You’re going'
+                          : a.invitation === 'declined'
+                            ? 'Declined'
+                            : 'Invited'}
+                    </span>
+                    <h2>{a.title}</h2>
+                    <p>{a.summary}</p>
+                    {a.details && <p className="details">{a.details}</p>}
+                    {data.events
+                      .filter((e) => e.activity === a.id)
+                      .map((e) => (
+                        <div className="event" key={e.id}>
+                          <h3>{e.title}</h3>
+                          <p>
+                            <time dateTime={e.starts}>
+                              {new Intl.DateTimeFormat('en-US', {
+                                timeZone: e.zone,
+                                dateStyle: 'medium',
+                                timeStyle: 'short',
+                              }).format(new Date(e.starts))}
+                              {' ('}
+                              {utcOffset(e.starts, e.zone)}
+                              {')'}
+                            </time>{' '}
+                            {e.ends && (
+                              <>
+                                {' '}
+                                –{' '}
+                                <time dateTime={e.ends}>
+                                  {new Intl.DateTimeFormat('en-US', {
+                                    timeZone: e.zone,
+                                    dateStyle: 'medium',
+                                    timeStyle: 'short',
+                                  }).format(new Date(e.ends))}
+                                  {' ('}
+                                  {utcOffset(e.ends, e.zone)}
+                                  {')'}
+                                </time>{' '}
+                              </>
+                            )}
                             · {e.zone}
                           </p>
-                        )}
-                        {e.details && <p>{e.details}</p>}
-                      </div>
-                    ))}
-                  {!previewMember &&
-                    data.fling.state === 'open' &&
-                    a.state === 'published' && (
-                      <div className="actions">
-                        {a.invitation !== 'accepted' && (
-                          <Button
-                            disabled={saving}
-                            onClick={() => void respond(a.id, 'accepted')}
-                          >
-                            Accept invitation
-                          </Button>
-                        )}
-                        {a.invitation !== 'declined' && (
-                          <Button
-                            disabled={saving}
-                            variant="outline"
-                            onClick={() => void respond(a.id, 'declined')}
-                          >
-                            Decline invitation
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                </article>
-              ))}
-            </section>
+                          <p>{e.summary}</p>
+                          {e.invitation_location && (
+                            <p>{e.invitation_location}</p>
+                          )}
+                          {e.location_name && <p>{e.location_name}</p>}
+                          {e.location_address && <p>{e.location_address}</p>}
+                          {e.location_url && (
+                            <a
+                              href={e.location_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              referrerPolicy="no-referrer"
+                            >
+                              Location link
+                            </a>
+                          )}
+                          {e.changed_at !== null && (
+                            <p className="muted small">
+                              Updated{' '}
+                              {new Intl.DateTimeFormat('en-US', {
+                                timeZone: e.zone,
+                                dateStyle: 'medium',
+                                timeStyle: 'short',
+                              }).format(new Date(e.changed_at))}{' '}
+                              · {e.zone}
+                            </p>
+                          )}
+                          {e.details && <p>{e.details}</p>}
+                        </div>
+                      ))}
+                    {!previewMember &&
+                      data.fling.state === 'open' &&
+                      a.state === 'published' && (
+                        <div className="actions">
+                          {a.invitation !== 'accepted' && (
+                            <Button
+                              disabled={saving}
+                              onClick={() => void respond(a.id, 'accepted')}
+                            >
+                              Accept invitation
+                            </Button>
+                          )}
+                          {a.invitation !== 'declined' && (
+                            <Button
+                              disabled={saving}
+                              variant="outline"
+                              onClick={() => void respond(a.id, 'declined')}
+                            >
+                              Decline invitation
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                  </article>
+                ))}
+              </section>
+              <CoordinationPanel
+                endpoint={
+                  'member/' +
+                  encodeURIComponent(data.profile.id) +
+                  '/coordination'
+                }
+                parentRevision={data.fling.revision}
+                request={call}
+                refresh={refresh}
+                preview={!!previewMember}
+              />
+            </div>
             <aside>
               <section
                 className="profile-panel"

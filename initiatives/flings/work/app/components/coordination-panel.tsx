@@ -320,7 +320,12 @@ export default function CoordinationPanel(props: Props) {
     void save(input);
   };
   return (
-    <section ref={panel} className="coordination" aria-label="Coordination">
+    <section
+      ref={panel}
+      id="coordination"
+      className="coordination"
+      aria-label="Coordination"
+    >
       <div className="coord-heading">
         <h2 ref={heading} tabIndex={-1}>
           Discussions, polls & payments
@@ -646,7 +651,10 @@ export default function CoordinationPanel(props: Props) {
                   </>
                 )}
                 <div className="actions">
-                  <Button type="submit">
+                  <Button
+                    type="submit"
+                    variant={draft.hide ? 'destructive' : 'default'}
+                  >
                     {draft.hide
                       ? 'Hide post'
                       : draft.kind === 'ledger' && !organizer
@@ -743,7 +751,7 @@ export default function CoordinationPanel(props: Props) {
                       )}
                       {organizer && (
                         <Button
-                          variant="outline"
+                          variant="destructive"
                           disabled={busy}
                           data-coordination-action={'post:hide:' + p.id}
                           onClick={(e) =>
