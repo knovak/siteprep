@@ -980,7 +980,13 @@ channel stamp naming the channel its path implies, the demos index and the
 overview page link the beta, and no beta is committed under `demos/`.
 `tests/channel-stamp.test.mjs` covers the stamp itself, and the beta cases in
 `tests/initiatives-deployments.test.mjs` cover the declaration and its
-validation against `tests/fixtures/demo-beta/`.
+validation against `tests/fixtures/demo-beta/`. `tests/e2e/demo-beta.spec.js`
+opens each published copy in a browser and checks that the label is visible,
+that it joined the element `beta.stamp` names, that the page loaded nothing
+else and raised no error, and that the demos index and the overview page link
+the beta. It reads `channels`, so a new beta is covered without editing it. It
+fails when a change removes the anchor element, so that `beta.stamp` is updated
+when the page's structure changes.
 
 `tests/initiatives-rendering.test.mjs` covers wrapped and nested lists, code
 blocks, and URL autolinks. `tests/initiatives-digest.test.mjs` covers the survey, and
