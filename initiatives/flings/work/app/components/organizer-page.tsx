@@ -182,71 +182,90 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     [],
   );
   const refreshRun = useRef(0);
-  const refresh = useCallback(async () => {
-    const run = ++refreshRun.current;
-    setHeldHeight(flingBody.current?.offsetHeight ?? 0);
-    setInitializing(true);
-    let statusConfirmed = false;
-    try {
-      const response = await fetch('/api/flings/native/status', {
-        cache: 'no-store',
-      });
-      if (!response.ok) throw new Error('Sign-in status is unavailable.');
-      const currentIdentity = (await response.json().catch(() => {
-        // JSON parsing can reject with a DOMException rather than SyntaxError
-        // in WebKit. Report the failed status stage consistently across engines.
-        throw new Error('Sign-in status is unavailable.');
-      })) as NonNullable<typeof identity>;
-      if (
-        !currentIdentity ||
-        typeof currentIdentity.native !== 'boolean' ||
-        typeof currentIdentity.rehearsal !== 'boolean' ||
-        typeof currentIdentity.signedIn !== 'boolean' ||
-        typeof currentIdentity.email !== 'string'
-      )
-        throw new Error('Sign-in status is unavailable.');
-      if (run !== refreshRun.current) return;
-      statusConfirmed = true;
-      setIdentity(currentIdentity);
-      const value = await request(
-        (fling || 'workspace') + '/organizer',
-        'GET',
-        undefined,
-        () => run === refreshRun.current,
-      );
-      if (run !== refreshRun.current) return;
-      auth.current = { id: value.organizer, csrf: value.csrf };
-      if (fling) setData(value);
-      else {
-        setList(value.flings);
-        setProfileName(value.name);
+  const refreshing = useRef(0);
+  // `quiet` is for the timed poll. It re-checks sign-in and reloads the records
+  // like any other refresh, and a failure still clears them, but it leaves them
+  // on screen meanwhile: hiding them every few seconds takes keyboard focus out
+  // of whatever field is being typed in.
+  const refresh = useCallback(
+    async (quiet = false) => {
+      const run = ++refreshRun.current;
+      refreshing.current++;
+      if (!quiet) {
+        setHeldHeight(flingBody.current?.offsetHeight ?? 0);
+        setInitializing(true);
       }
-      setError('');
-    } catch (e) {
-      if (run !== refreshRun.current) return;
-      // A failed refresh cannot vouch for the identity or records on screen.
-      auth.current = null;
-      if (!statusConfirmed) setIdentity(null);
-      setData(null);
-      setList(null);
-      setMemberDraft(null);
-      setProfileName('');
-      setError(
-        e instanceof TypeError || e instanceof SyntaxError
-          ? 'Unable to refresh sign-in and gathering details. Try reloading the workspace.'
-          : (e as Error).message,
-      );
-    } finally {
-      if (run === refreshRun.current) setInitializing(false);
-    }
-  }, [fling, request]);
+      let statusConfirmed = false;
+      try {
+        const response = await fetch('/api/flings/native/status', {
+          cache: 'no-store',
+        });
+        if (!response.ok) throw new Error('Sign-in status is unavailable.');
+        const currentIdentity = (await response.json().catch(() => {
+          // JSON parsing can reject with a DOMException rather than SyntaxError
+          // in WebKit. Report the failed status stage consistently across engines.
+          throw new Error('Sign-in status is unavailable.');
+        })) as NonNullable<typeof identity>;
+        if (
+          !currentIdentity ||
+          typeof currentIdentity.native !== 'boolean' ||
+          typeof currentIdentity.rehearsal !== 'boolean' ||
+          typeof currentIdentity.signedIn !== 'boolean' ||
+          typeof currentIdentity.email !== 'string'
+        )
+          throw new Error('Sign-in status is unavailable.');
+        if (run !== refreshRun.current) return;
+        statusConfirmed = true;
+        setIdentity(currentIdentity);
+        const value = await request(
+          (fling || 'workspace') + '/organizer',
+          'GET',
+          undefined,
+          () => run === refreshRun.current,
+        );
+        if (run !== refreshRun.current) return;
+        auth.current = { id: value.organizer, csrf: value.csrf };
+        if (fling) setData(value);
+        else {
+          setList(value.flings);
+          setProfileName(value.name);
+        }
+        setError('');
+      } catch (e) {
+        if (run !== refreshRun.current) return;
+        // A failed refresh cannot vouch for the identity or records on screen.
+        auth.current = null;
+        if (!statusConfirmed) setIdentity(null);
+        setData(null);
+        setList(null);
+        setMemberDraft(null);
+        setProfileName('');
+        setError(
+          e instanceof TypeError || e instanceof SyntaxError
+            ? 'Unable to refresh sign-in and gathering details. Try reloading the workspace.'
+            : (e as Error).message,
+        );
+      } finally {
+        refreshing.current--;
+        if (run === refreshRun.current) setInitializing(false);
+      }
+    },
+    [fling, request],
+  );
 
   useEffect(() => {
-    void Promise.resolve().then(refresh);
+    void Promise.resolve().then(() => refresh());
     const recheck = () => void refresh();
     window.addEventListener('focus', recheck);
     const timer = window.setInterval(() => {
-      if (fling && document.visibilityState === 'visible') void refresh();
+      // Skip a tick while another refresh is running, so the poll never
+      // replaces a refresh that a save or a focus re-check is waiting on.
+      if (
+        fling &&
+        document.visibilityState === 'visible' &&
+        !refreshing.current
+      )
+        void refresh(true);
     }, 15000);
     return () => {
       window.clearInterval(timer);
