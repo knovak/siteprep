@@ -6,24 +6,25 @@
 
 ## Done
 
-- Organizers can run gatherings with personal member links, events, discussions,
-  polls, payment records and reviewed message prompts. An editable backup
-  restores a separate gathering with fresh member identities.
-- Activities are unlimited by default. Organizers can cap attendance, invite
-  members in order, set a response deadline and allow late acceptance while a
-  place is free. Backups preserve the invitation order.
-- All 191 application tests passed, including 14 participation tests. Chromium
-  and WebKit passed the invitation flow at desktop and phone widths. Earlier
-  hosted checks confirmed organizer sign-in, signed-out profile and invitation
-  changes, and all 16 anonymous startup retry cases.
+- Organizers manage events, discussions, polls and payment records. They can
+  cap attendance, invite members in order, set a response deadline and allow
+  late acceptance while space remains. Restoring a backup creates a separate
+  gathering with fresh member identities and preserves the invitation order.
+- The organizer page puts activities and members first. A section bar provides
+  shortcuts, and automatic refresh keeps keyboard focus in the field being
+  edited. Members see their invitations first. Buttons and form fields now
+  have clearer visual boundaries.
+- All 191 application tests passed. Local Chromium checks covered the revised
+  layout. Earlier Chromium and WebKit checks covered invitations at desktop
+  and phone widths.
 
 ## Remaining work
 
-Firefox could not start for the new invitation tests. Hosted testing still
-needs to verify a second organizer’s access, multiple memberships, link expiry
-and revocation, and signed-out discussion, poll and payment changes. Remaining
-checks before the pilot include signed-in accessibility, screen readers,
-text-only zoom, restart and managed-backup recovery.
+The revised layout still needs hosted checks, and invitation testing in Firefox
+remains open. Hosted tests also need to cover a second organizer, multiple
+memberships, link expiry and revocation, and signed-out changes to discussions,
+polls and payments. Before the pilot, verify signed-in accessibility, screen
+reader use, text-only zoom, restart and managed-backup recovery.
 
 ## Optional later
 
