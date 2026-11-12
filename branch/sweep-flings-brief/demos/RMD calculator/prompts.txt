@@ -1,0 +1,20 @@
+Prompt 1
+Make an interactive tool that models a retirement fund balance under certain controlled conditions.  The main question is the growth rate of the assets, and the US federal required minimum withdrawals schedule.  Make each of these factors a slider:
+
+* How many years from present to model
+* How much to start with
+* The age of the person today
+* The asset growth rate
+
+Provide a line graph of the total asset value and of the RMD by year.  Also provide those numbers in a tab-separated text table
+
+
+Prompt 2
+Great.  Now let's add one more series of additional annual withdrawals.
+
+Add a slider for "target annual total withdrawals".  Calculate an additional annual withdrawal which is this target amount minus the RMD, with a minimum value of zero (i.e. the additional withdrawal can never be negative).
+
+Adjust the calculation to include these withdrawals
+write a README document that describes this little model accurately and concisely.  Have a short and simple "how to" section, followed by a more complete explanation of how it works
+
+Prompt 3
