@@ -193,7 +193,7 @@ export function horizonCapDeg(altKm, data) {
  * thetaSun per query. Returns typed arrays.
  *
  * cfg: { totalSats, ssoFraction, shells:[{altKm,share}], planesPerShell,
- *        ltanHours, ltanSpreadMinutes, inclinedDeg,
+ *        planeLayout ("spread" | "filed"), ltanHours, ltanSpreadMinutes, inclinedDeg,
  *        trains, train:{satsPerTrain, altKm, arcLengthDeg, m0BonusMag},
  *        m0Mean, m0Sigma, m0Clamp, seed }
  */
@@ -219,13 +219,13 @@ export function generateConstellation(cfg, data) {
   for (const s of shares) { acc += s / total; cum.push(acc); }
   const pickShell = (u) => { for (let i = 0; i < cum.length; i++) if (u <= cum[i]) return i; return cum.length - 1; };
 
-  const placeOnOrbit = (idx, altKm, incDeg, nodeDeg) => {
+  // Put satellite idx on a circular orbit at anomaly u (radians from the node).
+  const placeAt = (idx, altKm, incDeg, nodeDeg, u) => {
     const r = Re + altKm;
     const th = nodeDeg * DEG, inc = incDeg * DEG;
     const Nx = Math.cos(th), Ny = Math.sin(th);          // node vector
     const Ex = -Math.sin(th), Ey = Math.cos(th);         // 90 deg east of node
     const Wx = Math.cos(inc) * Ex, Wy = Math.cos(inc) * Ey, Wz = Math.sin(inc);
-    const u = rng() * TAU;                               // uniform anomaly
     const cu = Math.cos(u), su = Math.sin(u);
     px[idx] = r * (Nx * cu + Wx * su);
     py[idx] = r * (Ny * cu + Wy * su);
@@ -235,6 +235,8 @@ export function generateConstellation(cfg, data) {
     vy[idx] = -Ny * su + Wy * cu;
     vz[idx] = Wz * cu;
   };
+  // the same, at a uniformly random anomaly
+  const placeOnOrbit = (idx, altKm, incDeg, nodeDeg) => placeAt(idx, altKm, incDeg, nodeDeg, rng() * TAU);
 
   // LTAN -> node angle relative to the Sun's equatorial projection (at +X,
   // i.e. theta_sun = 0 in this frame): local time t at equatorial angle
@@ -247,6 +249,32 @@ export function generateConstellation(cfg, data) {
   // width. A single plane sits at the centre, not at one edge.
   const planeOffset = (plane) => (planeCount > 1 ? plane / (planeCount - 1) - 0.5 : 0);
   const cl = cfg.clustering;
+
+  // "filed" layout: two planes at each altitude level, one for each node
+  // family (LTAN and LTAN + 12 h), as in the filing's Sun-synchronous groups.
+  // Each plane's node is drawn once, uniformly within the spread, so the
+  // constellation is a set of distinct rings and draws as bands. The default
+  // "spread" layout does not come through here, so its random sequence, and
+  // every number frozen from it, is unchanged.
+  const filed = cfg.planeLayout === "filed";
+  const filedPlanes = [];
+  if (filed) {
+    const spreadHours = cfg.ltanSpreadMinutes / 60;
+    for (const sh of cfg.shells) {
+      for (const twin of [0, 12]) {
+        const ltan = cfg.ltanHours + (rng() * 2 - 1) * spreadHours;
+        filedPlanes.push({
+          altKm: sh.altKm, incDeg: ssoInclinationDeg(sh.altKm, data),
+          nodeDeg: nodeFromLtan(ltan + twin), weight: sh.share / total / 2,
+        });
+      }
+    }
+  }
+  const pickFiledPlane = (u) => {
+    let acc = 0;
+    for (const p of filedPlanes) { acc += p.weight; if (u <= acc) return p; }
+    return filedPlanes[filedPlanes.length - 1];
+  };
   if (cl && cl.enabled) {
     // hierarchical clustering (v3): cluster CENTERS are placed with the
     // same shell/plane/anomaly machinery as independent satellites, so the
@@ -257,9 +285,12 @@ export function generateConstellation(cfg, data) {
       const isSso = ssoPlaced < nSso;
       const k = Math.min(cfg.totalSats - i, Math.max(2,
         Math.round(cl.satsPerCluster * Math.exp(cl.memberSigma * rng.gauss()))));
-      const sh = cfg.shells[pickShell(rng())];
+      let sh = cfg.shells[pickShell(rng())];
       let incDeg, nodeDeg;
-      if (isSso) {
+      if (isSso && filed) {
+        const p = pickFiledPlane(rng());
+        sh = { altKm: p.altKm }; incDeg = p.incDeg; nodeDeg = p.nodeDeg;
+      } else if (isSso) {
         incDeg = ssoInclinationDeg(sh.altKm, data);
         const plane = Math.floor(rng() * planeCount);
         const ltan = cfg.ltanHours + planeOffset(plane) * 2 * (cfg.ltanSpreadMinutes / 60);
@@ -299,6 +330,36 @@ export function generateConstellation(cfg, data) {
         if (isSso) ssoPlaced++;
       }
       cid++;
+    }
+  } else if (filed) {
+    // whole satellites per plane, the largest remainders first, so that the
+    // planes hold exactly nSso between them
+    let left = nSso;
+    for (const p of filedPlanes) { p.count = Math.floor(nSso * p.weight); left -= p.count; }
+    const byRemainder = filedPlanes.map((p, k) => k).sort((a, b) =>
+      (nSso * filedPlanes[b].weight - filedPlanes[b].count) -
+      (nSso * filedPlanes[a].weight - filedPlanes[a].count) || a - b);
+    for (let k = 0; k < left; k++) filedPlanes[byRemainder[k % byRemainder.length]].count++;
+    let i = 0;
+    for (const p of filedPlanes) {
+      // evenly spaced along the plane from a random start, each moved by a
+      // small random part of the spacing
+      const start = rng() * TAU, step = TAU / Math.max(1, p.count);
+      for (let k = 0; k < p.count; k++, i++) {
+        placeAt(i, p.altKm, p.incDeg, p.nodeDeg, start + k * step + 0.3 * step * rng.gauss());
+        family[i] = 0;
+        shellAlt[i] = p.altKm;
+        m0[i] = sampleM0();
+        clusterId[i] = -1 - i;
+      }
+    }
+    for (; i < cfg.totalSats; i++) {          // the 30-degree family is unchanged
+      const sh = cfg.shells[pickShell(rng())];
+      placeOnOrbit(i, sh.altKm, cfg.inclinedDeg, rng() * 360);
+      family[i] = 1;
+      shellAlt[i] = sh.altKm;
+      m0[i] = sampleM0();
+      clusterId[i] = -1 - i;
     }
   } else
   for (let i = 0; i < cfg.totalSats; i++) {
@@ -365,6 +426,7 @@ export function defaultConfig(data, overrides = {}) {
     ssoFraction: sc.ssoFractionDefault.value,
     shells: sc.shellPresets.value[sc.defaultShellPreset.value],
     planesPerShell: sc.planesPerShell.value,
+    planeLayout: "spread",
     ltanHours: sc.ssoLtanHours.value,
     ltanSpreadMinutes: sc.ssoLtanSpreadMinutes.value,
     inclinedDeg: sc.inclinedShellInclinationDeg.value,
@@ -418,19 +480,36 @@ export function airmass(altDeg) {
 }
 
 /**
+ * How much fainter (+) or brighter (-) a satellite is at a phase angle than
+ * at 90 degrees, in magnitudes. The reference brightness is defined at 90
+ * degrees, so every law is zero there.
+ *   "lambert"  a diffusely reflecting sphere
+ *   "mini"     the measured curve of a Starlink Gen2 Mini in its brightness
+ *              mitigation mode (photometry.phaseLaws in the data file)
+ */
+export function phaseMagnitude(phaseRad, law, data) {
+  if (law === "mini") {
+    const [c0, c1, c2] = data.photometry.phaseLaws.value.mini.coefficients;
+    const at = (deg) => c0 + c1 * deg + c2 * deg * deg;
+    return at(phaseRad / DEG) - at(90);
+  }
+  const p = Math.max(lambertPhase(phaseRad), 1e-6);
+  return -2.5 * Math.log10(p / lambertPhase(Math.PI / 2));
+}
+
+/**
  * Apparent V magnitude of a satellite.
  * m0 is defined at 1000 km range and 90 deg phase angle.
  */
 /** brightnessOffsetMag: shift applied uniformly to the population; derived
  *  in evaluate() from state.brightnessRefMag minus the reference default
- *  (the "SBDC brightness" slider — see photometry.referenceBrightness). */
-export function satMagnitude(m0, rangeKm, phaseRad, altDeg, data, brightnessOffsetMag = 0) {
+ *  (the "SBDC brightness" slider — see photometry.referenceBrightness).
+ *  phaseLaw: "lambert" (default) or "mini" — see phaseMagnitude(). */
+export function satMagnitude(m0, rangeKm, phaseRad, altDeg, data, brightnessOffsetMag = 0, phaseLaw = "lambert") {
   const k = data.photometry.extinctionCoefficient.value;
-  const p = Math.max(lambertPhase(phaseRad), 1e-6);
-  const p90 = lambertPhase(Math.PI / 2);
   return m0 + brightnessOffsetMag +
-    5 * Math.log10(rangeKm / 1000) -
-    2.5 * Math.log10(p / p90) +
+    5 * Math.log10(rangeKm / 1000) +
+    phaseMagnitude(phaseRad, phaseLaw, data) +
     k * (airmass(altDeg) - 1);
 }
 
@@ -520,8 +599,8 @@ export function starAltAz(catalog, latDeg, doy, solarTimeHours, data) {
  * (altDeg, azDeg, rangeKm, mag, sunlit, visible) plus indices of those
  * above the horizon (for renderers).
  *
- * state: { latDeg, doy, solarTimeHours, brightnessRefMag, userLimitingMag, propagationSec,
- *          shadowGeometry }
+ * state: { latDeg, doy, solarTimeHours, brightnessRefMag, phaseLaw, userLimitingMag,
+ *          propagationSec, shadowGeometry }
  */
 export function evaluate(constellation, state, data) {
   const Re = data.physicalConstants.earthRadiusKm.value;
@@ -532,6 +611,7 @@ export function evaluate(constellation, state, data) {
   const geom = state.shadowGeometry || data.shadowModel.geometry.value;
   const userCap = state.userLimitingMag ?? data.limitingMagnitude.userLimitingMagCap.value;
   const mit = brightnessOffset(state, data);
+  const phaseLaw = state.phaseLaw || "lambert";
 
   const th = thetaSunDeg(state.solarTimeHours) * DEG;
   const cth = Math.cos(th), sth = Math.sin(th);
@@ -577,7 +657,7 @@ export function evaluate(constellation, state, data) {
     if (!lit) { mag[i] = 99; visible[i] = 0; continue; }
     const cosPhase = (s[0] * -vx + s[1] * -vy + s[2] * -vz) / r; // sat->obs vs sat->sun
     const phase = Math.acos(Math.max(-1, Math.min(1, cosPhase)));
-    const m = satMagnitude(constellation.m0[i], r, phase, a, data, mit);
+    const m = satMagnitude(constellation.m0[i], r, phase, a, data, mit, phaseLaw);
     mag[i] = m;
     const mu = muAt([vx, vy, vz], s, sunAlt, data);
     const lim = Math.min(limitingMag(mu, data), userCap);

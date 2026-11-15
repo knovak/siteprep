@@ -63,3 +63,66 @@ test("paired cases: Site 1 and Site 2 agree on scale in the bright case", () => 
     assert.ok(s1 / s2 > 0.7 && s1 / s2 < 1.2, `${c.pair}: Site 1 / Site 2 = ${(s1 / s2).toFixed(2)}`);
   }
 });
+
+/* ---------------- unit 2: the sdross0 settings against Site 2's counts ---------------- */
+
+// The constellation and brightness models of the three sdross0 presets, at
+// Site 2's latitude and solar time for each pair. The counts are compared
+// with the whole-sky counts Site 2 reported. They are not expected to be
+// equal: the two simulators draw their plane nodes independently (Site 2
+// states about 2% scatter between layouts without mitigation and about 30%
+// with it at an equinox), and their sky models still differ.
+const sdross0 = M.generateConstellation(M.defaultConfig(data, {
+  totalSats: paired.site2_setup.satellites,
+  ssoFraction: 1,
+  trains: 0,
+  seed: 12345,
+  shells: data.scenario.shellPresets.value["filed-sso"],
+  planeLayout: "filed",
+  ltanSpreadMinutes: paired.site2_setup.plane_spread_deg * 4,
+  m0Sigma: 0,
+}), data);
+
+// Allowed ratio of this simulator's count to Site 2's, by pair. The bands are
+// wide where a known difference remains, and say which:
+//   dark      Sun more than 15 degrees down. This simulator's limit is about
+//             0.15 magnitude stricter there, which lowers its counts.
+//   twilight  Sun 10 to 12 degrees down. This simulator's twilight sky is
+//             darker than measured (fault 9 in PLAN.md), which raises them.
+//             Unit 3 corrects the sky and narrows these bands.
+//   marginal  Site 2's count is small because the satellites are near the
+//             limit of visibility; a tenth of a magnitude moves it a lot.
+const BANDS = {
+  "01-02": { none: [0.8, 1.1], mini: [0.1, 1.2], why: "dark; mini marginal" },
+  "03-04": { none: [0.8, 1.1], mini: [0.3, 1.2], why: "dark; mini marginal" },
+  "05-06": { none: [0.8, 1.1], mini: [0.1, 1.2], why: "dark; mini marginal" },
+  "07-08": { none: [0.8, 1.1], mini: [0.8, 1.15], why: "dark" },
+  "09-10": { none: [0.4, 2.2], mini: null, why: "marginal" },
+  "11-12": { none: [0.95, 1.3], mini: [1, 5], why: "twilight" },
+  "13-14": { none: [0.4, 1.3], mini: null, why: "marginal" },
+  "15-16": { none: [0.95, 1.3], mini: [1, 5], why: "twilight, and an eye limit standing in for Bortle 5" },
+};
+
+for (const c of paired.cases) {
+  test(`paired ${c.pair}: the sdross0 settings against Site 2's counts`, () => {
+    const state = {
+      latDeg: c.site2.latitude,
+      doy: settingsParseDate(c.date),
+      solarTimeHours: settingsParseTime(c.solar_time).clock / 60,
+      userLimitingMag: c.site1.eye_limit_mag,
+    };
+    const none = M.summarize(sdross0, { ...state, brightnessRefMag: 0.8, phaseLaw: "lambert" }, data, catalog);
+    const mini = M.summarize(sdross0, { ...state, brightnessRefMag: 6.2, phaseLaw: "mini" }, data, catalog);
+    const band = BANDS[c.pair];
+    const check = (label, got, want, range) => {
+      if (want === 0) { assert.equal(got, 0, `${label}: Site 2 reports none visible`); return; }
+      const ratio = got / want;
+      assert.ok(ratio >= range[0] && ratio <= range[1],
+        `${label}: ${got} here, ${want} at Site 2, ratio ${ratio.toFixed(2)} outside ${range[0]} to ${range[1]} (${band.why})`);
+    };
+    check("no mitigation", none.visible, c.site2.no_mitigation.whole_sky_visible, band.none);
+    check("optimistic mitigation", mini.visible, c.site2.optimistic_mitigation.whole_sky_visible, band.mini);
+    // the Mini curve never shows more than the Lambertian sphere 5.4 magnitudes brighter
+    assert.ok(mini.visible <= none.visible);
+  });
+}

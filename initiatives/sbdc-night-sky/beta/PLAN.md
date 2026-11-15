@@ -144,6 +144,19 @@ statement of its scatter between plane layouts, about 2% without mitigation
 and about 30% with it at an equinox, plus the difference between the two sky
 models that remains until Unit 3.
 
+Result, with seed 12345 (`test/paired.test.js` holds the bands):
+
+| Pairs | Sun | No mitigation, this / Site 2 | Optimistic, this / Site 2 |
+| --- | --- | --- | --- |
+| 01-08, Blacksburg in September, October and December | 15.6° to 16.8° down | 0.85 to 1.00 | 0.98 in December; 0.23 to 0.63 near the equinox |
+| 11-12 and 15-16, 55° N and London | 10.5° and 11.7° down | 1.11 and 1.17 | 3.9 and 3.1 |
+| 09-10 and 13-14, June and Sydney | 12.8° and 13.7° down | 1.54 and 0.60, on counts near 1,000 | both zero, as at Site 2 |
+
+The two twilight rows are where fault 9 shows: this simulator's sky is too
+dark with the Sun 10° to 12° down, so it counts three to four times as many
+faint satellites as Site 2 there. Unit 3's correction is expected to bring
+those ratios toward 1, and its pull request reports the same table.
+
 ### Unit 3 - Sky brightness: the twilight correction and ambient light
 
 - Fault 9: the twilight table takes the V-band values of Patat et al. (2006)
@@ -226,8 +239,8 @@ simulator stays as released.
 
 | Unit | State |
 | --- | --- |
-| 1 - Faults and checks | In its pull request |
-| 2 - Constellation and brightness settings, presets | Planned |
+| 1 - Faults and checks | Merged 2026-11-15, [knovak/siteprep#652](https://github.com/knovak/siteprep/pull/652) |
+| 2 - Constellation and brightness settings, presets | In its pull request |
 | 3 - Twilight correction and ambient light | Planned |
 | 4 - Moonlight and light ratios | Planned |
 | 5 - Hours of significant light, display items | Planned |

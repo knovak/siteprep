@@ -1,0 +1,32 @@
+# A preset for the SBDC Night-Sky Simulator. See "Presets" in ../README.md.
+# Keys that are left out take the simulator's defaults.
+#
+# The default setup of sdross0/orbital-datacenter-brightness with its
+# "No mitigation" brightness model, on the date its published tables use.
+# That project counts minutes from the moment the Sun's centre is on the
+# horizon; this simulator's sunset is about four minutes later, when the Sun's
+# upper edge has gone. "sunset +80" here is therefore near its 84 minutes.
+
+name: sdross0 default, no mitigation - 37.2 N, 80 minutes after sunset, September 22
+
+observer:
+  latitude: 37.2                # Blacksburg, Virginia
+  date: Sep 22
+  time: sunset +80
+
+constellation:
+  satellites: 500000            # the Sun-synchronous half of the filing
+  sso_percent: 100
+  shells: filed-sso             # 54 levels, 565 to 1,002 km
+  plane_layout: filed           # two planes per level, satellites evenly spaced
+  plane_spread_deg: 10          # the "relaxed" case of Boley, Lawler and Rein; the filing allows 30
+  brightness_mag: 0.8           # their Lambertian sphere, albedo 0.2 x 800 m2: +0.796 at 1,000 km, 90 degrees, zenith
+  brightness_scatter_mag: 0
+  phase_law: lambert
+  launch_trains: 0
+
+display:
+  facing: 315                   # northwest, toward the ring
+  look_altitude: 25
+  field_of_view: 90
+  sky_limit_mag: 6.5            # a dark site

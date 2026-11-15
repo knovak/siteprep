@@ -34,10 +34,11 @@
       <div class="row">
         <button id="settings-export">Export settings</button>
         <button id="settings-import">Import settings…</button>
+        <button id="settings-link">Copy link</button>
         <input id="settings-file" type="file" hidden
                accept=".yaml,.yml,.txt,text/yaml,application/yaml,application/x-yaml,text/plain">
       </div>
-      <div class="hint" id="hint-settings">Export saves every setting as a text file that can be edited and imported again</div>
+      <div class="hint" id="hint-settings">Export saves every setting as a text file that can be edited and imported again. Copy link puts the settings in the page address</div>
       <div class="hint" id="settings-status" role="status" aria-live="polite"></div>
     </details>
 
@@ -45,7 +46,11 @@
       <summary>Observer</summary>
       <div class="ctl">
         <label for="lat">Latitude <output id="lat-label">40°N</output></label>
-        <input id="lat" type="range" min="-90" max="90" step="1" value="40">
+        <div class="numrow">
+          <input id="lat" type="range" min="-90" max="90" step="1" value="40">
+          <input id="lat-num" type="number" min="-90" max="90" step="0.1" value="40"
+                 aria-label="Latitude in degrees to a tenth, negative for south">
+        </div>
       </div>
       <div class="ctl">
         <label for="date">Date <output id="date-label">Jun 21</output></label>
@@ -89,6 +94,7 @@
           <option value="low">Low (550–650 km)</option>
           <option value="mid">Mid (750–1,150 km)</option>
           <option value="spread" selected>Spread (550–1,800 km)</option>
+          <option value="filed-sso">Filed SSO levels (565–1,002 km, 54 levels)</option>
           <option value="custom">Custom…</option>
         </select>
         <div id="shells-custom" style="display:none; margin-top:6px">
@@ -98,9 +104,34 @@
         </div>
       </div>
       <div class="ctl">
+        <label for="planes">Orbital planes</label>
+        <select id="planes">
+          <option value="spread" selected>Spread (72 per shell, satellites at random)</option>
+          <option value="filed">As filed (2 per shell level, evenly spaced)</option>
+        </select>
+      </div>
+      <div class="ctl">
+        <label for="planespread">Plane spread <output id="planespread-label">±11.25°</output></label>
+        <input id="planespread" type="range" min="0" max="120" step="1" value="45">
+        <div class="hint" id="hint-planespread">how far the Sun-synchronous planes spread to each side of the dawn-dusk line · the filing allows ±30°</div>
+      </div>
+      <div class="ctl">
         <label for="brightness">SBDC brightness <output id="bright-label">+0.5 — unmitigated</output></label>
-        <input id="brightness" type="range" min="-70" max="70" step="5" value="5">
+        <input id="brightness" type="range" min="-70" max="70" step="1" value="5">
         <div class="hint" id="hint-bright">median mag at 1,000 km reference · +0.5 ≈ unmitigated · +5.5 ≈ strong mitigation (Starlink record) · +7 = IAU target</div>
+      </div>
+      <div class="ctl">
+        <label for="scatter">Brightness scatter <output id="scatter-label">1.3 mag</output></label>
+        <input id="scatter" type="range" min="0" max="20" step="1" value="13">
+        <div class="hint" id="hint-scatter">how much satellites differ from each other · 0 = identical</div>
+      </div>
+      <div class="ctl">
+        <label for="phaselaw">Phase law</label>
+        <select id="phaselaw">
+          <option value="lambert" selected>Lambertian sphere</option>
+          <option value="mini">Measured Starlink Gen2 Mini (mitigated)</option>
+        </select>
+        <div class="hint" id="hint-phase">how brightness changes with the Sun–satellite–observer angle</div>
       </div>
       <div class="ctl">
         <label for="trains">Recent launch trains <output id="trains-label">1</output></label>

@@ -1,0 +1,31 @@
+# A preset for the SBDC Night-Sky Simulator. See "Presets" in ../README.md.
+# Keys that are left out take the simulator's defaults.
+#
+# The optimistic-mitigation setup of sdross0/orbital-datacenter-brightness
+# near the December solstice, where that project reports its largest count
+# for this brightness model. The date and time are those of pair 07-08 of the
+# 12 October 2026 comparison document.
+
+name: sdross0 optimistic mitigation - 37.2 N, 92 minutes after sunset, December 21
+
+observer:
+  latitude: 37.2
+  date: Dec 21
+  time: sunset +92
+
+constellation:
+  satellites: 500000
+  sso_percent: 100
+  shells: filed-sso
+  plane_layout: filed
+  plane_spread_deg: 10
+  brightness_mag: 6.2
+  brightness_scatter_mag: 0
+  phase_law: mini
+  launch_trains: 0
+
+display:
+  facing: 315
+  look_altitude: 25
+  field_of_view: 90
+  sky_limit_mag: 6.5

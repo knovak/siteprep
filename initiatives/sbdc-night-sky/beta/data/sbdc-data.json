@@ -123,10 +123,66 @@
             "altKm": 1800,
             "share": 0.15
           }
+        ],
+        "filed-sso": [
+          { "altKm": 565.0, "share": 0.0167 },
+          { "altKm": 567.222, "share": 0.0167 },
+          { "altKm": 569.444, "share": 0.0167 },
+          { "altKm": 571.667, "share": 0.0167 },
+          { "altKm": 573.889, "share": 0.0167 },
+          { "altKm": 576.111, "share": 0.0167 },
+          { "altKm": 578.333, "share": 0.0167 },
+          { "altKm": 580.556, "share": 0.0167 },
+          { "altKm": 582.778, "share": 0.0167 },
+          { "altKm": 585.0, "share": 0.0167 },
+          { "altKm": 707.0, "share": 0.018588 },
+          { "altKm": 708.762, "share": 0.018588 },
+          { "altKm": 710.524, "share": 0.018588 },
+          { "altKm": 712.286, "share": 0.018588 },
+          { "altKm": 714.048, "share": 0.018588 },
+          { "altKm": 715.81, "share": 0.018588 },
+          { "altKm": 717.571, "share": 0.018588 },
+          { "altKm": 719.333, "share": 0.018588 },
+          { "altKm": 721.095, "share": 0.018588 },
+          { "altKm": 722.857, "share": 0.018588 },
+          { "altKm": 724.619, "share": 0.018588 },
+          { "altKm": 726.381, "share": 0.018588 },
+          { "altKm": 728.143, "share": 0.018588 },
+          { "altKm": 729.905, "share": 0.018588 },
+          { "altKm": 731.667, "share": 0.018588 },
+          { "altKm": 733.429, "share": 0.018588 },
+          { "altKm": 735.19, "share": 0.018588 },
+          { "altKm": 736.952, "share": 0.018588 },
+          { "altKm": 738.714, "share": 0.018588 },
+          { "altKm": 740.476, "share": 0.018588 },
+          { "altKm": 742.238, "share": 0.018588 },
+          { "altKm": 744.0, "share": 0.018588 },
+          { "altKm": 967.0, "share": 0.019276 },
+          { "altKm": 968.667, "share": 0.019276 },
+          { "altKm": 970.333, "share": 0.019276 },
+          { "altKm": 972.0, "share": 0.019276 },
+          { "altKm": 973.667, "share": 0.019276 },
+          { "altKm": 975.333, "share": 0.019276 },
+          { "altKm": 977.0, "share": 0.019276 },
+          { "altKm": 978.667, "share": 0.019276 },
+          { "altKm": 980.333, "share": 0.019276 },
+          { "altKm": 982.0, "share": 0.019276 },
+          { "altKm": 983.667, "share": 0.019276 },
+          { "altKm": 985.333, "share": 0.019276 },
+          { "altKm": 987.0, "share": 0.019276 },
+          { "altKm": 988.667, "share": 0.019276 },
+          { "altKm": 990.333, "share": 0.019276 },
+          { "altKm": 992.0, "share": 0.019276 },
+          { "altKm": 993.667, "share": 0.019276 },
+          { "altKm": 995.333, "share": 0.019276 },
+          { "altKm": 997.0, "share": 0.019276 },
+          { "altKm": 998.667, "share": 0.019276 },
+          { "altKm": 1000.333, "share": 0.019276 },
+          { "altKm": 1002.0, "share": 0.019276 }
         ]
       },
       "units": "altitudes km, share = fraction of each family's satellites",
-      "source": "assumed distributions inside the filing's 500-2,000 km envelope; default preset = 'spread'",
+      "source": "low, mid, spread: assumed distributions inside the filing's 500-2,000 km envelope; default preset = 'spread'. filed-sso: the three Sun-synchronous groups of Table 1 of SpaceX's 29 May 2026 supplement (ICFS SAT-LOA-20260108-00016) - 10 levels at 565-585 km, 22 at 707-744 km, 22 at 967-1,002 km - with shares in proportion to the filed satellites per plane, as laid out by sdross0/orbital-datacenter-brightness (lsm.build_sso)",
       "confidence": "assumed"
     },
     "defaultShellPreset": {
@@ -145,6 +201,15 @@
       "value": 72,
       "units": "orbital planes",
       "source": "assumed (Starlink-like plane counts)",
+      "confidence": "assumed"
+    },
+    "planeLayouts": {
+      "value": {
+        "spread": "planesPerShell planes per shell and node family, evenly spaced across the LTAN spread; satellites at random along each",
+        "filed": "two planes at each shell level, one per node family (LTAN and LTAN + 12 h); each plane's node drawn uniformly within the spread; satellites evenly spaced along the plane, each moved by a random 0.3 of the spacing (1 sigma)"
+      },
+      "units": "layout id",
+      "source": "spread: assumed (the simulator's original layout). filed: the filing's two planes per shell (same supplement, Table 1), node spread and in-plane spacing as modeled by Boley, Lawler & Rein (2026, arXiv:2608.02757) and sdross0/orbital-datacenter-brightness",
       "confidence": "assumed"
     }
   },
@@ -176,6 +241,20 @@
       "units": "model id",
       "source": "diffuse-sphere standard approximation",
       "confidence": "modeled"
+    },
+    "phaseLaws": {
+      "value": {
+        "lambert": {
+          "form": "(sin a + (pi - a) cos a) / pi"
+        },
+        "mini": {
+          "form": "V(1000 km) = c0 + c1 a + c2 a^2, a in degrees",
+          "coefficients": [2.630, 0.1065, -0.0005167]
+        }
+      },
+      "units": "phase angle a; each law is used relative to its value at 90 deg, where the reference brightness is defined",
+      "source": "lambert: diffuse-sphere standard approximation, as in Boley, Lawler & Rein (2026) eq. 2. mini: Mallama et al. (2023, arXiv:2306.06657) Fig. 5, the measured phase function of Starlink Gen2 Mini in brightness-mitigation mode. Whether that mitigation carries over to a much larger spacecraft is not known",
+      "confidence": "published"
     },
     "extinctionCoefficient": {
       "value": 0.2,

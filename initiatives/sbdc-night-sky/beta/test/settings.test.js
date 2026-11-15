@@ -6,11 +6,12 @@ import { readFileSync, readdirSync } from "node:fs";
 import {
   SETTINGS_FIELDS, defaultSettings, settingsToYaml, settingsFromYaml,
   settingsParseYaml, settingsParseDate, settingsFormatDate,
-  settingsParseTime, settingsFormatTime,
+  settingsParseTime, settingsFormatTime, settingsToQuery, settingsFromQuery,
 } from "../src/settings.js";
 import { DEFAULT_VIEW } from "../src/render.js";
 
 const read = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
+const choicesOf = (section, key) => SETTINGS_FIELDS.find((x) => x.section === section && x.key === key).options;
 
 test("dates: every day of the year survives a round trip", () => {
   for (let doy = 1; doy <= 365; doy++) {
@@ -74,6 +75,11 @@ test("defaults match the page's own starting values", () => {
   assert.equal(d.constellation.sso_percent, +attr("sso", "value"));
   assert.equal(d.constellation.shells, selected("shells"));
   assert.equal(d.constellation.brightness_mag, +attr("brightness", "value") / 10);
+  assert.equal(d.observer.latitude, +attr("lat-num", "value"));
+  assert.equal(d.constellation.plane_layout, selected("planes"));
+  assert.equal(d.constellation.plane_spread_deg, +attr("planespread", "value") / 4);
+  assert.equal(d.constellation.brightness_scatter_mag, +attr("scatter", "value") / 10);
+  assert.equal(d.constellation.phase_law, selected("phaselaw"));
   assert.equal(d.constellation.launch_trains, +attr("trains", "value"));
   assert.equal(d.constellation.clustering, checked("clusteron"));
   assert.equal(d.display.view, selected("viewmode"));
@@ -104,6 +110,35 @@ test("defaults match the page's own starting values", () => {
     [+attr("brightness", "min") / 10, +attr("brightness", "max") / 10]);
   assert.deepEqual(range("display", "sky_limit_mag"),
     [+attr("starlim", "min") / 10, +attr("starlim", "max") / 10]);
+  assert.deepEqual(range("observer", "latitude"), [+attr("lat-num", "min"), +attr("lat-num", "max")]);
+  assert.deepEqual(range("constellation", "plane_spread_deg"),
+    [+attr("planespread", "min") / 4, +attr("planespread", "max") / 4]);
+  assert.deepEqual(range("constellation", "brightness_scatter_mag"),
+    [+attr("scatter", "min") / 10, +attr("scatter", "max") / 10]);
+
+  // every choice a file may name is a choice on the page
+  const options = (id) => [...html.match(new RegExp(`<select id="${id}">[\\s\\S]*?</select>`))[0]
+    .matchAll(/<option value="([^"]+)"/g)].map((m) => m[1]);
+  const choices = (section, key) => SETTINGS_FIELDS.find((x) => x.section === section && x.key === key).options;
+  assert.deepEqual(options("shells"), choices("constellation", "shells"));
+  assert.deepEqual(options("planes"), choices("constellation", "plane_layout"));
+  assert.deepEqual(options("phaselaw"), choices("constellation", "phase_law"));
+});
+
+test("the defaults of the model settings are the data file's values", () => {
+  // The page passes these to the model on every build of the constellation.
+  // If a default here drifted from the data file, the opening view would no
+  // longer be the constellation the golden fixtures freeze.
+  const data = JSON.parse(read("../data/sbdc-data.json"));
+  const d = defaultSettings();
+  assert.equal(d.constellation.plane_spread_deg * 4, data.scenario.ssoLtanSpreadMinutes.value);
+  assert.equal(d.constellation.brightness_scatter_mag, data.photometry.m0Sigma.value);
+  assert.equal(d.constellation.brightness_mag, data.photometry.referenceBrightness.value.default);
+  for (const key of choicesOf("constellation", "shells")) {
+    if (key !== "custom") assert.ok(data.scenario.shellPresets.value[key], `shell option ${key} is in the data file`);
+  }
+  assert.deepEqual(Object.keys(data.scenario.planeLayouts.value), choicesOf("constellation", "plane_layout"));
+  assert.deepEqual(Object.keys(data.photometry.phaseLaws.value), choicesOf("constellation", "phase_law"));
 });
 
 test("an exported file reads back as the same settings", () => {
@@ -196,7 +231,7 @@ test("reading: a file with a mistake is refused, with the line of each mistake",
     "line 3: observer.date: expected a month and day, such as Oct 20",
     "line 4: indent with spaces, not tabs",
     "line 5: observer.hold_time_to_twilight: expected true or false",
-    "line 7: constellation.shells: expected one of low, mid, spread, custom",
+    "line 7: constellation.shells: expected one of low, mid, spread, filed-sso, custom",
     "line 8: lists are not used in a settings file",
     'line 9: expected "key: value", found "satellites 5"',
   ]);
@@ -231,6 +266,52 @@ test("the YAML subset keeps line numbers and types", () => {
   assert.deepEqual(values.get("b.f"), { value: null, line: 6 });
 });
 
+/* ------------------------- links ------------------------- */
+
+test("a link holds the settings that differ from the defaults, and reads back the same", () => {
+  assert.equal(settingsToQuery(defaultSettings()), "", "the opening view needs no settings in its link");
+
+  const s = defaultSettings();
+  Object.assign(s.observer, { latitude: 37.2, date: 265, time: { ref: "sunset", offsetMin: 80 } });
+  Object.assign(s.constellation, {
+    satellites: 500000, sso_percent: 100, shells: "filed-sso", plane_layout: "filed", plane_spread_deg: 10,
+    brightness_mag: 6.2, brightness_scatter_mag: 0, phase_law: "mini", launch_trains: 0,
+  });
+  Object.assign(s.display, { facing: 315, look_altitude: 25, field_of_view: 90, sky_limit_mag: 6.5 });
+  const query = settingsToQuery(s, { name: "A name, with a comma & an ampersand" });
+  assert.ok(!/[ "#]/.test(query), "nothing in a link needs quoting: " + query);
+  const back = settingsFromQuery("#" + query);
+  assert.deepEqual(back.errors, []);
+  assert.deepEqual(back.notes, []);
+  assert.equal(back.name, "A name, with a comma & an ampersand");
+  assert.deepEqual(back.settings, s);
+
+  // a clock time and a custom shell list are written without YAML quotes
+  const t = defaultSettings();
+  t.observer.time = { clock: 21 * 60 + 30 };
+  t.constellation.shells = "custom";
+  t.constellation.custom_shells = "550:0.5, 1200:0.5";
+  assert.deepEqual(settingsFromQuery(settingsToQuery(t)).settings, t);
+});
+
+test("a link with a mistake is refused, with the item of each mistake", () => {
+  const got = settingsFromQuery("observer.latitude=north&display.facing=315&observer.date&display.facing=10");
+  assert.equal(got.settings, null);
+  assert.deepEqual(got.errors, [
+    "item 1: observer.latitude: expected a number",
+    'item 3: expected "key=value", found "observer.date"',
+    'item 4: "display.facing" appears twice',
+  ]);
+  assert.match(settingsFromQuery("").errors[0], /no settings/);
+  assert.match(settingsFromQuery("#").errors[0], /no settings/);
+  assert.match(settingsFromQuery("observer.date=%E0%A4%A").errors[0], /not readable/);
+  // an unknown key is reported and the rest is used, as in a file
+  const loose = settingsFromQuery("observer.latitude=12.5&utm_source=mail");
+  assert.deepEqual(loose.errors, []);
+  assert.equal(loose.settings.observer.latitude, 12.5);
+  assert.deepEqual(loose.notes, ['item 2: "utm_source" is not a setting and was ignored']);
+});
+
 /* ------------------------- the preset files ------------------------- */
 
 const presetFiles = readdirSync(new URL("../presets/", import.meta.url))
@@ -247,21 +328,52 @@ test("every preset file reads cleanly and has a name of its own", () => {
   assert.equal(new Set(presets.map((p) => p.name)).size, presets.length, "preset names are unique");
 });
 
-test("the presets of this revision: place, date and time, and nothing else", () => {
+test("the place presets: place, date and time, and nothing else", () => {
   const want = [
     ["New York City, 30 minutes after sunset, October 20",
-      { latitude: 41, date: "Oct 20", time: { ref: "sunset", offsetMin: 30 } }],
+      { latitude: 40.7, date: "Oct 20", time: { ref: "sunset", offsetMin: 30 } }],
     ["Taos, New Mexico, 30 minutes before sunrise, March 15",
-      { latitude: 36, date: "Mar 15", time: { ref: "dawn", offsetMin: -30 } }],
+      { latitude: 36.4, date: "Mar 15", time: { ref: "dawn", offsetMin: -30 } }],
     ["Alice Springs Australia, 60 minutes after sunset, June 20",
-      { latitude: -24, date: "Jun 20", time: { ref: "sunset", offsetMin: 60 } }],
+      { latitude: -23.7, date: "Jun 20", time: { ref: "sunset", offsetMin: 60 } }],
   ];
-  assert.deepEqual(presets.map((p) => p.name), want.map((w) => w[0]));
-  presets.forEach((p, i) => {
+  const places = presets.slice(0, want.length);
+  assert.deepEqual(places.map((p) => p.name), want.map((w) => w[0]));
+  places.forEach((p, i) => {
     const expected = defaultSettings();
     expected.observer.latitude = want[i][1].latitude;
     expected.observer.date = settingsParseDate(want[i][1].date);
     expected.observer.time = want[i][1].time;
     assert.deepEqual(p.settings, expected, `${p.file} differs from the defaults only in place, date and time`);
   });
+});
+
+test("the sdross0 presets: that project's constellation, with its two brightness models", () => {
+  const sdross0 = presets.filter((p) => /^sdross0 /.test(p.name));
+  assert.deepEqual(sdross0.map((p) => p.name), [
+    "sdross0 default, no mitigation - 37.2 N, 80 minutes after sunset, September 22",
+    "sdross0 default, optimistic mitigation - 37.2 N, 80 minutes after sunset, September 22",
+    "sdross0 optimistic mitigation - 37.2 N, 92 minutes after sunset, December 21",
+  ]);
+  assert.equal(presets.length, 6, "three place presets and three sdross0 presets");
+  for (const p of sdross0) {
+    // what that project's layout fixes, whichever brightness model is chosen
+    assert.equal(p.settings.observer.latitude, 37.2);
+    assert.deepEqual(
+      { ...p.settings.constellation, brightness_mag: null, phase_law: null },
+      { ...defaultSettings().constellation, satellites: 500000, sso_percent: 100, shells: "filed-sso",
+        plane_layout: "filed", plane_spread_deg: 10, brightness_scatter_mag: 0, launch_trains: 0,
+        brightness_mag: null, phase_law: null },
+      p.file);
+    assert.deepEqual(p.settings.display,
+      { ...defaultSettings().display, facing: 315, look_altitude: 25, field_of_view: 90, sky_limit_mag: 6.5 }, p.file);
+    assert.deepEqual(p.settings.advanced, defaultSettings().advanced, p.file);
+  }
+  const model = (p) => [p.settings.constellation.phase_law, p.settings.constellation.brightness_mag];
+  assert.deepEqual(sdross0.map(model), [["lambert", 0.8], ["mini", 6.2], ["mini", 6.2]]);
+  assert.deepEqual(sdross0.map((p) => [settingsFormatDate(p.settings.observer.date), p.settings.observer.time]), [
+    ["Sep 22", { ref: "sunset", offsetMin: 80 }],
+    ["Sep 22", { ref: "sunset", offsetMin: 80 }],
+    ["Dec 21", { ref: "sunset", offsetMin: 92 }],
+  ]);
 });
