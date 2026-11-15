@@ -160,3 +160,32 @@ unit 3 corrects. `beta/PLAN.md` has the table.
 
 113 tests pass in `beta/`, and the browser spec has ten. `lib/`, `work/` and `demos/SBDC Night Sky/` are
 unchanged.
+
+## 2026-11-15 — Beta upgrade, unit 3: the twilight sky, ambient light, the threshold
+
+Unit 2 merged as knovak/siteprep#653 and the site build published it to the
+beta.
+
+Unit 3 corrects the twilight sky-brightness table to the V-band measurements
+of Patat et al. (2006), which the table cited and did not match: it was 3.2
+magnitudes too dark with the Sun 6° down. The naked-eye limit at the end of
+civil twilight goes from 3.8 to 1.5. The opening view, 30 minutes after
+sunset, now shows 546 visible SBDCs and 2 stars where it showed 3,290 and 67;
+from an hour after sunset the counts are within about 15% of what they were.
+`test/golden/golden.json` and the Site 1 counts of the paired fixture were
+regenerated, and the fixture keeps the documented counts beside the new ones.
+The sky color ramp's anchors moved with the table.
+
+Added ambient light by Bortle class, 1 to 9, which brightens the sky and
+lowers the limit, and a choice of naked-eye threshold: the simulator's table,
+or the Schaefer closed form the other simulator uses. The sdross0 presets use
+the second. The readout gives the zenith sky brightness and the limit.
+
+With those settings the no-mitigation counts in the two twilight cases are
+1.00 and 1.04 of the other simulator's (1.11 and 1.17 before), and the
+optimistic counts 1.8 and 1.25 of it (3.9 and 3.1 before). With the Schaefer
+threshold and the Bortle table this simulator reproduces the limits the other
+project publishes for five Bortle classes to within 0.03 magnitude.
+
+125 tests pass in `beta/`, and the browser spec has thirteen. `lib/`, `work/`
+and `demos/SBDC Night Sky/` are unchanged.

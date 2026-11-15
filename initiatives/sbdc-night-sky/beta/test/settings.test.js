@@ -84,6 +84,8 @@ test("defaults match the page's own starting values", () => {
   assert.equal(d.constellation.clustering, checked("clusteron"));
   assert.equal(d.display.view, selected("viewmode"));
   assert.equal(d.display.sky_limit_mag, +attr("starlim", "value") / 10);
+  assert.equal(d.display.ambient_light, +attr("ambient", "value"));
+  assert.equal(d.advanced.naked_eye_threshold, selected("eyemodel"));
   assert.equal(d.display.show_stars, checked("show-stars"));
   assert.equal(d.display.long_exposure, checked("longexp"));
   assert.equal(d.advanced.seed, +attr("seed", "value"));
@@ -115,6 +117,7 @@ test("defaults match the page's own starting values", () => {
     [+attr("planespread", "min") / 4, +attr("planespread", "max") / 4]);
   assert.deepEqual(range("constellation", "brightness_scatter_mag"),
     [+attr("scatter", "min") / 10, +attr("scatter", "max") / 10]);
+  assert.deepEqual(range("display", "ambient_light"), [+attr("ambient", "min"), +attr("ambient", "max")]);
 
   // every choice a file may name is a choice on the page
   const options = (id) => [...html.match(new RegExp(`<select id="${id}">[\\s\\S]*?</select>`))[0]
@@ -123,6 +126,7 @@ test("defaults match the page's own starting values", () => {
   assert.deepEqual(options("shells"), choices("constellation", "shells"));
   assert.deepEqual(options("planes"), choices("constellation", "plane_layout"));
   assert.deepEqual(options("phaselaw"), choices("constellation", "phase_law"));
+  assert.deepEqual(options("eyemodel"), choices("advanced", "naked_eye_threshold"));
 });
 
 test("the defaults of the model settings are the data file's values", () => {
@@ -139,6 +143,14 @@ test("the defaults of the model settings are the data file's values", () => {
   }
   assert.deepEqual(Object.keys(data.scenario.planeLayouts.value), choicesOf("constellation", "plane_layout"));
   assert.deepEqual(Object.keys(data.photometry.phaseLaws.value), choicesOf("constellation", "phase_law"));
+  // ambient light: one entry for each Bortle class the control offers
+  const ambient = SETTINGS_FIELDS.find((x) => x.section === "display" && x.key === "ambient_light");
+  const classes = Object.keys(data.skyBrightness.artificialByBortle.value).map(Number);
+  assert.deepEqual(classes, Array.from({ length: ambient.max - ambient.min + 1 }, (_, k) => ambient.min + k));
+  assert.equal(data.skyBrightness.artificialByBortle.value[String(d.display.ambient_light)], null,
+    "the default class adds no light");
+  assert.equal(d.display.sky_limit_mag, data.limitingMagnitude.userLimitingMagCap.value);
+  assert.ok(data.limitingMagnitude.closedForm.value.a > 0, "the schaefer threshold is in the data file");
 });
 
 test("an exported file reads back as the same settings", () => {
@@ -367,7 +379,9 @@ test("the sdross0 presets: that project's constellation, with its two brightness
       p.file);
     assert.deepEqual(p.settings.display,
       { ...defaultSettings().display, facing: 315, look_altitude: 25, field_of_view: 90, sky_limit_mag: 6.5 }, p.file);
-    assert.deepEqual(p.settings.advanced, defaultSettings().advanced, p.file);
+    // that project's threshold formula, and no artificial light
+    assert.deepEqual(p.settings.advanced, { ...defaultSettings().advanced, naked_eye_threshold: "schaefer" }, p.file);
+    assert.equal(p.settings.display.ambient_light, 1, p.file);
   }
   const model = (p) => [p.settings.constellation.phase_law, p.settings.constellation.brightness_mag];
   assert.deepEqual(sdross0.map(model), [["lambert", 0.8], ["mini", 6.2], ["mini", 6.2]]);

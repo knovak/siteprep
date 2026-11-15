@@ -29,3 +29,6 @@ display:
   look_altitude: 25
   field_of_view: 90
   sky_limit_mag: 6.5
+
+advanced:
+  naked_eye_threshold: schaefer # the threshold formula that project uses

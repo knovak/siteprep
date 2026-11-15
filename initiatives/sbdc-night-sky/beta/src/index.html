@@ -161,9 +161,14 @@
         </select>
       </div>
       <div class="ctl">
-        <label for="starlim">Eye / sky quality limit <output id="starlim-label">mag 6.0</output></label>
+        <label for="starlim">Eye limit <output id="starlim-label">mag 6.0</output></label>
         <input id="starlim" type="range" min="40" max="65" step="1" value="60">
-        <div class="hint" id="hint-starlim">lower = light-polluted site</div>
+        <div class="hint" id="hint-starlim">the faintest magnitude this observer sees under a dark sky · twilight and ambient light lower it further</div>
+      </div>
+      <div class="ctl">
+        <label for="ambient">Ambient light <output id="ambient-label">Bortle 1 — no artificial light</output></label>
+        <input id="ambient" type="range" min="1" max="9" step="1" value="1">
+        <div class="hint" id="hint-ambient">artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars</div>
       </div>
       <div class="check"><input id="show-stars" type="checkbox" checked><label for="show-stars">Show stars (Yale Bright Star Catalog)</label></div>
       <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
@@ -183,6 +188,14 @@
       <div class="check"><input id="tint" type="checkbox"><label for="tint">Tint by orbit family (analysis aid)</label></div>
       <div class="check"><input id="markpole" type="checkbox" checked><label for="markpole">Mark celestial pole (sky’s rotation center)</label></div>
       <div class="check"><input id="shimmer" type="checkbox" checked><label for="shimmer">Satellites move in fast forward (shimmer)</label></div>
+      <div class="ctl">
+        <label for="eyemodel">Naked-eye threshold</label>
+        <select id="eyemodel">
+          <option value="table" selected>Table (stars as they appear in twilight)</option>
+          <option value="schaefer">Schaefer formula (stricter under a bright sky)</option>
+        </select>
+        <div class="hint" id="hint-eyemodel">how the sky's brightness sets the faintest magnitude seen</div>
+      </div>
       <div class="ctl">
         <label for="cvar">Cluster membership variation <output id="cvar-label">0.35</output></label>
         <input id="cvar" type="range" min="0" max="100" step="5" value="35">

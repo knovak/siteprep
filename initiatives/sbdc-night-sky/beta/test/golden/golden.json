@@ -12,22 +12,24 @@
     "expect": {
       "aboveHorizon": 40198,
       "sunlitAbove": 39718,
-      "visible": 18530,
-      "visibleObjects": 18530,
+      "visible": 10732,
+      "visibleObjects": 10732,
       "aboveHorizonPerFamily": {
         "sso": 31316,
         "inclined": 8882,
         "train": 0
       },
       "visiblePerFamily": {
-        "sso": 14655,
-        "inclined": 3875,
+        "sso": 8362,
+        "inclined": 2370,
         "train": 0
       },
-      "visibleStars": 210,
+      "visibleStars": 37,
       "brightestMag": -3.89,
       "brightestObjectMag": -3.89,
-      "sunAltDeg": -7.5
+      "sunAltDeg": -7.5,
+      "zenithSkyMu": 14.92,
+      "zenithLimitMag": 2.69
     }
   },
   {
@@ -43,22 +45,24 @@
     "expect": {
       "aboveHorizon": 20207,
       "sunlitAbove": 19450,
-      "visible": 4021,
-      "visibleObjects": 4021,
+      "visible": 1914,
+      "visibleObjects": 1914,
       "aboveHorizonPerFamily": {
         "sso": 15230,
         "inclined": 4977,
         "train": 0
       },
       "visiblePerFamily": {
-        "sso": 1345,
-        "inclined": 2676,
+        "sso": 253,
+        "inclined": 1661,
         "train": 0
       },
-      "visibleStars": 163,
+      "visibleStars": 21,
       "brightestMag": -2.43,
       "brightestObjectMag": -2.43,
-      "sunAltDeg": -7.3
+      "sunAltDeg": -7.3,
+      "zenithSkyMu": 14.67,
+      "zenithLimitMag": 2.5
     }
   },
   {
@@ -74,22 +78,24 @@
     "expect": {
       "aboveHorizon": 8411,
       "sunlitAbove": 7538,
-      "visible": 1105,
-      "visibleObjects": 1105,
+      "visible": 1117,
+      "visibleObjects": 1117,
       "aboveHorizonPerFamily": {
         "sso": 6936,
         "inclined": 1475,
         "train": 0
       },
       "visiblePerFamily": {
-        "sso": 703,
-        "inclined": 402,
+        "sso": 714,
+        "inclined": 403,
         "train": 0
       },
-      "visibleStars": 866,
+      "visibleStars": 874,
       "brightestMag": -0.11,
       "brightestObjectMag": -0.11,
-      "sunAltDeg": -11.56
+      "sunAltDeg": -11.56,
+      "zenithSkyMu": 19.14,
+      "zenithLimitMag": 5.47
     }
   },
   {
@@ -107,22 +113,24 @@
     "expect": {
       "aboveHorizon": 134143,
       "sunlitAbove": 132488,
-      "visible": 2727,
-      "visibleObjects": 2727,
+      "visible": 425,
+      "visibleObjects": 425,
       "aboveHorizonPerFamily": {
         "sso": 104496,
         "inclined": 29647,
         "train": 0
       },
       "visiblePerFamily": {
-        "sso": 2170,
-        "inclined": 557,
+        "sso": 350,
+        "inclined": 75,
         "train": 0
       },
-      "visibleStars": 210,
+      "visibleStars": 37,
       "brightestMag": 0.67,
       "brightestObjectMag": 0.67,
-      "sunAltDeg": -7.5
+      "sunAltDeg": -7.5,
+      "zenithSkyMu": 14.92,
+      "zenithLimitMag": 2.69
     }
   },
   {
@@ -145,22 +153,24 @@
     "expect": {
       "aboveHorizon": 39195,
       "sunlitAbove": 38694,
-      "visible": 36721,
-      "visibleObjects": 345,
+      "visible": 34867,
+      "visibleObjects": 325,
       "aboveHorizonPerFamily": {
         "sso": 31483,
         "inclined": 7712,
         "train": 0
       },
       "visiblePerFamily": {
-        "sso": 30239,
-        "inclined": 6482,
+        "sso": 28934,
+        "inclined": 5933,
         "train": 0
       },
-      "visibleStars": 210,
+      "visibleStars": 37,
       "brightestMag": -4.32,
       "brightestObjectMag": -7.91,
-      "sunAltDeg": -7.5
+      "sunAltDeg": -7.5,
+      "zenithSkyMu": 14.92,
+      "zenithLimitMag": 2.69
     }
   },
   {
@@ -193,7 +203,9 @@
       "visibleStars": 1695,
       "brightestMag": -3.52,
       "brightestObjectMag": -3.52,
-      "sunAltDeg": -21.05
+      "sunAltDeg": -21.05,
+      "zenithSkyMu": 21.9,
+      "zenithLimitMag": 6
     }
   }
 ]

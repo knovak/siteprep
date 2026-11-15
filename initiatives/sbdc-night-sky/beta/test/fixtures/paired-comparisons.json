@@ -1,5 +1,5 @@
 {
-  "about": "Whole-sky visible-satellite counts from 'Visual Comparison of Two Orbital Data Center Sky Simulators: sixteen paired scenarios captured on 12 October 2026'. Site 1 is this simulator (the released code of that date); Site 2 is sdross0/orbital-datacenter-brightness. Each pair of cases uses one date, latitude and solar time, with Site 2's two brightness models set against Site 1's reference brightness +1.0 and +6.0.",
+  "about": "Whole-sky visible-satellite counts from 'Visual Comparison of Two Orbital Data Center Sky Simulators: sixteen paired scenarios captured on 12 October 2026'. Site 1 is this simulator (the released code of that date); Site 2 is sdross0/orbital-datacenter-brightness. Each pair of cases uses one date, latitude and solar time, with Site 2's two brightness models set against Site 1's reference brightness +1.0 and +6.0. `whole_sky_visible` under site1 is the count on that date. `after_twilight_correction` is what the same settings give since Unit 3 of the November 2026 upgrade corrected the twilight sky-brightness table; test/paired.test.js checks those.",
   "site1_setup": {
     "note": "Page 33 of the document: fresh page, seed 12345, satellites 501,000 (the closest slider value to 500,000 on that date), 100% SSO, launch trains 0, clusters off, custom shells.",
     "satellites": 501000,
@@ -39,11 +39,14 @@
         "latitude": 37,
         "eye_limit_mag": 6.5,
         "brightness_1_0": {
-          "whole_sky_visible": 28702
+          "whole_sky_visible": 28702,
+          "after_twilight_correction": 29290
         },
         "brightness_6_0": {
-          "whole_sky_visible": 1567
-        }
+          "whole_sky_visible": 1567,
+          "after_twilight_correction": 1693
+        },
+        "sun_altitude_deg": -16.19
       }
     },
     {
@@ -67,11 +70,14 @@
         "latitude": 37,
         "eye_limit_mag": 6.5,
         "brightness_1_0": {
-          "whole_sky_visible": 35909
+          "whole_sky_visible": 35909,
+          "after_twilight_correction": 36588
         },
         "brightness_6_0": {
-          "whole_sky_visible": 3060
-        }
+          "whole_sky_visible": 3060,
+          "after_twilight_correction": 3307
+        },
+        "sun_altitude_deg": -15.84
       }
     },
     {
@@ -95,11 +101,14 @@
         "latitude": 37,
         "eye_limit_mag": 6.5,
         "brightness_1_0": {
-          "whole_sky_visible": 28722
+          "whole_sky_visible": 28722,
+          "after_twilight_correction": 29467
         },
         "brightness_6_0": {
-          "whole_sky_visible": 1584
-        }
+          "whole_sky_visible": 1584,
+          "after_twilight_correction": 1764
+        },
+        "sun_altitude_deg": -15.65
       }
     },
     {
@@ -123,11 +132,14 @@
         "latitude": 37,
         "eye_limit_mag": 6.5,
         "brightness_1_0": {
-          "whole_sky_visible": 55241
+          "whole_sky_visible": 55241,
+          "after_twilight_correction": 55537
         },
         "brightness_6_0": {
-          "whole_sky_visible": 12388
-        }
+          "whole_sky_visible": 12388,
+          "after_twilight_correction": 12804
+        },
+        "sun_altitude_deg": -16.7
       }
     },
     {
@@ -151,11 +163,14 @@
         "latitude": 37,
         "eye_limit_mag": 6.5,
         "brightness_1_0": {
-          "whole_sky_visible": 1380
+          "whole_sky_visible": 1380,
+          "after_twilight_correction": 1650
         },
         "brightness_6_0": {
-          "whole_sky_visible": 0
-        }
+          "whole_sky_visible": 0,
+          "after_twilight_correction": 0
+        },
+        "sun_altitude_deg": -12.96
       }
     },
     {
@@ -179,11 +194,14 @@
         "latitude": 55,
         "eye_limit_mag": 6.5,
         "brightness_1_0": {
-          "whole_sky_visible": 45241
+          "whole_sky_visible": 45241,
+          "after_twilight_correction": 44132
         },
         "brightness_6_0": {
-          "whole_sky_visible": 5808
-        }
+          "whole_sky_visible": 5808,
+          "after_twilight_correction": 4701
+        },
+        "sun_altitude_deg": -10.54
       }
     },
     {
@@ -207,11 +225,14 @@
         "latitude": -34,
         "eye_limit_mag": 6.5,
         "brightness_1_0": {
-          "whole_sky_visible": 1910
+          "whole_sky_visible": 1910,
+          "after_twilight_correction": 2137
         },
         "brightness_6_0": {
-          "whole_sky_visible": 0
-        }
+          "whole_sky_visible": 0,
+          "after_twilight_correction": 0
+        },
+        "sun_altitude_deg": -13.61
       }
     },
     {
@@ -235,11 +256,14 @@
         "latitude": 52,
         "eye_limit_mag": 5.2,
         "brightness_1_0": {
-          "whole_sky_visible": 43456
+          "whole_sky_visible": 43456,
+          "after_twilight_correction": 43459
         },
         "brightness_6_0": {
-          "whole_sky_visible": 4403
-        }
+          "whole_sky_visible": 4403,
+          "after_twilight_correction": 4403
+        },
+        "sun_altitude_deg": -11.64
       }
     }
   ]

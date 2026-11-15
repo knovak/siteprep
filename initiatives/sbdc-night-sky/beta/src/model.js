@@ -548,19 +548,58 @@ export function zenithMu(sunAltDeg, data) {
   return interp(data.skyBrightness.table.value, "sunAltDeg", "muVmagPerArcsec2", sunAltDeg);
 }
 
+/** Two surface brightnesses (mag/arcsec^2) added as light. Either may be
+ *  null, meaning no light from that source. */
+export function addMu(a, b) {
+  if (a == null) return b;
+  if (b == null) return a;
+  return -2.5 * Math.log10(Math.pow(10, -0.4 * a) + Math.pow(10, -0.4 * b));
+}
+
+/** Artificial skyglow at the zenith for a Bortle class (1-9), mag/arcsec^2,
+ *  or null for a site with none (class 1, or no class given). */
+export function artificialMu(bortle, data) {
+  if (bortle == null) return null;
+  const mu = data.skyBrightness.artificialByBortle.value[String(Math.round(bortle))];
+  return mu === undefined ? null : mu;
+}
+
+/**
+ * What an observer state adds to the natural twilight sky. evaluate() builds
+ * one of these and hands it to muAt(); the renderer reads it from the
+ * evaluation, so the sky that is drawn is the sky that was counted against.
+ *   artificialMu  ambient light: zenith skyglow for state.ambientBortle
+ *   threshold     which naked-eye threshold relation turns a sky brightness
+ *                 into a limiting magnitude: state.nakedEyeThreshold
+ */
+export function skyExtras(state, data) {
+  return {
+    artificialMu: artificialMu(state.ambientBortle, data),
+    threshold: state.nakedEyeThreshold || "table",
+  };
+}
+
 /** Sky surface brightness at a sky position (unit direction from the
- *  observer), including the twilight glow toward the Sun. */
-export function muAt(dir, sunDir, sunAltDeg, data) {
+ *  observer): the twilight sky with its glow toward the Sun, plus whatever
+ *  `sky` (from skyExtras) adds. Without `sky` it is the natural sky alone. */
+export function muAt(dir, sunDir, sunAltDeg, data, sky = null) {
   const mu0 = zenithMu(sunAltDeg, data);
   const amp = data.skyBrightness.twilightGlowAmplitudeMag.value;
   const scale = data.skyBrightness.twilightGlowScaleDeg.value;
   const f = sunAltDeg >= 0 ? 1 : Math.max(0, (sunAltDeg + 18) / 18);
   const ang = Math.acos(Math.max(-1, Math.min(1, dot(normalize(dir), sunDir)))) / DEG;
-  return Math.max(4, mu0 - amp * f * Math.exp(-ang / scale));
+  const natural = Math.max(4, mu0 - amp * f * Math.exp(-ang / scale));
+  return sky ? addMu(natural, sky.artificialMu) : natural;
 }
 
-/** Naked-eye point-source limiting magnitude for sky brightness mu. */
-export function limitingMag(mu, data) {
+/** Naked-eye point-source limiting magnitude for sky brightness mu.
+ *  threshold: "table" (default), the data file's table, or "schaefer", its
+ *  closed form (limitingMagnitude.closedForm). */
+export function limitingMag(mu, data, threshold = "table") {
+  if (threshold === "schaefer") {
+    const { a, b } = data.limitingMagnitude.closedForm.value;
+    return a - 5 * Math.log10(1 + Math.pow(10, b - mu / 5));
+  }
   return interp(data.limitingMagnitude.table.value, "muVmagPerArcsec2", "limitingMag", mu);
 }
 
@@ -600,7 +639,7 @@ export function starAltAz(catalog, latDeg, doy, solarTimeHours, data) {
  * above the horizon (for renderers).
  *
  * state: { latDeg, doy, solarTimeHours, brightnessRefMag, phaseLaw, userLimitingMag,
- *          propagationSec, shadowGeometry }
+ *          ambientBortle, nakedEyeThreshold, propagationSec, shadowGeometry }
  */
 export function evaluate(constellation, state, data) {
   const Re = data.physicalConstants.earthRadiusKm.value;
@@ -612,6 +651,7 @@ export function evaluate(constellation, state, data) {
   const userCap = state.userLimitingMag ?? data.limitingMagnitude.userLimitingMagCap.value;
   const mit = brightnessOffset(state, data);
   const phaseLaw = state.phaseLaw || "lambert";
+  const sky = skyExtras(state, data);
 
   const th = thetaSunDeg(state.solarTimeHours) * DEG;
   const cth = Math.cos(th), sth = Math.sin(th);
@@ -659,8 +699,8 @@ export function evaluate(constellation, state, data) {
     const phase = Math.acos(Math.max(-1, Math.min(1, cosPhase)));
     const m = satMagnitude(constellation.m0[i], r, phase, a, data, mit, phaseLaw);
     mag[i] = m;
-    const mu = muAt([vx, vy, vz], s, sunAlt, data);
-    const lim = Math.min(limitingMag(mu, data), userCap);
+    const mu = muAt([vx, vy, vz], s, sunAlt, data, sky);
+    const lim = Math.min(limitingMag(mu, data, sky.threshold), userCap);
     visible[i] = m <= lim ? 1 : 0;
   }
 
@@ -721,7 +761,7 @@ export function evaluate(constellation, state, data) {
         continue;
       }
       const mc = -2.5 * Math.log10(Math.max(flux, 1e-12));
-      const lim = Math.min(limitingMag(muAt(cen, s, sunAlt, data), data), userCap);
+      const lim = Math.min(limitingMag(muAt(cen, s, sunAlt, data, sky), data, sky.threshold), userCap);
       const vis = mc <= lim;
       for (const i of mem) visible[i] = vis ? 1 : 0;
       clusterInfo.set(id, { count: mem.length, combinedMag: Math.round(mc * 100) / 100, extentDeg, compact: true });
@@ -735,7 +775,10 @@ export function evaluate(constellation, state, data) {
       brightestObjectMag: isFinite(brightestObj) ? Math.round(brightestObj * 100) / 100 : null,
     };
   }
-  return { alt, az, range, mag, sunlit, visible, above, sunAltDeg: sunAlt, sunDir: s,
+  // the sky straight overhead, for the readout
+  const zenithSkyMu = muAt(basis.up, s, sunAlt, data, sky);
+  return { alt, az, range, mag, sunlit, visible, above, sunAltDeg: sunAlt, sunDir: s, sky,
+           zenithSkyMu, zenithLimitMag: Math.min(limitingMag(zenithSkyMu, data, sky.threshold), userCap),
            objectStats, clusterInfo };
 }
 
@@ -816,7 +859,7 @@ export function parseShellSpec(text) {
  * Per-star naked-eye visibility for the current state, shared by
  * summarize() and the renderer. Returns { vis: Uint8Array, count }.
  */
-export function starVisibility(catalog, st, latDeg, sunDir, sunAltDeg, userCap, data) {
+export function starVisibility(catalog, st, latDeg, sunDir, sunAltDeg, userCap, data, sky = null) {
   const basis = enuBasis(latDeg);
   const k = data.photometry.extinctionCoefficient.value;
   const vis = new Uint8Array(catalog.count);
@@ -829,8 +872,8 @@ export function starVisibility(catalog, st, latDeg, sunDir, sunAltDeg, userCap, 
       Math.cos(aa) * (Math.cos(zz) * basis.north[1] + Math.sin(zz) * basis.east[1]) + Math.sin(aa) * basis.up[1],
       Math.cos(aa) * (Math.cos(zz) * basis.north[2] + Math.sin(zz) * basis.east[2]) + Math.sin(aa) * basis.up[2],
     ];
-    const mu = muAt(dir, sunDir, sunAltDeg, data);
-    const lim = Math.min(limitingMag(mu, data), userCap);
+    const mu = muAt(dir, sunDir, sunAltDeg, data, sky);
+    const lim = Math.min(limitingMag(mu, data, sky ? sky.threshold : "table"), userCap);
     const m = st.vmag[i] + k * (airmass(st.altDeg[i]) - 1);
     if (m <= lim) { vis[i] = 1; count++; }
   }
@@ -863,7 +906,7 @@ export function summarize(constellation, state, data, catalog = null) {
   if (catalog) {
     const st = starAltAz(catalog, state.latDeg, state.doy, state.solarTimeHours, data);
     const userCap = state.userLimitingMag ?? data.limitingMagnitude.userLimitingMagCap.value;
-    visibleStars = starVisibility(catalog, st, state.latDeg, ev.sunDir, ev.sunAltDeg, userCap, data).count;
+    visibleStars = starVisibility(catalog, st, state.latDeg, ev.sunDir, ev.sunAltDeg, userCap, data, ev.sky).count;
   }
   const os = ev.objectStats;
   return {
@@ -875,5 +918,7 @@ export function summarize(constellation, state, data, catalog = null) {
     brightestObjectMag: os ? os.brightestObjectMag
       : (vis > 0 ? Math.round(brightest * 100) / 100 : null),
     sunAltDeg: Math.round(ev.sunAltDeg * 100) / 100,
+    zenithSkyMu: Math.round(ev.zenithSkyMu * 100) / 100,
+    zenithLimitMag: Math.round(ev.zenithLimitMag * 100) / 100,
   };
 }

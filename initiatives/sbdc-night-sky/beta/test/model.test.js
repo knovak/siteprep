@@ -639,3 +639,123 @@ test("satMagnitude: the phase law is the only thing that differs between the two
   const want = M.phaseMagnitude(60 * DEG, "mini", data) - M.phaseMagnitude(60 * DEG, "lambert", data);
   assert.ok(Math.abs((mini - lambert) - want) < 1e-12);
 });
+
+/* ---------------- unit 3: the twilight sky, ambient light, the threshold ---------------- */
+
+test("twilight sky: the table is the V-band fit of Patat et al. (2006) from 5 to 15 degrees down", () => {
+  // A&A 455, 385, Table 1: 11.84 + 1.518 (z - 95) - 0.057 (z - 95)^2, z = 95 to 105 deg
+  const patat = (sunAlt) => 11.84 + 1.518 * (-sunAlt - 5) - 0.057 * (-sunAlt - 5) ** 2;
+  for (let alt = -5; alt >= -15; alt--) {
+    assert.ok(Math.abs(M.zenithMu(alt, data) - patat(alt)) < 0.006, `Sun ${alt}: ${M.zenithMu(alt, data)} against ${patat(alt)}`);
+  }
+  // the values the paper's fit gives at the usual twilight boundaries
+  assert.ok(Math.abs(M.zenithMu(-6, data) - 13.30) < 0.01);
+  assert.ok(Math.abs(M.zenithMu(-9, data) - 17.00) < 0.01);
+  assert.ok(Math.abs(M.zenithMu(-12, data) - 19.67) < 0.01);
+  // the sky only darkens as the Sun goes down, and is steady once it is 18 degrees down
+  for (let alt = 29; alt >= -30; alt--) {
+    assert.ok(M.zenithMu(alt, data) >= M.zenithMu(alt + 1, data), `Sun ${alt}`);
+  }
+  assert.equal(M.zenithMu(-18, data), M.zenithMu(-40, data));
+});
+
+test("twilight sky: stars appear when observers report them", () => {
+  // The limit at the zenith through evening twilight. Sirius (-1.5) at about
+  // 3 degrees, first-magnitude stars at about 5 to 6, third magnitude by 8,
+  // fifth by 11, and the full sky by the end of astronomical twilight.
+  const limit = (sunAlt) => M.limitingMag(M.zenithMu(sunAlt, data), data);
+  assert.ok(limit(0) < -3, "at sunset only Venus: " + limit(0));
+  assert.ok(limit(-3) > -1.5 && limit(-3) < -0.5, "Sirius at 3 degrees: " + limit(-3));
+  assert.ok(limit(-6) > 1 && limit(-6) < 2, "first magnitude at 6 degrees: " + limit(-6));
+  assert.ok(limit(-8) > 3 && limit(-8) < 4, "third magnitude at 8 degrees: " + limit(-8));
+  assert.ok(limit(-11) > 5 && limit(-11) < 5.6, "fifth magnitude at 11 degrees: " + limit(-11));
+  assert.ok(limit(-18) > 6.4, "the full sky at 18 degrees: " + limit(-18));
+  // Before the correction the table gave 3.8 at 6 degrees: fourth-magnitude
+  // stars at the end of civil twilight.
+});
+
+test("twilight sky: the count of visible stars through the evening", () => {
+  const sunset = M.twilightTimes(37, 265, data).sunset.sets[0];
+  const stars = (minutes) => M.summarize(C0, { latDeg: 37, doy: 265, solarTimeHours: sunset + minutes / 60,
+    userLimitingMag: 6.5 }, data, catalog);
+  const at = [20, 40, 60, 90].map(stars);
+  assert.ok(at[0].visibleStars <= 3, `20 min after sunset (Sun ${at[0].sunAltDeg}): ${at[0].visibleStars} stars`);
+  assert.ok(at[1].visibleStars > 10 && at[1].visibleStars < 150, `40 min (Sun ${at[1].sunAltDeg}): ${at[1].visibleStars}`);
+  assert.ok(at[2].visibleStars > 500, `60 min (Sun ${at[2].sunAltDeg}): ${at[2].visibleStars}`);
+  assert.ok(at[3].visibleStars > 2000, `90 min (Sun ${at[3].sunAltDeg}): ${at[3].visibleStars}`);
+  for (let k = 1; k < at.length; k++) assert.ok(at[k].visibleStars > at[k - 1].visibleStars);
+});
+const C0 = M.generateConstellation(M.defaultConfig(data, { totalSats: 20000, seed: 12345 }), data);
+
+test("light adds: two equal skies are 0.75 magnitude brighter than one", () => {
+  assert.ok(Math.abs(M.addMu(20, 20) - (20 - 2.5 * Math.log10(2))) < 1e-12);
+  assert.equal(M.addMu(20, null), 20);
+  assert.equal(M.addMu(null, 18), 18);
+  assert.ok(M.addMu(21.9, 17.5) < 17.5 && M.addMu(21.9, 17.5) > 17.4, "a bright sky dominates a dark one");
+});
+
+test("ambient light: Bortle 1 adds nothing, and each class is brighter than the last", () => {
+  assert.equal(M.artificialMu(1, data), null);
+  assert.equal(M.artificialMu(undefined, data), null);
+  for (let b = 3; b <= 9; b++) {
+    assert.ok(M.artificialMu(b, data) < M.artificialMu(b - 1, data), `class ${b}`);
+  }
+  const dir = [0.3, 0.2, 0.9], sun = [0.2, -0.9, -0.39];
+  const natural = M.muAt(dir, sun, -30, data);
+  assert.equal(M.muAt(dir, sun, -30, data, M.skyExtras({ ambientBortle: 1 }, data)), natural);
+  assert.equal(M.muAt(dir, sun, -30, data, M.skyExtras({}, data)), natural);
+  assert.ok(Math.abs(M.muAt(dir, sun, -30, data, M.skyExtras({ ambientBortle: 5 }, data)) - M.addMu(natural, 19.8)) < 1e-12);
+});
+
+test("ambient light: the dark-sky limit for each class is the Bortle scale's", () => {
+  // the scale's own naked-eye limits, for the classes where they are below
+  // what this simulator's table gives a dark sky
+  const scale = { 5: [5.6, 6.0], 6: [5.1, 5.5], 7: [4.6, 5.0], 8: [4.1, 4.5], 9: [3.9, 4.1] };
+  for (const [b, [lo, hi]] of Object.entries(scale)) {
+    const limit = M.limitingMag(M.addMu(M.zenithMu(-40, data), M.artificialMu(+b, data)), data);
+    assert.ok(limit >= lo - 0.05 && limit <= hi + 0.05, `Bortle ${b}: limit ${limit.toFixed(2)}, scale ${lo} to ${hi}`);
+  }
+});
+
+test("ambient light never shows more: counts fall or hold as the class rises", () => {
+  const state = { latDeg: 37, doy: 355, solarTimeHours: 18.5, userLimitingMag: 6.5 };
+  let last = null;
+  for (let b = 1; b <= 9; b++) {
+    const s = M.summarize(C0, { ...state, ambientBortle: b }, data, catalog);
+    if (last) {
+      assert.ok(s.visible <= last.visible && s.visibleStars <= last.visibleStars, `class ${b}`);
+      assert.ok(s.zenithSkyMu <= last.zenithSkyMu && s.zenithLimitMag <= last.zenithLimitMag, `class ${b}`);
+    }
+    last = s;
+  }
+  const none = M.summarize(C0, state, data, catalog), one = M.summarize(C0, { ...state, ambientBortle: 1 }, data, catalog);
+  assert.deepEqual(one, none, "class 1 is the natural sky");
+  assert.ok(last.visibleStars < none.visibleStars / 5, "an inner-city sky hides most stars");
+});
+
+test("the schaefer threshold: the closed form, and the limits sdross0 publishes for it", () => {
+  const schaefer = (mu) => M.limitingMag(mu, data, "schaefer");
+  assert.ok(Math.abs(schaefer(21.75) - 6.5) < 0.02, "6.5 at 21.75: " + schaefer(21.75));
+  // ASSUMPTIONS.md of that project, at its unmitigated peak (Sun 13.5 degrees
+  // down): pristine 5.89, Bortle 3 5.64, 4 5.46, 5 5.06, 8 3.49.
+  const published = { 1: 5.89, 3: 5.64, 4: 5.46, 5: 5.06, 8: 3.49 };
+  for (const [b, want] of Object.entries(published)) {
+    const got = schaefer(M.addMu(M.zenithMu(-13.5, data), M.artificialMu(+b, data)));
+    assert.ok(Math.abs(got - want) < 0.03, `Bortle ${b}: ${got.toFixed(2)} here, ${want} there`);
+  }
+  // it is the stricter of the two under a bright sky, and close under a dark one
+  for (const mu of [8, 12, 16, 18]) assert.ok(schaefer(mu) < M.limitingMag(mu, data) - 0.5, `mu ${mu}`);
+  assert.ok(Math.abs(schaefer(21.5) - M.limitingMag(21.5, data)) < 0.1);
+  // the table is the default
+  assert.equal(M.limitingMag(18, data), M.limitingMag(18, data, "table"));
+});
+
+test("the threshold is one setting for satellites and stars alike", () => {
+  const state = { latDeg: 55, doy: 355, solarTimeHours: 16.95, userLimitingMag: 6.5 };   // Sun about 10.5 degrees down
+  const table = M.summarize(C0, state, data, catalog);
+  const strict = M.summarize(C0, { ...state, nakedEyeThreshold: "schaefer" }, data, catalog);
+  assert.ok(strict.visibleStars < table.visibleStars * 0.6, `${strict.visibleStars} against ${table.visibleStars} stars`);
+  assert.ok(strict.visible <= table.visible);
+  assert.ok(strict.zenithLimitMag < table.zenithLimitMag - 0.5);
+  assert.equal(strict.zenithSkyMu, table.zenithSkyMu, "the sky is the same; only the limit drawn from it differs");
+});
