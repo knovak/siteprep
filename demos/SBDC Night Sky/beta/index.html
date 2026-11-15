@@ -116,7 +116,11 @@ input[type="range"] {
   background: rgba(10, 12, 20, 0.82); border-top: 1px solid var(--line);
   padding: 8px 14px 9px; pointer-events: none; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
 }
-#readout { font: 12.5px var(--mono); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The first line holds the counts. On a wide screen it wraps when it is long,
+   so that no count is cut off; on a narrow one it stays one line, where a
+   second line would cover the sky. */
+#readout { font: 12.5px var(--mono); color: var(--text); line-height: 1.45; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 900px) { #readout { white-space: nowrap; } }
 #readout-sub { font: 11px var(--mono); color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 #compass {
@@ -175,8 +179,10 @@ input[type="range"] {
 #errbar span { flex: 1; overflow-wrap: anywhere; }
 #errbar button { background: none; border: none; color: #ffd9de; font-size: 16px; }
 
+/* The credit line sits just above the readout strip, whatever the strip's
+   height: it is inside the strip and positioned from the strip's top edge. */
 #attribution {
-  position: absolute; right: 10px; bottom: 54px; z-index: 4;
+  position: absolute; right: 10px; bottom: calc(100% + 5px); z-index: 4;
   font: 10px var(--mono); color: rgba(199, 205, 224, 0.55);
   pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.7);
 }
@@ -226,8 +232,9 @@ input[type="range"] {
         <div class="hint" id="sun-events">sunset —</div>
       </div>
       <div class="ctl">
-        <label for="time">Local time <output id="time-label">20:11</output></label>
+        <label for="time">Solar time <output id="time-label">20:11</output></label>
         <input id="time" type="range" min="0" max="1439" step="1" value="1211">
+        <div class="hint" id="hint-solar">local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more</div>
       </div>
       <div class="row">
         <button id="jump-sunset">Sunset</button>
@@ -337,11 +344,11 @@ input[type="range"] {
 
   <div id="canvas-wrap">
     <canvas id="sky" aria-label="Simulated sky view"></canvas>
-    <div id="compass">facing 180°</div>
+    <div id="compass">facing 0°</div>
     <div id="busy">computing…</div>
     <div id="tooltip" role="status"></div>
-    <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
     <div id="readout-strip" aria-live="polite">
+      <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
       <div id="readout">—</div>
       <div id="readout-sub">—</div>
     </div>
@@ -613,6 +620,9 @@ function generateConstellation(cfg, data) {
 
   const nSso = Math.round(cfg.totalSats * cfg.ssoFraction);
   const planeCount = cfg.planesPerShell;
+  // Planes are evenly spaced across the spread, from -0.5 to +0.5 of its
+  // width. A single plane sits at the centre, not at one edge.
+  const planeOffset = (plane) => (planeCount > 1 ? plane / (planeCount - 1) - 0.5 : 0);
   const cl = cfg.clustering;
   if (cl && cl.enabled) {
     // hierarchical clustering (v3): cluster CENTERS are placed with the
@@ -629,8 +639,7 @@ function generateConstellation(cfg, data) {
       if (isSso) {
         incDeg = ssoInclinationDeg(sh.altKm, data);
         const plane = Math.floor(rng() * planeCount);
-        const ltan = cfg.ltanHours +
-          ((plane / Math.max(1, planeCount - 1)) - 0.5) * 2 * (cfg.ltanSpreadMinutes / 60);
+        const ltan = cfg.ltanHours + planeOffset(plane) * 2 * (cfg.ltanSpreadMinutes / 60);
         nodeDeg = ((rng() < 0.5 ? ltan : ltan + 12) - 12) * 15;
       } else {
         incDeg = cfg.inclinedDeg;
@@ -676,8 +685,7 @@ function generateConstellation(cfg, data) {
     if (isSso) {
       incDeg = ssoInclinationDeg(sh.altKm, data);
       const plane = Math.floor(rng() * planeCount);
-      const ltan = cfg.ltanHours +
-        ((plane / Math.max(1, planeCount - 1)) - 0.5) * 2 * (cfg.ltanSpreadMinutes / 60);
+      const ltan = cfg.ltanHours + planeOffset(plane) * 2 * (cfg.ltanSpreadMinutes / 60);
       // half the planes use the descending-node twin (LTAN + 12 h) — same
       // physical dawn-dusk geometry, opposite travel direction.
       nodeDeg = nodeFromLtan(rng() < 0.5 ? ltan : ltan + 12);
@@ -706,7 +714,9 @@ function generateConstellation(cfg, data) {
       const Nx = Math.cos(th), Ny = Math.sin(th);
       const Ex = -Math.sin(th), Ey = Math.cos(th);
       const Wx = Math.cos(inci) * Ex, Wy = Math.cos(inci) * Ey, Wz = Math.sin(inci);
-      const u = (u0 + (k / (tr.satsPerTrain - 1) - 0.5) * tr.arcLengthDeg) * DEG;
+      // a train of one satellite sits at the centre of the arc
+      const along = tr.satsPerTrain > 1 ? k / (tr.satsPerTrain - 1) - 0.5 : 0;
+      const u = (u0 + along * tr.arcLengthDeg) * DEG;
       const cu = Math.cos(u), su = Math.sin(u);
       px[idx] = r * (Nx * cu + Wx * su);
       py[idx] = r * (Ny * cu + Wy * su);
@@ -1205,10 +1215,25 @@ function unprojHorizon(x, y, view, W, H) {
 /** All-sky fisheye (equidistant): zenith at center, horizon at the rim,
  *  north up, east LEFT (astronomical convention: looking up). */
 /** Rolling-hills silhouette height (deg above the horizon) as a
- *  deterministic function of azimuth — stable under panning. */
+ *  deterministic function of azimuth — stable under panning. Each term
+ *  repeats every 360 degrees (6, 2 and 1 cycles around the horizon), so the
+ *  hills at azimuth 350 and at -10 are the same hills. */
+const HILL_RAD = Math.PI / 180;
 const hillAltDeg = (azDeg) =>
-  Math.max(0.4, 1.7 + 1.15 * Math.sin(azDeg * 0.11) * Math.sin(azDeg * 0.041 + 1.3)
-                 + 0.75 * Math.sin(azDeg * 0.023 + 2.2));
+  Math.max(0.4, 1.7 + 1.15 * Math.sin(6 * azDeg * HILL_RAD) * Math.sin(2 * azDeg * HILL_RAD + 1.3)
+                 + 0.75 * Math.sin(azDeg * HILL_RAD + 2.2));
+
+/** Is a sky position inside the picture? The horizon view shows part of the
+ *  sky, above the hills; the all-sky view shows everything above the horizon.
+ *  The readout uses this for its "in view" counts, which are a different
+ *  thing from the whole-sky totals beside them. */
+function inFrame(azDeg, altDeg, view, W, H) {
+  if (!(altDeg > 0)) return false;
+  if (view.mode !== "horizon") return true;
+  if (altDeg < hillAltDeg(azDeg)) return false;
+  const p = projHorizon(azDeg, altDeg, view, W, H);
+  return p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H;
+}
 
 function projFisheye(azDeg, altDeg, W, H, marginPx = 30) {
   // Map convention (per review): north at top, EAST ON THE RIGHT — like a
@@ -1556,6 +1581,23 @@ class SkyRenderer {
     return { drawnBright };
   }
 
+  /** Naked-eye-visible satellites and stars inside the picture, as opposed to
+   *  anywhere in the sky. ev: model.evaluate(); starVis: per-star visibility. */
+  countInView(ev, stars, starVis) {
+    const { canvas, view } = this;
+    const W = canvas.width, H = canvas.height;
+    let sats = 0, starCount = 0;
+    for (const i of ev.above) {
+      if (ev.visible[i] && inFrame(ev.az[i], ev.alt[i], view, W, H)) sats++;
+    }
+    if (stars && starVis) {
+      for (let i = 0; i < stars.altDeg.length; i++) {
+        if (starVis[i] && inFrame(stars.azDeg[i], stars.altDeg[i], view, W, H)) starCount++;
+      }
+    }
+    return { sats, stars: starCount };
+  }
+
   /** Nearest drawn point within maxPx of (x, y): {kind, i} | null */
   pick(x, y, maxPx = 14) {
     if (!this._grid) return null;
@@ -1574,7 +1616,7 @@ class SkyRenderer {
   }
 }
 
-const RENDER = { wrap180, projHorizon, unprojHorizon, hillAltDeg, projFisheye, unprojFisheye, muToColor, magToFlux, DEFAULT_VIEW, SkyRenderer };
+const RENDER = { wrap180, projHorizon, unprojHorizon, hillAltDeg, inFrame, projFisheye, unprojFisheye, muToColor, magToFlux, DEFAULT_VIEW, SkyRenderer };
 
 // ==== settings.js ====
 // SBDC Night-Sky Simulator — settings files (beta). Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
@@ -1993,6 +2035,82 @@ function settingsFromYaml(text) {
 
 const SETTINGS = { settingsFormatDate, settingsParseDate, settingsFormatTime, settingsParseTime, SETTINGS_FIELDS, SETTINGS_SECTIONS, defaultSettings, settingsFormatValue, settingsToYaml, settingsParseYaml, settingsFromYaml };
 
+// ==== format.js ====
+// SBDC Night-Sky Simulator — text and number formatting (beta). Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
+/**
+ * sbdc format — small pure functions the page uses to turn model values into
+ * the text and control values a person sees. No DOM and no simulation, so the
+ * Node tests cover them directly.
+ *
+ * Every top-level name starts with "format" or "FORMAT" because the build
+ * puts all source files in one scope.
+ */
+
+/** Hours (any real number) -> "HH:MM", rounded to the minute, 00:00-23:59. */
+function formatClock(hours) {
+  const minutes = Math.round((((hours % 24) + 24) % 24) * 60) % 1440;
+  const two = (n) => String(n).padStart(2, "0");
+  return `${two(Math.floor(minutes / 60))}:${two(minutes % 60)}`;
+}
+
+/** Signed difference a - b between two clock times, in hours, in (-12, 12]. */
+function formatClockDelta(a, b) {
+  const d = (((a - b) % 24) + 24) % 24;
+  return d > 12 ? d - 24 : d;
+}
+
+/**
+ * Where a solar time sits relative to the nearer of sunset and sunrise.
+ * Returns { ref: "sunset" | "sunrise", minutes } with minutes positive after
+ * the event and negative before it, or null when the Sun neither sets nor
+ * rises on that day (sunset and sunrise both null).
+ */
+function formatTwilightOffset(solarTimeHours, sunsetHours, sunriseHours) {
+  let best = null;
+  for (const [ref, at] of [["sunset", sunsetHours], ["sunrise", sunriseHours]]) {
+    if (at == null) continue;
+    const minutes = Math.round(formatClockDelta(solarTimeHours, at) * 60);
+    if (!best || Math.abs(minutes) < Math.abs(best.minutes)) best = { ref, minutes };
+  }
+  return best;
+}
+
+/**
+ * Satellite totals the Satellites slider moves to when its own value is
+ * within 1% of one. The slider is logarithmic, so without this its positions
+ * land on 501,000 or 251,000 and the round totals cannot be chosen.
+ */
+const FORMAT_ROUND_SATELLITE_COUNTS = [
+  10000, 20000, 25000, 50000, 75000, 100000, 150000, 200000, 250000,
+  300000, 400000, 500000, 600000, 750000, 800000, 1000000,
+];
+
+/** Satellites slider position (0-100) -> satellite total, 10,000 to 1,000,000. */
+function formatSatelliteCount(position) {
+  const n = Math.round(10000 * Math.pow(100, position / 100) / 1000) * 1000;
+  // 300,000 is the report's default and keeps its original, wider window
+  if (Math.abs(n - 300000) <= 5000) return 300000;
+  for (const round of FORMAT_ROUND_SATELLITE_COUNTS) {
+    if (Math.abs(n - round) <= round * 0.01) return round;
+  }
+  return n;
+}
+
+/**
+ * A shell list as one line for the hint under the custom-shells box: every
+ * shell when there are few, a count and the altitude range when there are many.
+ */
+function formatShellSummary(shells) {
+  if (shells.length <= 6) {
+    return shells.map((s) => `${s.altKm} km ${(s.share * 100).toFixed(0)}%`).join(" · ");
+  }
+  const alts = shells.map((s) => s.altKm);
+  const km = (v) => Math.round(v).toLocaleString("en-US");
+  return `${shells.length} shells · ${km(Math.min(...alts))}–${km(Math.max(...alts))} km`;
+}
+
+const FORMAT = { formatClock, formatClockDelta, formatTwilightOffset, FORMAT_ROUND_SATELLITE_COUNTS, formatSatelliteCount, formatShellSummary };
+
 // ==== ui.js ====
 // SBDC Night-Sky Simulator — UI layer. Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
 /**
@@ -2004,7 +2122,7 @@ const SETTINGS = { settingsFormatDate, settingsParseDate, settingsFormatTime, se
  *   pan/zoom       -> redraw only (cached evaluation)
  */
 
-/* global MODEL, RENDER, SETTINGS — injected by the build (same module scope) */
+/* global MODEL, RENDER, SETTINGS, FORMAT — injected by the build (same module scope) */
 
 const App = {
   data: null, catalog: null,
@@ -2041,7 +2159,9 @@ const TR = {
   grpConstellation: ["Constellation", "Constellation"],
   grpSky: ["Sky & display", "Ciel et affichage"],
   lat: ["Latitude", "Latitude"], date: ["Date", "Date"],
-  time: ["Local time", "Heure locale"],
+  time: ["Solar time", "Heure solaire"],
+  hintSolar: ["local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more",
+              "heure solaire locale : le Soleil culmine à 12:00, et une horloge peut différer d\u2019une heure ou plus"],
   jumpSunset: ["Sunset", "Coucher"], jumpD30: ["+30 min", "+30 min"],
   jumpD60: ["+60 min", "+60 min"], jumpMid: ["Midnight", "Minuit"],
   jumpDawn: ["Dawn −30", "Aube −30"], jumpDawn60: ["Dawn −60", "Aube −60"],
@@ -2059,6 +2179,9 @@ const TR = {
   shCustom: ["Custom…", "Personnalisé…"],
   customFmt: ["format: altitude:share, e.g. 550:0.5, 1200:0.5",
               "format : altitude:part, ex. 550:0.5, 1200:0.5"],
+  customKept: ["not read as altitude:share pairs; the shells in use are unchanged",
+               "non lu comme des paires altitude:part ; les coquilles utilisées sont inchangées"],
+  shellsWord: ["shells", "coquilles"],
   bright: ["SBDC brightness", "Luminosité des SBDC"],
   bUnmit: ["unmitigated", "sans atténuation"],
   bStrong: ["strong mitigation", "atténuation forte"],
@@ -2102,7 +2225,10 @@ const TR = {
   rSun: ["SUN", "SOLEIL"], rAbove: ["SBDCs above horizon", "SBDC au-dessus de l'horizon"],
   rSunlit: ["sunlit", "éclairés"], rVisible: ["naked-eye VISIBLE", "VISIBLES à l'œil nu"],
   rStars: ["visible stars", "étoiles visibles"], rBrightest: ["brightest mag", "mag la plus brillante"],
-  rTime: ["local time", "heure locale"], rSeed: ["seed", "graine"],
+  rTime: ["solar time", "heure solaire"], rSeed: ["seed", "graine"],
+  rInView: ["in view", "dans le champ"],
+  rAfter: ["min after", "min après le"], rBefore: ["min before", "min avant le"],
+  rAt: ["at", "au"],
   rDef: ["visible = sunlit + above horizon + brighter than the twilight naked-eye threshold",
          "visibles = éclairés + au-dessus de l'horizon + plus brillants que le seuil crépusculaire à l'œil nu"],
   rCam: ["camera mode: streaks = one 30 s exposure, stars to catalog limit",
@@ -2165,7 +2291,7 @@ function applyLang(lang) {
   lbl('label[for="cvar"]', "cvar"); lbl('label[for="cdvar"]', "cdvar");
   txt('label[for="clusteron"]', "clusterOn"); txt('label[for="timelock"]', "timelock");
   txt('label[for="shimmer"]', "shimmer"); txt("#jump-dawn60", "jumpDawn60");
-  txt("#hint-bright", "hintBright");
+  txt("#hint-bright", "hintBright"); txt("#hint-solar", "hintSolar");
   $("play-rt").textContent = App.playing === "rt" ? T("pauseRt") : T("playRt");
   $("play-ff").textContent = App.playing === "ff" ? T("pauseFf") : T("playFf");
   if ($("bright-label") && App.state) $("bright-label").textContent = brightLabel(App.state.brightnessRefMag);
@@ -2192,11 +2318,7 @@ function applyLang(lang) {
   txt("#hint-settings", "hintSettings");
   if (App.summary) { updateReadout(); updateDateLabels(); }
 }
-const fmtTime = (h) => {
-  const t = ((h % 24) + 24) % 24;
-  const hh = Math.floor(t), mm = Math.round((t - hh) * 60);
-  return `${String(hh).padStart(2, "0")}:${String(mm % 60).padStart(2, "0")}`;
-};
+const fmtTime = (h) => FORMAT.formatClock(h);
 const MONTH_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31];
 function fmtDoy(doy) {
   const names = MONTHS[LANG.cur] || MONTHS.en;
@@ -2253,18 +2375,27 @@ function reevaluate() {
       App.streaks = null;
     }
     App.summary = MODEL.summarize(cons, state, data, catalog);
-    redraw();
-    updateReadout();
+    redraw();                       // also writes the readout
     updateDateLabels();
     setBusy(false);
   });
 }
 
 function redraw() {
+  updateCompass();
   if (!App.ev) return;
   const cam = App.renderer.longExposure;
   App.renderer.draw(App.state, App.ev, App.cons, App.stars,
     cam ? App.starVisCam : App.starVis, cam ? App.streaks : null);
+  // what is inside the picture changes with every pan and zoom
+  App.inView = App.renderer.countInView(App.ev, App.stars, App.starVis);
+  if (App.summary) updateReadout();
+}
+
+/** The direction the horizon view faces, in the current language. */
+function updateCompass() {
+  if (!App.renderer) return;
+  $("compass").textContent = `${T("facing")} ${Math.round(App.renderer.view.centerAz)}°`;
 }
 
 /* ------------------------- readouts ------------------------- */
@@ -2287,20 +2418,38 @@ function brightAnchor(m) {
   return T("aStar");
 }
 
+/** "82 min after sunset", "80 min before sunrise", "at sunset", or "" on a
+ *  day when the Sun neither sets nor rises. */
+function twilightOffsetText() {
+  const r = twilightRefs();
+  const off = FORMAT.formatTwilightOffset(App.state.solarTimeHours, r.sunset, r.dawn);
+  if (!off) return "";
+  const event = T(off.ref === "sunset" ? "sunsetLbl" : "sunriseLbl");
+  if (off.minutes === 0) return `${T("rAt")} ${event}`;
+  return `${Math.abs(off.minutes)} ${T(off.minutes > 0 ? "rAfter" : "rBefore")} ${event}`;
+}
+
 function updateReadout() {
   const s = App.summary;
+  // The totals are for the whole sky. The horizon view shows part of it, so
+  // the count inside the picture is given beside each total.
+  const framed = App.inView && App.renderer.view.mode === "horizon";
+  const inView = (n) => (framed ? ` (${n.toLocaleString()} ${T("rInView")})` : "");
   const line =
     `${T("rSun")} ${s.sunAltDeg > 0 ? "+" : ""}${s.sunAltDeg.toFixed(1)}°  ·  ` +
     `${T("rAbove")} ${s.aboveHorizon.toLocaleString()}  ·  ${T("rSunlit")} ${s.sunlitAbove.toLocaleString()}  ·  ` +
     (App.cfg.clustering && App.cfg.clustering.enabled
       ? `${T("rVisObjects")} ${s.visibleObjects.toLocaleString()} (${s.visible.toLocaleString()} ${T("rSatsIn")})`
       : `${T("rVisible")} ${s.visible.toLocaleString()}`) +
-    `  ·  ${T("rStars")} ${s.visibleStars.toLocaleString()}` +
+    (framed ? inView(App.inView.sats) : "") +
+    `  ·  ${T("rStars")} ${s.visibleStars.toLocaleString()}` + (framed ? inView(App.inView.stars) : "") +
     (s.brightestObjectMag != null
       ? `  ·  ${T("rBrightest")} ${s.brightestObjectMag.toFixed(1)} (${brightAnchor(s.brightestObjectMag)})` : "");
   $("readout").textContent = line;
+  const rel = twilightOffsetText();
   $("readout-sub").textContent =
     `lat ${App.state.latDeg}°  ·  ${fmtDoy(App.state.doy)}  ·  ${fmtTime(App.state.solarTimeHours)} ${T("rTime")}` +
+    (rel ? ` (${rel})` : "") +
     `  ·  ${T("rSeed")} ${App.cfg.seed}  ·  ` +
     (App.renderer && App.renderer.longExposure ? T("rCam") : T("rDef"));
 }
@@ -2448,11 +2597,16 @@ function snapshot() {
   const g = out.getContext("2d");
   g.drawImage(src, 0, 0);
   g.fillStyle = "#0d0f16"; g.fillRect(0, src.height, out.width, CAP);
-  g.fillStyle = "#e8e4d8";
-  g.font = `${Math.max(12, out.width / 105)}px ui-monospace, monospace`;
-  g.fillText($("readout").textContent, 14, src.height + 30);
-  g.fillStyle = "#8b8fa3";
-  g.fillText($("readout-sub").textContent, 14, src.height + 56);
+  // each caption line is one line of the image: a long one is set smaller
+  const fitted = (text) => Math.max(8, Math.min(Math.max(12, out.width / 105),
+    (out.width - 28) / (0.61 * Math.max(1, text.length))));
+  const caption = (text, y, color) => {
+    g.fillStyle = color;
+    g.font = `${fitted(text)}px ui-monospace, monospace`;
+    g.fillText(text, 14, y);
+  };
+  caption($("readout").textContent, src.height + 30, "#e8e4d8");
+  caption($("readout-sub").textContent, src.height + 56, "#8b8fa3");
   g.fillStyle = "#6b6f83";
   g.font = `${Math.max(10, out.width / 130)}px ui-monospace, monospace`;
   g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 82);
@@ -2505,7 +2659,6 @@ function bindCanvas() {
       v.centerAlt = Math.max(-5, Math.min(80,
         drag.alt + (e.clientY - drag.y) * degPerPx));
       redraw();
-      $("compass").textContent = `${T("facing")} ${Math.round(v.centerAz)}°`;
     } else if (!drag && !pinch) {
       hover(e);
     }
@@ -2564,13 +2717,8 @@ function hover(e) {
    below read a value through these, and applySettings uses the same functions
    to find the position for a value from a settings file. */
 const SLIDER_SCALES = {
-  // log slider 0..100 -> 10k..1M (per review; lower bound was 50k)
-  nsats: (pos) => {
-    const f = pos / 100;
-    let n = Math.round(10000 * Math.pow(100, f) / 1000) * 1000;
-    if (Math.abs(n - 300000) <= 5000) n = 300000;  // snap to the report default
-    return n;
-  },
+  // log slider 0..100 -> 10k..1M, landing on round totals such as 500,000
+  nsats: (pos) => FORMAT.formatSatelliteCount(pos),
   cpc: (pos) => Math.round(10 * Math.pow(100, pos / 100)),
   cdia: (pos) => Math.round(0.2 * Math.pow(50, pos / 100) * 10) / 10,
 };
@@ -2606,26 +2754,30 @@ function bindControls() {
     $("sso-label").textContent = `${e.target.value}% SSO / ${100 - e.target.value}% 30°`;
   });
   on("sso", "change", rebuildConstellation);
+  // Custom shells are in use only once the box holds a spec that can be read.
+  // Until then the shells already in use stay, and the hint says so. Both
+  // handlers go through here, so choosing "Custom…" first and typing the spec
+  // second works the same as the other order.
+  const useCustomShells = () => {
+    const text = $("shells-custom-input").value;
+    const parsed = MODEL.parseShellSpec(text);
+    $("shells-custom-hint").textContent = parsed
+      ? FORMAT.formatShellSummary(parsed).replace("shells", T("shellsWord"))
+      : (text.trim() ? T("customKept") : T("customFmt"));
+    if (!parsed) return;
+    App.cfg.customShells = parsed;
+    App.cfg.shellPreset = "custom";
+    rebuildConstellation();
+  };
   on("shells", "change", (e) => {
     const custom = e.target.value === "custom";
     $("shells-custom").style.display = custom ? "" : "none";
-    if (custom) {
-      const parsed = MODEL.parseShellSpec($("shells-custom-input").value);
-      if (!parsed) return; // wait for a valid spec
-      App.cfg.customShells = parsed;
-    }
+    if (custom) { useCustomShells(); return; }
     App.cfg.shellPreset = e.target.value;
     rebuildConstellation();
   });
-  on("shells-custom-input", "change", (e) => {
-    const parsed = MODEL.parseShellSpec(e.target.value);
-    $("shells-custom-hint").textContent = parsed
-      ? parsed.map((s) => `${s.altKm} km ${(s.share * 100).toFixed(0)}%`).join(" · ")
-      : T("customFmt");
-    if (parsed && $("shells").value === "custom") {
-      App.cfg.customShells = parsed;
-      rebuildConstellation();
-    }
+  on("shells-custom-input", "change", () => {
+    if ($("shells").value === "custom") useCustomShells();
   });
   on("longexp", "change", (e) => {
     App.renderer.longExposure = e.target.checked;
@@ -2842,7 +2994,7 @@ function applySettings(s) {
     view.centerAz = ((d.facing % 360) + 360) % 360;
     view.centerAlt = d.look_altitude;
     view.fovDeg = d.field_of_view;
-    $("compass").textContent = `${T("facing")} ${Math.round(view.centerAz)}°`;
+    updateCompass();
     setControl("starlim", Math.round(d.sky_limit_mag * 10), "input");
     setControl("show-stars", d.show_stars, "change");
     setControl("longexp", d.long_exposure, "change");
@@ -3004,6 +3156,7 @@ function boot() {
   const tw = MODEL.twilightTimes(App.state.latDeg, App.state.doy, App.data);
   if (tw.sunset.sets.length) App.state.solarTimeHours = tw.sunset.sets[0] + 0.5;
   $("time").value = Math.round(App.state.solarTimeHours * 60);
+  updateCompass();
 
   buildAssumptions();
   bindControls();
@@ -3035,7 +3188,7 @@ if (typeof document !== "undefined") {
 
 </script>
 <!-- siteprep-channel-stamp:start - added by the SitePrep build, not part of the source -->
-<span id="siteprep-channel-stamp" data-channel="beta" data-changed="2026-11-11" style="position:fixed;right:8px;bottom:4px;z-index:2147483000;font:10px/1.3 ui-monospace,Menlo,Consolas,monospace;color:#8b8fa3;opacity:.85;pointer-events:none">Beta &middot; changed 2026-11-11</span>
+<span id="siteprep-channel-stamp" data-channel="beta" data-changed="2026-11-15" style="position:fixed;right:8px;bottom:4px;z-index:2147483000;font:10px/1.3 ui-monospace,Menlo,Consolas,monospace;color:#8b8fa3;opacity:.85;pointer-events:none">Beta &middot; changed 2026-11-15</span>
 <script>(function(){var s=document.getElementById("siteprep-channel-stamp"),a=document.querySelector("#attribution");if(s&&a){s.removeAttribute("style");s.insertAdjacentText("afterbegin"," \u00b7 ");a.appendChild(s);}})();</script>
 <!-- siteprep-channel-stamp:end -->
 </body>
