@@ -131,3 +131,16 @@ test("sky colors stay with the stages of twilight", () => {
   const level = (mu) => R.muToColor(mu).reduce((a, v) => a + v, 0);
   for (let mu = 9; mu <= 22; mu += 0.5) assert.ok(level(mu) <= level(mu - 0.5) + 1e-9, `mu ${mu}`);
 });
+
+test("sky color: moonlight is blue gray, skyglow is warm gray, and they share the sky", () => {
+  const mu = 19;
+  const level = (c) => (c[0] + c[1] + c[2]) / 3;
+  const moonlit = R.skyColor(mu, 0, 1), glow = R.skyColor(mu, 1, 0);
+  assert.ok(moonlit[2] > moonlit[1] && moonlit[1] > moonlit[0], "moonlight: blue above green above red");
+  assert.ok(glow[0] > glow[1] && glow[1] > glow[2], "skyglow: red above green above blue");
+  assert.ok(Math.abs(level(moonlit) - level(R.muToColor(mu))) < 0.01 * level(moonlit) + 1e-9, "the brightness is the ramp's");
+  // shares that add up to more than the whole sky are cut back to it
+  assert.deepEqual(R.skyColor(mu, 1, 1), glow);
+  const both = R.skyColor(mu, 0.5, 0.5);
+  for (let k = 0; k < 3; k++) assert.ok(Math.abs(both[k] - (glow[k] + moonlit[k]) / 2) < 1e-12);
+});

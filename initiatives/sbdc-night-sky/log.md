@@ -189,3 +189,30 @@ project publishes for five Bortle classes to within 0.03 magnitude.
 
 125 tests pass in `beta/`, and the browser spec has thirteen. `lib/`, `work/`
 and `demos/SBDC Night Sky/` are unchanged.
+
+## 2026-11-15 — Beta upgrade, unit 4: the Moon, moonlight, light ratios
+
+Unit 3 merged as knovak/siteprep#654 and the site build published it to the
+beta.
+
+Unit 4 adds the Moon: off by default, as on a date in a chosen year, or at a
+chosen phase. Its place comes from the Astronomical Almanac's low-precision
+series, which the tests check against three eclipses. A Moon above the horizon
+lights the sky by the model of Krisciunas and Schaefer (1991), which lowers
+the limit and hides faint satellites and stars. The Moon is drawn with its
+phase.
+
+The readout has a new line with the summed light of all sunlit SBDCs above the
+horizon and its ratio to a full Moon, to the Moon as set, and to a moonless
+natural night sky. With the default constellation at 40° N on a December
+evening the SBDC light is about an eighth of a full Moon's and 27 times the
+natural night sky's; at midnight in June it is 1/758 and about a third.
+
+Two faults corrected. Turning the view in the instant after a rebuild could
+raise "Simulator error", because the picture paired the new constellation with
+the old evaluation; this was in the simulator before the upgrade. And the
+readout strip covered the horizon; it is now below the sky.
+
+`test/golden/golden.json` gained the `light` block; no number already in it
+changed. 137 tests pass in `beta/`, and the browser spec has eighteen. `lib/`,
+`work/` and `demos/SBDC Night Sky/` are unchanged.

@@ -117,6 +117,8 @@ export const SETTINGS_FIELDS = [
     note: "month and day, e.g. Oct 20" },
   { section: "observer", key: "time", type: "time", def: { ref: "sunset", offsetMin: 30 },
     note: "sunset or sunrise, plus or minus minutes; or a clock time such as \"21:30\"" },
+  { section: "observer", key: "year", type: "int", min: 1900, max: 2100, def: 2026,
+    note: "used for the Moon's position when display.moon is date; the Sun and stars do not depend on it" },
   { section: "observer", key: "hold_time_to_twilight", type: "bool", def: false,
     note: "keep the time relative to sunset or sunrise when latitude or date change" },
 
@@ -160,6 +162,10 @@ export const SETTINGS_FIELDS = [
     note: "faintest magnitude this observer sees under a dark sky, 4.0 to 6.5" },
   { section: "display", key: "ambient_light", type: "int", min: 1, max: 9, def: 1,
     note: "Bortle class, 1 (no artificial light) to 9 (inner city); brightens the sky" },
+  { section: "display", key: "moon", type: "choice", options: ["off", "date", "phase"], def: "off",
+    note: "off; date: the Moon of observer.year on this date; phase: the Moon at moon_age_days" },
+  { section: "display", key: "moon_age_days", type: "number", min: 0, max: 29.5, digits: 1, def: 14.8,
+    note: "used when moon is phase: days since new Moon, 0 to 29.5; 7.4 first quarter, 14.8 full" },
   { section: "display", key: "show_stars", type: "bool", def: true, note: "" },
   { section: "display", key: "long_exposure", type: "bool", def: false,
     note: "30-second camera view" },
@@ -358,7 +364,10 @@ function settingsCoerce(field, raw) {
     case "bool":
       return typeof raw === "boolean" ? { value: raw } : { error: "expected true or false" };
     case "choice": {
-      const v = String(raw).toLowerCase();
+      // the YAML reader takes a bare off or on as false or true; where a
+      // choice has that word as an option, the word is what was meant
+      const word = raw === false ? "off" : raw === true ? "on" : null;
+      const v = word && field.options.includes(word) ? word : String(raw).toLowerCase();
       return field.options.includes(v) ? { value: v }
         : { error: `expected one of ${field.options.join(", ")}` };
     }

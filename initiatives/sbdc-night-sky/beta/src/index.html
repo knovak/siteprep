@@ -170,6 +170,26 @@
         <input id="ambient" type="range" min="1" max="9" step="1" value="1">
         <div class="hint" id="hint-ambient">artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars</div>
       </div>
+      <div class="ctl">
+        <label for="moon">Moon <output id="moon-label"></output></label>
+        <select id="moon">
+          <option value="off" selected>Off (no Moon)</option>
+          <option value="date">As on this date</option>
+          <option value="phase">Set the phase</option>
+        </select>
+        <div id="moon-date" style="display:none; margin-top:6px">
+          <div class="numrow">
+            <label for="year">Year</label>
+            <input id="year" type="number" min="1900" max="2100" step="1" value="2026">
+          </div>
+          <div class="hint" id="hint-year">the Moon's place on this date, taking the solar time as universal time · it is within a few degrees for any longitude</div>
+        </div>
+        <div id="moon-phase" style="display:none; margin-top:6px">
+          <label for="moonage">Days since new Moon <output id="moonage-label">14.8 — full</output></label>
+          <input id="moonage" type="range" min="0" max="295" step="1" value="148">
+        </div>
+        <div class="hint" id="hint-moon">moonlight brightens the sky, which hides faint satellites and stars</div>
+      </div>
       <div class="check"><input id="show-stars" type="checkbox" checked><label for="show-stars">Show stars (Yale Bright Star Catalog)</label></div>
       <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
       <div class="hint" id="hint-longexp">every sunlit satellite becomes a 12–27° streak; stars to the catalog limit</div>
@@ -208,13 +228,16 @@
   </aside>
 
   <div id="canvas-wrap">
-    <canvas id="sky" aria-label="Simulated sky view"></canvas>
-    <div id="compass">facing 0°</div>
-    <div id="busy">computing…</div>
-    <div id="tooltip" role="status"></div>
+    <div id="sky-area">
+      <canvas id="sky" aria-label="Simulated sky view"></canvas>
+      <div id="compass">facing 0°</div>
+      <div id="busy">computing…</div>
+      <div id="tooltip" role="status"></div>
+    </div>
     <div id="readout-strip" aria-live="polite">
       <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
       <div id="readout">—</div>
+      <div id="readout-light">—</div>
       <div id="readout-sub">—</div>
     </div>
   </div>

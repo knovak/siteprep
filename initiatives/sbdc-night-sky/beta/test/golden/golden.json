@@ -29,7 +29,17 @@
       "brightestObjectMag": -3.89,
       "sunAltDeg": -7.5,
       "zenithSkyMu": 14.92,
-      "zenithLimitMag": 2.69
+      "zenithLimitMag": 2.69,
+      "light": {
+        "sbdcMag": -9.9,
+        "sbdcLux": 0.0194,
+        "toFullMoon": 0.0889,
+        "toMoon": null,
+        "toNaturalNight": 19.7,
+        "toSkyNow": 0.0279,
+        "skyNowMag": -13.79,
+        "moon": null
+      }
     }
   },
   {
@@ -62,7 +72,17 @@
       "brightestObjectMag": -2.43,
       "sunAltDeg": -7.3,
       "zenithSkyMu": 14.67,
-      "zenithLimitMag": 2.5
+      "zenithLimitMag": 2.5,
+      "light": {
+        "sbdcMag": -7.71,
+        "sbdcLux": 0.00259,
+        "toFullMoon": 0.0118,
+        "toMoon": null,
+        "toNaturalNight": 2.62,
+        "toSkyNow": 0.00295,
+        "skyNowMag": -14.04,
+        "moon": null
+      }
     }
   },
   {
@@ -95,7 +115,17 @@
       "brightestObjectMag": -0.11,
       "sunAltDeg": -11.56,
       "zenithSkyMu": 19.14,
-      "zenithLimitMag": 5.47
+      "zenithLimitMag": 5.47,
+      "light": {
+        "sbdcMag": -4.42,
+        "sbdcLux": 0.000125,
+        "toFullMoon": 0.000569,
+        "toMoon": null,
+        "toNaturalNight": 0.126,
+        "toSkyNow": 0.00922,
+        "skyNowMag": -9.51,
+        "moon": null
+      }
     }
   },
   {
@@ -130,7 +160,17 @@
       "brightestObjectMag": 0.67,
       "sunAltDeg": -7.5,
       "zenithSkyMu": 14.92,
-      "zenithLimitMag": 2.69
+      "zenithLimitMag": 2.69,
+      "light": {
+        "sbdcMag": -6.23,
+        "sbdcLux": 0.000659,
+        "toFullMoon": 0.00301,
+        "toMoon": null,
+        "toNaturalNight": 0.666,
+        "toSkyNow": 0.000947,
+        "skyNowMag": -13.79,
+        "moon": null
+      }
     }
   },
   {
@@ -170,7 +210,17 @@
       "brightestObjectMag": -7.91,
       "sunAltDeg": -7.5,
       "zenithSkyMu": 14.92,
-      "zenithLimitMag": 2.69
+      "zenithLimitMag": 2.69,
+      "light": {
+        "sbdcMag": -10.01,
+        "sbdcLux": 0.0216,
+        "toFullMoon": 0.0985,
+        "toMoon": null,
+        "toNaturalNight": 21.8,
+        "toSkyNow": 0.031,
+        "skyNowMag": -13.79,
+        "moon": null
+      }
     }
   },
   {
@@ -205,7 +255,17 @@
       "brightestObjectMag": -3.52,
       "sunAltDeg": -21.05,
       "zenithSkyMu": 21.9,
-      "zenithLimitMag": 6
+      "zenithLimitMag": 6,
+      "light": {
+        "sbdcMag": -7.21,
+        "sbdcLux": 0.00164,
+        "toFullMoon": 0.00748,
+        "toMoon": null,
+        "toNaturalNight": 1.66,
+        "toSkyNow": 1.66,
+        "skyNowMag": -6.67,
+        "moon": null
+      }
     }
   }
 ]

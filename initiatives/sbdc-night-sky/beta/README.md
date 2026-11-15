@@ -48,10 +48,11 @@ On the day it was created, the beta built a page byte-identical to the released
 | 2026-11-15 | Plane layout, plane spread, brightness scatter and phase law as settings; latitude to a tenth of a degree; three presets for the sdross0 setups; a link that carries the settings | The November 2026 upgrade, Unit 2 |
 
 | 2026-11-15 | The twilight sky corrected to measured values; ambient light by Bortle class; a choice of naked-eye threshold; the sky brightness and limit in the readout | The November 2026 upgrade, Unit 3 |
+| 2026-11-15 | The Moon, with its phase and place; moonlight in the sky; SBDC light compared with the Moon and with a natural night sky; the readout below the sky | The November 2026 upgrade, Unit 4 |
 
 `PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
-units. Units 1 to 3 are described below; the others are added here as they
-merge.
+units. Units 1 to 4 are described below; the last is added here when it
+merges.
 
 ## Settings files
 
@@ -432,6 +433,121 @@ zenith sky 18.1 mag/arcsec² (Bortle 7), naked-eye limit 4.1
   `SKY_COLOR_STAGES` are new.
 - `src/settings.js`, `src/ui.js`, `src/index.html`: the two controls and their
   settings; the readout line.
+
+### Unit 4: the Moon, moonlight, and SBDC light compared with the Moon
+
+#### The Moon
+
+"Moon" in "Sky & display" has three settings (`display.moon` in a file):
+
+- **Off** (the default): no Moon. Everything is as it was.
+- **As on this date** (`date`): the Moon where it is on the chosen date and
+  solar time in the year given in the "Year" box (`observer.year`, default
+  2026). The simulator has no longitude, so the solar time is taken as
+  universal time. The Moon moves about half a degree an hour, so its place is
+  within about 7° of the truth for any longitude, and its phase within a few
+  percent.
+- **Set the phase** (`phase`): a Moon a chosen number of days after new
+  (`display.moon_age_days`, 0 to 29.5), on the ecliptic. 7.4 is first quarter,
+  14.8 is full. This needs no date.
+
+The Moon's place comes from the low-precision series of the Astronomical
+Almanac, good to about 0.3°. `test/model.test.js` checks it against the solar
+eclipses of 12 August 2026 and 2 August 2027 and the lunar eclipse of 3 March
+2026: it puts the Moon within 0.1° of the Sun's longitude at the first two and
+within 0.1° of opposite at the third. The year changes the Moon only. The Sun
+and stars stay on the model's 2026 calendar, where they differ from another
+year's by less than a quarter of a degree; the Moon is placed by its angle
+from the Sun, so its phase is right for the year asked for.
+
+The Moon is drawn with its phase, the lit side toward the Sun, about three
+times its true size so that the phase can be seen. The label beside "Moon"
+gives its lit fraction and altitude, and so does a tooltip on the Moon.
+
+#### Moonlight
+
+A Moon above the horizon lights the sky. The brightness it adds at each point
+follows Krisciunas and Schaefer (1991): it depends on the Moon's phase and
+altitude, on how far the point is from the Moon, and on the point's own
+altitude. It is added to the twilight sky and to ambient light, so the limit
+falls and fewer satellites and stars are counted and drawn, most of all near
+the Moon. The drawn sky takes a blue-gray tint where moonlight is most of its
+light. A Moon below the horizon adds nothing.
+
+With the default constellation at 40° N on 24 November 2026, 19:00:
+
+| | No Moon | The full Moon of that date, 25° up |
+| --- | --- | --- |
+| Zenith sky, mag/arcsec² | 21.9 | 18.9 |
+| Naked-eye limit | 6.0 | 5.3 |
+| Visible SBDCs | 20,996 | 15,741 |
+| Visible stars | 1,699 | 523 |
+
+#### SBDC light compared with the Moon
+
+The readout has a second line, in a warmer color:
+
+```
+SBDC light −9.2 mag in total  ·  1/22 of a full Moon  ·  10× a moonless natural night sky  ·  Moon 100% lit, 25° up: 1/15 of this Moon’s light
+```
+
+- **SBDC light, in total**: the light of every sunlit SBDC above the horizon,
+  added up and written as one magnitude. It includes the ones too faint to see
+  one by one.
+- **Of a full Moon**: that light divided by the light of a full Moon overhead.
+- **A moonless natural night sky**: that light divided by the light of the
+  whole dark sky, stars and airglow together, which is about magnitude −6.7,
+  or one thousandth of a lux.
+- **Of this Moon's light**: shown when a Moon is set and is up. The Moon as it
+  is: its phase, and dimmed by the air when it is low.
+
+All are ratios of apparent brightness, satellites and Moon both seen through
+the air. They are approximate: the satellites' brightness is the least certain
+part of the model, and the total depends on the brightest few percent.
+
+Some values, without a Moon:
+
+| Setup | Sun | SBDC light | Of a full Moon | Against a natural night sky |
+| --- | --- | --- | --- | --- |
+| Default (300,000, +0.5), 40° N, June 21, 60 min after sunset | 10° down | −7.6 | 1/93 | 2.4× |
+| The same at midnight | 27° down | −5.3 | 1/758 | 1/3.4 |
+| Default, 40° N, December 21, 90 min after sunset | 17° down | −10.3 | 1/8.1 | 27× |
+| 1,000,000 satellites, the same evening | 17° down | −11.6 | 1/2.5 | 90× |
+| sdross0 no mitigation, September 22 | 17° down | −7.7 | 1/83 | 2.6× |
+| sdross0 no mitigation, December 21 | 18° down | −10.2 | 1/8.5 | 26× |
+| sdross0 optimistic mitigation, September 22 | 17° down | −3.7 | 1/3,344 | 1/15 |
+| sdross0 optimistic mitigation, December 21 | 18° down | −5.5 | 1/637 | 1/2.9 |
+
+#### The readout is below the sky
+
+The readout strip used to lie over the bottom of the sky. With three lines it
+covered the horizon, where most of the constellation is, and the compass
+points. It is now below the sky, and the sky is drawn in the space above it.
+
+#### A fault corrected: a redraw during a rebuild
+
+Turning or zooming the view in the instant after the constellation was rebuilt
+could raise "Simulator error". The picture was drawn from the new
+constellation and the evaluation of the old one, whose satellite numbers did
+not match. The picture and the tooltips now use the constellation each
+evaluation was made from. This fault was in the simulator before the upgrade;
+`tests/e2e/sbdc-beta.spec.js` has a check that reproduces it.
+
+#### What Unit 4 changed in the code
+
+- `src/model.js`: `julianDate`, `moonEphemeris`, `moonState`, `moonMagnitude`
+  and `moonSkyMu` are new, as are `muParts` (the sky's light part by part),
+  `lightSummary`, `hemisphereMagnitude` and `magnitudeToLux`. `skyExtras`
+  carries the Moon; `evaluate` returns the satellites' summed light;
+  `summarize` adds a `light` block. `test/golden/golden.json` gained that
+  block and no existing number in it changed.
+- `src/render.js`: `_drawMoon`; `skyColor` takes a moonlight share.
+- `src/format.js`: `formatRatio`.
+- `src/settings.js`: `observer.year`, `display.moon`, `display.moon_age_days`.
+  A bare `off` in a file is read as the choice named off where a setting has
+  one, since the YAML reader takes `off` as false.
+- `src/ui.js`, `src/index.html`, `src/app.css`: the Moon controls, the light
+  line, the readout below the sky, and `App.evCons`.
 
 ### A link that carries the settings
 

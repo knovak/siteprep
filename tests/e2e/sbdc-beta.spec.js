@@ -37,7 +37,19 @@ function parseSky(text) {
   const m = text.match(/zenith sky ([\d.]+) mag\/arcsec²(?: \(Bortle (\d)\))?, naked-eye limit (-?[\d.]+)/);
   return m ? { mu: Number(m[1]), bortle: m[2] ? Number(m[2]) : 1, limit: Number(m[3]) } : null;
 }
-const sky = async (page) => parseSky(await page.locator('#readout-sub').textContent());
+const sky = async (page) => {
+  await redrawn(page);
+  return parseSky(await page.locator('#readout-sub').textContent());
+};
+
+/** Set a slider or number box to a value and fire the events a person's change fires. */
+async function setValue(page, selector, value) {
+  await page.locator(selector).evaluate((el, v) => {
+    el.value = String(v);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value);
+}
 
 /** Open the beta and wait for its first picture. Collects errors and requests.
  *  `hash` is the part of the address after the page, starting with "#". */
@@ -72,7 +84,23 @@ async function settled(page) {
   });
 }
 
-const readout = async (page) => parseReadout(await page.locator('#readout').textContent());
+/**
+ * Wait for the page to have re-evaluated and redrawn after a change. A change
+ * to a control asks for an evaluation on the next animation frame, and the
+ * readout is written in that frame; two frames on, it is current. A change
+ * that rebuilds the constellation shows "computing…" until it is done.
+ */
+async function redrawn(page) {
+  await page.evaluate(() => new Promise((resolve) =>
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await settled(page);
+}
+
+/** The readout's numbers, once the page has redrawn. */
+const readout = async (page) => {
+  await redrawn(page);
+  return parseReadout(await page.locator('#readout').textContent());
+};
 
 /** Choose a shell option and wait for the constellation it builds. */
 async function chooseShells(page, value) {
@@ -360,6 +388,129 @@ test.describe('SBDC beta', () => {
 
     await page.locator('#eyemodel').selectOption('table');
     await expect.poll(async () => (await readout(page)).stars).toBe(table.counts.stars);
+    expect(problems.errors).toEqual([]);
+  });
+
+  // ---- unit 4: the Moon, moonlight, and SBDC light against the Moon ----
+
+  test('the light line compares SBDC light with a full Moon and with a natural night sky', async ({ page }) => {
+    const problems = await openBeta(page);
+    await page.locator('#jump-dusk60').click();
+    await expect(page.locator('#readout-sub')).toContainText('60 min after sunset');
+    const line = page.locator('#readout-light');
+    await expect(line).toContainText('SBDC light');
+    await expect(line).toContainText('a full Moon');
+    await expect(line).toContainText('a moonless natural night sky');
+    // no Moon is set, so the line does not mention one
+    await expect(line).not.toContainText('lit');
+    await expect(page.locator('#moon')).toHaveValue('off');
+    const text = await line.textContent();
+    // a few hundred thousand unmitigated satellites: a fraction of a full Moon, written 1/n
+    expect(text).toMatch(/1\/[\d,.]+ of a full Moon/);
+    expect(problems.errors).toEqual([]);
+    expect(problems.requests).toEqual([]);
+  });
+
+  test('a full Moon brightens the sky and hides stars; a new Moon is below the horizon at night', async ({ page }) => {
+    const problems = await openBeta(page);
+    // midnight in June at 40 N: the Sun is 26 degrees down and the sky is dark
+    await page.locator('#jump-midnight').click();
+    await expect(page.locator('#time-label')).toHaveText('00:00');
+    await page.locator('#starlim').fill('65');
+    await expect.poll(async () => (await sky(page)).limit).toBe(6.5);
+    const dark = { counts: await readout(page), sky: await sky(page) };
+
+    await page.locator('#moon').selectOption('phase');
+    await expect(page.locator('#moonage')).toBeVisible();
+    await expect(page.locator('#moonage-label')).toContainText('full');
+    await expect(page.locator('#moon-label')).toContainText('% lit');
+    await expect(page.locator('#moon-label')).toContainText('up');
+    await expect.poll(async () => (await sky(page)).mu).toBeLessThan(dark.sky.mu - 2);
+    const lit = { counts: await readout(page), sky: await sky(page) };
+    expect(lit.counts.stars).toBeLessThan(dark.counts.stars);
+    expect(lit.counts.above).toBe(dark.counts.above);
+    await expect(page.locator('#readout-light')).toContainText(/of this Moon.s light/);
+
+    // a new Moon is with the Sun: down at night, and the sky is dark again
+    await setValue(page, '#moonage', 0);
+    await expect(page.locator('#moonage-label')).toContainText('new');
+    await expect(page.locator('#moon-label')).toContainText('below the horizon');
+    await expect.poll(async () => (await readout(page)).stars).toBe(dark.counts.stars);
+    await expect(page.locator('#readout-light')).not.toContainText(/this Moon.s light/);
+
+    await page.locator('#moon').selectOption('off');
+    await expect(page.locator('#moonage')).toBeHidden();
+    await expect(page.locator('#moon-label')).toHaveText('');
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('the Moon of a date depends on the year', async ({ page }) => {
+    const problems = await openBeta(page);
+    // 24 November 2026 is a full Moon; 24 November 2027 is ten days after one
+    await setValue(page, '#date', 328);
+    await setValue(page, '#time', 22 * 60);
+    await page.locator('#moon').selectOption('date');
+    await expect(page.locator('#year')).toBeVisible();
+    await expect(page.locator('#year')).toHaveValue('2026');
+    await expect(page.locator('#moon-label')).toContainText(/(99|100)% lit/);
+    await page.locator('#year').fill('2027');
+    await page.locator('#year').press('Enter');
+    await expect(page.locator('#moon-label')).not.toContainText(/(99|100)% lit/);
+    await expect(page.locator('#moon-label')).toContainText('% lit');
+    // a year outside the range is brought into it
+    await page.locator('#year').fill('1500');
+    await page.locator('#year').press('Enter');
+    await expect(page.locator('#year')).toHaveValue('1900');
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('Moon settings travel in a link', async ({ page, context }) => {
+    const problems = await openBeta(page);
+    await page.locator('#jump-dusk60').click();
+    await page.locator('#moon').selectOption('phase');
+    await setValue(page, '#moonage', 110);
+    await expect(page.locator('#moonage-label')).toContainText('11.0');
+    await page.locator('#settings-link').click();
+    const link = page.url();
+    expect(link).toContain('display.moon=phase');
+    expect(link).toContain('display.moon_age_days=11.0');
+    const first = await page.locator('#readout-light').textContent();
+
+    const second = await context.newPage();
+    const errors = [];
+    second.on('pageerror', (error) => errors.push(String(error)));
+    await second.goto(link);
+    await settled(second);
+    await expect(second.locator('#moon')).toHaveValue('phase');
+    await expect(second.locator('#moonage-label')).toContainText('11.0');
+    await expect(second.locator('#readout-light')).toHaveText(first);
+    expect(errors).toEqual([]);
+    await second.close();
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('turning the view while the constellation is rebuilt raises no error', async ({ page }) => {
+    // The picture is drawn from an evaluation and the constellation it was
+    // made from. After a rebuild there is a moment when the new constellation
+    // exists and its evaluation does not; a redraw in that moment used to
+    // pair the new constellation with the old evaluation and fail.
+    const problems = await openBeta(page);
+    await page.evaluate(async () => {
+      const slider = document.getElementById('nsats');
+      const key = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+      for (const position of [30, 74, 20, 60]) {
+        slider.value = String(position);
+        slider.dispatchEvent(new Event('input', { bubbles: true }));
+        slider.dispatchEvent(new Event('change', { bubbles: true }));
+        // keep turning the view through the rebuild and the frames after it
+        for (let i = 0; i < 60; i++) {
+          key();
+          await new Promise((resolve) => setTimeout(resolve, 2));
+        }
+      }
+    });
+    await settled(page);
+    await expect(page.locator('#errbar')).toHaveCount(0);
     expect(problems.errors).toEqual([]);
   });
 

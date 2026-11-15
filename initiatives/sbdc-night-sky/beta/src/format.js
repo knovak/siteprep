@@ -70,3 +70,14 @@ export function formatShellSummary(shells) {
   const km = (v) => Math.round(v).toLocaleString("en-US");
   return `${shells.length} shells · ${km(Math.min(...alts))}–${km(Math.max(...alts))} km`;
 }
+
+/**
+ * A ratio as a person would say it: "23×", "2.4×", "1/3.5", "1/1,300".
+ * Above 1 it is a multiple; below 1 it is one part in so many.
+ */
+export function formatRatio(ratio) {
+  if (!(ratio > 0) || !Number.isFinite(ratio)) return "0";
+  const number = (v) => (v >= 9.95 ? Math.round(v).toLocaleString("en-US") : v.toFixed(1));
+  if (ratio >= 0.95) return `${number(ratio)}×`;
+  return `1/${number(1 / ratio)}`;
+}
