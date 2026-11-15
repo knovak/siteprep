@@ -203,6 +203,17 @@ input[type="range"] {
 @media (max-width: 900px) { #readout-light { white-space: nowrap; } }
 .numrow label { flex: none; margin: 0; }
 
+/* Night & year: a small chart and a table of hours */
+#night-chart { display: block; width: 100%; height: 120px; margin-top: 8px; background: #0a0c14; border: 1px solid var(--line); border-radius: 3px; cursor: pointer; }
+#night-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+#night-table th { text-align: right; font-weight: 500; color: var(--muted); padding: 2px 0 4px 6px; white-space: nowrap; }
+#night-status { white-space: pre-line; }
+#night-table td { padding: 3px 0 3px 6px; border-top: 1px solid var(--line); color: var(--text); }
+#night-table td:first-child { padding-left: 0; color: var(--muted); }
+#night-table td:not(:first-child) { text-align: right; font-family: var(--mono); white-space: nowrap; }
+#night-grp.stale #night-table td:not(:first-child), #night-grp.stale #night-chart { opacity: 0.45; }
+#night-legend { font-family: var(--sans); }
+
 </style>
 </head>
 <body>
@@ -352,8 +363,12 @@ input[type="range"] {
         <label for="viewmode">View</label>
         <select id="viewmode">
           <option value="horizon" selected>Horizon (drag to look around)</option>
+          <option value="perspective">Perspective (as a camera sees it)</option>
           <option value="fisheye">All-sky fisheye (zenith at center)</option>
         </select>
+        <div class="row" style="margin-top:6px">
+          <button id="aim">Aim at densest sky</button>
+        </div>
       </div>
       <div class="ctl">
         <label for="starlim">Eye limit <output id="starlim-label">mag 6.0</output></label>
@@ -389,6 +404,27 @@ input[type="range"] {
       <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
       <div class="hint" id="hint-longexp">every sunlit satellite becomes a 12–27° streak; stars to the catalog limit</div>
       <div class="hint" id="hint-drag">Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details</div>
+    </details>
+
+    <details class="grp" id="night-grp">
+      <summary>Night &amp; year</summary>
+      <div class="hint" id="hint-night">the hours in which SBDC light is significant at this latitude, with these settings · three definitions, side by side</div>
+      <div class="row">
+        <button id="night-run">Compute this night</button>
+        <button id="year-run">Compute the year</button>
+      </div>
+      <div class="hint" id="night-status" role="status" aria-live="polite"></div>
+      <canvas id="night-chart" width="540" height="240" aria-label="Visible SBDCs and stars through the night"></canvas>
+      <div class="hint" id="night-legend"></div>
+      <table id="night-table">
+        <thead><tr><th></th><th id="night-col">this night</th><th id="year-col">a year</th></tr></thead>
+        <tbody>
+          <tr data-key="night"><td id="night-row-night">night (Sun below the horizon)</td><td>—</td><td>—</td></tr>
+          <tr data-key="atLeast100"><td id="night-row-atLeast100">at least 100 SBDCs visible to the naked eye</td><td>—</td><td>—</td></tr>
+          <tr data-key="outnumberStars"><td id="night-row-outnumberStars">visible SBDCs outnumber visible stars</td><td>—</td><td>—</td></tr>
+          <tr data-key="exceedsSky"><td id="night-row-exceedsSky">SBDC light exceeds the sky’s own light</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
     </details>
 
     <details class="grp">
@@ -1615,7 +1651,131 @@ function summarize(constellation, state, data, catalog = null) {
   };
 }
 
-const MODEL = { makeRng, dot, norm, normalize, daysSinceJ2000, solarEphemeris, sunHourAngleDeg, thetaSunDeg, sunVector, observerUnit, enuBasis, dirToAltAz, sunAltAz, sunCrossings, twilightTimes, julianDate, sunEclipticLonDeg, moonEphemeris, moonMagnitude, moonSkyMu, SYNODIC_MONTH_DAYS, moonState, ssoInclinationDeg, horizonCapDeg, generateConstellation, defaultConfig, isSunlit, lambertPhase, airmass, phaseMagnitude, satMagnitude, brightnessOffset, zenithMu, addMu, artificialMu, skyExtras, muParts, muAt, limitingMag, starAltAz, evaluate, streakEndpoints, parseShellSpec, starVisibility, magnitudeToLux, hemisphereMagnitude, lightSummary, summarize };
+/* ------------------------------------------------------------------ */
+/* A night, and a year: the hours in which SBDC light is significant   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A lighter copy of a constellation for sampling many moments: about
+ * maxSatellites of its satellites, evenly taken, with `scale` saying how many
+ * each one stands for. Clusters are kept or dropped whole, so a cluster's
+ * combined brightness is unchanged. A constellation already that small is
+ * returned as it is, with scale 1.
+ */
+function thinConstellation(c, maxSatellites = 30000) {
+  const every = Math.max(1, Math.round(c.n / maxSatellites));
+  if (every === 1) return { ...c, scale: 1 };
+  const keep = [];
+  for (let i = 0; i < c.n; i++) {
+    const id = c.clusterId[i];
+    if (id >= 0 ? id % every === 0 : i % every === 0) keep.push(i);
+  }
+  const pick = (from, Type) => {
+    const out = new Type(keep.length);
+    for (let j = 0; j < keep.length; j++) out[j] = from[keep[j]];
+    return out;
+  };
+  return {
+    n: keep.length,
+    px: pick(c.px, Float64Array), py: pick(c.py, Float64Array), pz: pick(c.pz, Float64Array),
+    vx: pick(c.vx, Float32Array), vy: pick(c.vy, Float32Array), vz: pick(c.vz, Float32Array),
+    m0: pick(c.m0, Float32Array), family: pick(c.family, Uint8Array), shellAlt: pick(c.shellAlt, Float32Array),
+    clusterId: pick(c.clusterId, Int32Array), clustered: c.clustered,
+    scale: c.n / keep.length,
+  };
+}
+
+/** The Sun altitude (deg) below which a moment counts as night: the same
+ *  sunset the time controls use, the Sun's upper edge on the horizon. */
+const NIGHT_SUN_ALT_DEG = -0.833;
+
+/**
+ * One moment, for the night and year totals: the visible SBDCs (scaled up
+ * from a thinned constellation), the visible stars, and the satellites'
+ * light against the sky's own. `thin` is a constellation, thinned or not.
+ */
+function sampleInstant(thin, state, data, catalog = null) {
+  const scale = thin.scale || 1;
+  const ev = evaluate(thin, state, data);
+  let visible = 0;
+  if (ev.objectStats) visible = ev.objectStats.visibleSats;
+  else for (const i of ev.above) if (ev.visible[i]) visible++;
+  let visibleStars = 0;
+  if (catalog) {
+    const st = starAltAz(catalog, state.latDeg, state.doy, state.solarTimeHours, data);
+    const userCap = state.userLimitingMag ?? data.limitingMagnitude.userLimitingMagCap.value;
+    visibleStars = starVisibility(catalog, st, state.latDeg, ev.sunDir, ev.sunAltDeg, userCap, data, ev.sky).count;
+  }
+  const sbdcLightMag = ev.sbdcLightMag == null ? null : ev.sbdcLightMag - 2.5 * Math.log10(scale);
+  const light = lightSummary({ ...ev, sbdcLightMag }, state, data);
+  return {
+    sunAltDeg: ev.sunAltDeg, visible: Math.round(visible * scale), visibleStars,
+    sbdcMag: light.sbdcMag, toSkyNow: light.toSkyNow, toFullMoon: light.toFullMoon,
+    toNaturalNight: light.toNaturalNight, moonAltDeg: light.moon ? light.moon.altDeg : null,
+  };
+}
+
+/**
+ * The 24 hours of the state's date, from noon through midnight to noon, one
+ * sample every stepMinutes. A sample with the Sun up is marked night: false
+ * and is not evaluated. The model has one date for the whole day, so this is
+ * the date's evening and its morning, which together are as long as a night.
+ */
+function nightSamples(thin, state, data, catalog = null, stepMinutes = 5) {
+  const out = [];
+  for (let minutes = 0; minutes < 1440; minutes += stepMinutes) {
+    const hours = (12 + minutes / 60) % 24;
+    const sunAltDeg = sunAltAz(state.latDeg, state.doy, hours, data).altDeg;
+    if (sunAltDeg > NIGHT_SUN_ALT_DEG) {
+      out.push({ minutes, hours, night: false, sunAltDeg, visible: 0, visibleStars: 0,
+                 sbdcMag: null, toSkyNow: null, toFullMoon: null, toNaturalNight: null, moonAltDeg: null });
+    } else {
+      const at = sampleInstant(thin, { ...state, solarTimeHours: hours, propagationSec: 0 }, data, catalog);
+      out.push({ minutes, hours, night: true, ...at });
+    }
+  }
+  return out;
+}
+
+/**
+ * The definitions of "significant" that are reported, each a test of one
+ * night-time sample. They are reported side by side; none is the definition.
+ */
+const SIGNIFICANCE = [
+  { key: "atLeast100", test: (s) => s.visible >= 100 },
+  { key: "outnumberStars", test: (s) => s.visible > 0 && s.visible > s.visibleStars },
+  { key: "exceedsSky", test: (s) => s.toSkyNow != null && s.toSkyNow >= 1 },
+];
+
+/** Hours of night in a set of samples, and hours for which each definition
+ *  of significance holds: { night, atLeast100, outnumberStars, exceedsSky }. */
+function significantHours(samples, stepMinutes) {
+  const hours = { night: 0 };
+  for (const def of SIGNIFICANCE) hours[def.key] = 0;
+  for (const s of samples) {
+    if (!s.night) continue;
+    hours.night += stepMinutes / 60;
+    for (const def of SIGNIFICANCE) if (def.test(s)) hours[def.key] += stepMinutes / 60;
+  }
+  return hours;
+}
+
+/** The dates a year is sampled on: the 6th and the 21st of each month, as
+ *  days of the year. The 21st takes in both solstices and both equinoxes. */
+const YEAR_SAMPLE_DAYS = [6, 21, 37, 52, 65, 80, 96, 111, 126, 141, 157, 172,
+                                 187, 202, 218, 233, 249, 264, 279, 294, 310, 325, 340, 355];
+
+/** A year's hours from the hours of each sampled night: each sampled date
+ *  stands for an equal share of the year. */
+function yearHours(perNight) {
+  const total = {};
+  for (const night of perNight) {
+    for (const [key, value] of Object.entries(night)) total[key] = (total[key] || 0) + value * 365 / perNight.length;
+  }
+  return total;
+}
+
+const MODEL = { makeRng, dot, norm, normalize, daysSinceJ2000, solarEphemeris, sunHourAngleDeg, thetaSunDeg, sunVector, observerUnit, enuBasis, dirToAltAz, sunAltAz, sunCrossings, twilightTimes, julianDate, sunEclipticLonDeg, moonEphemeris, moonMagnitude, moonSkyMu, SYNODIC_MONTH_DAYS, moonState, ssoInclinationDeg, horizonCapDeg, generateConstellation, defaultConfig, isSunlit, lambertPhase, airmass, phaseMagnitude, satMagnitude, brightnessOffset, zenithMu, addMu, artificialMu, skyExtras, muParts, muAt, limitingMag, starAltAz, evaluate, streakEndpoints, parseShellSpec, starVisibility, magnitudeToLux, hemisphereMagnitude, lightSummary, summarize, thinConstellation, NIGHT_SUN_ALT_DEG, sampleInstant, nightSamples, SIGNIFICANCE, significantHours, YEAR_SAMPLE_DAYS, yearHours };
 
 // ==== render.js ====
 // SBDC Night-Sky Simulator — renderer. Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
@@ -1652,6 +1812,73 @@ function unprojHorizon(x, y, view, W, H) {
   return { azDeg: ((az % 360) + 360) % 360, altDeg: alt };
 }
 
+/* Perspective view: what a camera with a flat sensor records, aimed at
+ * (centerAz, centerAlt) with a horizontal field of view fovDeg. Straight
+ * lines in the sky stay straight, and the horizon is level only at the
+ * centre azimuth. Directions are in east-north-up coordinates. */
+const PERSP_RAD = Math.PI / 180;
+function perspectiveCamera(view, W, H) {
+  const az = view.centerAz * PERSP_RAD, alt = view.centerAlt * PERSP_RAD;
+  const fwd = [Math.cos(alt) * Math.sin(az), Math.cos(alt) * Math.cos(az), Math.sin(alt)];
+  const right = [Math.cos(az), -Math.sin(az), 0];
+  const up = [right[1] * fwd[2] - right[2] * fwd[1], right[2] * fwd[0] - right[0] * fwd[2],
+              right[0] * fwd[1] - right[1] * fwd[0]];
+  const tanH = Math.tan(Math.min(view.fovDeg, PERSPECTIVE_MAX_FOV) * PERSP_RAD / 2);
+  return { fwd, right, up, tanH, tanV: tanH * H / W };
+}
+/** The widest field the perspective view draws: beyond this the edges stretch too far. */
+const PERSPECTIVE_MAX_FOV = 120;
+
+function projPerspective(azDeg, altDeg, view, W, H) {
+  const cam = perspectiveCamera(view, W, H);
+  const a = azDeg * PERSP_RAD, e = altDeg * PERSP_RAD;
+  const d = [Math.cos(e) * Math.sin(a), Math.cos(e) * Math.cos(a), Math.sin(e)];
+  const z = d[0] * cam.fwd[0] + d[1] * cam.fwd[1] + d[2] * cam.fwd[2];
+  if (z <= 0.02) return { x: NaN, y: NaN, visible: false };      // behind the camera, or edge-on
+  const x = W / 2 * (1 + (d[0] * cam.right[0] + d[1] * cam.right[1] + d[2] * cam.right[2]) / (z * cam.tanH));
+  const y = H / 2 * (1 - (d[0] * cam.up[0] + d[1] * cam.up[1] + d[2] * cam.up[2]) / (z * cam.tanV));
+  return { x, y, visible: x >= -40 && x <= W + 40 && y >= -40 && y <= H + 40 };
+}
+
+function unprojPerspective(x, y, view, W, H) {
+  const cam = perspectiveCamera(view, W, H);
+  const xn = (2 * x / W - 1) * cam.tanH, yn = (1 - 2 * y / H) * cam.tanV;
+  const d = [0, 1, 2].map((k) => cam.fwd[k] + xn * cam.right[k] + yn * cam.up[k]);
+  const n = Math.hypot(d[0], d[1], d[2]);
+  let az = Math.atan2(d[0], d[1]) / PERSP_RAD;
+  if (az < 0) az += 360;
+  return { azDeg: az, altDeg: Math.asin(d[2] / n) / PERSP_RAD };
+}
+
+/**
+ * The azimuth to face to take in the most of a set of sky positions: the
+ * centre of the fullest window of width fovDeg around the horizon. For a
+ * ring with two lobes this is one of the lobes, where the mean azimuth
+ * would be the gap between them. Returns null when there are no positions.
+ */
+function densestAzimuth(azimuthsDeg, fovDeg) {
+  const BIN = 2, n = 360 / BIN, hist = new Float64Array(n);
+  let total = 0;
+  for (const az of azimuthsDeg) { hist[Math.floor((((az % 360) + 360) % 360) / BIN) % n]++; total++; }
+  if (!total) return null;
+  const width = Math.max(1, Math.round(Math.min(fovDeg, 360) / BIN));
+  let sum = 0;
+  for (let k = 0; k < width; k++) sum += hist[k];
+  let best = sum, bestStart = 0;
+  for (let start = 1; start < n; start++) {
+    sum += hist[(start + width - 1) % n] - hist[start - 1];
+    if (sum > best) { best = sum; bestStart = start; }
+  }
+  // Many windows can hold the same positions. Face the middle of what the
+  // fullest one holds: the mean direction of the positions inside it.
+  let x = 0, y = 0;
+  for (let k = 0; k < width; k++) {
+    const bin = (bestStart + k) % n, a = (bin + 0.5) * BIN * Math.PI / 180;
+    x += hist[bin] * Math.cos(a); y += hist[bin] * Math.sin(a);
+  }
+  return ((Math.atan2(y, x) * 180 / Math.PI) % 360 + 360) % 360;
+}
+
 /** All-sky fisheye (equidistant): zenith at center, horizon at the rim,
  *  north up, east LEFT (astronomical convention: looking up). */
 /** Rolling-hills silhouette height (deg above the horizon) as a
@@ -1669,9 +1896,10 @@ const hillAltDeg = (azDeg) =>
  *  thing from the whole-sky totals beside them. */
 function inFrame(azDeg, altDeg, view, W, H) {
   if (!(altDeg > 0)) return false;
-  if (view.mode !== "horizon") return true;
+  if (view.mode === "fisheye") return true;
   if (altDeg < hillAltDeg(azDeg)) return false;
-  const p = projHorizon(azDeg, altDeg, view, W, H);
+  const p = view.mode === "perspective"
+    ? projPerspective(azDeg, altDeg, view, W, H) : projHorizon(azDeg, altDeg, view, W, H);
   return p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H;
 }
 
@@ -1814,6 +2042,7 @@ class SkyRenderer {
 
   project(azDeg, altDeg) {
     const { canvas, view } = this;
+    if (view.mode === "perspective") return projPerspective(azDeg, altDeg, view, canvas.width, canvas.height);
     return view.mode === "horizon"
       ? projHorizon(azDeg, altDeg, view, canvas.width, canvas.height)
       : projFisheye(azDeg, altDeg, canvas.width, canvas.height);
@@ -1821,9 +2050,21 @@ class SkyRenderer {
 
   unproject(x, y) {
     const { canvas, view } = this;
+    if (view.mode === "perspective") return unprojPerspective(x, y, view, canvas.width, canvas.height);
     return view.mode === "horizon"
       ? unprojHorizon(x, y, view, canvas.width, canvas.height)
       : unprojFisheye(x, y, canvas.width, canvas.height);
+  }
+
+  /** Pixels per degree at the centre of the picture. */
+  pixelsPerDegree() {
+    const { canvas, view } = this;
+    if (view.mode === "perspective") {
+      return canvas.width / 2 / Math.tan(Math.min(view.fovDeg, PERSPECTIVE_MAX_FOV) * PERSP_RAD / 2) * PERSP_RAD;
+    }
+    return view.mode === "horizon"
+      ? canvas.width / view.fovDeg
+      : projFisheye(0, 0, canvas.width, canvas.height).R / 90;
   }
 
   /* ---- physically driven sky background (low-res, scaled up) ---- */
@@ -1867,7 +2108,40 @@ class SkyRenderer {
   _groundAndLabels(latDeg = 40) {
     const { ctx, canvas, view } = this;
     ctx.save();
-    if (view.mode === "horizon") {
+    if (view.mode === "perspective") {
+      // the hills, as a camera sees them: the silhouette at each azimuth in
+      // front of the camera, joined left to right and filled to the bottom
+      const W = canvas.width, H = canvas.height, pts = [];
+      for (let off = -100; off <= 100; off += 0.5) {
+        const az = view.centerAz + off;
+        const p = projPerspective(az, hillAltDeg(az), view, W, H);
+        if (Number.isFinite(p.x) && p.x > -4 * W && p.x < 5 * W && p.y > -4 * H && p.y < 5 * H) pts.push(p);
+      }
+      if (pts.length > 1) {
+        ctx.fillStyle = "#05060a";
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, 5 * H);
+        for (const p of pts) ctx.lineTo(p.x, p.y);
+        ctx.lineTo(pts[pts.length - 1].x, 5 * H);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = "rgba(216,226,255,0.22)";
+        ctx.beginPath();
+        pts.forEach((p, k) => (k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+        ctx.stroke();
+      } else if (view.centerAlt < 0) {
+        ctx.fillStyle = "#05060a"; ctx.fillRect(0, 0, W, H);       // looking at the ground
+      }
+      ctx.fillStyle = "rgba(199,205,224,0.85)";
+      ctx.font = `${Math.max(11, canvas.width / 90)}px ui-monospace, monospace`;
+      ctx.textAlign = "center";
+      for (let az = 0; az < 360; az += 45) {
+        const p = projPerspective(az, 0, view, W, H);
+        if (!p.visible || p.x < 0 || p.x > W) continue;
+        const lab = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][az / 45];
+        ctx.fillText(lab, p.x, Math.min(H - 8, p.y + 18));
+      }
+    } else if (view.mode === "horizon") {
       // rolling hills: a gentle deterministic silhouette (0.4-3.3 deg),
       // consistent under panning because it is a function of azimuth
       const y0 = this.project(view.centerAz, 0).y;
@@ -1966,9 +2240,7 @@ class SkyRenderer {
     // PSF size tracks the view's angular pixel scale, so the all-sky
     // fisheye (few px/deg) doesn't saturate into an over-exposed blob and
     // a zoomed horizon view keeps points plausibly point-like.
-    const pxPerDeg = this.view.mode === "horizon"
-      ? canvas.width / this.view.fovDeg
-      : projFisheye(0, 0, canvas.width, canvas.height).R / 90;
+    const pxPerDeg = this.pixelsPerDegree();
     const sizeScale = Math.min(2.5, Math.max(0.30, Math.pow(pxPerDeg / 11.6, 0.8)));
 
     const grid = new Map(); // tooltip spatial index: cell -> [{x,y,kind,i}]
@@ -2010,6 +2282,7 @@ class SkyRenderer {
         const p1 = this.project(ev.az[i], ev.alt[i]);
         const p2 = this.project(streaks.az2[i], Math.max(streaks.alt2[i], 0));
         if (!p1.visible && !p2.visible) continue;
+        if (!Number.isFinite(p1.x + p1.y + p2.x + p2.y)) continue;   // one end is behind the camera
         const len = Math.max(2, Math.hypot(p2.x - p1.x, p2.y - p1.y));
         const flux = magToFlux(ev.mag[i]);
         const alpha = Math.min(0.9, 1.6 * flux / len);
@@ -2140,7 +2413,7 @@ class SkyRenderer {
   }
 }
 
-const RENDER = { wrap180, projHorizon, unprojHorizon, hillAltDeg, inFrame, projFisheye, unprojFisheye, SKY_COLOR_STAGES, muToColor, skyColor, magToFlux, DEFAULT_VIEW, SkyRenderer };
+const RENDER = { wrap180, projHorizon, unprojHorizon, PERSPECTIVE_MAX_FOV, projPerspective, unprojPerspective, densestAzimuth, hillAltDeg, inFrame, projFisheye, unprojFisheye, SKY_COLOR_STAGES, muToColor, skyColor, magToFlux, DEFAULT_VIEW, SkyRenderer };
 
 // ==== settings.js ====
 // SBDC Night-Sky Simulator — settings files (beta). Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
@@ -2295,14 +2568,14 @@ const SETTINGS_FIELDS = [
   { section: "constellation", key: "cluster_diameter_km", type: "number", min: 0.2, max: 10, digits: 1, def: 1,
     note: "0.2 to 10" },
 
-  { section: "display", key: "view", type: "choice", options: ["horizon", "fisheye"], def: "horizon",
-    note: "horizon or fisheye" },
+  { section: "display", key: "view", type: "choice", options: ["horizon", "perspective", "fisheye"], def: "horizon",
+    note: "horizon (a panorama), perspective (as a camera sees it), or fisheye (the whole sky)" },
   { section: "display", key: "facing", type: "number", min: 0, max: 360, digits: 1, def: 0,
-    note: "horizon view: compass direction at the center, degrees (0 north, 90 east)" },
+    note: "horizon and perspective views: compass direction at the center, degrees (0 north, 90 east)" },
   { section: "display", key: "look_altitude", type: "number", min: -5, max: 80, digits: 1, def: 28,
-    note: "horizon view: altitude at the center, degrees, -5 to 80" },
+    note: "horizon and perspective views: altitude at the center, degrees, -5 to 80" },
   { section: "display", key: "field_of_view", type: "number", min: 20, max: 140, digits: 1, def: 110,
-    note: "horizon view: width of the view, degrees, 20 to 140" },
+    note: "horizon and perspective views: width of the view, degrees, 20 to 140 (perspective draws at most 120)" },
   { section: "display", key: "sky_limit_mag", type: "number", min: 4, max: 6.5, digits: 1, def: 6,
     note: "faintest magnitude this observer sees under a dark sky, 4.0 to 6.5" },
   { section: "display", key: "ambient_light", type: "int", min: 1, max: 9, def: 1,
@@ -2852,7 +3125,26 @@ const TR = {
   reseed: ["Randomize", "Aléatoire"],
   view: ["View", "Vue"],
   viewHorizon: ["Horizon (drag to look around)", "Horizon (glisser pour regarder)"],
+  viewPersp: ["Perspective (as a camera sees it)", "Perspective (comme la voit une caméra)"],
   viewFish: ["All-sky fisheye (zenith at center)", "Ciel entier (zénith au centre)"],
+  aim: ["Aim at densest sky", "Viser le ciel le plus dense"],
+  grpNight: ["Night & year", "Nuit et année"],
+  hintNight: ["the hours in which SBDC light is significant at this latitude, with these settings · three definitions, side by side",
+              "les heures où la lumière des SBDC est significative à cette latitude, avec ces réglages · trois définitions, côte à côte"],
+  nightRun: ["Compute this night", "Calculer cette nuit"], yearRun: ["Compute the year", "Calculer l\u2019année"],
+  nightCol: ["this night", "cette nuit"], yearCol: ["a year", "une année"],
+  nightRows: {
+    night: ["night (Sun below the horizon)", "nuit (Soleil sous l\u2019horizon)"],
+    atLeast100: ["at least 100 SBDCs visible to the naked eye", "au moins 100 SBDC visibles à l\u2019œil nu"],
+    outnumberStars: ["visible SBDCs outnumber visible stars", "les SBDC visibles dépassent les étoiles visibles"],
+    exceedsSky: ["SBDC light exceeds the sky\u2019s own light", "la lumière des SBDC dépasse celle du ciel"],
+  },
+  nightStale: ["settings have changed since this was computed", "les réglages ont changé depuis ce calcul"],
+  nightDone: ["computed for", "calculé pour"],
+  nightYearOf: ["dates", "dates"],
+  nightLegend: ["gold: visible SBDCs · blue: visible stars · bars below: when each definition holds · click to go to a time",
+                "or : SBDC visibles · bleu : étoiles visibles · barres : quand chaque définition est remplie · cliquer pour aller à une heure"],
+  nightHours: ["h", "h"],
   eyelim: ["Eye limit", "Limite de l\u2019œil"],
   ambient: ["Ambient light", "Lumière ambiante"],
   hintAmbient: ["artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars",
@@ -2974,7 +3266,7 @@ function applyLang(lang) {
   txt("header .sub", "tagline");
   txt("#open-assumptions", "assumBtn"); txt("#snapshot", "saveBtn");
   const sums = document.querySelectorAll("aside details.grp > summary");
-  ["grpSettings", "grpObserver", "grpConstellation", "grpSky", "grpAdvanced"].forEach((k, i) => {
+  ["grpSettings", "grpObserver", "grpConstellation", "grpSky", "grpNight", "grpAdvanced"].forEach((k, i) => {
     if (sums[i]) sums[i].textContent = T(k);
   });
   lbl('label[for="lat"]', "lat"); lbl('label[for="date"]', "date");
@@ -3004,6 +3296,14 @@ function applyLang(lang) {
   txt('#shells option[value="spread"]', "shSpread"); txt('#shells option[value="custom"]', "shCustom");
   txt('#viewmode option[value="horizon"]', "viewHorizon");
   txt('#viewmode option[value="fisheye"]', "viewFish");
+  txt('#viewmode option[value="perspective"]', "viewPersp"); txt("#aim", "aim");
+  txt("#hint-night", "hintNight"); txt("#night-run", "nightRun"); txt("#year-run", "yearRun");
+  txt("#night-col", "nightCol"); txt("#year-col", "yearCol"); txt("#night-legend", "nightLegend");
+  for (const key of Object.keys(TR.nightRows)) {
+    const cell = $("night-row-" + key);
+    if (cell) cell.textContent = TR.nightRows[key][LANG.cur === "fr" ? 1 : 0];
+  }
+  if (typeof Night !== "undefined") Night.render();
   txt('label[for="show-stars"]', "showStars"); txt('label[for="tint"]', "tint");
   txt('label[for="longexp"]', "longexp"); txt('label[for="markpole"]', "markPole");
   if (App.renderer) {
@@ -3095,6 +3395,7 @@ function reevaluate() {
     App.summary = MODEL.summarize(cons, state, data, catalog);
     redraw();                       // also writes the readout
     updateDateLabels();
+    Night.render();                 // its results may be out of date now, and its time cursor has moved
     setBusy(false);
   });
 }
@@ -3191,7 +3492,7 @@ function updateReadout() {
   const s = App.summary;
   // The totals are for the whole sky. The horizon view shows part of it, so
   // the count inside the picture is given beside each total.
-  const framed = App.inView && App.renderer.view.mode === "horizon";
+  const framed = App.inView && App.renderer.view.mode !== "fisheye";
   const inView = (n) => (framed ? ` (${n.toLocaleString()} ${T("rInView")})` : "");
   const line =
     `${T("rSun")} ${s.sunAltDeg > 0 ? "+" : ""}${s.sunAltDeg.toFixed(1)}°  ·  ` +
@@ -3315,6 +3616,161 @@ function setPlaying(p) {
   }
 }
 
+/* ------------------------- night and year ------------------------- */
+
+/* The hours in which SBDC light is significant, for the night of the chosen
+   date and for a year at the chosen latitude. The model does the sampling
+   (nightSamples, significantHours, yearHours); this draws the result. A
+   result belongs to the settings it was computed from: when they change it
+   is shown dimmed until it is computed again. The time of day is not one of
+   those settings, since a night's result covers every time. */
+const Night = {
+  night: null,       // { key, samples, hours, stepMinutes, label }
+  year: null,        // { key, hours, label }
+  job: 0,            // a year in progress is abandoned when this changes
+
+  /** Everything a result depends on: the constellation and the observer,
+   *  without the time of day and, for a year, without the date. */
+  key(forYear) {
+    const { solarTimeHours, propagationSec, doy, ...rest } = App.state;
+    return JSON.stringify([forYear ? null : doy, rest, App.cfg, $("shells-custom-input").value]);
+  },
+
+  place() { return `${Math.abs(App.state.latDeg)}°${App.state.latDeg >= 0 ? "N" : "S"}`; },
+
+  computeNight() {
+    if (!App.cons) return;
+    setBusy(true);
+    setTimeout(() => {
+      const step = 5;
+      const thin = MODEL.thinConstellation(App.cons, 100000);
+      const samples = MODEL.nightSamples(thin, App.state, App.data, App.catalog, step);
+      Night.night = { key: Night.key(false), samples, stepMinutes: step,
+                      hours: MODEL.significantHours(samples, step),
+                      label: `${Night.place()}, ${fmtDoy(App.state.doy)}` };
+      setBusy(false);
+      Night.render();
+    }, 20);
+  },
+
+  computeYear() {
+    if (!App.cons) return;
+    const job = ++Night.job, step = 15, key = Night.key(true);
+    const thin = MODEL.thinConstellation(App.cons, 30000);
+    const state = { ...App.state }, days = MODEL.YEAR_SAMPLE_DAYS, perNight = [];
+    const next = () => {
+      if (job !== Night.job) return;                    // a newer run replaced this one
+      if (perNight.length === days.length) {
+        Night.year = { key, hours: MODEL.yearHours(perNight), label: Night.place() };
+        Night.progress = null;
+        Night.render();
+        return;
+      }
+      const samples = MODEL.nightSamples(thin, { ...state, doy: days[perNight.length] }, App.data, App.catalog, step);
+      perNight.push(MODEL.significantHours(samples, step));
+      Night.progress = `${perNight.length}/${days.length} ${T("nightYearOf")}`;
+      Night.render();
+      setTimeout(next, 0);
+    };
+    Night.progress = `0/${days.length} ${T("nightYearOf")}`;
+    Night.render();
+    setTimeout(next, 20);
+  },
+
+  /** Write the table, the status line and the chart. */
+  render() {
+    if (!$("night-table")) return;
+    const fresh = (result, forYear) => result && result.key === Night.key(forYear);
+    const hours = (v) => (v >= 99.5 ? Math.round(v).toLocaleString() : v.toFixed(1)) + " " + T("nightHours");
+    for (const row of document.querySelectorAll("#night-table tbody tr")) {
+      const key = row.dataset.key;
+      row.children[1].textContent = Night.night ? hours(Night.night.hours[key]) : "\u2014";
+      row.children[2].textContent = Night.year ? hours(Night.year.hours[key]) : "\u2014";
+    }
+    const stale = (Night.night && !fresh(Night.night, false)) || (Night.year && !fresh(Night.year, true));
+    $("night-grp").classList.toggle("stale", !!stale);
+    const lines = [];
+    if (Night.progress) lines.push(`${T("busy")} ${Night.progress}`);
+    if (Night.night) lines.push(`${T("nightCol")}: ${T("nightDone")} ${Night.night.label}`);
+    if (Night.year) lines.push(`${T("yearCol")}: ${T("nightDone")} ${Night.year.label}`);
+    if (stale) lines.push(T("nightStale"));
+    $("night-status").textContent = lines.join("\n");
+    Night.drawChart();
+  },
+
+  /** The span of the chart: from half an hour before the first night sample
+   *  to half an hour after the last, in minutes from noon. */
+  span() {
+    const night = Night.night.samples.filter((s) => s.night);
+    if (!night.length) return null;
+    return { from: Math.max(0, night[0].minutes - 30), to: Math.min(1440, night[night.length - 1].minutes + 30) };
+  },
+
+  drawChart() {
+    const cv = $("night-chart"), g = cv.getContext("2d"), W = cv.width, H = cv.height;
+    g.clearRect(0, 0, W, H);
+    if (!Night.night) return;
+    const span = Night.span();
+    g.font = "20px ui-monospace, monospace";
+    g.fillStyle = "#8b8fa3";
+    if (!span) { g.fillText(T("polarDay"), 12, 34); return; }
+    const samples = Night.night.samples.filter((s) => s.minutes >= span.from && s.minutes <= span.to);
+    const padL = 8, padR = 8, top = 28, bars = 3 * 12 + 6, base = H - bars - 26;
+    const X = (minutes) => padL + (minutes - span.from) / (span.to - span.from) * (W - padL - padR);
+    const most = Math.max(10, ...samples.map((s) => Math.max(s.visible, s.visibleStars)));
+    const scale = Math.ceil(Math.log10(most * 1.05));
+    const Y = (count) => base - Math.log10(Math.max(count, 1)) / scale * (base - top);
+    // decades
+    g.strokeStyle = "#1c2030"; g.lineWidth = 1;
+    for (let e = 1; e <= scale; e++) {
+      g.beginPath(); g.moveTo(padL, Y(10 ** e)); g.lineTo(W - padR, Y(10 ** e)); g.stroke();
+      g.fillText((10 ** e).toLocaleString(), padL + 2, Y(10 ** e) - 4);
+    }
+    const line = (field, color) => {
+      g.strokeStyle = color; g.lineWidth = 3; g.beginPath();
+      let pen = false;
+      for (const s of samples) {
+        if (!s.night || s[field] < 1) { pen = false; continue; }
+        if (pen) g.lineTo(X(s.minutes), Y(s[field])); else g.moveTo(X(s.minutes), Y(s[field]));
+        pen = true;
+      }
+      g.stroke();
+    };
+    line("visibleStars", "#8fb4ff");
+    line("visible", "#e0b060");
+    // when each definition holds
+    const colors = ["#e0b060", "#c9d2ee", "#d98a5a"];
+    const width = Night.night.stepMinutes / (span.to - span.from) * (W - padL - padR);
+    MODEL.SIGNIFICANCE.forEach((def, k) => {
+      g.fillStyle = colors[k];
+      for (const s of samples) if (s.night && def.test(s)) g.fillRect(X(s.minutes) - width / 2, base + 8 + k * 12, width + 0.5, 8);
+    });
+    // hours along the bottom, and the time now
+    g.fillStyle = "#8b8fa3";
+    for (let m = Math.ceil(span.from / 120) * 120; m <= span.to; m += 120) {
+      g.fillText(String((12 + m / 60) % 24).padStart(2, "0"), X(m) - 10, H - 4);
+    }
+    const now = ((App.state.solarTimeHours - 12 + 24) % 24) * 60;
+    if (now >= span.from && now <= span.to) {
+      g.strokeStyle = "#e8e4d8"; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(X(now), top); g.lineTo(X(now), H - 26); g.stroke();
+    }
+  },
+
+  /** A click on the chart moves the time to that moment. */
+  clickChart(e) {
+    if (!Night.night) return;
+    const span = Night.span();
+    if (!span) return;
+    const cv = $("night-chart"), rect = cv.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width * cv.width;
+    const minutes = span.from + (x - 8) / (cv.width - 16) * (span.to - span.from);
+    const clock = Math.round(((12 * 60 + Math.max(span.from, Math.min(span.to, minutes))) % 1440));
+    $("time").value = clock % 1440;
+    $("time").dispatchEvent(new Event("input", { bubbles: true }));
+  },
+};
+
 /* ------------------------- assumptions panel ------------------------- */
 
 function buildAssumptions() {
@@ -3402,7 +3858,7 @@ function bindCanvas() {
       drag = { x: e.clientX, y: e.clientY,
                az: App.renderer.view.centerAz, alt: App.renderer.view.centerAlt };
       pinch = null;
-    } else if (pointers.size === 2 && App.renderer.view.mode === "horizon") {
+    } else if (pointers.size === 2 && App.renderer.view.mode !== "fisheye") {
       drag = null;
       pinch = { dist0: pinchDist(), fov0: App.renderer.view.fovDeg };
     }
@@ -3416,7 +3872,7 @@ function bindCanvas() {
         v.fovDeg = Math.max(20, Math.min(140, pinch.fov0 * pinch.dist0 / d));
         redraw();
       }
-    } else if (drag && v.mode === "horizon") {
+    } else if (drag && v.mode !== "fisheye") {
       const degPerPx = v.fovDeg / cv.getBoundingClientRect().width;
       v.centerAz = ((drag.az - (e.clientX - drag.x) * degPerPx) % 360 + 360) % 360;
       v.centerAlt = Math.max(-5, Math.min(80,
@@ -3436,7 +3892,7 @@ function bindCanvas() {
   cv.addEventListener("wheel", (e) => {
     e.preventDefault();
     const v = App.renderer.view;
-    if (v.mode !== "horizon") return;
+    if (v.mode === "fisheye") return;
     v.fovDeg = Math.max(20, Math.min(140, v.fovDeg * (e.deltaY > 0 ? 1.1 : 0.9)));
     redraw();
   }, { passive: false });
@@ -3656,10 +4112,24 @@ function bindControls() {
   on("tint", "change", (e) => { App.renderer.tintFamilies = e.target.checked; redraw(); });
   on("viewmode", "change", (e) => {
     App.renderer.view.mode = e.target.value;
-    $("compass").style.display = e.target.value === "horizon" ? "" : "none";
+    $("compass").style.display = e.target.value === "fisheye" ? "none" : "";
+    $("aim").disabled = e.target.value === "fisheye";
     redraw();
   });
 
+  on("aim", "click", () => {
+    // face the direction that takes in the most visible SBDCs
+    if (!App.ev || App.renderer.view.mode === "fisheye") return;
+    const azimuths = [];
+    for (const i of App.ev.above) if (App.ev.visible[i]) azimuths.push(App.ev.az[i]);
+    const az = RENDER.densestAzimuth(azimuths, App.renderer.view.fovDeg);
+    if (az == null) return;
+    App.renderer.view.centerAz = Math.round(az);
+    redraw();
+  });
+  on("night-run", "click", () => Night.computeNight());
+  on("year-run", "click", () => Night.computeYear());
+  on("night-chart", "click", (e) => Night.clickChart(e));
   on("open-assumptions", "click", () => { $("assump").classList.add("open"); });
   on("close-assumptions", "click", () => { $("assump").classList.remove("open"); });
   on("snapshot", "click", snapshot);
