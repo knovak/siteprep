@@ -85,14 +85,28 @@ export function unprojFisheye(x, y, W, H, marginPx = 30) {
 
 /** Map surface brightness mu (V mag/arcsec^2, bright=small) to an RGB
  *  sky color. Anchors chosen to match the approved report figure:
- *  deep indigo night -> violet dusk -> warm peach/gold twilight -> day. */
+ *  deep indigo night -> violet dusk -> warm peach/gold twilight -> day.
+ *
+ *  Each color belongs to a stage of twilight: the zenith is gold with the
+ *  Sun 2.5 degrees up, peach 1.8 degrees down, violet 5.4 degrees down and
+ *  indigo 10.85 degrees down. The mu values are the zenith brightness at
+ *  those Sun altitudes. When the twilight table in the data file was
+ *  corrected in November 2026 these anchors moved with it (they were 10, 13,
+ *  16 and 19), so that the colors stay with the same stages. The test
+ *  "sky colors stay with the stages of twilight" holds the two together. */
 const MU_RAMP = [
-  { mu: 4.0,  c: [0.62, 0.74, 0.92] },  // daylight blue
-  { mu: 10.0, c: [0.80, 0.66, 0.52] },  // low bright twilight gold
-  { mu: 13.0, c: [0.55, 0.38, 0.34] },  // deep twilight peach
-  { mu: 16.0, c: [0.22, 0.16, 0.28] },  // violet dusk
-  { mu: 19.0, c: [0.085, 0.075, 0.16] },// late dusk indigo
-  { mu: 21.9, c: [0.022, 0.024, 0.055] } // dark night
+  { mu: 4.0,   c: [0.62, 0.74, 0.92] },  // daylight blue
+  { mu: 6.44,  c: [0.80, 0.66, 0.52] },  // low bright twilight gold
+  { mu: 8.65,  c: [0.55, 0.38, 0.34] },  // deep twilight peach
+  { mu: 12.42, c: [0.22, 0.16, 0.28] },  // violet dusk
+  { mu: 18.76, c: [0.085, 0.075, 0.16] },// late dusk indigo
+  { mu: 21.9,  c: [0.022, 0.024, 0.055] } // dark night
+];
+/** The Sun altitude (deg) at which each ramp color is the zenith's. */
+export const SKY_COLOR_STAGES = [
+  { sunAltDeg: 30, c: MU_RAMP[0].c }, { sunAltDeg: 2.5, c: MU_RAMP[1].c },
+  { sunAltDeg: -1.8, c: MU_RAMP[2].c }, { sunAltDeg: -5.4, c: MU_RAMP[3].c },
+  { sunAltDeg: -10.85, c: MU_RAMP[4].c }, { sunAltDeg: -18, c: MU_RAMP[5].c },
 ];
 
 export function muToColor(mu) {
@@ -106,6 +120,21 @@ export function muToColor(mu) {
     }
   }
   return t[t.length - 1].c.slice();
+}
+
+/**
+ * Sky color for a surface brightness, part of which is artificial light.
+ * artificialFraction is the share of the sky's light that is skyglow, 0 to 1.
+ * Skyglow has no twilight colors: that share of the color keeps the ramp's
+ * brightness and takes a warm gray hue.
+ */
+export function skyColor(mu, artificialFraction = 0) {
+  const c = muToColor(mu);
+  const f = Math.max(0, Math.min(1, artificialFraction));
+  if (f === 0) return c;
+  const level = (c[0] + c[1] + c[2]) / 3;
+  const glow = [1.30 * level, 1.00 * level, 0.72 * level];
+  return c.map((v, k) => v + f * (glow[k] - v));
 }
 
 /** Flux for splatting from magnitude (relative, saturates in tonemap). */
@@ -196,8 +225,11 @@ export class SkyRenderer {
           const dir = [0, 1, 2].map((k) =>
             Math.cos(aa) * (Math.cos(zz) * basis.north[k] + Math.sin(zz) * basis.east[k]) +
             Math.sin(aa) * basis.up[k]);
-          const mu = model.muAt(dir, sunDir, sunAlt, data);
-          rgb = muToColor(mu);
+          // the sky the counts were made against: twilight plus what the
+          // observer's settings add (ev.sky), and how much of it is skyglow
+          const natural = model.muAt(dir, sunDir, sunAlt, data);
+          const mu = model.muAt(dir, sunDir, sunAlt, data, ev.sky);
+          rgb = skyColor(mu, 1 - Math.pow(10, -0.4 * (natural - mu)));
         }
         const o = (j * BW + i) * 4;
         img.data[o] = rgb[0] * 255; img.data[o + 1] = rgb[1] * 255;

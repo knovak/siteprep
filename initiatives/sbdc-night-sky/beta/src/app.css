@@ -112,7 +112,8 @@ input[type="range"] {
    second line would cover the sky. */
 #readout { font: 12.5px var(--mono); color: var(--text); line-height: 1.45; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 900px) { #readout { white-space: nowrap; } }
-#readout-sub { font: 11px var(--mono); color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#readout-sub { font: 11px var(--mono); color: var(--muted); margin-top: 3px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 900px) { #readout-sub { white-space: nowrap; } }
 
 #compass {
   position: absolute; top: 10px; right: 14px;

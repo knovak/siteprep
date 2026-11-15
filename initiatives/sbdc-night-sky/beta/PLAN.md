@@ -154,8 +154,8 @@ Result, with seed 12345 (`test/paired.test.js` holds the bands):
 
 The two twilight rows are where fault 9 shows: this simulator's sky is too
 dark with the Sun 10° to 12° down, so it counts three to four times as many
-faint satellites as Site 2 there. Unit 3's correction is expected to bring
-those ratios toward 1, and its pull request reports the same table.
+faint satellites as Site 2 there. Unit 3 reports the same table after its
+correction.
 
 ### Unit 3 - Sky brightness: the twilight correction and ambient light
 
@@ -170,6 +170,35 @@ those ratios toward 1, and its pull request reports the same table.
 - The existing "Eye / sky quality limit" stays as the observer's own limit and
   is relabelled so that the two controls are not confused.
 - The readout gives the zenith sky brightness and the limiting magnitude.
+
+Two things were added while the unit was done, both recorded in
+`../decisions.md`:
+
+- `advanced.naked_eye_threshold`: `table` (default) or `schaefer`. Correcting
+  the sky moved the twilight ratios below only from 3.9 and 3.1 to 3.3. The
+  rest of the difference is the threshold relation: Site 2's closed form gives
+  a limit about a magnitude lower than this simulator's table with the Sun 10°
+  down. It is now an option, and the sdross0 presets use it.
+- The sky color ramp was anchored to the old table's values. Its anchors moved
+  with the table so that each color stays with its stage of twilight.
+
+Result, with seed 12345, the Schaefer threshold, and Bortle 5 for London:
+
+| Pairs | Sun | No mitigation, this / Site 2 | Optimistic, this / Site 2 |
+| --- | --- | --- | --- |
+| 01-08, Blacksburg in September, October and December | 15.6° to 16.8° down | 0.88 to 1.02 | 1.06 in December; 0.33 to 0.80 near the equinox |
+| 11-12 and 15-16, 55° N and London | 10.5° and 11.7° down | 1.00 and 1.04 | 1.79 and 1.25 |
+| 09-10 and 13-14, June and Sydney | 12.8° and 13.7° down | 1.10 and 0.52, on counts near 1,000 | both zero, as at Site 2 |
+
+What remains in the twilight rows is the twilight curve itself. This simulator
+uses the Paranal measurements, and Site 2 a fit that includes a low-altitude
+site; the paper reports Paranal's twilight sky as about 30% darker. What
+remains in the equinox optimistic counts is sensitivity: a tenth of a
+magnitude changes them by half.
+
+What the correction moved for a person who changes nothing: the opening view,
+30 minutes after sunset, shows 546 visible SBDCs and 2 stars where it showed
+3,290 and 67. `README.md` in this folder has the table.
 
 ### Unit 4 - Moonlight, and SBDC light compared with the Moon
 
@@ -240,7 +269,7 @@ simulator stays as released.
 | Unit | State |
 | --- | --- |
 | 1 - Faults and checks | Merged 2026-11-15, [knovak/siteprep#652](https://github.com/knovak/siteprep/pull/652) |
-| 2 - Constellation and brightness settings, presets | In its pull request |
-| 3 - Twilight correction and ambient light | Planned |
+| 2 - Constellation and brightness settings, presets | Merged 2026-11-15, [knovak/siteprep#653](https://github.com/knovak/siteprep/pull/653) |
+| 3 - Twilight correction and ambient light | In its pull request |
 | 4 - Moonlight and light ratios | Planned |
 | 5 - Hours of significant light, display items | Planned |

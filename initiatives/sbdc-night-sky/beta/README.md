@@ -47,8 +47,10 @@ On the day it was created, the beta built a page byte-identical to the released
 | 2026-11-15 | Eight faults corrected; counts in view beside the whole-sky totals; the time relative to sunset or sunrise | The November 2026 upgrade, Unit 1 |
 | 2026-11-15 | Plane layout, plane spread, brightness scatter and phase law as settings; latitude to a tenth of a degree; three presets for the sdross0 setups; a link that carries the settings | The November 2026 upgrade, Unit 2 |
 
+| 2026-11-15 | The twilight sky corrected to measured values; ambient light by Bortle class; a choice of naked-eye threshold; the sky brightness and limit in the readout | The November 2026 upgrade, Unit 3 |
+
 `PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
-units. Units 1 and 2 are described below; the others are added here as they
+units. Units 1 to 3 are described below; the others are added here as they
 merge.
 
 ## Settings files
@@ -291,10 +293,10 @@ What still differs from that project, with these presets:
 - **Sunset.** It counts minutes from the Sun's centre on the horizon. This
   simulator's sunset is when the upper edge has gone, about four minutes
   later. "sunset +80" here is near its 84 minutes.
-- **The sky.** Its limiting magnitude comes from a different twilight curve and
-  a different threshold formula. Once the sky is dark the two limits are within
-  about 0.2 magnitude. In twilight this simulator's sky is too dark until
-  Unit 3.
+- **The sky.** Since Unit 3 the presets use that project's threshold formula.
+  The twilight curves still differ: this simulator's is Patat et al.'s,
+  measured at Paranal, which is about half a magnitude darker than that
+  project's with the Sun 10° to 11° down.
 - **Plane nodes.** Each simulator draws its own. That project reports about 2%
   scatter between layouts without mitigation, and about 30% with it at an
   equinox.
@@ -302,10 +304,134 @@ What still differs from that project, with these presets:
 
 `test/paired.test.js` compares the two simulators' whole-sky counts for the 16
 documented cases with these settings, within a stated band for each. With seed
-12345 the no-mitigation count is 0.85 to 1.00 of that project's once the sky is
-dark, and the December optimistic count is 0.98 of it. The equinox optimistic
-counts are 0.2 to 0.6 of it: those satellites are within a few tenths of a
-magnitude of the limit, and this simulator's limit is slightly stricter.
+12345, since Unit 3:
+
+| Pairs | No mitigation, this / that | Optimistic, this / that |
+| --- | --- | --- |
+| 01-08, dark sky | 0.88 to 1.02 | 1.06 in December; 0.33 to 0.80 near the equinox |
+| 11-12 and 15-16, twilight | 1.00 and 1.04 | 1.79 and 1.25 |
+| 09-10 and 13-14, counts near 1,000 | 1.10 and 0.52 | both zero, as there |
+
+The equinox optimistic counts are of satellites within a few tenths of a
+magnitude of the limit. A tenth of a magnitude changes such a count by half,
+and one plane layout differs from another by a factor of three: six seeds gave
+329 to 1,194 for pair 02, where that project reports 835 to 1,766 over five of
+its own layouts.
+
+### Unit 3: the twilight sky, ambient light, and the naked-eye threshold
+
+#### The twilight sky was too dark
+
+`skyBrightness.table` in the data file gives the brightness of the sky at the
+zenith for each altitude of the Sun. It cited Patat et al. (2006) and did not
+match that paper in twilight:
+
+| Sun below the horizon | The paper, mag/arcsec² | The table before | Faintest magnitude seen: before, now |
+| --- | --- | --- | --- |
+| 6° (end of civil twilight) | 13.30 | 16.5 | 3.8, 1.5 |
+| 9° | 17.00 | 18.2 | 4.9, 4.2 |
+| 12° (end of nautical twilight) | 19.67 | 19.5 | 5.7, 5.7 |
+| 15° | 21.32 | 20.9 | 6.2, 6.3 |
+
+A larger number is a darker sky. At the end of civil twilight the table's sky
+was about 19 times darker than the measured one, so fourth-magnitude stars and
+satellites counted as visible when only first-magnitude ones are. The table
+now has the paper's V-band fit, one row per degree from 5° to 15°, and
+measured values at sunset and 3° down in place of two rows that were 4 to 5
+magnitudes too dark. The day and night ends are unchanged.
+
+What this moved, with everything else at its default:
+
+| View | Sun | Visible SBDCs: before, now | Visible stars: before, now |
+| --- | --- | --- | --- |
+| The opening view: 40° N, June 21, 30 min after sunset | 5.6° down | 3,290, 546 | 67, 2 |
+| Preset: New York City, 30 min after sunset | 6.4° down | 20,427, 9,305 | 107, 4 |
+| Preset: Taos, 30 min before sunrise | 6.9° down | 17,565, 8,697 | 144, 10 |
+| 40° N, June 21, 60 min after sunset | 10.0° down | 4,534, 3,899 | 480, 286 |
+| 40° N, June 21, 90 min after sunset | 14.0° down | 4,218, 4,286 | 1,535, 1,552 |
+| Preset: Alice Springs, 60 min after sunset | 13.5° down | 29,234, 29,671 | 1,605, 1,776 |
+
+Half an hour after sunset there is now little to see, because the sky is still
+bright. An hour after sunset the numbers are within about 15% of what they
+were, and from 75 minutes on they are slightly higher. The opening view is
+still 30 minutes after sunset; "+60 min" shows the constellation against a
+dark sky.
+
+The sky's colors are drawn from its brightness, and each color was chosen for
+a stage of twilight. The color ramp's anchors moved with the table, so the sky
+has the same color at the same stage as before. `test/render.test.js` checks
+that the two stay together.
+
+`test/golden/golden.json` and the Site 1 counts in
+`test/fixtures/paired-comparisons.json` were regenerated for this change. The
+fixture keeps the document's counts of 12 October 2026 beside the new ones.
+
+#### Ambient light
+
+"Ambient light" in "Sky & display" is artificial skyglow by Bortle class, 1
+(none, the default) to 9 (inner city). It is `display.ambient_light` in a
+settings file. The class's skyglow is added to the sky's light, so the sky is
+brighter, the faintest magnitude seen is lower, and fewer satellites and stars
+are counted and drawn. The drawn sky takes a warm gray tint in proportion to
+how much of its light is skyglow.
+
+| Class | Skyglow at the zenith, mag/arcsec² | Faintest magnitude under a dark sky |
+| --- | --- | --- |
+| 1 | none | 6.5 |
+| 3, rural | 21.5 | 6.2 |
+| 5, suburban | 19.8 | 5.7 |
+| 7, suburban to urban | 18.2 | 4.9 |
+| 8, city | 17.5 | 4.5 |
+| 9, inner city | 16.8 | 4.0 |
+
+Classes 2 to 8 are the values `sdross0/orbital-datacenter-brightness` uses;
+class 9 continues the trend. The skyglow is taken as the same in every
+direction. A real light dome is brighter toward the nearest town.
+
+The existing control beside it is now labelled "Eye limit": the faintest
+magnitude this observer sees under a dark sky, 4.0 to 6.5, default 6.0. The
+sky's own limit, from twilight and ambient light, applies when it is lower.
+With the default eye limit of 6.0, classes 1 to 4 make no difference once the
+sky is dark, because their limits are above 6.0.
+
+#### The naked-eye threshold
+
+The threshold turns a sky brightness into the faintest magnitude seen.
+"Naked-eye threshold" in "Advanced" (`advanced.naked_eye_threshold`) chooses
+between two:
+
+- **Table** (the default): the simulator's own table. With the corrected sky it
+  matches when stars are seen to appear in twilight: first magnitude with the
+  Sun about 6° down, third by 8°, fifth by 11°.
+- **Schaefer formula**: `7.93 − 5 log10(1 + 10^(4.316 − mu/5))`, the form used
+  for sky-quality-meter readings and by the sdross0 project. It is stricter
+  under a bright sky, by 0.8 magnitude at 18 mag/arcsec² and by 1.9 with the
+  Sun 6° down, and within 0.1 once the sky is dark. With it and the Bortle
+  table above, this simulator reproduces the limits that project publishes for
+  Bortle 1, 3, 4, 5 and 8 to within 0.03 magnitude.
+
+The three sdross0 presets use the Schaefer formula.
+
+#### The readout
+
+The second readout line gives the sky overhead and its limit:
+
+```
+zenith sky 18.1 mag/arcsec² (Bortle 7), naked-eye limit 4.1
+```
+
+#### What Unit 3 changed in the code
+
+- `data/sbdc-data.json`: `skyBrightness.table` corrected;
+  `skyBrightness.artificialByBortle` and `limitingMagnitude.closedForm` added.
+- `src/model.js`: `addMu`, `artificialMu` and `skyExtras` are new. `muAt`,
+  `limitingMag` and `starVisibility` take what `skyExtras` returns, and
+  `evaluate` returns it as `sky` so that the renderer draws the sky the counts
+  were made against. `summarize` adds `zenithSkyMu` and `zenithLimitMag`.
+- `src/render.js`: the color ramp's anchors; `skyColor` and
+  `SKY_COLOR_STAGES` are new.
+- `src/settings.js`, `src/ui.js`, `src/index.html`: the two controls and their
+  settings; the readout line.
 
 ### A link that carries the settings
 

@@ -307,7 +307,7 @@
     }
   },
   "skyBrightness": {
-    "_note": "Zenith V-band sky surface brightness vs Sun altitude. Piecewise-linear interpolation. Values compiled from published twilight photometry (e.g. Patat et al. 2006 twilight sky brightness; Krisciunas & Schaefer 1991 dark sky).",
+    "_note": "Zenith V-band sky surface brightness vs Sun altitude, and what is added to it. Piecewise-linear interpolation of the table. From 5 to 15 degrees of solar depression the table is the V-band fit of Patat, Ugolnikov & Postylyakov (2006), one value per degree. Until November 2026 the twilight rows were 3.2 mag darker than that fit at 6 degrees and 1.2 mag darker at 9 degrees, which counted stars and satellites as visible too early in the evening.",
     "table": {
       "value": [
         {
@@ -320,27 +320,55 @@
         },
         {
           "sunAltDeg": 0,
-          "muVmagPerArcsec2": 11.5
+          "muVmagPerArcsec2": 6.75
         },
         {
           "sunAltDeg": -3,
-          "muVmagPerArcsec2": 14.0
+          "muVmagPerArcsec2": 9.92
+        },
+        {
+          "sunAltDeg": -5,
+          "muVmagPerArcsec2": 11.84
         },
         {
           "sunAltDeg": -6,
-          "muVmagPerArcsec2": 16.5
+          "muVmagPerArcsec2": 13.3
+        },
+        {
+          "sunAltDeg": -7,
+          "muVmagPerArcsec2": 14.65
+        },
+        {
+          "sunAltDeg": -8,
+          "muVmagPerArcsec2": 15.88
         },
         {
           "sunAltDeg": -9,
-          "muVmagPerArcsec2": 18.2
+          "muVmagPerArcsec2": 17.0
+        },
+        {
+          "sunAltDeg": -10,
+          "muVmagPerArcsec2": 18.0
+        },
+        {
+          "sunAltDeg": -11,
+          "muVmagPerArcsec2": 18.9
         },
         {
           "sunAltDeg": -12,
-          "muVmagPerArcsec2": 19.5
+          "muVmagPerArcsec2": 19.67
+        },
+        {
+          "sunAltDeg": -13,
+          "muVmagPerArcsec2": 20.34
+        },
+        {
+          "sunAltDeg": -14,
+          "muVmagPerArcsec2": 20.89
         },
         {
           "sunAltDeg": -15,
-          "muVmagPerArcsec2": 20.9
+          "muVmagPerArcsec2": 21.32
         },
         {
           "sunAltDeg": -18,
@@ -352,7 +380,7 @@
         }
       ],
       "units": "deg ; V mag/arcsec^2 at zenith",
-      "source": "published (compiled; simplified to zenith values)",
+      "source": "-5 to -15 deg: Patat, Ugolnikov & Postylyakov (2006), A&A 455, 385, Table 1, V band: 11.84 + 1.518 (z - 95) - 0.057 (z - 95)^2 for Sun zenith distance z = 95 to 105 deg (ESO-Paranal). 0 and -3 deg: the fit of Kleijn (2017, hnsky.org/sqm_twilight.htm) to zenith SQM-L readings, -1.057 x + 6.7489. +10 and +30 deg (day) and -18 deg (night, e.g. Krisciunas & Schaefer 1991): as first compiled, unchanged",
       "confidence": "published"
     },
     "twilightGlowAmplitudeMag": {
@@ -366,6 +394,22 @@
       "units": "deg e-folding angular distance from the Sun",
       "source": "modeled",
       "confidence": "modeled"
+    },
+    "artificialByBortle": {
+      "value": {
+        "1": null,
+        "2": 22.0,
+        "3": 21.5,
+        "4": 20.8,
+        "5": 19.8,
+        "6": 18.8,
+        "7": 18.2,
+        "8": 17.5,
+        "9": 16.8
+      },
+      "units": "Bortle class ; artificial skyglow at the zenith, V mag/arcsec^2 (null = none). Added to the natural sky in linear units; taken as the same in every direction",
+      "source": "classes 1-8: representative values used by sdross0/orbital-datacenter-brightness (twilight.py), described there as approximate. class 9: assumed, continuing the trend. With the limitingMagnitude table these give a dark-sky naked-eye limit of 5.7, 5.2, 4.9, 4.5 and 4.0 for classes 5 to 9, inside or at the edge of the Bortle scale's own ranges (5.6-6.0, 5.1-5.5, 4.6-5.0, 4.1-4.5, 4.0)",
+      "confidence": "assumed"
     }
   },
   "limitingMagnitude": {
@@ -430,6 +474,15 @@
       "units": "mag (default UI cap simulating typical suburban-rural eyes; adjustable 4.0-6.5)",
       "source": "spec",
       "confidence": "assumed"
+    },
+    "closedForm": {
+      "value": {
+        "a": 7.93,
+        "b": 4.316
+      },
+      "units": "limiting magnitude = a - 5 log10(1 + 10^(b - mu / 5)); mu in mag/arcsec^2",
+      "source": "the inversion of Schaefer (1990, PASP 102, 212) used for sky-quality-meter readings, as in sdross0/orbital-datacenter-brightness (twilight.py). An alternative to the table, chosen with the 'Naked-eye threshold' control. It gives 6.6 at mu = 22 and is stricter than the table under a bright sky: 4.0 against 4.8 at mu = 18, and -0.4 against 1.5 with the Sun 6 deg down. The table is nearer to when stars are seen to appear in twilight; the closed form is nearer to the limits reported from light-polluted sites",
+      "confidence": "published"
     }
   },
   "shadowModel": {

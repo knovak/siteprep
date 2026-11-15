@@ -32,6 +32,13 @@ function parseReadout(text) {
   };
 }
 
+/** The sky overhead and its limit, from the second readout line. */
+function parseSky(text) {
+  const m = text.match(/zenith sky ([\d.]+) mag\/arcsec²(?: \(Bortle (\d)\))?, naked-eye limit (-?[\d.]+)/);
+  return m ? { mu: Number(m[1]), bortle: m[2] ? Number(m[2]) : 1, limit: Number(m[3]) } : null;
+}
+const sky = async (page) => parseSky(await page.locator('#readout-sub').textContent());
+
 /** Open the beta and wait for its first picture. Collects errors and requests.
  *  `hash` is the part of the address after the page, starting with "#". */
 async function openBeta(page, hash = '') {
@@ -205,6 +212,8 @@ test.describe('SBDC beta', () => {
     await expect(page.locator('#planespread-label')).toHaveText('±10°');
     await expect(page.locator('#scatter-label')).toHaveText('0.0 mag');
     await expect(page.locator('#phaselaw')).toHaveValue('lambert');
+    await expect(page.locator('#eyemodel')).toHaveValue('schaefer');
+    await expect(page.locator('#ambient')).toHaveValue('1');
     await expect(page.locator('#bright-label')).toContainText('+0.8');
     await expect(page.locator('#lat-label')).toHaveText('37.2°N');
     await expect(page.locator('#compass')).toHaveText('facing 315°');
@@ -277,6 +286,81 @@ test.describe('SBDC beta', () => {
     await expect(other.locator('#compass')).toHaveText('facing 0°');
     expect(errors).toEqual([]);
     await other.close();
+  });
+
+  // ---- unit 3: the twilight sky, ambient light, the naked-eye threshold ----
+
+  test('half an hour after sunset the sky is still bright, and the readout says how bright', async ({ page }) => {
+    const problems = await openBeta(page);
+    // The opening view is 30 minutes after sunset with the Sun about 5.6
+    // degrees down. The measured sky there shows a handful of stars. Before
+    // the twilight table was corrected this view counted 67.
+    const opening = await readout(page);
+    expect(opening.stars).toBeLessThan(10);
+    expect(opening.visible).toBeGreaterThan(100);
+    const bright = await sky(page);
+    expect(bright.mu).toBeGreaterThan(11);
+    expect(bright.mu).toBeLessThan(14);
+    expect(bright.limit).toBeLessThan(2);
+
+    // Ninety minutes on, the sky is dark and the limit is the observer's own.
+    await page.locator('#jump-dusk60').click();
+    await expect(page.locator('#readout-sub')).toContainText('60 min after sunset');
+    const later = await sky(page);
+    expect(later.mu).toBeGreaterThan(bright.mu + 4);
+    expect(later.limit).toBeGreaterThan(4);
+    expect((await readout(page)).stars).toBeGreaterThan(100);
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('ambient light brightens the sky and hides stars and satellites', async ({ page }) => {
+    const problems = await openBeta(page);
+    await page.locator('#jump-midnight').click();
+    await expect(page.locator('#time-label')).toHaveText('00:00');
+    await page.locator('#starlim').fill('65');
+    const dark = { counts: await readout(page), sky: await sky(page) };
+    await expect.poll(async () => (await sky(page)).limit).toBe(6.5);
+    expect(dark.sky.bortle).toBe(1);
+
+    let last = { counts: await readout(page), sky: await sky(page) };
+    for (const [bortle, name] of [[5, 'suburban'], [8, 'city']]) {
+      await page.locator('#ambient').fill(String(bortle));
+      await expect(page.locator('#ambient-label')).toHaveText(`Bortle ${bortle} — ${name}`);
+      await expect(page.locator('#readout-sub')).toContainText(`(Bortle ${bortle})`);
+      const now = { counts: await readout(page), sky: await sky(page) };
+      expect(now.sky.mu).toBeLessThan(last.sky.mu);
+      expect(now.sky.limit).toBeLessThan(last.sky.limit);
+      expect(now.counts.stars).toBeLessThan(last.counts.stars);
+      expect(now.counts.above).toBe(last.counts.above);
+      last = now;
+    }
+    // a city sky: the scale's own limit is 4.1 to 4.5
+    expect(last.sky.limit).toBeGreaterThan(4);
+    expect(last.sky.limit).toBeLessThan(4.6);
+
+    await page.locator('#ambient').fill('1');
+    await expect(page.locator('#readout-sub')).not.toContainText('Bortle');
+    await expect.poll(async () => (await readout(page)).stars).toBe(dark.counts.stars);
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('the naked-eye threshold is a choice, and the Schaefer formula is stricter in twilight', async ({ page }) => {
+    const problems = await openBeta(page);
+    await page.locator('#jump-dusk60').click();
+    await expect(page.locator('#readout-sub')).toContainText('60 min after sunset');
+    const table = { counts: await readout(page), sky: await sky(page) };
+
+    await page.locator('aside details.grp summary', { hasText: 'Advanced' }).click();
+    await page.locator('#eyemodel').selectOption('schaefer');
+    await expect.poll(async () => (await sky(page)).limit).toBeLessThan(table.sky.limit - 0.3);
+    const strict = { counts: await readout(page), sky: await sky(page) };
+    expect(strict.sky.mu).toBe(table.sky.mu);
+    expect(strict.counts.stars).toBeLessThan(table.counts.stars);
+    expect(strict.counts.visible).toBeLessThanOrEqual(table.counts.visible);
+
+    await page.locator('#eyemodel').selectOption('table');
+    await expect.poll(async () => (await readout(page)).stars).toBe(table.counts.stars);
+    expect(problems.errors).toEqual([]);
   });
 
   test('every preset loads and draws', async ({ page }) => {

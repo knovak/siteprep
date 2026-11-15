@@ -20,6 +20,7 @@ const App = {
   state: {
     latDeg: 40, doy: 172, solarTimeHours: 20.7,
     brightnessRefMag: 0.5, phaseLaw: "lambert", userLimitingMag: 6.0, propagationSec: 0,
+    ambientBortle: 1, nakedEyeThreshold: "table",
   },
   cfg: {
     totalSats: 300000, ssoFraction: 0.7, shellPreset: "spread",
@@ -109,7 +110,22 @@ const TR = {
   view: ["View", "Vue"],
   viewHorizon: ["Horizon (drag to look around)", "Horizon (glisser pour regarder)"],
   viewFish: ["All-sky fisheye (zenith at center)", "Ciel entier (zénith au centre)"],
-  eyelim: ["Eye / sky quality limit", "Limite œil / qualité du ciel"],
+  eyelim: ["Eye limit", "Limite de l\u2019œil"],
+  ambient: ["Ambient light", "Lumière ambiante"],
+  hintAmbient: ["artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars",
+                "halo artificiel par classe de Bortle · il éclaircit le ciel, ce qui cache les satellites et étoiles faibles"],
+  bortle: [
+    ["no artificial light", "dark site", "rural", "rural to suburban", "suburban",
+     "bright suburban", "suburban to urban", "city", "inner city"],
+    ["aucune lumière artificielle", "site sombre", "rural", "rural à périurbain", "périurbain",
+     "périurbain lumineux", "périurbain à urbain", "ville", "centre-ville"],
+  ],
+  eyeModel: ["Naked-eye threshold", "Seuil à l\u2019œil nu"],
+  emTable: ["Table (stars as they appear in twilight)", "Table (étoiles telles qu\u2019elles apparaissent au crépuscule)"],
+  emSchaefer: ["Schaefer formula (stricter under a bright sky)", "Formule de Schaefer (plus stricte sous un ciel clair)"],
+  hintEyeModel: ["how the sky\u2019s brightness sets the faintest magnitude seen",
+                 "comment la luminosité du ciel fixe la magnitude la plus faible visible"],
+  rSky: ["zenith sky", "ciel au zénith"], rLimit: ["naked-eye limit", "limite à l\u2019œil nu"],
   showStars: ["Show stars (Yale Bright Star Catalog)", "Afficher les étoiles (catalogue Yale)"],
   tint: ["Tint by orbit family (analysis aid)", "Colorer par famille d'orbite (aide à l'analyse)"],
   longexp: ["Long-exposure camera (30 s) — the astronomy view", "Pose longue (30 s) — la vue astronomique"],
@@ -117,7 +133,8 @@ const TR = {
   markPole: ["Mark celestial pole (sky\u2019s rotation center)", "Marquer le pôle céleste (centre de rotation du ciel)"],
   poleN: ["north celestial pole", "pôle céleste nord"],
   poleS: ["south celestial pole", "pôle céleste sud"],
-  hintStarlim: ["lower = light-polluted site", "plus bas = site pollué par la lumière"],
+  hintStarlim: ["the faintest magnitude this observer sees under a dark sky · twilight and ambient light lower it further",
+                "la magnitude la plus faible vue par cet observateur sous un ciel sombre · le crépuscule et la lumière ambiante l\u2019abaissent"],
   hintDrag: ["Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details",
              "Glisser pour se déplacer · pincer/molette pour zoomer · flèches/±/espace au clavier · toucher un point brillant pour les détails"],
   hintLongexp: ["every sunlit satellite becomes a 12–27° streak; stars to the catalog limit",
@@ -131,8 +148,8 @@ const TR = {
   rInView: ["in view", "dans le champ"],
   rAfter: ["min after", "min après le"], rBefore: ["min before", "min avant le"],
   rAt: ["at", "au"],
-  rDef: ["visible = sunlit + above horizon + brighter than the twilight naked-eye threshold",
-         "visibles = éclairés + au-dessus de l'horizon + plus brillants que le seuil crépusculaire à l'œil nu"],
+  rDef: ["visible = sunlit + above horizon + brighter than the naked-eye limit of the sky where it is",
+         "visibles = éclairés + au-dessus de l'horizon + plus brillants que la limite à l'œil nu du ciel à cet endroit"],
   rCam: ["camera mode: streaks = one 30 s exposure, stars to catalog limit",
          "mode caméra : traînées = une pose de 30 s, étoiles jusqu'à la limite du catalogue"],
   sunsetLbl: ["sunset", "coucher"], sunriseLbl: ["sunrise", "lever"],
@@ -227,6 +244,10 @@ function applyLang(lang) {
   }
   txt("#hint-fcc", "hintFcc");
   txt("#hint-starlim", "hintStarlim"); txt("#hint-drag", "hintDrag");
+  lbl('label[for="ambient"]', "ambient"); txt("#hint-ambient", "hintAmbient");
+  txt('label[for="eyemodel"]', "eyeModel"); txt("#hint-eyemodel", "hintEyeModel");
+  txt('#eyemodel option[value="table"]', "emTable"); txt('#eyemodel option[value="schaefer"]', "emSchaefer");
+  if ($("ambient-label") && App.state) $("ambient-label").textContent = bortleLabel(App.state.ambientBortle);
   txt("#hint-longexp", "hintLongexp"); txt("#busy", "busy");
   txt('label[for="preset"]', "presetLbl"); txt('#preset option[value=""]', "presetNone");
   txt("#settings-export", "exportBtn"); txt("#settings-import", "importBtn");
@@ -283,7 +304,7 @@ function reevaluate() {
     App.stars = st;
     App.starVis = MODEL.starVisibility(
       catalog, st, state.latDeg, App.ev.sunDir, App.ev.sunAltDeg,
-      state.userLimitingMag, data).vis;
+      state.userLimitingMag, data, App.ev.sky).vis;
     // camera mode: a 30 s exposure records the whole catalog, and each
     // satellite needs its end-of-exposure sky position
     if (App.renderer.longExposure) {
@@ -330,6 +351,11 @@ function brightLabel(m) {
   return `${s} mag`;
 }
 
+/** "Bortle 5 — suburban" in the current language. */
+function bortleLabel(n) {
+  return `Bortle ${n} \u2014 ${TR.bortle[LANG.cur === "fr" ? 1 : 0][n - 1]}`;
+}
+
 function brightAnchor(m) {
   if (m == null) return "";
   if (m < -3.3) return T("aVenus");
@@ -368,9 +394,11 @@ function updateReadout() {
       ? `  ·  ${T("rBrightest")} ${s.brightestObjectMag.toFixed(1)} (${brightAnchor(s.brightestObjectMag)})` : "");
   $("readout").textContent = line;
   const rel = twilightOffsetText();
+  const bortle = App.state.ambientBortle > 1 ? ` (Bortle ${App.state.ambientBortle})` : "";
   $("readout-sub").textContent =
     `lat ${App.state.latDeg}°  ·  ${fmtDoy(App.state.doy)}  ·  ${fmtTime(App.state.solarTimeHours)} ${T("rTime")}` +
     (rel ? ` (${rel})` : "") +
+    `  ·  ${T("rSky")} ${s.zenithSkyMu.toFixed(1)} mag/arcsec²${bortle}, ${T("rLimit")} ${s.zenithLimitMag.toFixed(1)}` +
     `  ·  ${T("rSeed")} ${App.cfg.seed}  ·  ` +
     (App.renderer && App.renderer.longExposure ? T("rCam") : T("rDef"));
 }
@@ -783,6 +811,12 @@ function bindControls() {
     $("starlim-label").textContent = `mag ${App.state.userLimitingMag.toFixed(1)}`;
     reevaluate();
   });
+  on("ambient", "input", (e) => {
+    App.state.ambientBortle = +e.target.value;
+    $("ambient-label").textContent = bortleLabel(App.state.ambientBortle);
+    reevaluate();
+  });
+  on("eyemodel", "change", (e) => { App.state.nakedEyeThreshold = e.target.value; reevaluate(); });
   on("show-stars", "change", (e) => { App.renderer.showStars = e.target.checked; redraw(); });
   on("tint", "change", (e) => { App.renderer.tintFamilies = e.target.checked; redraw(); });
   on("viewmode", "change", (e) => {
@@ -867,6 +901,7 @@ function readSettings() {
     look_altitude: view.centerAlt,
     field_of_view: view.fovDeg,
     sky_limit_mag: App.state.userLimitingMag,
+    ambient_light: App.state.ambientBortle,
     show_stars: App.renderer.showStars,
     long_exposure: App.renderer.longExposure,
   });
@@ -875,6 +910,7 @@ function readSettings() {
     tint_by_orbit_family: App.renderer.tintFamilies,
     mark_celestial_pole: App.renderer.markPole,
     satellites_move_in_fast_forward: App.shimmer,
+    naked_eye_threshold: App.state.nakedEyeThreshold,
     cluster_membership_variation: cl.memberSigma,
     cluster_diameter_variation: cl.diameterSigma,
   });
@@ -950,6 +986,8 @@ function applySettings(s) {
     view.fovDeg = d.field_of_view;
     updateCompass();
     setControl("starlim", Math.round(d.sky_limit_mag * 10), "input");
+    setControl("ambient", d.ambient_light, "input");
+    setControl("eyemodel", a.naked_eye_threshold, "change");
     setControl("show-stars", d.show_stars, "change");
     setControl("longexp", d.long_exposure, "change");
     setControl("tint", a.tint_by_orbit_family, "change");

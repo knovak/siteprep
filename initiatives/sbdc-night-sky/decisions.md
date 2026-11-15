@@ -287,3 +287,56 @@ those are on.
 - Whether the beta gets its own tutorial is still open. Unit 5 adds a short
   guide to the new controls to `beta/README.md`.
 - Promotion of the beta to the released simulator is not part of this work.
+
+## 2026-11-15 — Beta upgrade, unit 3: a threshold option, the color ramp, and the opening view
+
+Three things came up while unit 3 was done that the entry above did not
+settle. They are recorded here because one of them revises it.
+
+**The Schaefer threshold becomes an option.** The entry above left the
+naked-eye threshold table as it was and listed the Schaefer closed form as an
+alternative not taken. Correcting the twilight sky was expected to bring this
+simulator's twilight counts close to the other simulator's. It moved the
+optimistic-case ratio at 55° N only from 3.9 to 3.3. The larger part of the
+difference is the threshold relation, which the other simulator takes from
+Schaefer (1990): with the Sun 10° down it gives a limit about a magnitude
+lower than the table. The table stays the default, because with the corrected
+sky it matches when stars are seen to appear in twilight. The closed form is
+added as `advanced.naked_eye_threshold: schaefer`, and the three sdross0
+presets use it, since those presets exist to correspond to that project's
+setups. With it the same ratio is 1.8, and the no-mitigation ratios in
+twilight are 1.00 and 1.04.
+
+**The sky color ramp's anchors moved with the table.** The ramp maps sky
+brightness to color, with anchors that were values of the old table. With the
+corrected table and the old anchors, the whole sky half an hour after sunset
+drew in the peach meant for the minutes around sunset. The anchors are now the
+corrected table's values at the same Sun altitudes, so each color stays with
+its stage of twilight, and a test ties the two together.
+
+**The opening view stays 30 minutes after sunset.** With the measured sky that
+view shows 546 visible SBDCs and 2 stars, where it showed 3,290 and 67. An
+hour after sunset it shows 3,899 and 286. Moving the opening time to 60
+minutes would give a fuller first picture. It is left where it is: the
+opening time is the simulator's own default, the user did not ask for it to
+change, and the "+60 min" button is one click away. The three place presets
+are likewise unchanged in time, and two of them, at 30 minutes from sunset or
+sunrise, now show about half the SBDCs they did.
+
+### Alternatives considered
+
+| Option | Consequence |
+| --- | --- |
+| Table as the default threshold, Schaefer as an option used by the sdross0 presets | The default view keeps a threshold that fits twilight observation; the presets correspond to the other project. Chosen. |
+| Schaefer as the default | Closer to the other simulator everywhere, and a default that shows no first-magnitude star until the Sun is 7° down. |
+| No option | The sdross0 presets differ from that project by a factor of three in twilight for a reason a person cannot change. |
+| Leave the color ramp's anchors | A peach sky for the whole of civil twilight. |
+| Move the opening view to 60 minutes after sunset | A fuller first picture, and a changed default the user did not ask for. |
+
+### What this settles, and what it does not
+
+- Whether the opening view and the place presets should move later in the
+  evening is the user's to decide. Nothing in the remaining units depends on
+  it.
+- The two twilight curves still differ by about half a magnitude with the Sun
+  10° to 11° down. This simulator keeps the one its data file cites.

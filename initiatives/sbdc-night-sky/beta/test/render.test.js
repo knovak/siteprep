@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import * as R from "../src/render.js";
+import { zenithMu } from "../src/model.js";
+
+const skyData = JSON.parse(readFileSync(new URL("../data/sbdc-data.json", import.meta.url)));
 
 test("horizon projection round-trips az/alt", () => {
   const view = { centerAz: 200, centerAlt: 25, fovDeg: 100 };
@@ -95,4 +99,35 @@ test("in view: inside the picture and above the hills, or anywhere in the all-sk
   const fisheye = { mode: "fisheye", centerAz: 0, centerAlt: 28, fovDeg: 110 };
   assert.equal(R.inFrame(135, 25, fisheye, W, H), true);
   assert.equal(R.inFrame(135, -1, fisheye, W, H), false);
+});
+
+test("sky color: skyglow keeps the brightness and loses the twilight hue", () => {
+  for (const mu of [16, 18.5, 21]) {
+    const natural = R.muToColor(mu), lit = R.skyColor(mu, 1), half = R.skyColor(mu, 0.5);
+    assert.deepEqual(R.skyColor(mu, 0), natural, "no skyglow, no change");
+    const level = (c) => (c[0] + c[1] + c[2]) / 3;
+    assert.ok(Math.abs(level(lit) - level(natural)) < 0.01 * level(natural) + 1e-9, `mu ${mu}: same brightness`);
+    assert.ok(lit[0] > lit[1] && lit[1] > lit[2], `mu ${mu}: warm gray, red above green above blue`);
+    for (let k = 0; k < 3; k++) {
+      assert.ok(Math.abs(half[k] - (natural[k] + lit[k]) / 2) < 1e-12, "half skyglow is halfway");
+    }
+  }
+  assert.deepEqual(R.skyColor(18, -1), R.muToColor(18), "a fraction below 0 is 0");
+  assert.deepEqual(R.skyColor(18, 2), R.skyColor(18, 1), "a fraction above 1 is 1");
+});
+
+test("sky colors stay with the stages of twilight", () => {
+  // The ramp maps brightness to color, and each color was chosen for a stage
+  // of twilight. If the twilight table changes, the ramp's anchors have to
+  // change with it, or the whole sky takes the color of a different hour.
+  for (const stage of R.SKY_COLOR_STAGES) {
+    const got = R.muToColor(zenithMu(stage.sunAltDeg, skyData));
+    for (let k = 0; k < 3; k++) {
+      assert.ok(Math.abs(got[k] - stage.c[k]) < 0.01,
+        `Sun ${stage.sunAltDeg}: channel ${k} is ${got[k].toFixed(3)}, the stage's color has ${stage.c[k]}`);
+    }
+  }
+  // the ramp runs from bright to dark without a step back
+  const level = (mu) => R.muToColor(mu).reduce((a, v) => a + v, 0);
+  for (let mu = 9; mu <= 22; mu += 0.5) assert.ok(level(mu) <= level(mu - 0.5) + 1e-9, `mu ${mu}`);
 });
