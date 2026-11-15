@@ -8,6 +8,8 @@
  *   defaultSettings()     the simulator's defaults as a settings object
  *   settingsToYaml(s)     settings object -> commented YAML text
  *   settingsFromYaml(t)   YAML text -> { name, settings, notes, errors }
+ *   settingsToQuery(s)    settings object -> the part of a page address after "#"
+ *   settingsFromQuery(t)  that text -> { name, settings, notes, errors }
  *
  * The same format serves an exported file, an imported file, and a preset
  * (presets/*.yaml, embedded by the build). A key left out of a file takes its
@@ -109,8 +111,8 @@ export function settingsParseTime(text) {
  * steps than the file allows, the page moves to the nearest step on import.
  */
 export const SETTINGS_FIELDS = [
-  { section: "observer", key: "latitude", type: "int", min: -90, max: 90, def: 40,
-    note: "degrees, -90 (south pole) to 90 (north pole)" },
+  { section: "observer", key: "latitude", type: "number", min: -90, max: 90, digits: 1, def: 40,
+    note: "degrees, -90 (south pole) to 90 (north pole), to a tenth of a degree" },
   { section: "observer", key: "date", type: "date", def: 172,
     note: "month and day, e.g. Oct 20" },
   { section: "observer", key: "time", type: "time", def: { ref: "sunset", offsetMin: 30 },
@@ -123,12 +125,20 @@ export const SETTINGS_FIELDS = [
   { section: "constellation", key: "sso_percent", type: "int", min: 0, max: 100, def: 70,
     note: "percent in Sun-synchronous orbits; the rest are in the 30-degree shell" },
   { section: "constellation", key: "shells", type: "choice",
-    options: ["low", "mid", "spread", "custom"], def: "spread",
-    note: "low, mid, spread, or custom" },
+    options: ["low", "mid", "spread", "filed-sso", "custom"], def: "spread",
+    note: "low, mid, spread, filed-sso (the 54 filed Sun-synchronous levels), or custom" },
   { section: "constellation", key: "custom_shells", type: "text", def: "",
     note: "used when shells is custom: altitude:share pairs, e.g. \"550:0.5, 1200:0.5\"" },
+  { section: "constellation", key: "plane_layout", type: "choice", options: ["spread", "filed"], def: "spread",
+    note: "spread: 72 planes per shell, satellites at random; filed: 2 planes per shell level, evenly spaced" },
+  { section: "constellation", key: "plane_spread_deg", type: "number", min: 0, max: 30, digits: 2, def: 11.25,
+    note: "how far the Sun-synchronous planes spread to each side of the dawn-dusk line, degrees, 0 to 30" },
   { section: "constellation", key: "brightness_mag", type: "number", min: -7, max: 7, digits: 1, def: 0.5,
     note: "median magnitude at 1,000 km; 0.5 unmitigated, 5.5 strong mitigation, 7 IAU target" },
+  { section: "constellation", key: "brightness_scatter_mag", type: "number", min: 0, max: 2, digits: 1, def: 1.3,
+    note: "spread in brightness between satellites, magnitudes (1 sigma), 0 to 2; 0 makes them identical" },
+  { section: "constellation", key: "phase_law", type: "choice", options: ["lambert", "mini"], def: "lambert",
+    note: "lambert: diffuse sphere; mini: the measured Starlink Gen2 Mini curve in mitigation mode" },
   { section: "constellation", key: "launch_trains", type: "int", min: 0, max: 10, def: 1,
     note: "0 to 10" },
   { section: "constellation", key: "clustering", type: "bool", def: false,
@@ -164,6 +174,7 @@ export const SETTINGS_FIELDS = [
 ];
 
 export const SETTINGS_SECTIONS = [...new Set(SETTINGS_FIELDS.map((f) => f.section))];
+const SETTINGS_BY_PATH = new Map(SETTINGS_FIELDS.map((f) => [`${f.section}.${f.key}`, f]));
 
 /** The simulator's defaults, as a fresh settings object. */
 export function defaultSettings() {
@@ -374,20 +385,28 @@ function settingsCoerce(field, raw) {
  */
 export function settingsFromYaml(text) {
   const { values, errors: parseErrors } = settingsParseYaml(text);
-  const problems = parseErrors.map((e) => ({ line: e.line, text: e.message }));
+  return settingsFromValues(values, parseErrors.map((e) => ({ line: e.line, text: e.message })),
+    "line", "the file has no settings in it");
+}
+
+/**
+ * Check a set of read values against the schema. `values` maps "name" and
+ * "section.key" to { value, line }. `where` is the word for a value's
+ * position in messages: a "line" of a file, or an "item" of a link.
+ */
+function settingsFromValues(values, problems, where, emptyMessage) {
   const notes = [];
   const settings = defaultSettings();
   let name = null;
-  const known = new Map(SETTINGS_FIELDS.map((f) => [`${f.section}.${f.key}`, f]));
 
   for (const [path, { value, line }] of values) {
     if (path === "name") {
       if (value != null) name = String(value).trim() || null;
       continue;
     }
-    const field = known.get(path);
+    const field = SETTINGS_BY_PATH.get(path);
     if (!field) {
-      notes.push(`line ${line}: "${path}" is not a setting and was ignored`);
+      notes.push(`${where} ${line}: "${path}" is not a setting and was ignored`);
       continue;
     }
     if (value == null) continue;                      // an explicit null is "use the default"
@@ -396,18 +415,78 @@ export function settingsFromYaml(text) {
       problems.push({ line, text: `${path}: ${got.error}` });
       continue;
     }
-    if (got.note) notes.push(`line ${line}: ${path} ${got.note}`);
+    if (got.note) notes.push(`${where} ${line}: ${path} ${got.note}`);
     settings[field.section][field.key] = got.value;
   }
 
-  const errors = problems.sort((a, b) => a.line - b.line).map((e) => `line ${e.line}: ${e.text}`);
+  const errors = problems.sort((a, b) => a.line - b.line).map((e) => `${where} ${e.line}: ${e.text}`);
   if (!errors.length && settings.constellation.shells === "custom" &&
       !parseShellSpec(settings.constellation.custom_shells)) {
     errors.push("constellation.shells is custom, so constellation.custom_shells needs " +
       "altitude:share pairs such as \"550:0.5, 1200:0.5\"");
   }
-  if (!errors.length && values.size === 0) errors.push("the file has no settings in it");
+  if (!errors.length && values.size === 0) errors.push(emptyMessage);
   return errors.length
     ? { name, settings: null, notes, errors }
     : { name, settings, notes, errors };
+}
+
+/* ------------------------- links ------------------------- */
+
+/**
+ * Settings object -> the text after "#" in a page address. Only the settings
+ * that differ from the defaults are written, as section.key=value pairs
+ * joined by "&", so the link to the opening view is empty and most links are
+ * short. `options.name` adds a name, which the page shows when it loads.
+ */
+export function settingsToQuery(settings, options = {}) {
+  const parts = [];
+  if (options.name) parts.push(`name=${encodeURIComponent(options.name)}`);
+  for (const f of SETTINGS_FIELDS) {
+    const value = settings[f.section][f.key];
+    if (settingsFormatValue(f, value) === settingsFormatValue(f, f.def)) continue;
+    // a link needs no YAML quoting: a time or a text is written as it is
+    const plain = f.type === "time" ? settingsFormatTime(value)
+      : f.type === "text" ? String(value)
+      : settingsFormatValue(f, value);
+    parts.push(`${f.section}.${f.key}=${encodeURIComponent(plain)}`);
+  }
+  return parts.join("&");
+}
+
+/**
+ * The text after "#" in a page address -> { name, settings, notes, errors },
+ * the same result as settingsFromYaml. A key that is left out takes its
+ * default, as in a file.
+ */
+export function settingsFromQuery(text) {
+  const values = new Map();
+  const problems = [];
+  String(text).replace(/^#/, "").split("&").forEach((part, index) => {
+    if (part === "") return;
+    const item = index + 1;
+    const cut = part.indexOf("=");
+    if (cut < 1) {
+      problems.push({ line: item, text: `expected "key=value", found "${part}"` });
+      return;
+    }
+    let path, raw;
+    try {
+      path = decodeURIComponent(part.slice(0, cut)).trim().toLowerCase();
+      raw = decodeURIComponent(part.slice(cut + 1));
+    } catch (e) {
+      problems.push({ line: item, text: `"${part}" is not readable as part of a link` });
+      return;
+    }
+    if (values.has(path)) {
+      problems.push({ line: item, text: `"${path}" appears twice` });
+      return;
+    }
+    // dates, times, names and free text are taken as written; everything
+    // else is read as a number or true/false, as in a file
+    const field = SETTINGS_BY_PATH.get(path);
+    const asWritten = path === "name" || (field && ["text", "date", "time"].includes(field.type));
+    values.set(path, { value: asWritten ? raw : settingsScalar(raw), line: item });
+  });
+  return settingsFromValues(values, problems, "item", "the link has no settings in it");
 }

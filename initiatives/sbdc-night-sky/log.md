@@ -132,3 +132,31 @@ the published beta in Chromium in the site workflow. The spec fails on the
 code before this unit in five of its six tests and passes after it. 93 tests
 pass in `beta/`; `test/golden/golden.json` is unchanged. `lib/`, `work/` and
 `demos/SBDC Night Sky/` are unchanged.
+
+## 2026-11-15 — Beta upgrade, unit 2: settings and presets for the sdross0 setups
+
+Unit 1 merged as knovak/siteprep#652 and the site build published it to the
+beta.
+
+Unit 2 adds the settings needed to reproduce the other simulator's setups:
+latitude to a tenth of a degree, the 54 filed Sun-synchronous levels as a shell
+option, an "as filed" plane layout with two planes per level and evenly spaced
+satellites, the plane spread, the scatter in brightness between satellites, and
+the measured Starlink Gen2 Mini phase curve beside the Lambertian sphere. The
+SBDC brightness slider now moves in steps of 0.1. Each default is the earlier
+behaviour: `test/golden/golden.json` and the Site 1 counts of the paired
+fixture are unchanged.
+
+Three presets set that project's constellation with its two brightness models,
+and a "Copy link" button writes the settings into the page address. The three
+place presets now use the places' latitudes to a tenth of a degree.
+
+With the new settings the picture shows distinct bands, as the other
+simulator's does. For the documented cases with a dark sky the no-mitigation
+count is 0.85 to 1.00 of the other simulator's, and the December optimistic
+count is 0.98 of it. In the two twilight cases this simulator counts three to
+four times as many faint satellites; that is the twilight-table fault, which
+unit 3 corrects. `beta/PLAN.md` has the table.
+
+113 tests pass in `beta/`, and the browser spec has ten. `lib/`, `work/` and `demos/SBDC Night Sky/` are
+unchanged.

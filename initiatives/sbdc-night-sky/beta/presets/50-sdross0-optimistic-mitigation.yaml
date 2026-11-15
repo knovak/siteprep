@@ -1,0 +1,31 @@
+# A preset for the SBDC Night-Sky Simulator. See "Presets" in ../README.md.
+# Keys that are left out take the simulator's defaults.
+#
+# The default setup of sdross0/orbital-datacenter-brightness with its
+# "Optimistic mitigation" brightness model: the measured brightness of a
+# Starlink Gen2 Mini in its mitigation mode, scaled to the larger spacecraft.
+# See 40-sdross0-no-mitigation.yaml for the note on "sunset +80".
+
+name: sdross0 default, optimistic mitigation - 37.2 N, 80 minutes after sunset, September 22
+
+observer:
+  latitude: 37.2
+  date: Sep 22
+  time: sunset +80
+
+constellation:
+  satellites: 500000
+  sso_percent: 100
+  shells: filed-sso
+  plane_layout: filed
+  plane_spread_deg: 10
+  brightness_mag: 6.2           # the Mini curve at 90 degrees, scaled by area 710/116 m2: +6.213 at 1,000 km, zenith
+  brightness_scatter_mag: 0
+  phase_law: mini
+  launch_trains: 0
+
+display:
+  facing: 315
+  look_altitude: 25
+  field_of_view: 90
+  sky_limit_mag: 6.5

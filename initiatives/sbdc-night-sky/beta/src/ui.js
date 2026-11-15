@@ -19,10 +19,11 @@ const App = {
   shimmer: true,                           // along-track motion in fast-forward
   state: {
     latDeg: 40, doy: 172, solarTimeHours: 20.7,
-    brightnessRefMag: 0.5, userLimitingMag: 6.0, propagationSec: 0,
+    brightnessRefMag: 0.5, phaseLaw: "lambert", userLimitingMag: 6.0, propagationSec: 0,
   },
   cfg: {
     totalSats: 300000, ssoFraction: 0.7, shellPreset: "spread",
+    planeLayout: "spread", planeSpreadDeg: 11.25, m0Sigma: 1.3,
     trains: 1, seed: 12345,
     clustering: { enabled: false, satsPerCluster: 100, memberSigma: 0.35,
                   clusterDiameterKm: 1.0, diameterSigma: 0.35 },
@@ -62,7 +63,22 @@ const TR = {
   shLow: ["Low (550–650 km)", "Basses (550–650 km)"],
   shMid: ["Mid (750–1,150 km)", "Moyennes (750–1 150 km)"],
   shSpread: ["Spread (550–1,800 km)", "Étalées (550–1 800 km)"],
+  shFiled: ["Filed SSO levels (565–1,002 km, 54 levels)", "Niveaux SSO déposés (565–1 002 km, 54 niveaux)"],
   shCustom: ["Custom…", "Personnalisé…"],
+  planes: ["Orbital planes", "Plans orbitaux"],
+  plSpread: ["Spread (72 per shell, satellites at random)", "Étalés (72 par coquille, satellites au hasard)"],
+  plFiled: ["As filed (2 per shell level, evenly spaced)", "Comme déposé (2 par niveau, espacés régulièrement)"],
+  planeSpread: ["Plane spread", "Étalement des plans"],
+  hintPlaneSpread: ["how far the Sun-synchronous planes spread to each side of the dawn-dusk line · the filing allows ±30°",
+                    "étalement des plans héliosynchrones de part et d\u2019autre de la ligne aube-crépuscule · le dossier permet ±30°"],
+  scatter: ["Brightness scatter", "Dispersion de luminosité"],
+  hintScatter: ["how much satellites differ from each other · 0 = identical",
+                "écart de luminosité entre satellites · 0 = identiques"],
+  phaseLaw: ["Phase law", "Loi de phase"],
+  phLambert: ["Lambertian sphere", "Sphère lambertienne"],
+  phMini: ["Measured Starlink Gen2 Mini (mitigated)", "Starlink Gen2 Mini mesuré (atténué)"],
+  hintPhase: ["how brightness changes with the Sun–satellite–observer angle",
+              "variation de la luminosité avec l\u2019angle Soleil–satellite–observateur"],
   customFmt: ["format: altitude:share, e.g. 550:0.5, 1200:0.5",
               "format : altitude:part, ex. 550:0.5, 1200:0.5"],
   customKept: ["not read as altitude:share pairs; the shells in use are unchanged",
@@ -140,8 +156,15 @@ const TR = {
   presetNone: ["Choose a preset…", "Choisir un préréglage…"],
   exportBtn: ["Export settings", "Exporter les réglages"],
   importBtn: ["Import settings…", "Importer des réglages…"],
-  hintSettings: ["Export saves every setting as a text file that can be edited and imported again",
-                 "L\u2019export enregistre tous les réglages dans un fichier texte, modifiable puis réimportable"],
+  linkBtn: ["Copy link", "Copier le lien"],
+  hintSettings: ["Export saves every setting as a text file that can be edited and imported again. Copy link puts the settings in the page address",
+                 "L\u2019export enregistre tous les réglages dans un fichier texte, modifiable puis réimportable. Copier le lien place les réglages dans l\u2019adresse de la page"],
+  stLinkCopied: ["Link copied. The page address now holds these settings.",
+                 "Lien copié. L\u2019adresse de la page contient maintenant ces réglages."],
+  stLinkAddress: ["The page address now holds these settings. Copy it from the address bar.",
+                  "L\u2019adresse de la page contient maintenant ces réglages. Copiez-la depuis la barre d\u2019adresse."],
+  stLinkLoaded: ["Loaded from the link", "Chargé depuis le lien"],
+  stLinkBad: ["The link's settings were not loaded:", "Les réglages du lien n\u2019ont pas été chargés :"],
   stSaved: ["Saved", "Enregistré :"],
   stLoaded: ["Loaded", "Chargé :"],
   stNotLoaded: ["Not loaded:", "Non chargé :"],
@@ -173,6 +196,12 @@ function applyLang(lang) {
   lbl('label[for="time"]', "time"); lbl('label[for="nsats"]', "sats");
   lbl('label[for="sso"]', "fams"); lbl('label[for="brightness"]', "bright");
   lbl('label[for="trains"]', "trains"); lbl('label[for="starlim"]', "eyelim");
+  lbl('label[for="planespread"]', "planeSpread"); lbl('label[for="scatter"]', "scatter");
+  txt('label[for="planes"]', "planes"); txt('label[for="phaselaw"]', "phaseLaw");
+  txt('#planes option[value="spread"]', "plSpread"); txt('#planes option[value="filed"]', "plFiled");
+  txt('#phaselaw option[value="lambert"]', "phLambert"); txt('#phaselaw option[value="mini"]', "phMini");
+  txt("#hint-planespread", "hintPlaneSpread"); txt("#hint-scatter", "hintScatter"); txt("#hint-phase", "hintPhase");
+  txt('#shells option[value="filed-sso"]', "shFiled");
   lbl('label[for="cpc"]', "cpc"); lbl('label[for="cdia"]', "cdia");
   lbl('label[for="cvar"]', "cvar"); lbl('label[for="cdvar"]', "cdvar");
   txt('label[for="clusteron"]', "clusterOn"); txt('label[for="timelock"]', "timelock");
@@ -201,6 +230,7 @@ function applyLang(lang) {
   txt("#hint-longexp", "hintLongexp"); txt("#busy", "busy");
   txt('label[for="preset"]', "presetLbl"); txt('#preset option[value=""]', "presetNone");
   txt("#settings-export", "exportBtn"); txt("#settings-import", "importBtn");
+  txt("#settings-link", "linkBtn");
   txt("#hint-settings", "hintSettings");
   if (App.summary) { updateReadout(); updateDateLabels(); }
 }
@@ -226,6 +256,9 @@ function rebuildConstellation() {
       shells: App.cfg.shellPreset === "custom" && App.cfg.customShells
         ? App.cfg.customShells
         : d.scenario.shellPresets.value[App.cfg.shellPreset === "custom" ? "spread" : App.cfg.shellPreset],
+      planeLayout: App.cfg.planeLayout,
+      ltanSpreadMinutes: App.cfg.planeSpreadDeg * 4,   // 1 degree of node is 4 minutes of LTAN
+      m0Sigma: App.cfg.m0Sigma,
       trains: App.cfg.trains,
       clustering: { ...App.cfg.clustering },
       seed: App.cfg.seed,
@@ -238,7 +271,9 @@ function rebuildConstellation() {
 
 let evalPending = false;
 function reevaluate() {
-  if (evalPending) return;
+  // nothing to evaluate until the first constellation exists; building it
+  // ends with a call here
+  if (evalPending || !App.cons) return;
   evalPending = true;
   requestAnimationFrame(() => {
     evalPending = false;
@@ -612,7 +647,19 @@ const SLIDER_SCALES = {
 function bindControls() {
   const on = (id, evt, fn) => $(id).addEventListener(evt, fn);
 
-  on("lat", "input", (e) => { App.state.latDeg = +e.target.value; applyTimeLock(); reevaluate(); });
+  // Latitude: the slider moves in whole degrees, the box beside it takes tenths.
+  const setLatitude = (deg) => {
+    App.state.latDeg = Math.max(-90, Math.min(90, Math.round(deg * 10) / 10));
+    $("lat").value = Math.round(App.state.latDeg);
+    $("lat-num").value = App.state.latDeg;
+    applyTimeLock();
+    reevaluate();
+  };
+  on("lat", "input", (e) => setLatitude(+e.target.value));
+  on("lat-num", "change", (e) => {
+    const v = parseFloat(e.target.value);
+    setLatitude(Number.isFinite(v) ? v : App.state.latDeg);   // unreadable text puts the latitude back
+  });
   on("date", "input", (e) => { App.state.doy = +e.target.value; applyTimeLock(); reevaluate(); });
   on("time", "input", (e) => {
     App.state.solarTimeHours = +e.target.value / 60;
@@ -665,6 +712,18 @@ function bindControls() {
   on("shells-custom-input", "change", () => {
     if ($("shells").value === "custom") useCustomShells();
   });
+  on("planes", "change", (e) => { App.cfg.planeLayout = e.target.value; rebuildConstellation(); });
+  on("planespread", "input", (e) => {
+    App.cfg.planeSpreadDeg = +e.target.value / 4;
+    $("planespread-label").textContent = `±${App.cfg.planeSpreadDeg}°`;
+  });
+  on("planespread", "change", rebuildConstellation);
+  on("scatter", "input", (e) => {
+    App.cfg.m0Sigma = +e.target.value / 10;
+    $("scatter-label").textContent = `${App.cfg.m0Sigma.toFixed(1)} mag`;
+  });
+  on("scatter", "change", rebuildConstellation);
+  on("phaselaw", "change", (e) => { App.state.phaseLaw = e.target.value; reevaluate(); });
   on("longexp", "change", (e) => {
     App.renderer.longExposure = e.target.checked;
     reevaluate();
@@ -760,6 +819,7 @@ function bindControls() {
 const Settings = {
   presets: [],        // [{ name, settings }] from the embedded presets/*.yaml
   applying: false,    // true while applySettings is driving the controls
+  ownHash: null,      // the "#..." this page wrote itself, which it need not load
 };
 
 /** The time as a settings value: twilight-relative when the current time is a
@@ -791,7 +851,11 @@ function readSettings() {
     sso_percent: Math.round(App.cfg.ssoFraction * 100),
     shells: App.cfg.shellPreset,
     custom_shells: $("shells-custom-input").value.trim(),
+    plane_layout: App.cfg.planeLayout,
+    plane_spread_deg: App.cfg.planeSpreadDeg,
     brightness_mag: App.state.brightnessRefMag,
+    brightness_scatter_mag: App.cfg.m0Sigma,
+    phase_law: App.state.phaseLaw,
     launch_trains: App.cfg.trains,
     clustering: cl.enabled,
     satellites_per_cluster: cl.satsPerCluster,
@@ -847,7 +911,7 @@ function applySettings(s) {
   Settings.applying = true;
   try {
     setControl("timelock", false, "change");          // no lock while latitude and date move
-    setControl("lat", o.latitude, "input");
+    setControl("lat-num", o.latitude, "change");
     setControl("date", o.date, "input");
     if (o.time.ref) {
       const base = twilightRefs()[o.time.ref];
@@ -866,7 +930,11 @@ function applySettings(s) {
     setControl("sso", c.sso_percent, "input");
     setControl("shells-custom-input", c.custom_shells, "change");
     setControl("shells", c.shells, "change");
+    setControl("planes", c.plane_layout, "change");
+    setControl("planespread", Math.round(c.plane_spread_deg * 4), "input");
     setControl("brightness", Math.round(c.brightness_mag * 10), "input");
+    setControl("scatter", Math.round(c.brightness_scatter_mag * 10), "input");
+    setControl("phaselaw", c.phase_law, "change");
     setControl("trains", c.launch_trains, "input", "change");
     setControl("cpc", sliderFor("cpc", c.satellites_per_cluster), "input");
     setControl("cdia", sliderFor("cdia", c.cluster_diameter_km), "input");
@@ -953,6 +1021,47 @@ function importSettings(file) {
   reader.readAsText(file);
 }
 
+/** The address of this page with the current settings after "#". */
+function settingsLink() {
+  const preset = Settings.presets[$("preset").value === "" ? -1 : +$("preset").value];
+  const query = SETTINGS.settingsToQuery(readSettings(), { name: preset ? preset.name : null });
+  return location.href.replace(/#.*$/, "") + (query ? "#" + query : "");
+}
+
+/** Put the settings in the page address, and on the clipboard where the
+ *  browser allows it (a page opened from a file may not be allowed to). */
+function copySettingsLink() {
+  const link = settingsLink();
+  Settings.ownHash = link.includes("#") ? link.slice(link.indexOf("#")) : "";
+  try { history.replaceState(null, "", link); } catch (e) { location.hash = Settings.ownHash; }
+  const done = (copied) => setSettingsStatus("ok", T(copied ? "stLinkCopied" : "stLinkAddress"));
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(() => done(true), () => done(false));
+  } else done(false);
+}
+
+/** Apply the settings in the page address, if it has any. Returns true when
+ *  settings were applied. */
+function loadSettingsLink() {
+  const hash = location.hash;
+  if (hash.length < 2 || hash === Settings.ownHash) return false;
+  const got = SETTINGS.settingsFromQuery(hash);
+  if (got.errors.length) {
+    setSettingsStatus("err", `${T("stLinkBad")}\n${got.errors.slice(0, 5).join("\n")}`);
+    return false;
+  }
+  const changed = applySettings(got.settings);
+  // show the preset the link names, when this page has it
+  const named = Settings.presets.findIndex((preset) => preset.name === got.name);
+  const same = named >= 0 && SETTINGS.settingsToQuery(Settings.presets[named].settings) ===
+    SETTINGS.settingsToQuery(got.settings);
+  $("preset").value = same ? String(named) : "";
+  const lines = [got.name ? `${T("stLinkLoaded")}: ${got.name}` : T("stLinkLoaded"), ...got.notes];
+  if (changed.length) lines.push(`${T("stAdjusted")} ${changed.join(", ")}`);
+  setSettingsStatus("ok", lines.join("\n"));
+  return true;
+}
+
 function bindSettings() {
   // presets: the build embeds each presets/*.yaml file as text
   const select = $("preset");
@@ -974,6 +1083,8 @@ function bindSettings() {
   });
 
   $("settings-export").addEventListener("click", exportSettings);
+  $("settings-link").addEventListener("click", copySettingsLink);
+  window.addEventListener("hashchange", loadSettingsLink);
   $("settings-import").addEventListener("click", () => $("settings-file").click());
   $("settings-file").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0];
@@ -1063,7 +1174,9 @@ function boot() {
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 250));
   resizeCanvas();
-  rebuildConstellation();
+  // A page opened with settings in its address starts from them; applying
+  // them builds the constellation.
+  if (!loadSettingsLink()) rebuildConstellation();
 }
 
 if (typeof document !== "undefined") {

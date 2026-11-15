@@ -32,16 +32,27 @@ function parseReadout(text) {
   };
 }
 
-/** Open the beta and wait for its first picture. Collects errors and requests. */
-async function openBeta(page) {
+/** Open the beta and wait for its first picture. Collects errors and requests.
+ *  `hash` is the part of the address after the page, starting with "#". */
+async function openBeta(page, hash = '') {
   const problems = { errors: [], requests: [] };
   page.on('pageerror', (error) => problems.errors.push(String(error)));
   page.on('request', (request) => {
-    if (!request.url().endsWith(BETA)) problems.requests.push(request.url());
+    if (!request.url().split('#')[0].endsWith(BETA)) problems.requests.push(request.url());
   });
-  await page.goto(BETA);
+  await page.goto(BETA + hash);
   await settled(page);
   return problems;
+}
+
+/** Choose a preset by part of its name and wait for the picture. */
+async function choosePreset(page, namePart) {
+  const value = await page.locator('#preset option').evaluateAll(
+    (list, part) => (list.find((o) => o.textContent.includes(part)) || {}).value, namePart);
+  expect(value, `a preset named like "${namePart}"`).toBeTruthy();
+  await page.locator('#preset').selectOption(value);
+  await settled(page);
+  return value;
 }
 
 /** Wait until the simulator has finished computing and drawn a readout. */
@@ -164,11 +175,115 @@ test.describe('SBDC beta', () => {
     expect(problems.errors).toEqual([]);
   });
 
+  // ---- unit 2: constellation and brightness settings, presets, links ----
+
+  test('latitude takes tenths of a degree from the box beside the slider', async ({ page }) => {
+    const problems = await openBeta(page);
+    await page.locator('#lat-num').fill('37.2');
+    await page.locator('#lat-num').press('Enter');
+    await expect(page.locator('#lat-label')).toHaveText('37.2°N');
+    await expect(page.locator('#readout-sub')).toContainText('lat 37.2°');
+    await expect(page.locator('#lat')).toHaveValue('37');
+    // the slider still moves in whole degrees, and the box follows it
+    await page.locator('#lat').fill('-34');
+    await expect(page.locator('#lat-num')).toHaveValue('-34');
+    await expect(page.locator('#lat-label')).toHaveText('34°S');
+    // text that is not a number puts the latitude back
+    await page.locator('#lat-num').fill('');
+    await page.locator('#lat-num').press('Enter');
+    await expect(page.locator('#lat-num')).toHaveValue('-34');
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('the sdross0 presets set that project\'s constellation and its two brightness models', async ({ page }) => {
+    const problems = await openBeta(page);
+    await choosePreset(page, 'sdross0 default, no mitigation');
+    await expect(page.locator('#nsats-label')).toHaveText('500,000');
+    await expect(page.locator('#sso-label')).toContainText('100% SSO');
+    await expect(page.locator('#shells')).toHaveValue('filed-sso');
+    await expect(page.locator('#planes')).toHaveValue('filed');
+    await expect(page.locator('#planespread-label')).toHaveText('±10°');
+    await expect(page.locator('#scatter-label')).toHaveText('0.0 mag');
+    await expect(page.locator('#phaselaw')).toHaveValue('lambert');
+    await expect(page.locator('#bright-label')).toContainText('+0.8');
+    await expect(page.locator('#lat-label')).toHaveText('37.2°N');
+    await expect(page.locator('#compass')).toHaveText('facing 315°');
+    await expect(page.locator('#readout-sub')).toContainText('80 min after sunset');
+    const none = await readout(page);
+    // sdross0 reports about 36,000 for this evening; see beta/test/paired.test.js
+    expect(none.visible).toBeGreaterThan(25000);
+    expect(none.visible).toBeLessThan(45000);
+
+    await choosePreset(page, 'sdross0 default, optimistic mitigation');
+    await expect(page.locator('#phaselaw')).toHaveValue('mini');
+    await expect(page.locator('#bright-label')).toContainText('+6.2');
+    const optimistic = await readout(page);
+    expect(optimistic.above).toBe(none.above);
+    expect(optimistic.visible).toBeLessThan(none.visible / 10);
+
+    await choosePreset(page, 'sdross0 optimistic mitigation - 37.2 N, 92 minutes after sunset, December 21');
+    const december = await readout(page);
+    expect(december.visible).toBeGreaterThan(8000);
+    expect(december.visible).toBeGreaterThan(optimistic.visible * 5);
+
+    // The phase law and the layout are controls of their own.
+    await page.locator('#phaselaw').selectOption('lambert');
+    await expect.poll(async () => (await readout(page)).visible).not.toBe(december.visible);
+    await page.locator('#planes').selectOption('spread');
+    await settled(page);
+    await expect(page.locator('#preset')).toHaveValue('');
+    expect(problems.errors).toEqual([]);
+    expect(problems.requests).toEqual([]);
+  });
+
+  test('a copied link reopens the same settings', async ({ page, context }) => {
+    const problems = await openBeta(page);
+    const value = await choosePreset(page, 'sdross0 default, optimistic mitigation');
+    await page.locator('#settings-link').click();
+    await expect(page.locator('#settings-status')).toContainText('page address now holds these settings');
+    const link = page.url();
+    expect(link).toContain('#');
+    expect(link).toContain('constellation.phase_law=mini');
+    const first = await page.locator('#readout').textContent();
+
+    const second = await context.newPage();
+    const secondErrors = [];
+    second.on('pageerror', (error) => secondErrors.push(String(error)));
+    await second.goto(link);
+    await settled(second);
+    await expect(second.locator('#readout')).toHaveText(first);
+    await expect(second.locator('#preset')).toHaveValue(value);
+    await expect(second.locator('#settings-status')).toContainText('Loaded from the link');
+    await expect(second.locator('#compass')).toHaveText('facing 315°');
+    expect(secondErrors).toEqual([]);
+
+    // The opening view needs nothing after the page name.
+    await second.close();
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('a link with a mistake changes nothing and says why', async ({ page }) => {
+    const plain = await openBeta(page);
+    const opening = await page.locator('#readout').textContent();
+    expect(plain.errors).toEqual([]);
+
+    const other = await page.context().newPage();
+    const errors = [];
+    other.on('pageerror', (error) => errors.push(String(error)));
+    await other.goto(`${BETA}#observer.latitude=north&display.facing=90`);
+    await settled(other);
+    await expect(other.locator('#settings-status')).toContainText('observer.latitude: expected a number');
+    await expect(other.locator('#readout')).toHaveText(opening);
+    await expect(other.locator('#compass')).toHaveText('facing 0°');
+    expect(errors).toEqual([]);
+    await other.close();
+  });
+
   test('every preset loads and draws', async ({ page }) => {
     const problems = await openBeta(page);
     const options = await page.locator('#preset option').evaluateAll((list) =>
       list.filter((o) => o.value !== '').map((o) => ({ value: o.value, name: o.textContent })));
-    expect(options.length).toBeGreaterThanOrEqual(3);
+    expect(options.length).toBeGreaterThanOrEqual(6);
     for (const option of options) {
       await page.locator('#preset').selectOption(option.value);
       await settled(page);

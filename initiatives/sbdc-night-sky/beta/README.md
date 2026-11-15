@@ -44,10 +44,12 @@ On the day it was created, the beta built a page byte-identical to the released
 | Since | Feature | Section below |
 | --- | --- | --- |
 | 2026-11-11 | Export and import of all settings as a text file, and presets | Settings files; Presets |
-| 2026-11-15 | Eight faults corrected; counts in view beside the whole-sky totals; the time relative to sunset or sunrise | The November 2026 upgrade |
+| 2026-11-15 | Eight faults corrected; counts in view beside the whole-sky totals; the time relative to sunset or sunrise | The November 2026 upgrade, Unit 1 |
+| 2026-11-15 | Plane layout, plane spread, brightness scatter and phase law as settings; latitude to a tenth of a degree; three presets for the sdross0 setups; a link that carries the settings | The November 2026 upgrade, Unit 2 |
 
 `PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
-units. Unit 1 is described below; the others are added here as they merge.
+units. Units 1 and 2 are described below; the others are added here as they
+merge.
 
 ## Settings files
 
@@ -96,7 +98,7 @@ Rules of the format:
   the range, and an unknown key is ignored; both are reported and the rest of
   the file is used.
 - **A value between two slider steps moves to the nearest step**, and the panel
-  says which values moved. Latitude is in whole degrees, for example.
+  says which values moved. The plane spread is in quarter degrees, for example.
 - `name` is optional. A preset needs one. An export writes it only while the
   Preset list still shows a preset.
 
@@ -133,8 +135,12 @@ and is not published. `test/settings.test.js` also names the presets of the
 current revision; update its list when presets are added or removed.
 
 The simulator has a latitude and no longitude, and its time is local solar
-time, so a place is its latitude: New York City is 41, Taos 36, Alice Springs
--24.
+time, so a place is its latitude: New York City is 40.7, Taos 36.4, Alice
+Springs -23.7. Until Unit 2 of the November 2026 upgrade the latitude was in
+whole degrees, and those three presets used 41, 36 and -24.
+
+The three presets whose names start with "sdross0" are described under Unit 2
+below.
 
 ## How the settings feature is built
 
@@ -215,6 +221,122 @@ brightness +1.0.
 view changes that number and leaves the total alone. The all-sky view shows the
 whole sky, so it gives one number. The two kinds of count answer different
 questions and should not be compared with each other.
+
+### Unit 2: settings that reproduce the sdross0 setups
+
+Each new setting's default is what the simulator did before, so the opening
+view is unchanged. `test/golden/golden.json` and the Site 1 column of
+`test/fixtures/paired-comparisons.json` are unchanged.
+
+| Control | Setting in a file | Values | Default |
+| --- | --- | --- | --- |
+| Latitude, the box beside the slider | `observer.latitude` | tenths of a degree | 40 |
+| Shell altitudes, "Filed SSO levels" | `constellation.shells: filed-sso` | | `spread` |
+| Orbital planes | `constellation.plane_layout` | `spread`, `filed` | `spread` |
+| Plane spread | `constellation.plane_spread_deg` | 0 to 30, quarter degrees | 11.25 |
+| SBDC brightness | `constellation.brightness_mag` | now in steps of 0.1 | 0.5 |
+| Brightness scatter | `constellation.brightness_scatter_mag` | 0 to 2 | 1.3 |
+| Phase law | `constellation.phase_law` | `lambert`, `mini` | `lambert` |
+
+- **Latitude.** The slider still moves in whole degrees. The box beside it
+  takes tenths, and a settings file or a link may give a tenth.
+- **Filed SSO levels.** The 54 altitude levels of the filing's three
+  Sun-synchronous groups: 10 from 565 to 585 km, 22 from 707 to 744 km, 22 from
+  967 to 1,002 km, with shares in proportion to the filed satellites per plane.
+  It is the list the comparison document had to type into "Custom…".
+- **Orbital planes.** "Spread" is the original layout: 72 planes for each shell
+  and node family, evenly spaced across the plane spread, with satellites at
+  random along each. It draws as a diffuse field. "As filed" has two planes at
+  each shell level, one for each node family, each with its node drawn once at
+  random within the spread, and satellites evenly spaced along the plane. With
+  the 54 levels that is 108 distinct rings, which draw as bands.
+- **Plane spread.** How far the Sun-synchronous planes spread to each side of
+  the dawn-dusk line. It was fixed at 11.25° (45 minutes of local time). Boley,
+  Lawler and Rein's "relaxed" case is 10°; the filing allows 30°.
+- **Brightness scatter.** How much satellites differ from each other in
+  reference brightness, 1 sigma. It was fixed at 1.3 magnitudes. At 0 every
+  satellite is the same.
+- **Phase law.** How brightness changes with the Sun-satellite-observer angle.
+  "Lambertian sphere" is the original. "Measured Starlink Gen2 Mini (mitigated)"
+  is the curve of Mallama et al. (2023), `2.630 + 0.1065 a - 0.0005167 a²`
+  magnitudes at 1,000 km with `a` in degrees. Both are used relative to their
+  value at 90°, so the SBDC brightness slider means the same under either: the
+  median magnitude at 1,000 km, 90° and the zenith. The Mini curve is about 4.4
+  magnitudes brighter at 10° than at 90°; the sphere is about 1.2.
+
+In the data file these are `scenario.shellPresets` (`filed-sso`),
+`scenario.planeLayouts` and `photometry.phaseLaws`, each with its source, and
+they appear in "Assumptions & data".
+
+### The sdross0 presets
+
+Three presets set the constellation of `sdross0/orbital-datacenter-brightness`:
+500,000 satellites, all Sun-synchronous, the 54 filed levels, planes as filed,
+spread ±10°, no scatter, no launch trains, 37.2° N, facing northwest.
+
+| Preset | Brightness | Date and time |
+| --- | --- | --- |
+| sdross0 default, no mitigation | Lambertian sphere, +0.8 | September 22, sunset +80 |
+| sdross0 default, optimistic mitigation | Mini curve, +6.2 | September 22, sunset +80 |
+| sdross0 optimistic mitigation, December | Mini curve, +6.2 | December 21, sunset +92 |
+
++0.8 is that project's "No mitigation" model, the Lambertian sphere of Boley,
+Lawler and Rein with albedo 0.2 and 800 m², which is +0.796 at this
+simulator's reference condition. +6.2 is its "Optimistic mitigation" model,
+the Mini curve made 1.97 magnitudes brighter for an area of 710 m² against
+116 m², which is +6.213. `test/model.test.js` has both sums.
+
+What still differs from that project, with these presets:
+
+- **Sunset.** It counts minutes from the Sun's centre on the horizon. This
+  simulator's sunset is when the upper edge has gone, about four minutes
+  later. "sunset +80" here is near its 84 minutes.
+- **The sky.** Its limiting magnitude comes from a different twilight curve and
+  a different threshold formula. Once the sky is dark the two limits are within
+  about 0.2 magnitude. In twilight this simulator's sky is too dark until
+  Unit 3.
+- **Plane nodes.** Each simulator draws its own. That project reports about 2%
+  scatter between layouts without mitigation, and about 30% with it at an
+  equinox.
+- **Extinction.** 0.20 magnitude per airmass here, 0.15 there.
+
+`test/paired.test.js` compares the two simulators' whole-sky counts for the 16
+documented cases with these settings, within a stated band for each. With seed
+12345 the no-mitigation count is 0.85 to 1.00 of that project's once the sky is
+dark, and the December optimistic count is 0.98 of it. The equinox optimistic
+counts are 0.2 to 0.6 of it: those satellites are within a few tenths of a
+magnitude of the limit, and this simulator's limit is slightly stricter.
+
+### A link that carries the settings
+
+"Copy link" puts the settings in the page address, after `#`, and copies the
+address where the browser allows it. Opening that address applies the
+settings. Only the settings that differ from the defaults are written, so the
+link to the opening view has nothing after the page name:
+
+```
+…/beta/#observer.latitude=37.2&observer.date=Sep%2022&observer.time=sunset%20%2B80&constellation.phase_law=mini
+```
+
+The keys are the same `section.key` names as in a settings file, and the same
+rules apply: a key left out takes its default, a value outside its range moves
+to the nearest end, an unknown key is ignored and reported, and a link with a
+mistake changes nothing and says why in the panel. When the Preset list shows a
+preset, the link carries its name, and the page that opens shows that preset
+again. Nothing is sent anywhere: the text after `#` stays in the browser.
+
+### What Unit 2 changed in the code
+
+- `src/model.js`: `generateConstellation` has the `filed` plane layout, taken
+  only when `planeLayout` is `"filed"`, so the default layout draws the same
+  random numbers in the same order as before. `phaseMagnitude` is new, and
+  `satMagnitude` and `evaluate` take a phase law.
+- `src/settings.js`: seven schema rows changed or added; `settingsToQuery` and
+  `settingsFromQuery` are new and share their checking with the file reader.
+- `src/ui.js`: the new controls, `copySettingsLink` and `loadSettingsLink`.
+  `reevaluate()` does nothing until the first constellation exists, so settings
+  can be applied while the page is starting.
+- `data/sbdc-data.json`: three entries, listed above.
 
 ### What Unit 1 changed in the code
 

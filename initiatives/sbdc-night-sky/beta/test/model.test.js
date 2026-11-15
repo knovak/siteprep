@@ -493,3 +493,149 @@ test("one plane per shell sits at the centre of the spread; a train of one is pl
   }
   assert.ok(tilts.size <= 4, `one plane per shell altitude: ${[...tilts].join(", ")}`);
 });
+
+/* ---------------- unit 2: plane layout, scatter, phase law ---------------- */
+
+const DEG = Math.PI / 180;
+const filedShells = data.scenario.shellPresets.value["filed-sso"];
+const filedConfig = (overrides = {}) => M.defaultConfig(data, {
+  totalSats: 54000, ssoFraction: 1, trains: 0, seed: 12345, shells: filedShells,
+  planeLayout: "filed", ltanSpreadMinutes: 40, m0Sigma: 0, ...overrides,
+});
+// unit normal of each satellite's orbit, as a short text key
+const planeKey = (c, i) => {
+  const hx = c.py[i] * c.vz[i] - c.pz[i] * c.vy[i];
+  const hy = c.pz[i] * c.vx[i] - c.px[i] * c.vz[i];
+  const hz = c.px[i] * c.vy[i] - c.py[i] * c.vx[i];
+  const n = Math.hypot(hx, hy, hz);
+  return [hx / n, hy / n, hz / n].map((v) => v.toFixed(4)).join(",");
+};
+
+test("filed shells: 54 levels in the filing's three Sun-synchronous bands", () => {
+  assert.equal(filedShells.length, 54);
+  const band = (lo, hi) => filedShells.filter((s) => s.altKm >= lo && s.altKm <= hi);
+  assert.equal(band(565, 585).length, 10);
+  assert.equal(band(707, 744).length, 22);
+  assert.equal(band(967, 1002).length, 22);
+  const total = filedShells.reduce((a, s) => a + s.share, 0);
+  assert.ok(Math.abs(total - 1) < 1e-4, "shares sum to 1: " + total);
+  // shares follow the filed satellites per plane: 4,999 : 5,565 : 5,770
+  const ratio = band(967, 1002)[0].share / band(565, 585)[0].share;
+  assert.ok(Math.abs(ratio - 5770 / 4999) < 2e-3, "upper to lower level: " + ratio);
+});
+
+test("filed layout: two planes per level, satellites evenly spaced along each", () => {
+  const c = M.generateConstellation(filedConfig(), data);
+  assert.equal(c.n, 54000);
+  const planes = new Map();
+  for (let i = 0; i < c.n; i++) {
+    const key = c.shellAlt[i].toFixed(2) + "|" + planeKey(c, i);
+    if (!planes.has(key)) planes.set(key, []);
+    planes.get(key).push(i);
+  }
+  assert.equal(planes.size, 108, "54 levels x 2 node families");
+  for (const [key, members] of planes) {
+    // filed shares give each plane close to 1/108 of the satellites
+    assert.ok(members.length > 400 && members.length < 600, `${key}: ${members.length} satellites`);
+  }
+  // Along one plane, the gaps between neighbours cluster round one spacing:
+  // each satellite is moved by a random 0.3 of the spacing, so the gaps vary
+  // by about 0.42 of it. Satellites placed at random have gaps that vary by a
+  // whole spacing, with a median of 0.69.
+  const gapStats = (cons, members) => {
+    // anomaly from the node: P/r = N cos u + W sin u and V = -N sin u + W cos u,
+    // whose z parts are Wz sin u and Wz cos u
+    const angles = members.map((i) =>
+      Math.atan2(cons.pz[i] / Math.hypot(cons.px[i], cons.py[i], cons.pz[i]), cons.vz[i])).sort((a, b) => a - b);
+    const step = 2 * Math.PI / members.length;
+    const gaps = [];
+    for (let k = 1; k < angles.length; k++) gaps.push((angles[k] - angles[k - 1]) / step);
+    const mean = gaps.reduce((a, g) => a + g, 0) / gaps.length;
+    const sd = Math.sqrt(gaps.reduce((a, g) => a + (g - mean) ** 2, 0) / gaps.length);
+    return { median: [...gaps].sort((a, b) => a - b)[gaps.length >> 1], sd };
+  };
+  for (const members of [...planes.values()].slice(0, 6)) {
+    const g = gapStats(c, members);
+    assert.ok(g.median > 0.85 && g.median < 1.15, `median gap ${g.median.toFixed(2)} spacings`);
+    assert.ok(g.sd > 0.25 && g.sd < 0.6, `gaps vary by ${g.sd.toFixed(2)} spacings`);
+  }
+  // the default layout, for contrast: one of its planes, satellites at random
+  const spread = M.generateConstellation(M.defaultConfig(data, {
+    totalSats: 200000, ssoFraction: 1, trains: 0, seed: 12345,
+    shells: [{ altKm: 700, share: 1 }], planesPerShell: 2 }), data);
+  const first = planeKey(spread, 0), randomMembers = [];
+  for (let i = 0; i < spread.n; i++) if (planeKey(spread, i) === first) randomMembers.push(i);
+  assert.ok(gapStats(spread, randomMembers).sd > 0.85, "random placement has widely varying gaps");
+});
+
+test("filed layout: nodes lie within the plane spread, on both sides of the dawn-dusk line", () => {
+  for (const spreadDeg of [0, 10, 30]) {
+    const c = M.generateConstellation(filedConfig({ ltanSpreadMinutes: spreadDeg * 4 }), data);
+    let most = 0, east = 0, west = 0;
+    for (let i = 0; i < c.n; i += 97) {
+      // the line of nodes is where the orbit plane meets the equator: z x h
+      const hx = c.py[i] * c.vz[i] - c.pz[i] * c.vy[i];
+      const hy = c.pz[i] * c.vx[i] - c.px[i] * c.vz[i];
+      const node = Math.atan2(hx, -hy) / DEG;                   // direction of z x h
+      const off = Math.min(Math.abs(M_wrap(node - 90)), Math.abs(M_wrap(node + 90)));
+      most = Math.max(most, off);
+      if (Math.abs(M_wrap(node - 90)) < Math.abs(M_wrap(node + 90))) east++; else west++;
+    }
+    assert.ok(most <= spreadDeg + 1e-6, `spread ${spreadDeg}: a node is ${most.toFixed(3)} deg off the dawn-dusk line`);
+    if (spreadDeg > 0) assert.ok(most > spreadDeg * 0.8, `spread ${spreadDeg}: nodes reach ${most.toFixed(2)} deg`);
+    assert.ok(east > 0 && west > 0, "both node families are present");
+  }
+});
+function M_wrap(deg) { return ((deg + 180) % 360 + 360) % 360 - 180; }
+
+test("the default layout is not changed by the new options", () => {
+  // planeLayout "spread" with the data file's spread and scatter is the
+  // constellation the golden fixtures were made from, satellite for satellite.
+  const a = M.generateConstellation(M.defaultConfig(data, { totalSats: 5000, seed: 12345 }), data);
+  const b = M.generateConstellation(M.defaultConfig(data, {
+    totalSats: 5000, seed: 12345, planeLayout: "spread",
+    ltanSpreadMinutes: data.scenario.ssoLtanSpreadMinutes.value, m0Sigma: data.photometry.m0Sigma.value,
+  }), data);
+  assert.deepEqual(Array.from(a.px), Array.from(b.px));
+  assert.deepEqual(Array.from(a.m0), Array.from(b.m0));
+});
+
+test("brightness scatter 0 gives every satellite the same reference brightness", () => {
+  const c = M.generateConstellation(filedConfig({ totalSats: 2000 }), data);
+  assert.ok(Array.from(c.m0).every((m) => Math.abs(m - data.photometry.m0Mean.value) < 1e-6));
+  const scattered = M.generateConstellation(filedConfig({ totalSats: 2000, m0Sigma: 1.3 }), data);
+  assert.ok(new Set(Array.from(scattered.m0).map((m) => m.toFixed(3))).size > 1000);
+});
+
+test("phase laws are zero at 90 degrees; the Mini curve is the published one", () => {
+  for (const law of ["lambert", "mini"]) {
+    assert.ok(Math.abs(M.phaseMagnitude(Math.PI / 2, law, data)) < 1e-12, law);
+  }
+  // Mallama et al. (2023): V = 2.630 + 0.1065 a - 0.0005167 a^2 at 1,000 km.
+  // sdross0's ASSUMPTIONS.md quotes 3.64 at 10 degrees and 8.03 at 90.
+  const mini = (deg) => 8.030 + M.phaseMagnitude(deg * DEG, "mini", data);
+  assert.ok(Math.abs(mini(10) - 3.64) < 0.01, "10 deg: " + mini(10));
+  assert.ok(Math.abs(mini(90) - 8.03) < 0.01, "90 deg: " + mini(90));
+  // front-lit is far brighter under the Mini curve than for a Lambertian sphere
+  const gain = (law) => -M.phaseMagnitude(10 * DEG, law, data);
+  assert.ok(gain("mini") > 4 && gain("lambert") < 1.3, `mini ${gain("mini")}, lambert ${gain("lambert")}`);
+});
+
+test("reference brightness +0.796 is the Lambertian sphere of Boley, Lawler and Rein", () => {
+  // their eq. 2 with zeta = 0.2 x 800 m2, at 1,000 km, 90 degrees, zenith,
+  // k = 0.15 mag per airmass: V = -26.77 - 2.5 log10(2 zeta / (3 pi^2)) + 30 + 0.15
+  const zeta = 0.2 * 800;
+  const v = -26.77 - 2.5 * Math.log10(2 * zeta / (3 * Math.PI ** 2)) + 5 * Math.log10(1e6) + 0.15;
+  assert.ok(Math.abs(v - 0.796) < 0.001, "V = " + v);
+  // and the Mini curve scaled by area 710 / 116.03 m2: 8.030 - 1.967 + 0.15
+  const mini = 2.630 + 0.1065 * 90 - 0.0005167 * 8100 - 2.5 * Math.log10(710 / 116.03) + 0.15;
+  assert.ok(Math.abs(mini - 6.213) < 0.001, "V = " + mini);
+});
+
+test("satMagnitude: the phase law is the only thing that differs between the two models", () => {
+  const args = [0.5, 800, 60 * DEG, 40, data, 0.3];
+  const lambert = M.satMagnitude(...args), mini = M.satMagnitude(...args, "mini");
+  assert.equal(M.satMagnitude(...args, "lambert"), lambert, "lambert is the default");
+  const want = M.phaseMagnitude(60 * DEG, "mini", data) - M.phaseMagnitude(60 * DEG, "lambert", data);
+  assert.ok(Math.abs((mini - lambert) - want) < 1e-12);
+});
