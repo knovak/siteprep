@@ -107,14 +107,18 @@ input[type="range"] {
 .seedrow input { width: 120px; font-family: var(--mono); }
 
 /* ---------------- canvas area ---------------- */
-#canvas-wrap { position: relative; min-height: 0; background: #05060a; }
+/* The sky fills what the readout strip leaves. The strip sits below the sky,
+   not over it: it has grown to three lines, and the part of the sky it used to
+   cover is the horizon, where most of the constellation is. */
+#canvas-wrap { position: relative; min-height: 0; background: #05060a; display: flex; flex-direction: column; }
+#sky-area { position: relative; flex: 1; min-height: 0; }
 #sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
 #sky:active { cursor: grabbing; }
 
 #readout-strip {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  background: rgba(10, 12, 20, 0.82); border-top: 1px solid var(--line);
-  padding: 8px 14px 9px; pointer-events: none; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  position: relative; flex: none;
+  background: #0a0c14; border-top: 1px solid var(--line);
+  padding: 8px 14px 9px; pointer-events: none;
 }
 /* The first line holds the counts. On a wide screen it wraps when it is long,
    so that no count is cut off; on a narrow one it stays one line, where a
@@ -193,6 +197,11 @@ input[type="range"] {
 .numrow { display: flex; align-items: center; gap: 8px; }
 .numrow input[type="range"] { flex: 1; min-width: 0; }
 .numrow input[type="number"] { width: 72px; flex: none; font-family: var(--mono); }
+
+/* the light line of the readout: SBDC light against the Moon and the sky */
+#readout-light { font: 12px var(--mono); color: #d9c9a3; margin-top: 3px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 900px) { #readout-light { white-space: nowrap; } }
+.numrow label { flex: none; margin: 0; }
 
 </style>
 </head>
@@ -356,6 +365,26 @@ input[type="range"] {
         <input id="ambient" type="range" min="1" max="9" step="1" value="1">
         <div class="hint" id="hint-ambient">artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars</div>
       </div>
+      <div class="ctl">
+        <label for="moon">Moon <output id="moon-label"></output></label>
+        <select id="moon">
+          <option value="off" selected>Off (no Moon)</option>
+          <option value="date">As on this date</option>
+          <option value="phase">Set the phase</option>
+        </select>
+        <div id="moon-date" style="display:none; margin-top:6px">
+          <div class="numrow">
+            <label for="year">Year</label>
+            <input id="year" type="number" min="1900" max="2100" step="1" value="2026">
+          </div>
+          <div class="hint" id="hint-year">the Moon's place on this date, taking the solar time as universal time · it is within a few degrees for any longitude</div>
+        </div>
+        <div id="moon-phase" style="display:none; margin-top:6px">
+          <label for="moonage">Days since new Moon <output id="moonage-label">14.8 — full</output></label>
+          <input id="moonage" type="range" min="0" max="295" step="1" value="148">
+        </div>
+        <div class="hint" id="hint-moon">moonlight brightens the sky, which hides faint satellites and stars</div>
+      </div>
       <div class="check"><input id="show-stars" type="checkbox" checked><label for="show-stars">Show stars (Yale Bright Star Catalog)</label></div>
       <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
       <div class="hint" id="hint-longexp">every sunlit satellite becomes a 12–27° streak; stars to the catalog limit</div>
@@ -394,13 +423,16 @@ input[type="range"] {
   </aside>
 
   <div id="canvas-wrap">
-    <canvas id="sky" aria-label="Simulated sky view"></canvas>
-    <div id="compass">facing 0°</div>
-    <div id="busy">computing…</div>
-    <div id="tooltip" role="status"></div>
+    <div id="sky-area">
+      <canvas id="sky" aria-label="Simulated sky view"></canvas>
+      <div id="compass">facing 0°</div>
+      <div id="busy">computing…</div>
+      <div id="tooltip" role="status"></div>
+    </div>
     <div id="readout-strip" aria-live="polite">
       <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
       <div id="readout">—</div>
+      <div id="readout-light">—</div>
       <div id="readout-sub">—</div>
     </div>
   </div>
@@ -586,6 +618,141 @@ function twilightTimes(latDeg, doy, data) {
     out[key] = sunCrossings(latDeg, doy, alt, data);
   }
   return out;
+}
+
+/* ------------------------------------------------------------------ */
+/* The Moon                                                            */
+/* ------------------------------------------------------------------ */
+
+const MOON_MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const wrap360 = (deg) => ((deg % 360) + 360) % 360;
+
+/** Julian Date for a calendar year, a day of the model's 365-day year
+ *  (1 = Jan 1, 60 = Mar 1; there is no Feb 29), and hours of that day. */
+function julianDate(year, doy, hours) {
+  let month = 1, day = doy;
+  while (month < 12 && day > MOON_MONTH_DAYS[month - 1]) { day -= MOON_MONTH_DAYS[month - 1]; month++; }
+  const a = Math.floor((14 - month) / 12), y = year + 4800 - a, m = month + 12 * a - 3;
+  const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) -
+    Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  return jdn - 0.5 + hours / 24;
+}
+
+/** The Sun's ecliptic longitude (deg) at a Julian Date: the same short
+ *  series as solarEphemeris. */
+function sunEclipticLonDeg(jd) {
+  const d = jd - 2451545.0;
+  const L = 280.460 + 0.9856474 * d;
+  const g = (357.528 + 0.9856003 * d) * DEG;
+  return wrap360(L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g));
+}
+
+/**
+ * The Moon's geocentric ecliptic longitude and latitude (deg) and distance
+ * (Earth radii) at a Julian Date. The low-precision series of the
+ * Astronomical Almanac: about 0.3 deg in longitude, 0.2 deg in latitude.
+ */
+function moonEphemeris(jd) {
+  const T = (jd - 2451545.0) / 36525;
+  const sin = (a, b) => Math.sin((a + b * T) * DEG), cos = (a, b) => Math.cos((a + b * T) * DEG);
+  const lon = 218.32 + 481267.881 * T +
+    6.29 * sin(135.0, 477198.87) - 1.27 * sin(259.3, -413335.36) + 0.66 * sin(235.7, 890534.22) +
+    0.21 * sin(269.9, 954397.74) - 0.19 * sin(357.5, 35999.05) - 0.11 * sin(186.5, 966404.03);
+  const lat = 5.13 * sin(93.3, 483202.02) + 0.28 * sin(228.2, 960400.89) -
+    0.28 * sin(318.3, 6003.15) - 0.17 * sin(217.6, -407332.21);
+  const parallax = 0.9508 + 0.0518 * cos(135.0, 477198.87) + 0.0095 * cos(259.3, -413335.36) +
+    0.0078 * cos(235.7, 890534.22) + 0.0028 * cos(269.9, 954397.74);
+  return { eclLonDeg: wrap360(lon), eclLatDeg: lat, distanceEarthRadii: 1 / Math.sin(parallax * DEG) };
+}
+
+/** The Moon's V magnitude outside the atmosphere at a phase angle (deg,
+ *  0 = full), at its mean distance. Krisciunas & Schaefer (1991), eq. 9. */
+function moonMagnitude(phaseAngleDeg) {
+  const a = Math.abs(phaseAngleDeg);
+  return -12.73 + 0.026 * a + 4e-9 * Math.pow(a, 4);
+}
+
+/** Airmass for scattered light in the Krisciunas & Schaefer sky model
+ *  (their eq. 3), from zenith distance in degrees. */
+const moonSkyAirmass = (zenithDeg) =>
+  1 / Math.sqrt(1 - 0.96 * Math.pow(Math.sin(Math.min(zenithDeg, 90) * DEG), 2));
+
+/**
+ * Moonlight scattered into the sky, as a V surface brightness (mag/arcsec^2).
+ * Krisciunas & Schaefer (1991), PASP 103, 1033, eqs. 15-21.
+ *   rhoDeg          angle between the Moon and the sky position
+ *   moonZenithDeg   the Moon's zenith distance (it must be above the horizon)
+ *   skyZenithDeg    the sky position's zenith distance
+ *   phaseAngleDeg   0 = full Moon
+ *   k               extinction, mag per airmass
+ * The model is for positions more than about 10 deg from the Moon; rho is
+ * held at 5 deg inside that.
+ */
+function moonSkyMu(rhoDeg, moonZenithDeg, skyZenithDeg, phaseAngleDeg, k) {
+  const rho = Math.max(5, rhoDeg);
+  const istar = Math.pow(10, -0.4 * (3.84 + 0.026 * Math.abs(phaseAngleDeg) + 4e-9 * Math.pow(phaseAngleDeg, 4)));
+  const f = Math.pow(10, 5.36) * (1.06 + Math.pow(Math.cos(rho * DEG), 2)) + Math.pow(10, 6.15 - rho / 40);
+  const nanoLamberts = f * istar * Math.pow(10, -0.4 * k * moonSkyAirmass(moonZenithDeg)) *
+    (1 - Math.pow(10, -0.4 * k * moonSkyAirmass(skyZenithDeg)));
+  return (20.7233 - Math.log(nanoLamberts / 34.08)) / 0.92104;
+}
+
+/** Mean length of the Moon's cycle of phases, days. */
+const SYNODIC_MONTH_DAYS = 29.530588;
+
+/**
+ * Where the Moon is for an observer state, or null when state.moon is "off"
+ * or absent.
+ *   state.moon "date"   the Moon of state.year on the state's date and solar
+ *                       time, taken as universal time (the simulator has no
+ *                       longitude; the Moon moves about half a degree an hour)
+ *   state.moon "phase"  a Moon state.moonAgeDays after new, on the ecliptic
+ *
+ * The Moon is placed by its elongation from the Sun, so its phase is right
+ * for the date whichever year the model's own Sun is computed for.
+ * Returns { dir, altDeg, azDeg, phaseAngleDeg, illuminated, ageDays,
+ * magnitude } with dir a unit vector in the working frame as seen from the
+ * observer, and magnitude as seen through the atmosphere (null when down).
+ */
+function moonState(state, data) {
+  if (!state.moon || state.moon === "off") return null;
+  const eps = data.physicalConstants.obliquityDeg.value * DEG;
+  const k = data.photometry.extinctionCoefficient.value;
+  const sun = solarEphemeris(state.doy, state.solarTimeHours, data);
+  let elongation, eclLat, distance;
+  if (state.moon === "phase") {
+    elongation = 360 * (state.moonAgeDays ?? SYNODIC_MONTH_DAYS / 2) / SYNODIC_MONTH_DAYS;
+    eclLat = 0;
+    distance = 60.27;
+  } else {
+    const jd = julianDate(state.year ?? data.geometryModel.yearAnchor.value, state.doy, state.solarTimeHours);
+    const moon = moonEphemeris(jd);
+    elongation = wrap360(moon.eclLonDeg - sunEclipticLonDeg(jd));
+    eclLat = moon.eclLatDeg;
+    distance = moon.distanceEarthRadii;
+  }
+  // ecliptic -> equatorial -> the working frame (as for the stars)
+  const lon = (sun.eclLonDeg + elongation) * DEG, lat = eclLat * DEG;
+  const ex = Math.cos(lat) * Math.cos(lon);
+  const ey = Math.cos(lat) * Math.sin(lon) * Math.cos(eps) - Math.sin(lat) * Math.sin(eps);
+  const ez = Math.cos(lat) * Math.sin(lon) * Math.sin(eps) + Math.sin(lat) * Math.cos(eps);
+  const th = (thetaSunDeg(state.solarTimeHours) - sun.raDeg) * DEG + Math.atan2(ey, ex);
+  const cd = Math.hypot(ex, ey);
+  const geocentric = [cd * Math.cos(th), cd * Math.sin(th), ez];
+  // seen from the surface, the Moon is up to a degree lower than from the centre
+  const obs = observerUnit(state.latDeg);
+  const dir = normalize([geocentric[0] * distance - obs[0], geocentric[1] * distance - obs[1],
+                         geocentric[2] * distance - obs[2]]);
+  const { altDeg, azDeg } = dirToAltAz(dir, enuBasis(state.latDeg));
+  const sunDir = sunVector(state.doy, state.solarTimeHours, data);
+  const psi = Math.acos(Math.max(-1, Math.min(1, dot(geocentric, sunDir)))) / DEG;
+  const phaseAngleDeg = 180 - psi;
+  return {
+    dir, altDeg, azDeg, phaseAngleDeg,
+    illuminated: (1 + Math.cos(phaseAngleDeg * DEG)) / 2,
+    ageDays: elongation / 360 * SYNODIC_MONTH_DAYS,
+    magnitude: altDeg > 0 ? moonMagnitude(phaseAngleDeg) + k * airmass(altDeg) : null,
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -999,25 +1166,51 @@ function artificialMu(bortle, data) {
  *   artificialMu  ambient light: zenith skyglow for state.ambientBortle
  *   threshold     which naked-eye threshold relation turns a sky brightness
  *                 into a limiting magnitude: state.nakedEyeThreshold
+ *   moon          moonState(), or null. A Moon above the horizon lights the sky.
+ *   up, k         the observer's zenith and the extinction, which the moonlit
+ *                 sky needs
  */
 function skyExtras(state, data) {
   return {
     artificialMu: artificialMu(state.ambientBortle, data),
     threshold: state.nakedEyeThreshold || "table",
+    moon: moonState(state, data),
+    up: observerUnit(state.latDeg),
+    k: data.photometry.extinctionCoefficient.value,
   };
 }
 
-/** Sky surface brightness at a sky position (unit direction from the
- *  observer): the twilight sky with its glow toward the Sun, plus whatever
- *  `sky` (from skyExtras) adds. Without `sky` it is the natural sky alone. */
-function muAt(dir, sunDir, sunAltDeg, data, sky = null) {
+/**
+ * The sky's surface brightness at a sky position (unit direction from the
+ * observer), part by part, each in mag/arcsec^2:
+ *   natural     the twilight sky with its glow toward the Sun
+ *   artificial  ambient light, or null
+ *   moon        moonlight scattered into the sky, or null when there is no
+ *               Moon above the horizon
+ *   total       the three added as light
+ * `sky` is what skyExtras() returned; without it only the natural sky is there.
+ */
+function muParts(dir, sunDir, sunAltDeg, data, sky = null) {
   const mu0 = zenithMu(sunAltDeg, data);
   const amp = data.skyBrightness.twilightGlowAmplitudeMag.value;
   const scale = data.skyBrightness.twilightGlowScaleDeg.value;
   const f = sunAltDeg >= 0 ? 1 : Math.max(0, (sunAltDeg + 18) / 18);
-  const ang = Math.acos(Math.max(-1, Math.min(1, dot(normalize(dir), sunDir)))) / DEG;
+  const unit = normalize(dir);
+  const ang = Math.acos(Math.max(-1, Math.min(1, dot(unit, sunDir)))) / DEG;
   const natural = Math.max(4, mu0 - amp * f * Math.exp(-ang / scale));
-  return sky ? addMu(natural, sky.artificialMu) : natural;
+  if (!sky) return { natural, artificial: null, moon: null, total: natural };
+  let moon = null;
+  if (sky.moon && sky.moon.altDeg > 0) {
+    const angle = (a, b) => Math.acos(Math.max(-1, Math.min(1, dot(a, b)))) / DEG;
+    moon = moonSkyMu(angle(unit, sky.moon.dir), 90 - sky.moon.altDeg, angle(unit, sky.up),
+      sky.moon.phaseAngleDeg, sky.k);
+  }
+  return { natural, artificial: sky.artificialMu, moon, total: addMu(addMu(natural, sky.artificialMu), moon) };
+}
+
+/** Sky surface brightness at a sky position: the total of muParts(). */
+function muAt(dir, sunDir, sunAltDeg, data, sky = null) {
+  return muParts(dir, sunDir, sunAltDeg, data, sky).total;
 }
 
 /** Naked-eye point-source limiting magnitude for sky brightness mu.
@@ -1067,7 +1260,8 @@ function starAltAz(catalog, latDeg, doy, solarTimeHours, data) {
  * above the horizon (for renderers).
  *
  * state: { latDeg, doy, solarTimeHours, brightnessRefMag, phaseLaw, userLimitingMag,
- *          ambientBortle, nakedEyeThreshold, propagationSec, shadowGeometry }
+ *          ambientBortle, nakedEyeThreshold, moon, year, moonAgeDays,
+ *          propagationSec, shadowGeometry }
  */
 function evaluate(constellation, state, data) {
   const Re = data.physicalConstants.earthRadiusKm.value;
@@ -1094,6 +1288,7 @@ function evaluate(constellation, state, data) {
   // P(tau) = P cos(n tau) + r*Vhat sin(n tau), n = sqrt(mu/r^3) (spec v3)
   const tau = state.propagationSec || 0;
   const muE = data.physicalConstants.muEarth.value;
+  let lightFlux = 0;   // every sunlit satellite above the horizon, in units of a magnitude-0 star
 
   for (let i = 0; i < n; i++) {
     let Px = constellation.px[i], Py = constellation.py[i], Pz = constellation.pz[i];
@@ -1127,6 +1322,7 @@ function evaluate(constellation, state, data) {
     const phase = Math.acos(Math.max(-1, Math.min(1, cosPhase)));
     const m = satMagnitude(constellation.m0[i], r, phase, a, data, mit, phaseLaw);
     mag[i] = m;
+    lightFlux += Math.pow(10, -0.4 * m);
     const mu = muAt([vx, vy, vz], s, sunAlt, data, sky);
     const lim = Math.min(limitingMag(mu, data, sky.threshold), userCap);
     visible[i] = m <= lim ? 1 : 0;
@@ -1207,6 +1403,7 @@ function evaluate(constellation, state, data) {
   const zenithSkyMu = muAt(basis.up, s, sunAlt, data, sky);
   return { alt, az, range, mag, sunlit, visible, above, sunAltDeg: sunAlt, sunDir: s, sky,
            zenithSkyMu, zenithLimitMag: Math.min(limitingMag(zenithSkyMu, data, sky.threshold), userCap),
+           sbdcLightMag: lightFlux > 0 ? -2.5 * Math.log10(lightFlux) : null,
            objectStats, clusterInfo };
 }
 
@@ -1308,6 +1505,72 @@ function starVisibility(catalog, st, latDeg, sunDir, sunAltDeg, userCap, data, s
   return { vis, count };
 }
 
+/** Illuminance (lux) of a source of V magnitude m: a magnitude-0 star gives
+ *  2.1 microlux, the full Moon (-12.7) about a quarter of a lux. */
+const magnitudeToLux = (m) => Math.pow(10, -0.4 * (m + 14.18));
+
+/** Square arcseconds in a steradian. */
+const ARCSEC2_PER_SR = Math.pow(180 * 3600 / Math.PI, 2);
+
+/**
+ * The light of the whole sky above the horizon as one magnitude: the sky
+ * brightness summed over the hemisphere. With a `skyLight` function of a
+ * direction it uses that; without one it is a uniform sky of brightness mu.
+ */
+function hemisphereMagnitude(mu, skyLight = null) {
+  if (!skyLight) return mu - 2.5 * Math.log10(2 * Math.PI * ARCSEC2_PER_SR);
+  let flux = 0;
+  for (let alt = 5; alt < 90; alt += 10) {
+    const band = Math.sin((alt + 5) * DEG) - Math.sin((alt - 5) * DEG);
+    for (let az = 15; az < 360; az += 30) {
+      flux += Math.pow(10, -0.4 * skyLight(alt, az)) * band * (30 * DEG) * ARCSEC2_PER_SR;
+    }
+  }
+  return -2.5 * Math.log10(flux);
+}
+
+/**
+ * How the satellites' summed light compares with the Moon and with the sky.
+ * ev is an evaluate() result. Every ratio is SBDC light divided by the other
+ * light, as apparent brightness (both through the atmosphere).
+ *   sbdcMag           all sunlit SBDCs above the horizon, as one magnitude
+ *   sbdcLux           the same as illuminance
+ *   toFullMoon        against a full Moon overhead
+ *   toMoon            against the Moon as set, when it is up; else null
+ *   toNaturalNight    against a moonless natural night sky, summed over the
+ *                     hemisphere (about magnitude -6.7, one millilux)
+ *   toSkyNow          against the sky as it is now: twilight, ambient light
+ *                     and scattered moonlight, summed over the hemisphere
+ */
+function lightSummary(ev, state, data) {
+  const k = data.photometry.extinctionCoefficient.value;
+  const ratio = (a, b) => (a == null || b == null ? null : Math.pow(10, -0.4 * (a - b)));
+  const basis = enuBasis(state.latDeg);
+  const direction = (altDeg, azDeg) => {
+    const aa = altDeg * DEG, zz = azDeg * DEG, ca = Math.cos(aa);
+    return [0, 1, 2].map((i) => ca * (Math.cos(zz) * basis.north[i] + Math.sin(zz) * basis.east[i]) + Math.sin(aa) * basis.up[i]);
+  };
+  const nightMu = zenithMu(-90, data);
+  const moon = ev.sky.moon;
+  const skyNowMag = hemisphereMagnitude(null, (alt, az) => muAt(direction(alt, az), ev.sunDir, ev.sunAltDeg, data, ev.sky));
+  const round = (v, digits = 2) => (v == null ? null : Math.round(v * 10 ** digits) / 10 ** digits);
+  // three significant figures: these are approximate ratios
+  const sig = (v) => (v == null ? null : Number(v.toPrecision(3)));
+  return {
+    sbdcMag: round(ev.sbdcLightMag),
+    sbdcLux: ev.sbdcLightMag == null ? 0 : sig(magnitudeToLux(ev.sbdcLightMag)),
+    toFullMoon: sig(ratio(ev.sbdcLightMag, moonMagnitude(0) + k)),
+    toMoon: moon ? sig(ratio(ev.sbdcLightMag, moon.magnitude)) : null,
+    toNaturalNight: sig(ratio(ev.sbdcLightMag, hemisphereMagnitude(nightMu))),
+    toSkyNow: sig(ratio(ev.sbdcLightMag, skyNowMag)),
+    skyNowMag: round(skyNowMag),
+    moon: moon ? {
+      altDeg: round(moon.altDeg, 1), azDeg: round(moon.azDeg, 1), illuminated: round(moon.illuminated, 3),
+      ageDays: round(moon.ageDays, 1), magnitude: round(moon.magnitude),
+    } : null,
+  };
+}
+
 /**
  * The aggregate API the UI readouts and acceptance tests consume.
  * Returns counts, brightest satellite, star comparison, and sun context.
@@ -1348,10 +1611,11 @@ function summarize(constellation, state, data, catalog = null) {
     sunAltDeg: Math.round(ev.sunAltDeg * 100) / 100,
     zenithSkyMu: Math.round(ev.zenithSkyMu * 100) / 100,
     zenithLimitMag: Math.round(ev.zenithLimitMag * 100) / 100,
+    light: lightSummary(ev, state, data),
   };
 }
 
-const MODEL = { makeRng, dot, norm, normalize, daysSinceJ2000, solarEphemeris, sunHourAngleDeg, thetaSunDeg, sunVector, observerUnit, enuBasis, dirToAltAz, sunAltAz, sunCrossings, twilightTimes, ssoInclinationDeg, horizonCapDeg, generateConstellation, defaultConfig, isSunlit, lambertPhase, airmass, phaseMagnitude, satMagnitude, brightnessOffset, zenithMu, addMu, artificialMu, skyExtras, muAt, limitingMag, starAltAz, evaluate, streakEndpoints, parseShellSpec, starVisibility, summarize };
+const MODEL = { makeRng, dot, norm, normalize, daysSinceJ2000, solarEphemeris, sunHourAngleDeg, thetaSunDeg, sunVector, observerUnit, enuBasis, dirToAltAz, sunAltAz, sunCrossings, twilightTimes, julianDate, sunEclipticLonDeg, moonEphemeris, moonMagnitude, moonSkyMu, SYNODIC_MONTH_DAYS, moonState, ssoInclinationDeg, horizonCapDeg, generateConstellation, defaultConfig, isSunlit, lambertPhase, airmass, phaseMagnitude, satMagnitude, brightnessOffset, zenithMu, addMu, artificialMu, skyExtras, muParts, muAt, limitingMag, starAltAz, evaluate, streakEndpoints, parseShellSpec, starVisibility, magnitudeToLux, hemisphereMagnitude, lightSummary, summarize };
 
 // ==== render.js ====
 // SBDC Night-Sky Simulator — renderer. Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
@@ -1479,18 +1743,21 @@ function muToColor(mu) {
 }
 
 /**
- * Sky color for a surface brightness, part of which is artificial light.
- * artificialFraction is the share of the sky's light that is skyglow, 0 to 1.
- * Skyglow has no twilight colors: that share of the color keeps the ramp's
- * brightness and takes a warm gray hue.
+ * Sky color for a surface brightness, part of which is artificial light and
+ * part moonlight. Each fraction is that light's share of the sky's light, 0
+ * to 1. Neither has twilight colors: its share of the color keeps the ramp's
+ * brightness and takes a hue of its own, warm gray for skyglow and blue gray
+ * for moonlight.
  */
-function skyColor(mu, artificialFraction = 0) {
+function skyColor(mu, artificialFraction = 0, moonFraction = 0) {
   const c = muToColor(mu);
-  const f = Math.max(0, Math.min(1, artificialFraction));
-  if (f === 0) return c;
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+  const fa = clamp(artificialFraction), fm = clamp(Math.min(moonFraction, 1 - fa));
+  if (fa === 0 && fm === 0) return c;
   const level = (c[0] + c[1] + c[2]) / 3;
   const glow = [1.30 * level, 1.00 * level, 0.72 * level];
-  return c.map((v, k) => v + f * (glow[k] - v));
+  const moonlit = [0.78 * level, 0.97 * level, 1.25 * level];
+  return c.map((v, k) => v + fa * (glow[k] - v) + fm * (moonlit[k] - v));
 }
 
 /** Flux for splatting from magnitude (relative, saturates in tonemap). */
@@ -1583,9 +1850,9 @@ class SkyRenderer {
             Math.sin(aa) * basis.up[k]);
           // the sky the counts were made against: twilight plus what the
           // observer's settings add (ev.sky), and how much of it is skyglow
-          const natural = model.muAt(dir, sunDir, sunAlt, data);
-          const mu = model.muAt(dir, sunDir, sunAlt, data, ev.sky);
-          rgb = skyColor(mu, 1 - Math.pow(10, -0.4 * (natural - mu)));
+          const parts = model.muParts(dir, sunDir, sunAlt, data, ev.sky);
+          const share = (mu) => (mu == null ? 0 : Math.pow(10, -0.4 * (mu - parts.total)));
+          rgb = skyColor(parts.total, share(parts.artificial), share(parts.moon));
         }
         const o = (j * BW + i) * 4;
         img.data[o] = rgb[0] * 255; img.data[o + 1] = rgb[1] * 255;
@@ -1784,9 +2051,58 @@ class SkyRenderer {
     }
 
     ctx.globalCompositeOperation = "source-over";
+    this._drawMoon(state, ev, pxPerDeg, put);
     this._groundAndLabels(state.latDeg);
     this._grid = { grid, cell };
     return { drawnBright };
+  }
+
+  /** The Moon, when the evaluation has one above the horizon: a disc with
+   *  its phase, the lit side toward the Sun, and a glow. It is drawn about
+   *  three times its true size so that the phase can be seen. */
+  _drawMoon(state, ev, pxPerDeg, put) {
+    const moon = ev.sky && ev.sky.moon;
+    if (!moon || moon.altDeg <= 0) return;
+    const { ctx, model } = this;
+    const p = this.project(moon.azDeg, moon.altDeg);
+    if (!p.visible) return;
+    const r = Math.max(7, 0.8 * pxPerDeg);
+
+    // Which way the Sun lies from the Moon in the picture: project a point a
+    // short way along the great circle from the Moon toward the Sun.
+    const along = model.dot(ev.sunDir, moon.dir);
+    const toward = model.normalize([0, 1, 2].map((i) =>
+      moon.dir[i] + 0.03 * (ev.sunDir[i] - along * moon.dir[i])));
+    const near = model.dirToAltAz(toward, model.enuBasis(state.latDeg));
+    const q = this.project(near.azDeg, near.altDeg);
+    const sunward = Math.atan2(q.y - p.y, q.x - p.x);
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    const glowR = r * (2.5 + 6 * moon.illuminated);
+    const glow = ctx.createRadialGradient(p.x, p.y, r * 0.8, p.x, p.y, glowR);
+    glow.addColorStop(0, `rgba(210,220,245,${0.10 + 0.28 * moon.illuminated})`);
+    glow.addColorStop(1, "rgba(210,220,245,0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(p.x, p.y, glowR, 0, 2 * Math.PI); ctx.fill();
+
+    ctx.globalCompositeOperation = "source-over";
+    ctx.translate(p.x, p.y);
+    ctx.rotate(sunward);                     // +x now points toward the Sun
+    ctx.fillStyle = "#2b3040";               // the unlit part
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 2 * Math.PI); ctx.fill();
+    // The lit part: the sunward half of the limb, closed by the terminator,
+    // a half-ellipse whose width is the cosine of the phase angle. Gibbous:
+    // it bulges onto the far half. Crescent: it cuts into the near half.
+    const c = Math.cos(moon.phaseAngleDeg * Math.PI / 180);
+    ctx.fillStyle = "#f3f0e2";
+    ctx.beginPath();
+    ctx.arc(0, 0, r, -Math.PI / 2, Math.PI / 2, false);
+    ctx.ellipse(0, 0, Math.max(0.01, r * Math.abs(c)), r, 0, Math.PI / 2, 3 * Math.PI / 2, c < 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    put(p.x, p.y, "moon", 0);
   }
 
   /** Naked-eye-visible satellites and stars inside the picture, as opposed to
@@ -1946,6 +2262,8 @@ const SETTINGS_FIELDS = [
     note: "month and day, e.g. Oct 20" },
   { section: "observer", key: "time", type: "time", def: { ref: "sunset", offsetMin: 30 },
     note: "sunset or sunrise, plus or minus minutes; or a clock time such as \"21:30\"" },
+  { section: "observer", key: "year", type: "int", min: 1900, max: 2100, def: 2026,
+    note: "used for the Moon's position when display.moon is date; the Sun and stars do not depend on it" },
   { section: "observer", key: "hold_time_to_twilight", type: "bool", def: false,
     note: "keep the time relative to sunset or sunrise when latitude or date change" },
 
@@ -1989,6 +2307,10 @@ const SETTINGS_FIELDS = [
     note: "faintest magnitude this observer sees under a dark sky, 4.0 to 6.5" },
   { section: "display", key: "ambient_light", type: "int", min: 1, max: 9, def: 1,
     note: "Bortle class, 1 (no artificial light) to 9 (inner city); brightens the sky" },
+  { section: "display", key: "moon", type: "choice", options: ["off", "date", "phase"], def: "off",
+    note: "off; date: the Moon of observer.year on this date; phase: the Moon at moon_age_days" },
+  { section: "display", key: "moon_age_days", type: "number", min: 0, max: 29.5, digits: 1, def: 14.8,
+    note: "used when moon is phase: days since new Moon, 0 to 29.5; 7.4 first quarter, 14.8 full" },
   { section: "display", key: "show_stars", type: "bool", def: true, note: "" },
   { section: "display", key: "long_exposure", type: "bool", def: false,
     note: "30-second camera view" },
@@ -2187,7 +2509,10 @@ function settingsCoerce(field, raw) {
     case "bool":
       return typeof raw === "boolean" ? { value: raw } : { error: "expected true or false" };
     case "choice": {
-      const v = String(raw).toLowerCase();
+      // the YAML reader takes a bare off or on as false or true; where a
+      // choice has that word as an option, the word is what was meant
+      const word = raw === false ? "off" : raw === true ? "on" : null;
+      const v = word && field.options.includes(word) ? word : String(raw).toLowerCase();
       return field.options.includes(v) ? { value: v }
         : { error: `expected one of ${field.options.join(", ")}` };
     }
@@ -2400,7 +2725,18 @@ function formatShellSummary(shells) {
   return `${shells.length} shells · ${km(Math.min(...alts))}–${km(Math.max(...alts))} km`;
 }
 
-const FORMAT = { formatClock, formatClockDelta, formatTwilightOffset, FORMAT_ROUND_SATELLITE_COUNTS, formatSatelliteCount, formatShellSummary };
+/**
+ * A ratio as a person would say it: "23×", "2.4×", "1/3.5", "1/1,300".
+ * Above 1 it is a multiple; below 1 it is one part in so many.
+ */
+function formatRatio(ratio) {
+  if (!(ratio > 0) || !Number.isFinite(ratio)) return "0";
+  const number = (v) => (v >= 9.95 ? Math.round(v).toLocaleString("en-US") : v.toFixed(1));
+  if (ratio >= 0.95) return `${number(ratio)}×`;
+  return `1/${number(1 / ratio)}`;
+}
+
+const FORMAT = { formatClock, formatClockDelta, formatTwilightOffset, FORMAT_ROUND_SATELLITE_COUNTS, formatSatelliteCount, formatShellSummary, formatRatio };
 
 // ==== ui.js ====
 // SBDC Night-Sky Simulator — UI layer. Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
@@ -2418,6 +2754,7 @@ const FORMAT = { formatClock, formatClockDelta, formatTwilightOffset, FORMAT_ROU
 const App = {
   data: null, catalog: null,
   cons: null, ev: null, stars: null, starVis: null, summary: null,
+  evCons: null,                            // the constellation App.ev was evaluated from
   renderer: null,
   playing: null, playTimer: null,          // null | "rt" | "ff"
   timeLock: false, timeAnchor: null,       // twilight-locked time (v3)
@@ -2426,6 +2763,7 @@ const App = {
     latDeg: 40, doy: 172, solarTimeHours: 20.7,
     brightnessRefMag: 0.5, phaseLaw: "lambert", userLimitingMag: 6.0, propagationSec: 0,
     ambientBortle: 1, nakedEyeThreshold: "table",
+    moon: "off", year: 2026, moonAgeDays: 14.8,
   },
   cfg: {
     totalSats: 300000, ssoFraction: 0.7, shellPreset: "spread",
@@ -2531,6 +2869,31 @@ const TR = {
   hintEyeModel: ["how the sky\u2019s brightness sets the faintest magnitude seen",
                  "comment la luminosité du ciel fixe la magnitude la plus faible visible"],
   rSky: ["zenith sky", "ciel au zénith"], rLimit: ["naked-eye limit", "limite à l\u2019œil nu"],
+  moon: ["Moon", "Lune"],
+  moOff: ["Off (no Moon)", "Sans Lune"], moDate: ["As on this date", "Comme à cette date"],
+  moPhase: ["Set the phase", "Choisir la phase"],
+  year: ["Year", "Année"],
+  hintYear: ["the Moon\u2019s place on this date, taking the solar time as universal time · it is within a few degrees for any longitude",
+             "la position de la Lune à cette date, l\u2019heure solaire étant prise comme temps universel · à quelques degrés près pour toute longitude"],
+  moonAge: ["Days since new Moon", "Jours depuis la nouvelle Lune"],
+  hintMoon: ["moonlight brightens the sky, which hides faint satellites and stars",
+             "le clair de Lune éclaircit le ciel, ce qui cache les satellites et étoiles faibles"],
+  phases: [
+    ["new", "waxing crescent", "first quarter", "waxing gibbous", "full", "waning gibbous", "last quarter", "waning crescent"],
+    ["nouvelle", "premier croissant", "premier quartier", "gibbeuse croissante", "pleine", "gibbeuse décroissante", "dernier quartier", "dernier croissant"],
+  ],
+  mLit: ["lit", "éclairée"], mUp: ["up", "de hauteur"], mDown: ["below the horizon", "sous l\u2019horizon"],
+  lSbdc: ["SBDC light", "Lumière des SBDC"], lTotal: ["mag in total", "mag au total"],
+  lNone: ["none: no sunlit SBDC is above the horizon", "aucune : aucun SBDC éclairé au-dessus de l\u2019horizon"],
+  // each comparison in two forms: after a multiple ("10× a full Moon") and
+  // after a fraction ("1/22 of a full Moon")
+  lFullMoon: ["a full Moon", "une pleine Lune"],
+  lFullMoonOf: ["of a full Moon", "d\u2019une pleine Lune"],
+  lNight: ["a moonless natural night sky", "un ciel nocturne naturel sans Lune"],
+  lNightOf: ["of a moonless natural night sky", "d\u2019un ciel nocturne naturel sans Lune"],
+  lThisMoon: ["this Moon\u2019s light", "la lumière de cette Lune"],
+  lThisMoonOf: ["of this Moon\u2019s light", "de la lumière de cette Lune"],
+  ttMoon: ["Moon", "Lune"],
   showStars: ["Show stars (Yale Bright Star Catalog)", "Afficher les étoiles (catalogue Yale)"],
   tint: ["Tint by orbit family (analysis aid)", "Colorer par famille d'orbite (aide à l'analyse)"],
   longexp: ["Long-exposure camera (30 s) — the astronomy view", "Pose longue (30 s) — la vue astronomique"],
@@ -2653,6 +3016,10 @@ function applyLang(lang) {
   txt('label[for="eyemodel"]', "eyeModel"); txt("#hint-eyemodel", "hintEyeModel");
   txt('#eyemodel option[value="table"]', "emTable"); txt('#eyemodel option[value="schaefer"]', "emSchaefer");
   if ($("ambient-label") && App.state) $("ambient-label").textContent = bortleLabel(App.state.ambientBortle);
+  lbl('label[for="moon"]', "moon"); lbl('label[for="moonage"]', "moonAge"); txt('label[for="year"]', "year");
+  txt('#moon option[value="off"]', "moOff"); txt('#moon option[value="date"]', "moDate");
+  txt('#moon option[value="phase"]', "moPhase"); txt("#hint-year", "hintYear"); txt("#hint-moon", "hintMoon");
+  if ($("moonage-label") && App.state) $("moonage-label").textContent = moonAgeLabel(App.state.moonAgeDays);
   txt("#hint-longexp", "hintLongexp"); txt("#busy", "busy");
   txt('label[for="preset"]', "presetLbl"); txt('#preset option[value=""]', "presetNone");
   txt("#settings-export", "exportBtn"); txt("#settings-import", "importBtn");
@@ -2705,6 +3072,10 @@ function reevaluate() {
     evalPending = false;
     const { data, catalog, cons, state } = App;
     App.ev = MODEL.evaluate(cons, state, data);
+    // The picture and the tooltips read the evaluation together with the
+    // constellation it came from. App.cons is replaced a frame before its
+    // first evaluation exists, so anything drawn in between has to use this.
+    App.evCons = cons;
     const st = MODEL.starAltAz(catalog, state.latDeg, state.doy, state.solarTimeHours, data);
     App.stars = st;
     App.starVis = MODEL.starVisibility(
@@ -2732,7 +3103,7 @@ function redraw() {
   updateCompass();
   if (!App.ev) return;
   const cam = App.renderer.longExposure;
-  App.renderer.draw(App.state, App.ev, App.cons, App.stars,
+  App.renderer.draw(App.state, App.ev, App.evCons, App.stars,
     cam ? App.starVisCam : App.starVis, cam ? App.streaks : null);
   // what is inside the picture changes with every pan and zoom
   App.inView = App.renderer.countInView(App.ev, App.stars, App.starVis);
@@ -2759,6 +3130,41 @@ function brightLabel(m) {
 /** "Bortle 5 — suburban" in the current language. */
 function bortleLabel(n) {
   return `Bortle ${n} \u2014 ${TR.bortle[LANG.cur === "fr" ? 1 : 0][n - 1]}`;
+}
+
+/** The name of the phase a Moon of this age is nearest to. */
+function phaseName(ageDays) {
+  const eighth = Math.round(ageDays / MODEL.SYNODIC_MONTH_DAYS * 8) % 8;
+  return TR.phases[LANG.cur === "fr" ? 1 : 0][eighth];
+}
+const moonAgeLabel = (ageDays) => `${ageDays.toFixed(1)} \u2014 ${phaseName(ageDays)}`;
+
+/** "98% lit, 25° up" or "43% lit, below the horizon" for the Moon of a summary. */
+function moonText(moon) {
+  const lit = `${Math.round(moon.illuminated * 100)}% ${T("mLit")}`;
+  return moon.altDeg > 0 ? `${lit}, ${Math.round(moon.altDeg)}° ${T("mUp")}` : `${lit}, ${T("mDown")}`;
+}
+
+/** The light line of the readout: the satellites' summed light against a
+ *  full Moon, a natural night sky, and the Moon as set. */
+function lightLine(light) {
+  if (light.sbdcMag == null) return `${T("lSbdc")}: ${T("lNone")}`;
+  const mag = (light.sbdcMag < 0 ? "\u2212" : "+") + Math.abs(light.sbdcMag).toFixed(1);
+  // "10× a full Moon" or "1/22 of a full Moon"
+  const against = (ratio, key) => {
+    const text = FORMAT.formatRatio(ratio);
+    return `${text} ${T(text.startsWith("1/") ? key + "Of" : key)}`;
+  };
+  const parts = [
+    `${T("lSbdc")} ${mag} ${T("lTotal")}`,
+    against(light.toFullMoon, "lFullMoon"),
+    against(light.toNaturalNight, "lNight"),
+  ];
+  if (light.moon) {
+    parts.push(`${T("moon")} ${moonText(light.moon)}` +
+      (light.toMoon != null ? `: ${against(light.toMoon, "lThisMoon")}` : ""));
+  }
+  return parts.join("  ·  ");
 }
 
 function brightAnchor(m) {
@@ -2798,6 +3204,8 @@ function updateReadout() {
     (s.brightestObjectMag != null
       ? `  ·  ${T("rBrightest")} ${s.brightestObjectMag.toFixed(1)} (${brightAnchor(s.brightestObjectMag)})` : "");
   $("readout").textContent = line;
+  $("readout-light").textContent = lightLine(s.light);
+  $("moon-label").textContent = s.light.moon ? moonText(s.light.moon) : "";
   const rel = twilightOffsetText();
   const bortle = App.state.ambientBortle > 1 ? ` (Bortle ${App.state.ambientBortle})` : "";
   $("readout-sub").textContent =
@@ -2945,7 +3353,7 @@ function buildAssumptions() {
 
 function snapshot() {
   const src = App.renderer.canvas;
-  const CAP = 96;
+  const CAP = 122;
   const out = document.createElement("canvas");
   out.width = src.width; out.height = src.height + CAP;
   const g = out.getContext("2d");
@@ -2960,10 +3368,11 @@ function snapshot() {
     g.fillText(text, 14, y);
   };
   caption($("readout").textContent, src.height + 30, "#e8e4d8");
-  caption($("readout-sub").textContent, src.height + 56, "#8b8fa3");
+  caption($("readout-light").textContent, src.height + 56, "#d9c9a3");
+  caption($("readout-sub").textContent, src.height + 82, "#8b8fa3");
   g.fillStyle = "#6b6f83";
   g.font = `${Math.max(10, out.width / 130)}px ui-monospace, monospace`;
-  g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 82);
+  g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 108);
   out.toBlob((blob) => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -3042,8 +3451,8 @@ function hover(e) {
   if (!hit) { tip.style.display = "none"; return; }
   let html;
   if (hit.kind === "sat") {
-    const i = hit.i, ev = App.ev, fam = [T("famSso"), T("fam30"), T("famTrain")][App.cons.family[i]];
-    const ci = ev.clusterInfo && ev.clusterInfo.get(App.cons.clusterId[i]);
+    const i = hit.i, ev = App.ev, fam = [T("famSso"), T("fam30"), T("famTrain")][App.evCons.family[i]];
+    const ci = ev.clusterInfo && ev.clusterInfo.get(App.evCons.clusterId[i]);
     if (ci && ci.compact) {
       html = `<b>${T("ttCluster")}</b><br>` +
         `${ci.count} ${T("ttMembers")} · ${(ci.extentDeg * 60).toFixed(0)}\u2032 ${T("ttExtent")}<br>` +
@@ -3052,9 +3461,13 @@ function hover(e) {
     } else {
       html = `<b>SBDC — ${fam}</b><br>` +
         `alt ${ev.alt[i].toFixed(1)}° · az ${ev.az[i].toFixed(0)}°<br>` +
-        `${T("ttRange")} ${Math.round(ev.range[i]).toLocaleString()} km · ${T("ttShell")} ${Math.round(App.cons.shellAlt[i])} km<br>` +
+        `${T("ttRange")} ${Math.round(ev.range[i]).toLocaleString()} km · ${T("ttShell")} ${Math.round(App.evCons.shellAlt[i])} km<br>` +
         `mag ${ev.mag[i].toFixed(1)} · ${ev.sunlit[i] ? T("ttSunlit") : T("ttShadow")}`;
     }
+  } else if (hit.kind === "moon") {
+    const moon = App.summary.light.moon;
+    html = `<b>${T("ttMoon")}</b> \u2014 ${phaseName(moon.ageDays)}<br>${moonText(moon)}` +
+      (moon.magnitude != null ? `<br>mag ${moon.magnitude.toFixed(1)}` : "");
   } else {
     const i = hit.i, name = App.catalog.names[String(i)] || T("ttStar");
     html = `<b>${name}</b><br>V mag ${(App.catalog.v[i] / 10).toFixed(1)}`;
@@ -3222,6 +3635,23 @@ function bindControls() {
     reevaluate();
   });
   on("eyemodel", "change", (e) => { App.state.nakedEyeThreshold = e.target.value; reevaluate(); });
+  on("moon", "change", (e) => {
+    App.state.moon = e.target.value;
+    $("moon-date").style.display = e.target.value === "date" ? "" : "none";
+    $("moon-phase").style.display = e.target.value === "phase" ? "" : "none";
+    reevaluate();
+  });
+  on("year", "change", (e) => {
+    const y = Math.round(+e.target.value);
+    App.state.year = Number.isFinite(y) ? Math.max(1900, Math.min(2100, y)) : App.state.year;
+    e.target.value = App.state.year;
+    reevaluate();
+  });
+  on("moonage", "input", (e) => {
+    App.state.moonAgeDays = +e.target.value / 10;
+    $("moonage-label").textContent = moonAgeLabel(App.state.moonAgeDays);
+    reevaluate();
+  });
   on("show-stars", "change", (e) => { App.renderer.showStars = e.target.checked; redraw(); });
   on("tint", "change", (e) => { App.renderer.tintFamilies = e.target.checked; redraw(); });
   on("viewmode", "change", (e) => {
@@ -3283,6 +3713,7 @@ function readSettings() {
     latitude: App.state.latDeg,
     date: App.state.doy,
     time: currentTimeSetting(),
+    year: App.state.year,
     hold_time_to_twilight: App.timeLock,
   });
   Object.assign(s.constellation, {
@@ -3307,6 +3738,8 @@ function readSettings() {
     field_of_view: view.fovDeg,
     sky_limit_mag: App.state.userLimitingMag,
     ambient_light: App.state.ambientBortle,
+    moon: App.state.moon,
+    moon_age_days: App.state.moonAgeDays,
     show_stars: App.renderer.showStars,
     long_exposure: App.renderer.longExposure,
   });
@@ -3392,6 +3825,9 @@ function applySettings(s) {
     updateCompass();
     setControl("starlim", Math.round(d.sky_limit_mag * 10), "input");
     setControl("ambient", d.ambient_light, "input");
+    setControl("year", o.year, "change");
+    setControl("moonage", Math.round(d.moon_age_days * 10), "input");
+    setControl("moon", d.moon, "change");
     setControl("eyemodel", a.naked_eye_threshold, "change");
     setControl("show-stars", d.show_stars, "change");
     setControl("longexp", d.long_exposure, "change");
@@ -3573,7 +4009,7 @@ function installErrorBanner() {
 }
 
 function resizeCanvas() {
-  const wrap = $("canvas-wrap");
+  const wrap = $("sky-area");
   const cv = App.renderer.canvas;
   const dpr = Math.min(1.5, window.devicePixelRatio || 1);
   // Never let a collapsed layout produce a zero-size canvas (iOS Safari
@@ -3616,6 +4052,16 @@ function boot() {
   }
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 250));
+  // The readout strip below the sky changes height when its lines wrap, and
+  // the sky takes up the difference.
+  if (typeof ResizeObserver === "function") {
+    let queued = false;
+    new ResizeObserver(() => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; resizeCanvas(); });
+    }).observe($("sky-area"));
+  }
   resizeCanvas();
   // A page opened with settings in its address starts from them; applying
   // them builds the constellation.
