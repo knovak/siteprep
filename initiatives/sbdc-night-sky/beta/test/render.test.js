@@ -144,3 +144,71 @@ test("sky color: moonlight is blue gray, skyglow is warm gray, and they share th
   const both = R.skyColor(mu, 0.5, 0.5);
   for (let k = 0; k < 3; k++) assert.ok(Math.abs(both[k] - (glow[k] + moonlit[k]) / 2) < 1e-12);
 });
+
+/* ---------------- unit 5: the perspective view, aiming ---------------- */
+
+test("perspective projection: the aim is the centre, and positions round-trip", () => {
+  const W = 1600, H = 760;
+  const view = { mode: "perspective", centerAz: 315, centerAlt: 25, fovDeg: 90 };
+  const c = R.projPerspective(315, 25, view, W, H);
+  assert.ok(Math.abs(c.x - W / 2) < 1e-9 && Math.abs(c.y - H / 2) < 1e-9, "the aim point is the centre");
+  for (const [az, alt] of [[315, 25], [300, 10], [340, 50], [280, 5], [350, 30]]) {
+    const p = R.projPerspective(az, alt, view, W, H);
+    const u = R.unprojPerspective(p.x, p.y, view, W, H);
+    assert.ok(Math.abs(R.wrap180(u.azDeg - az)) < 1e-9 && Math.abs(u.altDeg - alt) < 1e-9, `${az}, ${alt}`);
+  }
+  // the edges of the picture at the centre's height are half the field of view away
+  const left = R.unprojPerspective(0, H / 2, view, W, H), right = R.unprojPerspective(W, H / 2, view, W, H);
+  const sep = (a, b) => {
+    const r = Math.PI / 180;
+    const v = (p) => [Math.cos(p.altDeg * r) * Math.sin(p.azDeg * r), Math.cos(p.altDeg * r) * Math.cos(p.azDeg * r), Math.sin(p.altDeg * r)];
+    const x = v(a), y = v(b);
+    return Math.acos(x[0] * y[0] + x[1] * y[1] + x[2] * y[2]) / r;
+  };
+  assert.ok(Math.abs(sep(left, right) - 90) < 1e-6, "edge to edge is the field of view: " + sep(left, right));
+  // east is on the right, up is up
+  assert.ok(R.projPerspective(325, 25, view, W, H).x > W / 2);
+  assert.ok(R.projPerspective(315, 35, view, W, H).y < H / 2);
+  // behind the camera there is no position
+  assert.equal(R.projPerspective(135, 10, view, W, H).visible, false);
+});
+
+test("perspective projection: straight lines in the sky stay straight", () => {
+  // The horizon is a great circle. In a perspective picture its points lie on
+  // one line; in the panorama it is level because azimuth is the x axis.
+  const W = 1600, H = 760, view = { mode: "perspective", centerAz: 200, centerAlt: 30, fovDeg: 100 };
+  const pts = [-40, -20, 0, 20, 40].map((off) => R.projPerspective(200 + off, 0, view, W, H));
+  const slope = (pts[4].y - pts[0].y) / (pts[4].x - pts[0].x);
+  for (const p of pts) {
+    assert.ok(Math.abs(p.y - (pts[0].y + slope * (p.x - pts[0].x))) < 1e-6, "the horizon is one line");
+  }
+  // a wide field is cut to the widest the view draws
+  const wide = R.projPerspective(260, 30, { ...view, fovDeg: 140 }, W, H);
+  const cut = R.projPerspective(260, 30, { ...view, fovDeg: R.PERSPECTIVE_MAX_FOV }, W, H);
+  assert.equal(wide.x, cut.x);
+});
+
+test("in view, in the perspective view: in front of the camera, inside the picture, above the hills", () => {
+  const W = 1600, H = 760, view = { mode: "perspective", centerAz: 315, centerAlt: 25, fovDeg: 90 };
+  assert.equal(R.inFrame(315, 25, view, W, H), true);
+  assert.equal(R.inFrame(135, 25, view, W, H), false, "behind the camera");
+  assert.equal(R.inFrame(315, 0.2, view, W, H), false, "behind the hills");
+  assert.equal(R.inFrame(315, 80, view, W, H), false, "above the picture");
+  assert.equal(R.inFrame(15, 25, view, W, H), false, "60 degrees to the side of a 90-degree field");
+});
+
+test("the densest sky: the fullest window around the horizon, not the average direction", () => {
+  assert.equal(R.densestAzimuth([], 90), null);
+  // one group around 300 degrees
+  const west = []; for (let k = 0; k < 500; k++) west.push(280 + (k % 40));
+  const facing = R.densestAzimuth(west, 90);
+  assert.ok(Math.abs(R.wrap180(facing - 300)) < 25, "facing " + facing);
+  // two lobes, at 60 and at 300, the second larger: the answer is the larger
+  // lobe. Their mean direction is north, where there is nothing.
+  const two = []; for (let k = 0; k < 300; k++) two.push(50 + (k % 20)); for (let k = 0; k < 500; k++) two.push(290 + (k % 20));
+  const lobe = R.densestAzimuth(two, 60);
+  assert.ok(Math.abs(R.wrap180(lobe - 300)) < 25, "facing " + lobe);
+  // a group that straddles north
+  const north = []; for (let k = 0; k < 400; k++) north.push((350 + (k % 20)) % 360);
+  assert.ok(Math.abs(R.wrap180(R.densestAzimuth(north, 90))) < 30, "facing " + R.densestAzimuth(north, 90));
+});

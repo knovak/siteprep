@@ -32,6 +32,73 @@ export function unprojHorizon(x, y, view, W, H) {
   return { azDeg: ((az % 360) + 360) % 360, altDeg: alt };
 }
 
+/* Perspective view: what a camera with a flat sensor records, aimed at
+ * (centerAz, centerAlt) with a horizontal field of view fovDeg. Straight
+ * lines in the sky stay straight, and the horizon is level only at the
+ * centre azimuth. Directions are in east-north-up coordinates. */
+const PERSP_RAD = Math.PI / 180;
+function perspectiveCamera(view, W, H) {
+  const az = view.centerAz * PERSP_RAD, alt = view.centerAlt * PERSP_RAD;
+  const fwd = [Math.cos(alt) * Math.sin(az), Math.cos(alt) * Math.cos(az), Math.sin(alt)];
+  const right = [Math.cos(az), -Math.sin(az), 0];
+  const up = [right[1] * fwd[2] - right[2] * fwd[1], right[2] * fwd[0] - right[0] * fwd[2],
+              right[0] * fwd[1] - right[1] * fwd[0]];
+  const tanH = Math.tan(Math.min(view.fovDeg, PERSPECTIVE_MAX_FOV) * PERSP_RAD / 2);
+  return { fwd, right, up, tanH, tanV: tanH * H / W };
+}
+/** The widest field the perspective view draws: beyond this the edges stretch too far. */
+export const PERSPECTIVE_MAX_FOV = 120;
+
+export function projPerspective(azDeg, altDeg, view, W, H) {
+  const cam = perspectiveCamera(view, W, H);
+  const a = azDeg * PERSP_RAD, e = altDeg * PERSP_RAD;
+  const d = [Math.cos(e) * Math.sin(a), Math.cos(e) * Math.cos(a), Math.sin(e)];
+  const z = d[0] * cam.fwd[0] + d[1] * cam.fwd[1] + d[2] * cam.fwd[2];
+  if (z <= 0.02) return { x: NaN, y: NaN, visible: false };      // behind the camera, or edge-on
+  const x = W / 2 * (1 + (d[0] * cam.right[0] + d[1] * cam.right[1] + d[2] * cam.right[2]) / (z * cam.tanH));
+  const y = H / 2 * (1 - (d[0] * cam.up[0] + d[1] * cam.up[1] + d[2] * cam.up[2]) / (z * cam.tanV));
+  return { x, y, visible: x >= -40 && x <= W + 40 && y >= -40 && y <= H + 40 };
+}
+
+export function unprojPerspective(x, y, view, W, H) {
+  const cam = perspectiveCamera(view, W, H);
+  const xn = (2 * x / W - 1) * cam.tanH, yn = (1 - 2 * y / H) * cam.tanV;
+  const d = [0, 1, 2].map((k) => cam.fwd[k] + xn * cam.right[k] + yn * cam.up[k]);
+  const n = Math.hypot(d[0], d[1], d[2]);
+  let az = Math.atan2(d[0], d[1]) / PERSP_RAD;
+  if (az < 0) az += 360;
+  return { azDeg: az, altDeg: Math.asin(d[2] / n) / PERSP_RAD };
+}
+
+/**
+ * The azimuth to face to take in the most of a set of sky positions: the
+ * centre of the fullest window of width fovDeg around the horizon. For a
+ * ring with two lobes this is one of the lobes, where the mean azimuth
+ * would be the gap between them. Returns null when there are no positions.
+ */
+export function densestAzimuth(azimuthsDeg, fovDeg) {
+  const BIN = 2, n = 360 / BIN, hist = new Float64Array(n);
+  let total = 0;
+  for (const az of azimuthsDeg) { hist[Math.floor((((az % 360) + 360) % 360) / BIN) % n]++; total++; }
+  if (!total) return null;
+  const width = Math.max(1, Math.round(Math.min(fovDeg, 360) / BIN));
+  let sum = 0;
+  for (let k = 0; k < width; k++) sum += hist[k];
+  let best = sum, bestStart = 0;
+  for (let start = 1; start < n; start++) {
+    sum += hist[(start + width - 1) % n] - hist[start - 1];
+    if (sum > best) { best = sum; bestStart = start; }
+  }
+  // Many windows can hold the same positions. Face the middle of what the
+  // fullest one holds: the mean direction of the positions inside it.
+  let x = 0, y = 0;
+  for (let k = 0; k < width; k++) {
+    const bin = (bestStart + k) % n, a = (bin + 0.5) * BIN * Math.PI / 180;
+    x += hist[bin] * Math.cos(a); y += hist[bin] * Math.sin(a);
+  }
+  return ((Math.atan2(y, x) * 180 / Math.PI) % 360 + 360) % 360;
+}
+
 /** All-sky fisheye (equidistant): zenith at center, horizon at the rim,
  *  north up, east LEFT (astronomical convention: looking up). */
 /** Rolling-hills silhouette height (deg above the horizon) as a
@@ -49,9 +116,10 @@ export const hillAltDeg = (azDeg) =>
  *  thing from the whole-sky totals beside them. */
 export function inFrame(azDeg, altDeg, view, W, H) {
   if (!(altDeg > 0)) return false;
-  if (view.mode !== "horizon") return true;
+  if (view.mode === "fisheye") return true;
   if (altDeg < hillAltDeg(azDeg)) return false;
-  const p = projHorizon(azDeg, altDeg, view, W, H);
+  const p = view.mode === "perspective"
+    ? projPerspective(azDeg, altDeg, view, W, H) : projHorizon(azDeg, altDeg, view, W, H);
   return p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H;
 }
 
@@ -194,6 +262,7 @@ export class SkyRenderer {
 
   project(azDeg, altDeg) {
     const { canvas, view } = this;
+    if (view.mode === "perspective") return projPerspective(azDeg, altDeg, view, canvas.width, canvas.height);
     return view.mode === "horizon"
       ? projHorizon(azDeg, altDeg, view, canvas.width, canvas.height)
       : projFisheye(azDeg, altDeg, canvas.width, canvas.height);
@@ -201,9 +270,21 @@ export class SkyRenderer {
 
   unproject(x, y) {
     const { canvas, view } = this;
+    if (view.mode === "perspective") return unprojPerspective(x, y, view, canvas.width, canvas.height);
     return view.mode === "horizon"
       ? unprojHorizon(x, y, view, canvas.width, canvas.height)
       : unprojFisheye(x, y, canvas.width, canvas.height);
+  }
+
+  /** Pixels per degree at the centre of the picture. */
+  pixelsPerDegree() {
+    const { canvas, view } = this;
+    if (view.mode === "perspective") {
+      return canvas.width / 2 / Math.tan(Math.min(view.fovDeg, PERSPECTIVE_MAX_FOV) * PERSP_RAD / 2) * PERSP_RAD;
+    }
+    return view.mode === "horizon"
+      ? canvas.width / view.fovDeg
+      : projFisheye(0, 0, canvas.width, canvas.height).R / 90;
   }
 
   /* ---- physically driven sky background (low-res, scaled up) ---- */
@@ -247,7 +328,40 @@ export class SkyRenderer {
   _groundAndLabels(latDeg = 40) {
     const { ctx, canvas, view } = this;
     ctx.save();
-    if (view.mode === "horizon") {
+    if (view.mode === "perspective") {
+      // the hills, as a camera sees them: the silhouette at each azimuth in
+      // front of the camera, joined left to right and filled to the bottom
+      const W = canvas.width, H = canvas.height, pts = [];
+      for (let off = -100; off <= 100; off += 0.5) {
+        const az = view.centerAz + off;
+        const p = projPerspective(az, hillAltDeg(az), view, W, H);
+        if (Number.isFinite(p.x) && p.x > -4 * W && p.x < 5 * W && p.y > -4 * H && p.y < 5 * H) pts.push(p);
+      }
+      if (pts.length > 1) {
+        ctx.fillStyle = "#05060a";
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, 5 * H);
+        for (const p of pts) ctx.lineTo(p.x, p.y);
+        ctx.lineTo(pts[pts.length - 1].x, 5 * H);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = "rgba(216,226,255,0.22)";
+        ctx.beginPath();
+        pts.forEach((p, k) => (k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+        ctx.stroke();
+      } else if (view.centerAlt < 0) {
+        ctx.fillStyle = "#05060a"; ctx.fillRect(0, 0, W, H);       // looking at the ground
+      }
+      ctx.fillStyle = "rgba(199,205,224,0.85)";
+      ctx.font = `${Math.max(11, canvas.width / 90)}px ui-monospace, monospace`;
+      ctx.textAlign = "center";
+      for (let az = 0; az < 360; az += 45) {
+        const p = projPerspective(az, 0, view, W, H);
+        if (!p.visible || p.x < 0 || p.x > W) continue;
+        const lab = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][az / 45];
+        ctx.fillText(lab, p.x, Math.min(H - 8, p.y + 18));
+      }
+    } else if (view.mode === "horizon") {
       // rolling hills: a gentle deterministic silhouette (0.4-3.3 deg),
       // consistent under panning because it is a function of azimuth
       const y0 = this.project(view.centerAz, 0).y;
@@ -346,9 +460,7 @@ export class SkyRenderer {
     // PSF size tracks the view's angular pixel scale, so the all-sky
     // fisheye (few px/deg) doesn't saturate into an over-exposed blob and
     // a zoomed horizon view keeps points plausibly point-like.
-    const pxPerDeg = this.view.mode === "horizon"
-      ? canvas.width / this.view.fovDeg
-      : projFisheye(0, 0, canvas.width, canvas.height).R / 90;
+    const pxPerDeg = this.pixelsPerDegree();
     const sizeScale = Math.min(2.5, Math.max(0.30, Math.pow(pxPerDeg / 11.6, 0.8)));
 
     const grid = new Map(); // tooltip spatial index: cell -> [{x,y,kind,i}]
@@ -390,6 +502,7 @@ export class SkyRenderer {
         const p1 = this.project(ev.az[i], ev.alt[i]);
         const p2 = this.project(streaks.az2[i], Math.max(streaks.alt2[i], 0));
         if (!p1.visible && !p2.visible) continue;
+        if (!Number.isFinite(p1.x + p1.y + p2.x + p2.y)) continue;   // one end is behind the camera
         const len = Math.max(2, Math.hypot(p2.x - p1.x, p2.y - p1.y));
         const flux = magToFlux(ev.mag[i]);
         const alpha = Math.min(0.9, 1.6 * flux / len);

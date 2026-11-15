@@ -944,3 +944,113 @@ test("the sky's light, part by part", () => {
   // nothing added: only the natural sky
   assert.deepEqual(M.muParts(up, sun, -30, data), { natural: parts.natural, artificial: null, moon: null, total: parts.natural });
 });
+
+/* ---------------- unit 5: a night and a year of significance ---------------- */
+
+test("a thinned constellation stands for the whole one", () => {
+  const full = M.generateConstellation(M.defaultConfig(data, { totalSats: 200000, seed: 12345 }), data);
+  const thin = M.thinConstellation(full, 20000);
+  assert.ok(thin.n > 18000 && thin.n < 22000, "about 20,000 kept: " + thin.n);
+  assert.ok(Math.abs(thin.n * thin.scale - full.n) < 1e-6, "each kept satellite stands for scale of them");
+  // one already small enough is returned as it is
+  assert.equal(M.thinConstellation(C0, 30000).n, C0.n);
+  assert.equal(M.thinConstellation(C0, 30000).scale, 1);
+  // counts from the thinned one, scaled up, are close to the full counts
+  const state = { latDeg: 40, doy: dayOfYear(12, 21), solarTimeHours: 18.5, userLimitingMag: 6.5 };
+  const a = M.summarize(full, state, data, catalog), b = M.sampleInstant(thin, state, data, catalog);
+  assert.ok(Math.abs(b.visible / a.visible - 1) < 0.05, `visible ${b.visible} against ${a.visible}`);
+  assert.equal(b.visibleStars, a.visibleStars, "the stars are not thinned");
+  // the summed light depends on the brightest few percent, so a tenth of the
+  // satellites gives it to within about a fifth
+  assert.ok(Math.abs(b.sbdcMag - a.light.sbdcMag) < 0.25, `light ${b.sbdcMag} against ${a.light.sbdcMag}`);
+  assert.ok(Math.abs(b.toSkyNow / a.light.toSkyNow - 1) < 0.25);
+});
+
+test("thinning keeps clusters whole", () => {
+  const clustered = M.generateConstellation(M.defaultConfig(data, { totalSats: 100000, seed: 12345,
+    clustering: { enabled: true, satsPerCluster: 100, memberSigma: 0.35, clusterDiameterKm: 1, diameterSigma: 0.35 } }), data);
+  const thin = M.thinConstellation(clustered, 10000);
+  const sizes = (c) => { const m = new Map(); for (let i = 0; i < c.n; i++) m.set(c.clusterId[i], (m.get(c.clusterId[i]) || 0) + 1); return m; };
+  const before = sizes(clustered), after = sizes(thin);
+  assert.ok(after.size > 50, "some clusters are kept: " + after.size);
+  for (const [id, count] of after) assert.equal(count, before.get(id), `cluster ${id} is whole`);
+  assert.equal(thin.clustered, true);
+});
+
+test("a night: 24 hours from noon, sampled when the Sun is down", () => {
+  const thin = M.thinConstellation(C0, 30000);
+  const samples = M.nightSamples(thin, { latDeg: 40, doy: 172 }, data, catalog, 15);
+  assert.equal(samples.length, 96);
+  assert.equal(samples[0].hours, 12);
+  assert.equal(samples[48].hours, 0, "midnight is half way");
+  for (const s of samples) {
+    assert.equal(s.night, s.sunAltDeg <= M.NIGHT_SUN_ALT_DEG, `at ${s.hours}`);
+    if (!s.night) { assert.equal(s.visible, 0); assert.equal(s.toSkyNow, null); }
+  }
+  const hours = M.significantHours(samples, 15);
+  // 40 N on the June solstice: about 9 hours between sunset and sunrise
+  assert.ok(Math.abs(hours.night - 9) < 0.5, "night " + hours.night);
+  for (const def of M.SIGNIFICANCE) assert.ok(hours[def.key] >= 0 && hours[def.key] <= hours.night, def.key);
+  // the midnight Sun: no night, no hours
+  const polar = M.significantHours(M.nightSamples(thin, { latDeg: 80, doy: 172 }, data, catalog, 30), 30);
+  assert.deepEqual(polar, { night: 0, atLeast100: 0, outnumberStars: 0, exceedsSky: 0 });
+});
+
+test("hours are counted from samples by each definition", () => {
+  const night = (visible, visibleStars, toSkyNow) => ({ night: true, visible, visibleStars, toSkyNow });
+  const samples = [
+    { night: false, visible: 0, visibleStars: 0, toSkyNow: null },
+    night(0, 0, null),            // dark, nothing sunlit
+    night(50, 20, 0.5),           // outnumbers the stars, under 100
+    night(500, 2000, 0.9),        // over 100, fewer than the stars
+    night(5000, 2000, 3),         // all three
+    night(100, 100, 1),           // exactly 100; not more than the stars; exactly the sky's light
+  ];
+  assert.deepEqual(M.significantHours(samples, 30), { night: 2.5, atLeast100: 1.5, outnumberStars: 1, exceedsSky: 1 });
+  assert.deepEqual(M.SIGNIFICANCE.map((d) => d.key), ["atLeast100", "outnumberStars", "exceedsSky"]);
+});
+
+test("a year is its sampled nights, each standing for an equal share", () => {
+  assert.equal(M.YEAR_SAMPLE_DAYS.length, 24);
+  for (const day of [80, 172, 264, 355]) assert.ok(M.YEAR_SAMPLE_DAYS.includes(day), `day ${day} (an equinox or solstice) is sampled`);
+  for (let k = 1; k < 24; k++) {
+    const gap = M.YEAR_SAMPLE_DAYS[k] - M.YEAR_SAMPLE_DAYS[k - 1];
+    assert.ok(gap >= 13 && gap <= 17, `gap ${gap} days`);
+  }
+  const year = M.yearHours([{ night: 8, atLeast100: 2 }, { night: 16, atLeast100: 6 }]);
+  assert.equal(year.night, 12 * 365);
+  assert.equal(year.atLeast100, 4 * 365);
+});
+
+test("a night with the sdross0 settings lasts as long as that project reports", () => {
+  // Its README: at the equinox the no-mitigation case has "some two and a
+  // half hours" each evening with more satellites than stars, and the
+  // optimistic case is visible for about 44 minutes (62 to 106 minutes after
+  // sunset); near the December solstice the optimistic case is visible from
+  // 54 to 172 minutes. A day here is an evening and a morning, so twice that.
+  const sd = M.thinConstellation(M.generateConstellation(M.defaultConfig(data, {
+    totalSats: 500000, ssoFraction: 1, trains: 0, seed: 12345, shells: filedShells,
+    planeLayout: "filed", ltanSpreadMinutes: 40, m0Sigma: 0 }), data), 30000);
+  const hoursOn = (doy, extra) => M.significantHours(M.nightSamples(sd,
+    { latDeg: 37.2, doy, userLimitingMag: 6.5, nakedEyeThreshold: "schaefer", ...extra }, data, catalog, 5), 5);
+  const none = hoursOn(265, { brightnessRefMag: 0.8 });
+  assert.ok(none.outnumberStars > 3.5 && none.outnumberStars < 6.5, "no mitigation outnumbers the stars for about 5 h: " + none.outnumberStars);
+  const mini = hoursOn(265, { brightnessRefMag: 6.2, phaseLaw: "mini" });
+  assert.ok(mini.atLeast100 > 0.7 && mini.atLeast100 < 2.5, "optimistic at the equinox, about 1.5 h: " + mini.atLeast100);
+  assert.equal(mini.outnumberStars, 0, "and it stays below the stars at the equinox");
+  const miniDec = hoursOn(355, { brightnessRefMag: 6.2, phaseLaw: "mini" });
+  assert.ok(miniDec.atLeast100 > 2.8 && miniDec.atLeast100 < 5, "optimistic in December, about 3.9 h: " + miniDec.atLeast100);
+  assert.ok(miniDec.outnumberStars > 1.5, "and outnumbers the stars then: " + miniDec.outnumberStars);
+});
+
+test("ambient light and moonlight take hours away, never add them", () => {
+  const thin = M.thinConstellation(C0, 30000);
+  const base = { latDeg: 40, doy: dayOfYear(12, 21), userLimitingMag: 6.5 };
+  const hours = (extra) => M.significantHours(M.nightSamples(thin, { ...base, ...extra }, data, catalog, 20), 20);
+  const dark = hours({}), city = hours({ ambientBortle: 8 }), moon = hours({ moon: "phase", moonAgeDays: 14.77 });
+  assert.equal(city.night, dark.night);
+  assert.ok(city.atLeast100 <= dark.atLeast100, `Bortle 8: ${city.atLeast100} against ${dark.atLeast100}`);
+  assert.ok(city.exceedsSky < dark.exceedsSky || dark.exceedsSky === 0, "a city sky is brighter than the satellites for longer");
+  assert.ok(moon.atLeast100 <= dark.atLeast100);
+  assert.ok(moon.exceedsSky <= dark.exceedsSky, `full Moon: ${moon.exceedsSky} against ${dark.exceedsSky}`);
+});

@@ -111,7 +111,26 @@ const TR = {
   reseed: ["Randomize", "Aléatoire"],
   view: ["View", "Vue"],
   viewHorizon: ["Horizon (drag to look around)", "Horizon (glisser pour regarder)"],
+  viewPersp: ["Perspective (as a camera sees it)", "Perspective (comme la voit une caméra)"],
   viewFish: ["All-sky fisheye (zenith at center)", "Ciel entier (zénith au centre)"],
+  aim: ["Aim at densest sky", "Viser le ciel le plus dense"],
+  grpNight: ["Night & year", "Nuit et année"],
+  hintNight: ["the hours in which SBDC light is significant at this latitude, with these settings · three definitions, side by side",
+              "les heures où la lumière des SBDC est significative à cette latitude, avec ces réglages · trois définitions, côte à côte"],
+  nightRun: ["Compute this night", "Calculer cette nuit"], yearRun: ["Compute the year", "Calculer l\u2019année"],
+  nightCol: ["this night", "cette nuit"], yearCol: ["a year", "une année"],
+  nightRows: {
+    night: ["night (Sun below the horizon)", "nuit (Soleil sous l\u2019horizon)"],
+    atLeast100: ["at least 100 SBDCs visible to the naked eye", "au moins 100 SBDC visibles à l\u2019œil nu"],
+    outnumberStars: ["visible SBDCs outnumber visible stars", "les SBDC visibles dépassent les étoiles visibles"],
+    exceedsSky: ["SBDC light exceeds the sky\u2019s own light", "la lumière des SBDC dépasse celle du ciel"],
+  },
+  nightStale: ["settings have changed since this was computed", "les réglages ont changé depuis ce calcul"],
+  nightDone: ["computed for", "calculé pour"],
+  nightYearOf: ["dates", "dates"],
+  nightLegend: ["gold: visible SBDCs · blue: visible stars · bars below: when each definition holds · click to go to a time",
+                "or : SBDC visibles · bleu : étoiles visibles · barres : quand chaque définition est remplie · cliquer pour aller à une heure"],
+  nightHours: ["h", "h"],
   eyelim: ["Eye limit", "Limite de l\u2019œil"],
   ambient: ["Ambient light", "Lumière ambiante"],
   hintAmbient: ["artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars",
@@ -233,7 +252,7 @@ function applyLang(lang) {
   txt("header .sub", "tagline");
   txt("#open-assumptions", "assumBtn"); txt("#snapshot", "saveBtn");
   const sums = document.querySelectorAll("aside details.grp > summary");
-  ["grpSettings", "grpObserver", "grpConstellation", "grpSky", "grpAdvanced"].forEach((k, i) => {
+  ["grpSettings", "grpObserver", "grpConstellation", "grpSky", "grpNight", "grpAdvanced"].forEach((k, i) => {
     if (sums[i]) sums[i].textContent = T(k);
   });
   lbl('label[for="lat"]', "lat"); lbl('label[for="date"]', "date");
@@ -263,6 +282,14 @@ function applyLang(lang) {
   txt('#shells option[value="spread"]', "shSpread"); txt('#shells option[value="custom"]', "shCustom");
   txt('#viewmode option[value="horizon"]', "viewHorizon");
   txt('#viewmode option[value="fisheye"]', "viewFish");
+  txt('#viewmode option[value="perspective"]', "viewPersp"); txt("#aim", "aim");
+  txt("#hint-night", "hintNight"); txt("#night-run", "nightRun"); txt("#year-run", "yearRun");
+  txt("#night-col", "nightCol"); txt("#year-col", "yearCol"); txt("#night-legend", "nightLegend");
+  for (const key of Object.keys(TR.nightRows)) {
+    const cell = $("night-row-" + key);
+    if (cell) cell.textContent = TR.nightRows[key][LANG.cur === "fr" ? 1 : 0];
+  }
+  if (typeof Night !== "undefined") Night.render();
   txt('label[for="show-stars"]', "showStars"); txt('label[for="tint"]', "tint");
   txt('label[for="longexp"]', "longexp"); txt('label[for="markpole"]', "markPole");
   if (App.renderer) {
@@ -354,6 +381,7 @@ function reevaluate() {
     App.summary = MODEL.summarize(cons, state, data, catalog);
     redraw();                       // also writes the readout
     updateDateLabels();
+    Night.render();                 // its results may be out of date now, and its time cursor has moved
     setBusy(false);
   });
 }
@@ -450,7 +478,7 @@ function updateReadout() {
   const s = App.summary;
   // The totals are for the whole sky. The horizon view shows part of it, so
   // the count inside the picture is given beside each total.
-  const framed = App.inView && App.renderer.view.mode === "horizon";
+  const framed = App.inView && App.renderer.view.mode !== "fisheye";
   const inView = (n) => (framed ? ` (${n.toLocaleString()} ${T("rInView")})` : "");
   const line =
     `${T("rSun")} ${s.sunAltDeg > 0 ? "+" : ""}${s.sunAltDeg.toFixed(1)}°  ·  ` +
@@ -574,6 +602,161 @@ function setPlaying(p) {
   }
 }
 
+/* ------------------------- night and year ------------------------- */
+
+/* The hours in which SBDC light is significant, for the night of the chosen
+   date and for a year at the chosen latitude. The model does the sampling
+   (nightSamples, significantHours, yearHours); this draws the result. A
+   result belongs to the settings it was computed from: when they change it
+   is shown dimmed until it is computed again. The time of day is not one of
+   those settings, since a night's result covers every time. */
+const Night = {
+  night: null,       // { key, samples, hours, stepMinutes, label }
+  year: null,        // { key, hours, label }
+  job: 0,            // a year in progress is abandoned when this changes
+
+  /** Everything a result depends on: the constellation and the observer,
+   *  without the time of day and, for a year, without the date. */
+  key(forYear) {
+    const { solarTimeHours, propagationSec, doy, ...rest } = App.state;
+    return JSON.stringify([forYear ? null : doy, rest, App.cfg, $("shells-custom-input").value]);
+  },
+
+  place() { return `${Math.abs(App.state.latDeg)}°${App.state.latDeg >= 0 ? "N" : "S"}`; },
+
+  computeNight() {
+    if (!App.cons) return;
+    setBusy(true);
+    setTimeout(() => {
+      const step = 5;
+      const thin = MODEL.thinConstellation(App.cons, 100000);
+      const samples = MODEL.nightSamples(thin, App.state, App.data, App.catalog, step);
+      Night.night = { key: Night.key(false), samples, stepMinutes: step,
+                      hours: MODEL.significantHours(samples, step),
+                      label: `${Night.place()}, ${fmtDoy(App.state.doy)}` };
+      setBusy(false);
+      Night.render();
+    }, 20);
+  },
+
+  computeYear() {
+    if (!App.cons) return;
+    const job = ++Night.job, step = 15, key = Night.key(true);
+    const thin = MODEL.thinConstellation(App.cons, 30000);
+    const state = { ...App.state }, days = MODEL.YEAR_SAMPLE_DAYS, perNight = [];
+    const next = () => {
+      if (job !== Night.job) return;                    // a newer run replaced this one
+      if (perNight.length === days.length) {
+        Night.year = { key, hours: MODEL.yearHours(perNight), label: Night.place() };
+        Night.progress = null;
+        Night.render();
+        return;
+      }
+      const samples = MODEL.nightSamples(thin, { ...state, doy: days[perNight.length] }, App.data, App.catalog, step);
+      perNight.push(MODEL.significantHours(samples, step));
+      Night.progress = `${perNight.length}/${days.length} ${T("nightYearOf")}`;
+      Night.render();
+      setTimeout(next, 0);
+    };
+    Night.progress = `0/${days.length} ${T("nightYearOf")}`;
+    Night.render();
+    setTimeout(next, 20);
+  },
+
+  /** Write the table, the status line and the chart. */
+  render() {
+    if (!$("night-table")) return;
+    const fresh = (result, forYear) => result && result.key === Night.key(forYear);
+    const hours = (v) => (v >= 99.5 ? Math.round(v).toLocaleString() : v.toFixed(1)) + " " + T("nightHours");
+    for (const row of document.querySelectorAll("#night-table tbody tr")) {
+      const key = row.dataset.key;
+      row.children[1].textContent = Night.night ? hours(Night.night.hours[key]) : "\u2014";
+      row.children[2].textContent = Night.year ? hours(Night.year.hours[key]) : "\u2014";
+    }
+    const stale = (Night.night && !fresh(Night.night, false)) || (Night.year && !fresh(Night.year, true));
+    $("night-grp").classList.toggle("stale", !!stale);
+    const lines = [];
+    if (Night.progress) lines.push(`${T("busy")} ${Night.progress}`);
+    if (Night.night) lines.push(`${T("nightCol")}: ${T("nightDone")} ${Night.night.label}`);
+    if (Night.year) lines.push(`${T("yearCol")}: ${T("nightDone")} ${Night.year.label}`);
+    if (stale) lines.push(T("nightStale"));
+    $("night-status").textContent = lines.join("\n");
+    Night.drawChart();
+  },
+
+  /** The span of the chart: from half an hour before the first night sample
+   *  to half an hour after the last, in minutes from noon. */
+  span() {
+    const night = Night.night.samples.filter((s) => s.night);
+    if (!night.length) return null;
+    return { from: Math.max(0, night[0].minutes - 30), to: Math.min(1440, night[night.length - 1].minutes + 30) };
+  },
+
+  drawChart() {
+    const cv = $("night-chart"), g = cv.getContext("2d"), W = cv.width, H = cv.height;
+    g.clearRect(0, 0, W, H);
+    if (!Night.night) return;
+    const span = Night.span();
+    g.font = "20px ui-monospace, monospace";
+    g.fillStyle = "#8b8fa3";
+    if (!span) { g.fillText(T("polarDay"), 12, 34); return; }
+    const samples = Night.night.samples.filter((s) => s.minutes >= span.from && s.minutes <= span.to);
+    const padL = 8, padR = 8, top = 28, bars = 3 * 12 + 6, base = H - bars - 26;
+    const X = (minutes) => padL + (minutes - span.from) / (span.to - span.from) * (W - padL - padR);
+    const most = Math.max(10, ...samples.map((s) => Math.max(s.visible, s.visibleStars)));
+    const scale = Math.ceil(Math.log10(most * 1.05));
+    const Y = (count) => base - Math.log10(Math.max(count, 1)) / scale * (base - top);
+    // decades
+    g.strokeStyle = "#1c2030"; g.lineWidth = 1;
+    for (let e = 1; e <= scale; e++) {
+      g.beginPath(); g.moveTo(padL, Y(10 ** e)); g.lineTo(W - padR, Y(10 ** e)); g.stroke();
+      g.fillText((10 ** e).toLocaleString(), padL + 2, Y(10 ** e) - 4);
+    }
+    const line = (field, color) => {
+      g.strokeStyle = color; g.lineWidth = 3; g.beginPath();
+      let pen = false;
+      for (const s of samples) {
+        if (!s.night || s[field] < 1) { pen = false; continue; }
+        if (pen) g.lineTo(X(s.minutes), Y(s[field])); else g.moveTo(X(s.minutes), Y(s[field]));
+        pen = true;
+      }
+      g.stroke();
+    };
+    line("visibleStars", "#8fb4ff");
+    line("visible", "#e0b060");
+    // when each definition holds
+    const colors = ["#e0b060", "#c9d2ee", "#d98a5a"];
+    const width = Night.night.stepMinutes / (span.to - span.from) * (W - padL - padR);
+    MODEL.SIGNIFICANCE.forEach((def, k) => {
+      g.fillStyle = colors[k];
+      for (const s of samples) if (s.night && def.test(s)) g.fillRect(X(s.minutes) - width / 2, base + 8 + k * 12, width + 0.5, 8);
+    });
+    // hours along the bottom, and the time now
+    g.fillStyle = "#8b8fa3";
+    for (let m = Math.ceil(span.from / 120) * 120; m <= span.to; m += 120) {
+      g.fillText(String((12 + m / 60) % 24).padStart(2, "0"), X(m) - 10, H - 4);
+    }
+    const now = ((App.state.solarTimeHours - 12 + 24) % 24) * 60;
+    if (now >= span.from && now <= span.to) {
+      g.strokeStyle = "#e8e4d8"; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(X(now), top); g.lineTo(X(now), H - 26); g.stroke();
+    }
+  },
+
+  /** A click on the chart moves the time to that moment. */
+  clickChart(e) {
+    if (!Night.night) return;
+    const span = Night.span();
+    if (!span) return;
+    const cv = $("night-chart"), rect = cv.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width * cv.width;
+    const minutes = span.from + (x - 8) / (cv.width - 16) * (span.to - span.from);
+    const clock = Math.round(((12 * 60 + Math.max(span.from, Math.min(span.to, minutes))) % 1440));
+    $("time").value = clock % 1440;
+    $("time").dispatchEvent(new Event("input", { bubbles: true }));
+  },
+};
+
 /* ------------------------- assumptions panel ------------------------- */
 
 function buildAssumptions() {
@@ -661,7 +844,7 @@ function bindCanvas() {
       drag = { x: e.clientX, y: e.clientY,
                az: App.renderer.view.centerAz, alt: App.renderer.view.centerAlt };
       pinch = null;
-    } else if (pointers.size === 2 && App.renderer.view.mode === "horizon") {
+    } else if (pointers.size === 2 && App.renderer.view.mode !== "fisheye") {
       drag = null;
       pinch = { dist0: pinchDist(), fov0: App.renderer.view.fovDeg };
     }
@@ -675,7 +858,7 @@ function bindCanvas() {
         v.fovDeg = Math.max(20, Math.min(140, pinch.fov0 * pinch.dist0 / d));
         redraw();
       }
-    } else if (drag && v.mode === "horizon") {
+    } else if (drag && v.mode !== "fisheye") {
       const degPerPx = v.fovDeg / cv.getBoundingClientRect().width;
       v.centerAz = ((drag.az - (e.clientX - drag.x) * degPerPx) % 360 + 360) % 360;
       v.centerAlt = Math.max(-5, Math.min(80,
@@ -695,7 +878,7 @@ function bindCanvas() {
   cv.addEventListener("wheel", (e) => {
     e.preventDefault();
     const v = App.renderer.view;
-    if (v.mode !== "horizon") return;
+    if (v.mode === "fisheye") return;
     v.fovDeg = Math.max(20, Math.min(140, v.fovDeg * (e.deltaY > 0 ? 1.1 : 0.9)));
     redraw();
   }, { passive: false });
@@ -915,10 +1098,24 @@ function bindControls() {
   on("tint", "change", (e) => { App.renderer.tintFamilies = e.target.checked; redraw(); });
   on("viewmode", "change", (e) => {
     App.renderer.view.mode = e.target.value;
-    $("compass").style.display = e.target.value === "horizon" ? "" : "none";
+    $("compass").style.display = e.target.value === "fisheye" ? "none" : "";
+    $("aim").disabled = e.target.value === "fisheye";
     redraw();
   });
 
+  on("aim", "click", () => {
+    // face the direction that takes in the most visible SBDCs
+    if (!App.ev || App.renderer.view.mode === "fisheye") return;
+    const azimuths = [];
+    for (const i of App.ev.above) if (App.ev.visible[i]) azimuths.push(App.ev.az[i]);
+    const az = RENDER.densestAzimuth(azimuths, App.renderer.view.fovDeg);
+    if (az == null) return;
+    App.renderer.view.centerAz = Math.round(az);
+    redraw();
+  });
+  on("night-run", "click", () => Night.computeNight());
+  on("year-run", "click", () => Night.computeYear());
+  on("night-chart", "click", (e) => Night.clickChart(e));
   on("open-assumptions", "click", () => { $("assump").classList.add("open"); });
   on("close-assumptions", "click", () => { $("assump").classList.remove("open"); });
   on("snapshot", "click", snapshot);
