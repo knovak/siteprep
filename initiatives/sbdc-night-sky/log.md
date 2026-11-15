@@ -216,3 +216,29 @@ readout strip covered the horizon; it is now below the sky.
 `test/golden/golden.json` gained the `light` block; no number already in it
 changed. 137 tests pass in `beta/`, and the browser spec has eighteen. `lib/`,
 `work/` and `demos/SBDC Night Sky/` are unchanged.
+
+## 2026-11-15 — Beta upgrade, unit 5: hours of significant light, perspective view, aiming
+
+Unit 4 merged as knovak/siteprep#655 and the site build published it to the
+beta.
+
+Unit 5 adds a "Night & year" group. For the chosen latitude and date it counts
+the hours in which SBDC light is significant, under three definitions side by
+side: at least 100 SBDCs visible to the naked eye, visible SBDCs outnumbering
+visible stars, and SBDC light exceeding the sky's own light. It does the same
+for a year from 24 sampled dates, and draws visible SBDCs and stars through
+the night. Moonlight and ambient light are included when they are on.
+
+With the default constellation at 40° N, at least 100 SBDCs are visible for
+8.3 of the 8.9 hours of a June night and for 4,011 of a year's 4,304 night
+hours. With the sdross0 optimistic-mitigation settings at 37.2° N the figure
+is 1.5 hours on September 22 and 597 hours a year. The sdross0 hours match the
+durations that project states.
+
+Also added: a perspective view, which draws the sky as a camera records it and
+is the other simulator's projection, and an "Aim at densest sky" button.
+`beta/README.md` has a short guide to everything the upgrade added.
+
+148 tests pass in `beta/`, and the browser spec has twenty-two. `lib/`, `work/`
+and `demos/SBDC Night Sky/` are unchanged. This is the last of the five units
+in `beta/PLAN.md`.

@@ -238,6 +238,15 @@ about four tenths. Faults 10 and 11 were found and corrected in this unit.
 - An "Aim at densest sky" button.
 - This folder's README gains a short guide to the new controls.
 
+As done: the third definition compares SBDC light with the sky as it is at
+that moment, so that moonlight and ambient light count against it; under a
+dark, moonless sky that is the natural night sky. A night is sampled every
+five minutes on up to 100,000 of the satellites, and a year on 24 dates every
+fifteen minutes on up to 30,000. With the sdross0 presets the hours match the
+durations that project states: 1.5 hours a day for its optimistic case at the
+equinox against its 44 minutes an evening, and 3.9 hours near the December
+solstice against its 118 minutes.
+
 ## Testing strategy
 
 Three layers, arranged so that most faults are caught without opening a
@@ -280,5 +289,5 @@ simulator stays as released.
 | 1 - Faults and checks | Merged 2026-11-15, [knovak/siteprep#652](https://github.com/knovak/siteprep/pull/652) |
 | 2 - Constellation and brightness settings, presets | Merged 2026-11-15, [knovak/siteprep#653](https://github.com/knovak/siteprep/pull/653) |
 | 3 - Twilight correction and ambient light | Merged 2026-11-15, [knovak/siteprep#654](https://github.com/knovak/siteprep/pull/654) |
-| 4 - Moonlight and light ratios | In its pull request |
-| 5 - Hours of significant light, display items | Planned |
+| 4 - Moonlight and light ratios | Merged 2026-11-15, [knovak/siteprep#655](https://github.com/knovak/siteprep/pull/655) |
+| 5 - Hours of significant light, display items | In its pull request |

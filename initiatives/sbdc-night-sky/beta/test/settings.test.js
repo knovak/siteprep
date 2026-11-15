@@ -133,6 +133,7 @@ test("defaults match the page's own starting values", () => {
   assert.deepEqual(options("phaselaw"), choices("constellation", "phase_law"));
   assert.deepEqual(options("eyemodel"), choices("advanced", "naked_eye_threshold"));
   assert.deepEqual(options("moon"), choices("display", "moon"));
+  assert.deepEqual(options("viewmode"), choices("display", "view"));
 });
 
 test("reading: a bare off is the choice named off, where there is one", () => {
@@ -145,7 +146,7 @@ test("reading: a bare off is the choice named off, where there is one", () => {
   assert.equal(settingsFromYaml('display:\n  moon: "date"\n').settings.display.moon, "date");
   assert.equal(settingsFromYaml("display:\n  moon: Phase\n").settings.display.moon, "phase");
   // a choice with no such option still refuses it
-  assert.match(settingsFromYaml("display:\n  view: off\n").errors[0], /expected one of horizon, fisheye/);
+  assert.match(settingsFromYaml("display:\n  view: off\n").errors[0], /expected one of horizon, perspective, fisheye/);
   // and a link reads the same way
   assert.equal(settingsFromQuery("display.moon=off&display.moon_age_days=3").settings.display.moon, "off");
   assert.equal(settingsFromQuery("display.moon=phase&observer.year=2027").settings.observer.year, 2027);

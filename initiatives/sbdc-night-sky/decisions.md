@@ -390,3 +390,53 @@ the part of the sky where the constellation is densest.
   satellites' brightness, not the Moon's.
 - Moonlight scattered when the Moon is just below the horizon is not modelled.
 - Unit 5's count of hours uses these totals for one of its three definitions.
+
+## 2026-11-15 — Beta upgrade, unit 5: what "significant" is counted as
+
+The user asked, with "perhaps", to "calculate the number of hours in a night
+(or a year) in which the SBDC light is significant at a location". The first
+entry of this date said three definitions would be reported. This records them
+as built.
+
+**Three rows, and no single answer.** At least 100 SBDCs visible to the naked
+eye; visible SBDCs outnumber visible stars; SBDC light exceeds the sky's own
+light. Each is a plain statement a person can check against the picture, and
+they differ by several times for the same setup, which is itself worth
+seeing.
+
+**The third compares with the sky as it is.** The first entry worded it as
+"exceeds the natural moonless night sky" and said moonlight and ambient light
+would be included. The two only fit together if the comparison is with the sky
+at that moment: twilight, ambient light and scattered moonlight. Under a dark
+moonless sky that is the natural night sky.
+
+**Both a night and a year.** A night is one click and about two seconds; a
+year is about eight. They are separate buttons so that a person who wants the
+night does not wait for the year.
+
+**The result is computed when asked for, not kept current.** Recomputing on
+every change would cost two seconds per change. A result that no longer
+matches the settings is dimmed and labelled.
+
+**The year is 24 sampled dates.** Twice a month takes in the solstices and
+equinoxes and follows the seasonal change, which is smooth. It samples the
+Moon's month coarsely.
+
+### Alternatives considered
+
+| Option | Consequence |
+| --- | --- |
+| Three definitions side by side | No one number to quote; the spread between them is visible. Chosen. |
+| One definition with a threshold the user sets | One number, and a control whose value decides the answer. |
+| Compare with the natural night sky whatever the Moon and ambient light | A row that moonlight and city light do not change, though the user asked for both. |
+| Every night of the year | Fifteen times the wait for a total that changes by a few percent. |
+| Keep the panel current after every change | The page would pause for two seconds at each move of a slider. |
+
+### What this settles, and what it does not
+
+- All five units are done with this one. `beta/PLAN.md` has the status of each.
+- Whether any of the beta is promoted to the released simulator is not part of
+  this work and needs the user's own instruction.
+- The questions left open by the earlier entries stand: whether the opening
+  view and the two 30-minute presets should move later in the evening, and the
+  sticky sky on phones.

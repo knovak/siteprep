@@ -157,8 +157,12 @@
         <label for="viewmode">View</label>
         <select id="viewmode">
           <option value="horizon" selected>Horizon (drag to look around)</option>
+          <option value="perspective">Perspective (as a camera sees it)</option>
           <option value="fisheye">All-sky fisheye (zenith at center)</option>
         </select>
+        <div class="row" style="margin-top:6px">
+          <button id="aim">Aim at densest sky</button>
+        </div>
       </div>
       <div class="ctl">
         <label for="starlim">Eye limit <output id="starlim-label">mag 6.0</output></label>
@@ -194,6 +198,27 @@
       <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
       <div class="hint" id="hint-longexp">every sunlit satellite becomes a 12–27° streak; stars to the catalog limit</div>
       <div class="hint" id="hint-drag">Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details</div>
+    </details>
+
+    <details class="grp" id="night-grp">
+      <summary>Night &amp; year</summary>
+      <div class="hint" id="hint-night">the hours in which SBDC light is significant at this latitude, with these settings · three definitions, side by side</div>
+      <div class="row">
+        <button id="night-run">Compute this night</button>
+        <button id="year-run">Compute the year</button>
+      </div>
+      <div class="hint" id="night-status" role="status" aria-live="polite"></div>
+      <canvas id="night-chart" width="540" height="240" aria-label="Visible SBDCs and stars through the night"></canvas>
+      <div class="hint" id="night-legend"></div>
+      <table id="night-table">
+        <thead><tr><th></th><th id="night-col">this night</th><th id="year-col">a year</th></tr></thead>
+        <tbody>
+          <tr data-key="night"><td id="night-row-night">night (Sun below the horizon)</td><td>—</td><td>—</td></tr>
+          <tr data-key="atLeast100"><td id="night-row-atLeast100">at least 100 SBDCs visible to the naked eye</td><td>—</td><td>—</td></tr>
+          <tr data-key="outnumberStars"><td id="night-row-outnumberStars">visible SBDCs outnumber visible stars</td><td>—</td><td>—</td></tr>
+          <tr data-key="exceedsSky"><td id="night-row-exceedsSky">SBDC light exceeds the sky’s own light</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
     </details>
 
     <details class="grp">

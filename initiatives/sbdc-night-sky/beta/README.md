@@ -49,10 +49,10 @@ On the day it was created, the beta built a page byte-identical to the released
 
 | 2026-11-15 | The twilight sky corrected to measured values; ambient light by Bortle class; a choice of naked-eye threshold; the sky brightness and limit in the readout | The November 2026 upgrade, Unit 3 |
 | 2026-11-15 | The Moon, with its phase and place; moonlight in the sky; SBDC light compared with the Moon and with a natural night sky; the readout below the sky | The November 2026 upgrade, Unit 4 |
+| 2026-11-15 | Hours of significant SBDC light for a night and for a year; a perspective view; aiming at the densest sky | The November 2026 upgrade, Unit 5 |
 
 `PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
-units. Units 1 to 4 are described below; the last is added here when it
-merges.
+units. All five are described below, after a short guide to what they added.
 
 ## Settings files
 
@@ -178,6 +178,33 @@ the released simulator.
 The upgrade follows a comparison of this simulator with
 `sdross0/orbital-datacenter-brightness`. `PLAN.md` lists the faults found, the
 differences between the two simulators, and the five units.
+
+### A short guide to what was added
+
+Where each thing is on the page, and what to try first.
+
+| To do this | Use |
+| --- | --- |
+| See the other simulator's setups | "Presets & settings": the three presets whose names start with "sdross0" |
+| Send someone exactly what you see | "Copy link", in the same group |
+| Set a latitude such as 37.2 | The box beside the Latitude slider |
+| See the constellation as distinct rings | "Constellation": Orbital planes, "As filed", with Shell altitudes "Filed SSO levels" |
+| Compare mitigated and unmitigated satellites | "Constellation": SBDC brightness, with Phase law "Measured Starlink Gen2 Mini" for the mitigated case |
+| See the sky from a town or a city | "Sky & display": Ambient light, Bortle 5 to 9 |
+| Add the Moon | "Sky & display": Moon, "As on this date" or "Set the phase" |
+| Compare SBDC light with the Moon's | The second line under the sky, in a warmer color |
+| See what a camera would see | "Sky & display": View, "Perspective" |
+| Find where the satellites are | "Aim at densest sky", under View |
+| See how long it lasts | "Night & year": "Compute this night", then "Compute the year" |
+
+Three things to know when reading the numbers:
+
+- The first line under the sky gives totals for the whole sky, each followed
+  by the count in the picture. They answer different questions.
+- Half an hour after sunset the sky is still bright and little is visible.
+  "+60 min" shows the constellation against a darker sky.
+- Every time is local solar time. The readout also gives it as minutes from
+  sunset or sunrise.
 
 ### Unit 1: faults corrected
 
@@ -548,6 +575,112 @@ evaluation was made from. This fault was in the simulator before the upgrade;
   one, since the YAML reader takes `off` as false.
 - `src/ui.js`, `src/index.html`, `src/app.css`: the Moon controls, the light
   line, the readout below the sky, and `App.evCons`.
+
+### Unit 5: hours of significant SBDC light, a perspective view, aiming
+
+#### Night & year
+
+The "Night & year" group answers how long SBDC light is significant at a
+place. "Compute this night" works through the chosen date at the chosen
+latitude in steps of five minutes; "Compute the year" works through 24 dates,
+the 6th and the 21st of each month, in steps of fifteen minutes, and scales
+them to a year. Both use every other setting as it stands: the constellation,
+its brightness, the eye limit, ambient light, the threshold, and the Moon.
+
+"Significant" has no single definition, so three are reported side by side:
+
+| Row | A moment counts when |
+| --- | --- |
+| at least 100 SBDCs visible to the naked eye | 100 or more are above the horizon, sunlit, and brighter than the limit of the sky where they are |
+| visible SBDCs outnumber visible stars | more SBDCs than stars are visible |
+| SBDC light exceeds the sky's own light | the summed light of all sunlit SBDCs above the horizon is at least the light of the whole sky at that moment: twilight, ambient light and scattered moonlight |
+
+The first row of the table is the length of the night, the Sun below the
+horizon, for scale. A moment with the Sun up counts for nothing.
+
+The chart shows visible SBDCs (gold) and visible stars (blue) through the
+night on a logarithmic scale, with three bars underneath for when each
+definition holds, and a line at the time the sky is showing. A click on the
+chart moves the time to that moment.
+
+Some results, each from one click:
+
+| Setup | Date | Night | At least 100 visible | Outnumber stars | Exceeds the sky |
+| --- | --- | --- | --- | --- | --- |
+| Default (300,000, +0.5), 40° N | June 21 | 8.9 h | 8.3 h | 5.2 h | 1.2 h |
+| | December 21 | 14.8 h | 14.4 h | 10.3 h | 5.2 h |
+| | a year | 4,304 h | 4,011 h | 2,738 h | 1,068 h |
+| sdross0 no mitigation, 37.2° N | September 22 | 11.8 h | 5.2 h | 4.4 h | 1.2 h |
+| | December 21 | 14.4 h | 8.2 h | 7.0 h | 4.3 h |
+| | a year | 4,296 h | 1,798 h | 1,479 h | 616 h |
+| sdross0 optimistic mitigation, 37.2° N | September 22 | 11.8 h | 1.5 h | 0 | 0 |
+| | December 21 | 14.4 h | 3.9 h | 3.0 h | 0 |
+| | a year | 4,296 h | 597 h | 365 h | 0 |
+
+The default constellation is visible nearly all night because it has shells up
+to 1,800 km and a 30° family, which stay sunlit far longer than the filed
+Sun-synchronous levels of the sdross0 presets.
+
+The sdross0 rows can be set against that project's own statements. It reports
+the optimistic case visible for about 44 minutes each evening at the equinox
+and about 118 minutes near the December solstice; a day here is an evening and
+a morning, so twice that is 1.5 and 3.9 hours, which is what the table has. It
+reports the no-mitigation case outnumbering the stars for "some two and a half
+hours" each evening at the equinox; the table has 4.4 hours for the day.
+`test/model.test.js` holds those comparisons.
+
+How it is computed, and how far to trust it:
+
+- **A date is one day of the model.** The 24 hours run from noon through
+  midnight to noon with the Sun's declination of that date, so "this night" is
+  the date's evening and its morning. Together they are as long as a night.
+- **The satellites are thinned.** A night uses up to 100,000 of the
+  satellites and a year up to 30,000, evenly taken, with each one standing for
+  several. Counts are good to a few percent. The summed light depends on the
+  brightest few percent of satellites and is good to about a fifth, so the
+  third row is the least exact.
+- **Small numbers are noisy.** Where a few satellites and a few stars are
+  visible, as on a June night at 60° N, "outnumber" can go either way.
+- **A year with "Set the phase" has that Moon every night.** For a year with
+  the Moon as it is, use "As on this date"; the 24 sampled dates then have 24
+  different Moons, which is a coarse sample of the month.
+- **Results belong to the settings they were computed from.** When a setting
+  changes, the table and chart are dimmed and the panel says so, until they are
+  computed again. The time of day is not one of those settings.
+
+#### Perspective view
+
+"View" has a third choice, "Perspective (as a camera sees it)"
+(`display.view: perspective`). The horizon view is a panorama: azimuth runs
+evenly across it and altitude evenly up it, so the horizon is level and a
+ring of satellites is drawn curved. The perspective view is what a flat sensor
+records: straight lines in the sky stay straight, the horizon is level only at
+the centre, and the scale grows toward the edges. It is aimed, turned and
+zoomed like the panorama, and draws a field of at most 120°.
+
+It is the projection the other simulator uses, so with an sdross0 preset the
+two pictures can be set side by side.
+
+#### Aim at densest sky
+
+"Aim at densest sky", under "View", turns the view to the direction that takes
+in the most visible SBDCs: the fullest window as wide as the field of view,
+anywhere round the horizon. For a ring with two lobes that is the fuller lobe;
+the average direction would be the gap between them. It does not change the
+altitude the view is aimed at.
+
+#### What Unit 5 changed in the code
+
+- `src/model.js`: `thinConstellation`, `sampleInstant`, `nightSamples`,
+  `significantHours`, `yearHours`, with `SIGNIFICANCE`, `YEAR_SAMPLE_DAYS` and
+  `NIGHT_SUN_ALT_DEG`.
+- `src/render.js`: `projPerspective`, `unprojPerspective`, `densestAzimuth`,
+  `PERSPECTIVE_MAX_FOV`; the hills and compass points for the perspective
+  view; `pixelsPerDegree`.
+- `src/ui.js`: the `Night` object, which runs the sampling and draws the chart
+  and table; the aim button; the horizon-only branches now cover both aimed
+  views.
+- `src/settings.js`: `display.view` gains `perspective`.
 
 ### A link that carries the settings
 

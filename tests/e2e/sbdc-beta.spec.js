@@ -514,6 +514,121 @@ test.describe('SBDC beta', () => {
     expect(problems.errors).toEqual([]);
   });
 
+  // ---- unit 5: the perspective view, aiming, and the hours of a night and a year ----
+
+  test('the perspective view is aimed like the panorama, and its settings travel in a link', async ({ page, context }) => {
+    const problems = await openBeta(page);
+    await choosePreset(page, 'sdross0 default, no mitigation');
+    const panorama = await readout(page);
+    await page.locator('#viewmode').selectOption('perspective');
+    await expect(page.locator('#compass')).toBeVisible();
+    await expect(page.locator('#compass')).toHaveText('facing 315°');
+    const camera = await readout(page);
+    // the same sky, a different picture of it
+    expect(camera.visible).toBe(panorama.visible);
+    expect(camera.visibleInView).not.toBeNull();
+    expect(camera.visibleInView).toBeGreaterThan(0);
+    expect(camera.visibleInView).toBeLessThanOrEqual(camera.visible);
+    // it turns with the keyboard like the panorama
+    await page.locator('#sky').hover();
+    for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowLeft');
+    await expect(page.locator('#compass')).toHaveText('facing 285°');
+
+    await page.locator('#settings-link').click();
+    const link = page.url();
+    expect(link).toContain('display.view=perspective');
+    const second = await context.newPage();
+    const errors = [];
+    second.on('pageerror', (error) => errors.push(String(error)));
+    await second.goto(link);
+    await settled(second);
+    await expect(second.locator('#viewmode')).toHaveValue('perspective');
+    await expect(second.locator('#compass')).toHaveText('facing 285°');
+    expect(errors).toEqual([]);
+    await second.close();
+
+    // the all-sky view has no aim: no compass, and no aim button
+    await page.locator('#viewmode').selectOption('fisheye');
+    await expect(page.locator('#compass')).toBeHidden();
+    await expect(page.locator('#aim')).toBeDisabled();
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('aiming at the densest sky turns the view toward the most visible SBDCs', async ({ page }) => {
+    const problems = await openBeta(page);
+    await choosePreset(page, 'sdross0 default, no mitigation');
+    // turn away from the ring first: east, where the sky is nearly empty
+    await page.locator('#sky').hover();
+    for (let i = 0; i < 27; i++) await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#compass')).toHaveText('facing 90°');
+    const away = await readout(page);
+    await page.locator('#aim').click();
+    await expect(page.locator('#compass')).not.toHaveText('facing 90°');
+    const aimed = await readout(page);
+    expect(aimed.visible).toBe(away.visible);
+    expect(aimed.visibleInView).toBeGreaterThan(away.visibleInView * 3);
+    expect(aimed.visibleInView).toBeGreaterThan(aimed.visible / 4);
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('the Night and year panel reports hours for a night, and a click on its chart sets the time', async ({ page }) => {
+    const problems = await openBeta(page);
+    await page.locator('aside details.grp summary', { hasText: 'Night & year' }).click();
+    const cell = (key, column) => page.locator(`#night-table tr[data-key="${key}"] td`).nth(column);
+    await expect(cell('night', 1)).toHaveText('—');
+
+    await page.locator('#night-run').click();
+    await expect(page.locator('#night-status')).toContainText('this night: computed for 40°N, Jun 21');
+    // 40 N on the June solstice: about nine hours of night
+    await expect(cell('night', 1)).toHaveText(/^(8\.[5-9]|9\.[0-5]) h$/);
+    for (const key of ['atLeast100', 'outnumberStars', 'exceedsSky']) {
+      await expect(cell(key, 1)).toHaveText(/^\d+\.\d h$/);
+      await expect(cell(key, 2)).toHaveText('—');
+    }
+    const hours = async (key) => parseFloat(await cell(key, 1).textContent());
+    expect(await hours('atLeast100')).toBeLessThanOrEqual(await hours('night'));
+    expect(await hours('atLeast100')).toBeGreaterThan(0);
+
+    // a click in the middle of the chart is the middle of the night
+    const box = await page.locator('#night-chart').boundingBox();
+    await page.locator('#night-chart').click({ position: { x: box.width / 2, y: box.height / 2 } });
+    await expect(page.locator('#time-label')).toHaveText(/^(23:[3-5]\d|00:[0-2]\d)$/);
+    // the time is not one of the things a night's result depends on
+    await expect(page.locator('#night-grp')).not.toHaveClass(/stale/);
+
+    // the latitude is: the result is kept, dimmed, and says why
+    await page.locator('aside details.grp summary', { hasText: 'Observer' }).scrollIntoViewIfNeeded();
+    await setValue(page, '#lat-num', 55);
+    await expect(page.locator('#night-grp')).toHaveClass(/stale/);
+    await expect(page.locator('#night-status')).toContainText('settings have changed');
+    await page.locator('#night-run').click();
+    await expect(page.locator('#night-status')).toContainText('this night: computed for 55°N, Jun 21');
+    await expect(page.locator('#night-grp')).not.toHaveClass(/stale/);
+    expect(problems.errors).toEqual([]);
+    expect(problems.requests).toEqual([]);
+  });
+
+  test('the Night and year panel reports hours for a year', async ({ page }) => {
+    const problems = await openBeta(page);
+    // the smallest constellation, so that the year is quick to compute
+    await setValue(page, '#nsats', 0);
+    await settled(page);
+    await page.locator('aside details.grp summary', { hasText: 'Night & year' }).click();
+    await page.locator('#year-run').click();
+    await expect(page.locator('#night-status')).toContainText('a year: computed for 40°N', { timeout: 60000 });
+    const cell = (key) => page.locator(`#night-table tr[data-key="${key}"] td`).nth(2);
+    // nights at 40 N add up to a little under half the year's 8,760 hours
+    const night = parseFloat((await cell('night').textContent()).replace(/,/g, ''));
+    expect(night).toBeGreaterThan(4100);
+    expect(night).toBeLessThan(4500);
+    for (const key of ['atLeast100', 'outnumberStars', 'exceedsSky']) {
+      const value = parseFloat((await cell(key).textContent()).replace(/,/g, ''));
+      expect(value).toBeGreaterThanOrEqual(0);
+      expect(value).toBeLessThanOrEqual(night);
+    }
+    expect(problems.errors).toEqual([]);
+  });
+
   test('every preset loads and draws', async ({ page }) => {
     const problems = await openBeta(page);
     const options = await page.locator('#preset option').evaluateAll((list) =>

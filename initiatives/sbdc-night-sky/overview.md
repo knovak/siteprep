@@ -22,3 +22,11 @@ The user reports a satisfactory test-preview outcome as of 2026-09-11, and
 `user-test-preview` is complete. The mobile sky positioning follow-up is an
 optional later todo, recorded in the [notes](notes.html). The initiative
 remains dormant, with no additional releases planned at the user's request.
+
+In November 2026 the beta was upgraded in five units, following a comparison
+with another simulator of the same constellation: faults corrected, presets
+for that simulator's setups, a corrected twilight sky, ambient light, the
+Moon, the ratio of SBDC light to the Moon's, and the hours in a night and a
+year for which that light is significant. The [README](README.html) points to
+the plan, and [Decisions](decisions.html) has the reasons. The released
+simulator did not change.

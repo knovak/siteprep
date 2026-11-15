@@ -1154,3 +1154,127 @@ export function summarize(constellation, state, data, catalog = null) {
     light: lightSummary(ev, state, data),
   };
 }
+
+/* ------------------------------------------------------------------ */
+/* A night, and a year: the hours in which SBDC light is significant   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A lighter copy of a constellation for sampling many moments: about
+ * maxSatellites of its satellites, evenly taken, with `scale` saying how many
+ * each one stands for. Clusters are kept or dropped whole, so a cluster's
+ * combined brightness is unchanged. A constellation already that small is
+ * returned as it is, with scale 1.
+ */
+export function thinConstellation(c, maxSatellites = 30000) {
+  const every = Math.max(1, Math.round(c.n / maxSatellites));
+  if (every === 1) return { ...c, scale: 1 };
+  const keep = [];
+  for (let i = 0; i < c.n; i++) {
+    const id = c.clusterId[i];
+    if (id >= 0 ? id % every === 0 : i % every === 0) keep.push(i);
+  }
+  const pick = (from, Type) => {
+    const out = new Type(keep.length);
+    for (let j = 0; j < keep.length; j++) out[j] = from[keep[j]];
+    return out;
+  };
+  return {
+    n: keep.length,
+    px: pick(c.px, Float64Array), py: pick(c.py, Float64Array), pz: pick(c.pz, Float64Array),
+    vx: pick(c.vx, Float32Array), vy: pick(c.vy, Float32Array), vz: pick(c.vz, Float32Array),
+    m0: pick(c.m0, Float32Array), family: pick(c.family, Uint8Array), shellAlt: pick(c.shellAlt, Float32Array),
+    clusterId: pick(c.clusterId, Int32Array), clustered: c.clustered,
+    scale: c.n / keep.length,
+  };
+}
+
+/** The Sun altitude (deg) below which a moment counts as night: the same
+ *  sunset the time controls use, the Sun's upper edge on the horizon. */
+export const NIGHT_SUN_ALT_DEG = -0.833;
+
+/**
+ * One moment, for the night and year totals: the visible SBDCs (scaled up
+ * from a thinned constellation), the visible stars, and the satellites'
+ * light against the sky's own. `thin` is a constellation, thinned or not.
+ */
+export function sampleInstant(thin, state, data, catalog = null) {
+  const scale = thin.scale || 1;
+  const ev = evaluate(thin, state, data);
+  let visible = 0;
+  if (ev.objectStats) visible = ev.objectStats.visibleSats;
+  else for (const i of ev.above) if (ev.visible[i]) visible++;
+  let visibleStars = 0;
+  if (catalog) {
+    const st = starAltAz(catalog, state.latDeg, state.doy, state.solarTimeHours, data);
+    const userCap = state.userLimitingMag ?? data.limitingMagnitude.userLimitingMagCap.value;
+    visibleStars = starVisibility(catalog, st, state.latDeg, ev.sunDir, ev.sunAltDeg, userCap, data, ev.sky).count;
+  }
+  const sbdcLightMag = ev.sbdcLightMag == null ? null : ev.sbdcLightMag - 2.5 * Math.log10(scale);
+  const light = lightSummary({ ...ev, sbdcLightMag }, state, data);
+  return {
+    sunAltDeg: ev.sunAltDeg, visible: Math.round(visible * scale), visibleStars,
+    sbdcMag: light.sbdcMag, toSkyNow: light.toSkyNow, toFullMoon: light.toFullMoon,
+    toNaturalNight: light.toNaturalNight, moonAltDeg: light.moon ? light.moon.altDeg : null,
+  };
+}
+
+/**
+ * The 24 hours of the state's date, from noon through midnight to noon, one
+ * sample every stepMinutes. A sample with the Sun up is marked night: false
+ * and is not evaluated. The model has one date for the whole day, so this is
+ * the date's evening and its morning, which together are as long as a night.
+ */
+export function nightSamples(thin, state, data, catalog = null, stepMinutes = 5) {
+  const out = [];
+  for (let minutes = 0; minutes < 1440; minutes += stepMinutes) {
+    const hours = (12 + minutes / 60) % 24;
+    const sunAltDeg = sunAltAz(state.latDeg, state.doy, hours, data).altDeg;
+    if (sunAltDeg > NIGHT_SUN_ALT_DEG) {
+      out.push({ minutes, hours, night: false, sunAltDeg, visible: 0, visibleStars: 0,
+                 sbdcMag: null, toSkyNow: null, toFullMoon: null, toNaturalNight: null, moonAltDeg: null });
+    } else {
+      const at = sampleInstant(thin, { ...state, solarTimeHours: hours, propagationSec: 0 }, data, catalog);
+      out.push({ minutes, hours, night: true, ...at });
+    }
+  }
+  return out;
+}
+
+/**
+ * The definitions of "significant" that are reported, each a test of one
+ * night-time sample. They are reported side by side; none is the definition.
+ */
+export const SIGNIFICANCE = [
+  { key: "atLeast100", test: (s) => s.visible >= 100 },
+  { key: "outnumberStars", test: (s) => s.visible > 0 && s.visible > s.visibleStars },
+  { key: "exceedsSky", test: (s) => s.toSkyNow != null && s.toSkyNow >= 1 },
+];
+
+/** Hours of night in a set of samples, and hours for which each definition
+ *  of significance holds: { night, atLeast100, outnumberStars, exceedsSky }. */
+export function significantHours(samples, stepMinutes) {
+  const hours = { night: 0 };
+  for (const def of SIGNIFICANCE) hours[def.key] = 0;
+  for (const s of samples) {
+    if (!s.night) continue;
+    hours.night += stepMinutes / 60;
+    for (const def of SIGNIFICANCE) if (def.test(s)) hours[def.key] += stepMinutes / 60;
+  }
+  return hours;
+}
+
+/** The dates a year is sampled on: the 6th and the 21st of each month, as
+ *  days of the year. The 21st takes in both solstices and both equinoxes. */
+export const YEAR_SAMPLE_DAYS = [6, 21, 37, 52, 65, 80, 96, 111, 126, 141, 157, 172,
+                                 187, 202, 218, 233, 249, 264, 279, 294, 310, 325, 340, 355];
+
+/** A year's hours from the hours of each sampled night: each sampled date
+ *  stands for an equal share of the year. */
+export function yearHours(perNight) {
+  const total = {};
+  for (const night of perNight) {
+    for (const [key, value] of Object.entries(night)) total[key] = (total[key] || 0) + value * 365 / perNight.length;
+  }
+  return total;
+}
