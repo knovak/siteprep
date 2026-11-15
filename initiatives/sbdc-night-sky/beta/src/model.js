@@ -161,6 +161,141 @@ export function twilightTimes(latDeg, doy, data) {
 }
 
 /* ------------------------------------------------------------------ */
+/* The Moon                                                            */
+/* ------------------------------------------------------------------ */
+
+const MOON_MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const wrap360 = (deg) => ((deg % 360) + 360) % 360;
+
+/** Julian Date for a calendar year, a day of the model's 365-day year
+ *  (1 = Jan 1, 60 = Mar 1; there is no Feb 29), and hours of that day. */
+export function julianDate(year, doy, hours) {
+  let month = 1, day = doy;
+  while (month < 12 && day > MOON_MONTH_DAYS[month - 1]) { day -= MOON_MONTH_DAYS[month - 1]; month++; }
+  const a = Math.floor((14 - month) / 12), y = year + 4800 - a, m = month + 12 * a - 3;
+  const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) -
+    Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  return jdn - 0.5 + hours / 24;
+}
+
+/** The Sun's ecliptic longitude (deg) at a Julian Date: the same short
+ *  series as solarEphemeris. */
+export function sunEclipticLonDeg(jd) {
+  const d = jd - 2451545.0;
+  const L = 280.460 + 0.9856474 * d;
+  const g = (357.528 + 0.9856003 * d) * DEG;
+  return wrap360(L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g));
+}
+
+/**
+ * The Moon's geocentric ecliptic longitude and latitude (deg) and distance
+ * (Earth radii) at a Julian Date. The low-precision series of the
+ * Astronomical Almanac: about 0.3 deg in longitude, 0.2 deg in latitude.
+ */
+export function moonEphemeris(jd) {
+  const T = (jd - 2451545.0) / 36525;
+  const sin = (a, b) => Math.sin((a + b * T) * DEG), cos = (a, b) => Math.cos((a + b * T) * DEG);
+  const lon = 218.32 + 481267.881 * T +
+    6.29 * sin(135.0, 477198.87) - 1.27 * sin(259.3, -413335.36) + 0.66 * sin(235.7, 890534.22) +
+    0.21 * sin(269.9, 954397.74) - 0.19 * sin(357.5, 35999.05) - 0.11 * sin(186.5, 966404.03);
+  const lat = 5.13 * sin(93.3, 483202.02) + 0.28 * sin(228.2, 960400.89) -
+    0.28 * sin(318.3, 6003.15) - 0.17 * sin(217.6, -407332.21);
+  const parallax = 0.9508 + 0.0518 * cos(135.0, 477198.87) + 0.0095 * cos(259.3, -413335.36) +
+    0.0078 * cos(235.7, 890534.22) + 0.0028 * cos(269.9, 954397.74);
+  return { eclLonDeg: wrap360(lon), eclLatDeg: lat, distanceEarthRadii: 1 / Math.sin(parallax * DEG) };
+}
+
+/** The Moon's V magnitude outside the atmosphere at a phase angle (deg,
+ *  0 = full), at its mean distance. Krisciunas & Schaefer (1991), eq. 9. */
+export function moonMagnitude(phaseAngleDeg) {
+  const a = Math.abs(phaseAngleDeg);
+  return -12.73 + 0.026 * a + 4e-9 * Math.pow(a, 4);
+}
+
+/** Airmass for scattered light in the Krisciunas & Schaefer sky model
+ *  (their eq. 3), from zenith distance in degrees. */
+const moonSkyAirmass = (zenithDeg) =>
+  1 / Math.sqrt(1 - 0.96 * Math.pow(Math.sin(Math.min(zenithDeg, 90) * DEG), 2));
+
+/**
+ * Moonlight scattered into the sky, as a V surface brightness (mag/arcsec^2).
+ * Krisciunas & Schaefer (1991), PASP 103, 1033, eqs. 15-21.
+ *   rhoDeg          angle between the Moon and the sky position
+ *   moonZenithDeg   the Moon's zenith distance (it must be above the horizon)
+ *   skyZenithDeg    the sky position's zenith distance
+ *   phaseAngleDeg   0 = full Moon
+ *   k               extinction, mag per airmass
+ * The model is for positions more than about 10 deg from the Moon; rho is
+ * held at 5 deg inside that.
+ */
+export function moonSkyMu(rhoDeg, moonZenithDeg, skyZenithDeg, phaseAngleDeg, k) {
+  const rho = Math.max(5, rhoDeg);
+  const istar = Math.pow(10, -0.4 * (3.84 + 0.026 * Math.abs(phaseAngleDeg) + 4e-9 * Math.pow(phaseAngleDeg, 4)));
+  const f = Math.pow(10, 5.36) * (1.06 + Math.pow(Math.cos(rho * DEG), 2)) + Math.pow(10, 6.15 - rho / 40);
+  const nanoLamberts = f * istar * Math.pow(10, -0.4 * k * moonSkyAirmass(moonZenithDeg)) *
+    (1 - Math.pow(10, -0.4 * k * moonSkyAirmass(skyZenithDeg)));
+  return (20.7233 - Math.log(nanoLamberts / 34.08)) / 0.92104;
+}
+
+/** Mean length of the Moon's cycle of phases, days. */
+export const SYNODIC_MONTH_DAYS = 29.530588;
+
+/**
+ * Where the Moon is for an observer state, or null when state.moon is "off"
+ * or absent.
+ *   state.moon "date"   the Moon of state.year on the state's date and solar
+ *                       time, taken as universal time (the simulator has no
+ *                       longitude; the Moon moves about half a degree an hour)
+ *   state.moon "phase"  a Moon state.moonAgeDays after new, on the ecliptic
+ *
+ * The Moon is placed by its elongation from the Sun, so its phase is right
+ * for the date whichever year the model's own Sun is computed for.
+ * Returns { dir, altDeg, azDeg, phaseAngleDeg, illuminated, ageDays,
+ * magnitude } with dir a unit vector in the working frame as seen from the
+ * observer, and magnitude as seen through the atmosphere (null when down).
+ */
+export function moonState(state, data) {
+  if (!state.moon || state.moon === "off") return null;
+  const eps = data.physicalConstants.obliquityDeg.value * DEG;
+  const k = data.photometry.extinctionCoefficient.value;
+  const sun = solarEphemeris(state.doy, state.solarTimeHours, data);
+  let elongation, eclLat, distance;
+  if (state.moon === "phase") {
+    elongation = 360 * (state.moonAgeDays ?? SYNODIC_MONTH_DAYS / 2) / SYNODIC_MONTH_DAYS;
+    eclLat = 0;
+    distance = 60.27;
+  } else {
+    const jd = julianDate(state.year ?? data.geometryModel.yearAnchor.value, state.doy, state.solarTimeHours);
+    const moon = moonEphemeris(jd);
+    elongation = wrap360(moon.eclLonDeg - sunEclipticLonDeg(jd));
+    eclLat = moon.eclLatDeg;
+    distance = moon.distanceEarthRadii;
+  }
+  // ecliptic -> equatorial -> the working frame (as for the stars)
+  const lon = (sun.eclLonDeg + elongation) * DEG, lat = eclLat * DEG;
+  const ex = Math.cos(lat) * Math.cos(lon);
+  const ey = Math.cos(lat) * Math.sin(lon) * Math.cos(eps) - Math.sin(lat) * Math.sin(eps);
+  const ez = Math.cos(lat) * Math.sin(lon) * Math.sin(eps) + Math.sin(lat) * Math.cos(eps);
+  const th = (thetaSunDeg(state.solarTimeHours) - sun.raDeg) * DEG + Math.atan2(ey, ex);
+  const cd = Math.hypot(ex, ey);
+  const geocentric = [cd * Math.cos(th), cd * Math.sin(th), ez];
+  // seen from the surface, the Moon is up to a degree lower than from the centre
+  const obs = observerUnit(state.latDeg);
+  const dir = normalize([geocentric[0] * distance - obs[0], geocentric[1] * distance - obs[1],
+                         geocentric[2] * distance - obs[2]]);
+  const { altDeg, azDeg } = dirToAltAz(dir, enuBasis(state.latDeg));
+  const sunDir = sunVector(state.doy, state.solarTimeHours, data);
+  const psi = Math.acos(Math.max(-1, Math.min(1, dot(geocentric, sunDir)))) / DEG;
+  const phaseAngleDeg = 180 - psi;
+  return {
+    dir, altDeg, azDeg, phaseAngleDeg,
+    illuminated: (1 + Math.cos(phaseAngleDeg * DEG)) / 2,
+    ageDays: elongation / 360 * SYNODIC_MONTH_DAYS,
+    magnitude: altDeg > 0 ? moonMagnitude(phaseAngleDeg) + k * airmass(altDeg) : null,
+  };
+}
+
+/* ------------------------------------------------------------------ */
 /* Orbits and constellation                                            */
 /* ------------------------------------------------------------------ */
 
@@ -571,25 +706,51 @@ export function artificialMu(bortle, data) {
  *   artificialMu  ambient light: zenith skyglow for state.ambientBortle
  *   threshold     which naked-eye threshold relation turns a sky brightness
  *                 into a limiting magnitude: state.nakedEyeThreshold
+ *   moon          moonState(), or null. A Moon above the horizon lights the sky.
+ *   up, k         the observer's zenith and the extinction, which the moonlit
+ *                 sky needs
  */
 export function skyExtras(state, data) {
   return {
     artificialMu: artificialMu(state.ambientBortle, data),
     threshold: state.nakedEyeThreshold || "table",
+    moon: moonState(state, data),
+    up: observerUnit(state.latDeg),
+    k: data.photometry.extinctionCoefficient.value,
   };
 }
 
-/** Sky surface brightness at a sky position (unit direction from the
- *  observer): the twilight sky with its glow toward the Sun, plus whatever
- *  `sky` (from skyExtras) adds. Without `sky` it is the natural sky alone. */
-export function muAt(dir, sunDir, sunAltDeg, data, sky = null) {
+/**
+ * The sky's surface brightness at a sky position (unit direction from the
+ * observer), part by part, each in mag/arcsec^2:
+ *   natural     the twilight sky with its glow toward the Sun
+ *   artificial  ambient light, or null
+ *   moon        moonlight scattered into the sky, or null when there is no
+ *               Moon above the horizon
+ *   total       the three added as light
+ * `sky` is what skyExtras() returned; without it only the natural sky is there.
+ */
+export function muParts(dir, sunDir, sunAltDeg, data, sky = null) {
   const mu0 = zenithMu(sunAltDeg, data);
   const amp = data.skyBrightness.twilightGlowAmplitudeMag.value;
   const scale = data.skyBrightness.twilightGlowScaleDeg.value;
   const f = sunAltDeg >= 0 ? 1 : Math.max(0, (sunAltDeg + 18) / 18);
-  const ang = Math.acos(Math.max(-1, Math.min(1, dot(normalize(dir), sunDir)))) / DEG;
+  const unit = normalize(dir);
+  const ang = Math.acos(Math.max(-1, Math.min(1, dot(unit, sunDir)))) / DEG;
   const natural = Math.max(4, mu0 - amp * f * Math.exp(-ang / scale));
-  return sky ? addMu(natural, sky.artificialMu) : natural;
+  if (!sky) return { natural, artificial: null, moon: null, total: natural };
+  let moon = null;
+  if (sky.moon && sky.moon.altDeg > 0) {
+    const angle = (a, b) => Math.acos(Math.max(-1, Math.min(1, dot(a, b)))) / DEG;
+    moon = moonSkyMu(angle(unit, sky.moon.dir), 90 - sky.moon.altDeg, angle(unit, sky.up),
+      sky.moon.phaseAngleDeg, sky.k);
+  }
+  return { natural, artificial: sky.artificialMu, moon, total: addMu(addMu(natural, sky.artificialMu), moon) };
+}
+
+/** Sky surface brightness at a sky position: the total of muParts(). */
+export function muAt(dir, sunDir, sunAltDeg, data, sky = null) {
+  return muParts(dir, sunDir, sunAltDeg, data, sky).total;
 }
 
 /** Naked-eye point-source limiting magnitude for sky brightness mu.
@@ -639,7 +800,8 @@ export function starAltAz(catalog, latDeg, doy, solarTimeHours, data) {
  * above the horizon (for renderers).
  *
  * state: { latDeg, doy, solarTimeHours, brightnessRefMag, phaseLaw, userLimitingMag,
- *          ambientBortle, nakedEyeThreshold, propagationSec, shadowGeometry }
+ *          ambientBortle, nakedEyeThreshold, moon, year, moonAgeDays,
+ *          propagationSec, shadowGeometry }
  */
 export function evaluate(constellation, state, data) {
   const Re = data.physicalConstants.earthRadiusKm.value;
@@ -666,6 +828,7 @@ export function evaluate(constellation, state, data) {
   // P(tau) = P cos(n tau) + r*Vhat sin(n tau), n = sqrt(mu/r^3) (spec v3)
   const tau = state.propagationSec || 0;
   const muE = data.physicalConstants.muEarth.value;
+  let lightFlux = 0;   // every sunlit satellite above the horizon, in units of a magnitude-0 star
 
   for (let i = 0; i < n; i++) {
     let Px = constellation.px[i], Py = constellation.py[i], Pz = constellation.pz[i];
@@ -699,6 +862,7 @@ export function evaluate(constellation, state, data) {
     const phase = Math.acos(Math.max(-1, Math.min(1, cosPhase)));
     const m = satMagnitude(constellation.m0[i], r, phase, a, data, mit, phaseLaw);
     mag[i] = m;
+    lightFlux += Math.pow(10, -0.4 * m);
     const mu = muAt([vx, vy, vz], s, sunAlt, data, sky);
     const lim = Math.min(limitingMag(mu, data, sky.threshold), userCap);
     visible[i] = m <= lim ? 1 : 0;
@@ -779,6 +943,7 @@ export function evaluate(constellation, state, data) {
   const zenithSkyMu = muAt(basis.up, s, sunAlt, data, sky);
   return { alt, az, range, mag, sunlit, visible, above, sunAltDeg: sunAlt, sunDir: s, sky,
            zenithSkyMu, zenithLimitMag: Math.min(limitingMag(zenithSkyMu, data, sky.threshold), userCap),
+           sbdcLightMag: lightFlux > 0 ? -2.5 * Math.log10(lightFlux) : null,
            objectStats, clusterInfo };
 }
 
@@ -880,6 +1045,72 @@ export function starVisibility(catalog, st, latDeg, sunDir, sunAltDeg, userCap, 
   return { vis, count };
 }
 
+/** Illuminance (lux) of a source of V magnitude m: a magnitude-0 star gives
+ *  2.1 microlux, the full Moon (-12.7) about a quarter of a lux. */
+export const magnitudeToLux = (m) => Math.pow(10, -0.4 * (m + 14.18));
+
+/** Square arcseconds in a steradian. */
+const ARCSEC2_PER_SR = Math.pow(180 * 3600 / Math.PI, 2);
+
+/**
+ * The light of the whole sky above the horizon as one magnitude: the sky
+ * brightness summed over the hemisphere. With a `skyLight` function of a
+ * direction it uses that; without one it is a uniform sky of brightness mu.
+ */
+export function hemisphereMagnitude(mu, skyLight = null) {
+  if (!skyLight) return mu - 2.5 * Math.log10(2 * Math.PI * ARCSEC2_PER_SR);
+  let flux = 0;
+  for (let alt = 5; alt < 90; alt += 10) {
+    const band = Math.sin((alt + 5) * DEG) - Math.sin((alt - 5) * DEG);
+    for (let az = 15; az < 360; az += 30) {
+      flux += Math.pow(10, -0.4 * skyLight(alt, az)) * band * (30 * DEG) * ARCSEC2_PER_SR;
+    }
+  }
+  return -2.5 * Math.log10(flux);
+}
+
+/**
+ * How the satellites' summed light compares with the Moon and with the sky.
+ * ev is an evaluate() result. Every ratio is SBDC light divided by the other
+ * light, as apparent brightness (both through the atmosphere).
+ *   sbdcMag           all sunlit SBDCs above the horizon, as one magnitude
+ *   sbdcLux           the same as illuminance
+ *   toFullMoon        against a full Moon overhead
+ *   toMoon            against the Moon as set, when it is up; else null
+ *   toNaturalNight    against a moonless natural night sky, summed over the
+ *                     hemisphere (about magnitude -6.7, one millilux)
+ *   toSkyNow          against the sky as it is now: twilight, ambient light
+ *                     and scattered moonlight, summed over the hemisphere
+ */
+export function lightSummary(ev, state, data) {
+  const k = data.photometry.extinctionCoefficient.value;
+  const ratio = (a, b) => (a == null || b == null ? null : Math.pow(10, -0.4 * (a - b)));
+  const basis = enuBasis(state.latDeg);
+  const direction = (altDeg, azDeg) => {
+    const aa = altDeg * DEG, zz = azDeg * DEG, ca = Math.cos(aa);
+    return [0, 1, 2].map((i) => ca * (Math.cos(zz) * basis.north[i] + Math.sin(zz) * basis.east[i]) + Math.sin(aa) * basis.up[i]);
+  };
+  const nightMu = zenithMu(-90, data);
+  const moon = ev.sky.moon;
+  const skyNowMag = hemisphereMagnitude(null, (alt, az) => muAt(direction(alt, az), ev.sunDir, ev.sunAltDeg, data, ev.sky));
+  const round = (v, digits = 2) => (v == null ? null : Math.round(v * 10 ** digits) / 10 ** digits);
+  // three significant figures: these are approximate ratios
+  const sig = (v) => (v == null ? null : Number(v.toPrecision(3)));
+  return {
+    sbdcMag: round(ev.sbdcLightMag),
+    sbdcLux: ev.sbdcLightMag == null ? 0 : sig(magnitudeToLux(ev.sbdcLightMag)),
+    toFullMoon: sig(ratio(ev.sbdcLightMag, moonMagnitude(0) + k)),
+    toMoon: moon ? sig(ratio(ev.sbdcLightMag, moon.magnitude)) : null,
+    toNaturalNight: sig(ratio(ev.sbdcLightMag, hemisphereMagnitude(nightMu))),
+    toSkyNow: sig(ratio(ev.sbdcLightMag, skyNowMag)),
+    skyNowMag: round(skyNowMag),
+    moon: moon ? {
+      altDeg: round(moon.altDeg, 1), azDeg: round(moon.azDeg, 1), illuminated: round(moon.illuminated, 3),
+      ageDays: round(moon.ageDays, 1), magnitude: round(moon.magnitude),
+    } : null,
+  };
+}
+
 /**
  * The aggregate API the UI readouts and acceptance tests consume.
  * Returns counts, brightest satellite, star comparison, and sun context.
@@ -920,5 +1151,6 @@ export function summarize(constellation, state, data, catalog = null) {
     sunAltDeg: Math.round(ev.sunAltDeg * 100) / 100,
     zenithSkyMu: Math.round(ev.zenithSkyMu * 100) / 100,
     zenithLimitMag: Math.round(ev.zenithLimitMag * 100) / 100,
+    light: lightSummary(ev, state, data),
   };
 }

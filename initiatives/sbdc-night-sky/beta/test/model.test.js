@@ -759,3 +759,188 @@ test("the threshold is one setting for satellites and stars alike", () => {
   assert.ok(strict.zenithLimitMag < table.zenithLimitMag - 0.5);
   assert.equal(strict.zenithSkyMu, table.zenithSkyMu, "the sky is the same; only the limit drawn from it differs");
 });
+
+/* ---------------- unit 4: the Moon, moonlight, and light totals ---------------- */
+
+const dayOfYear = (month, day) => [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334][month - 1] + day;
+
+test("Julian Date: the model's 365-day year in any calendar year", () => {
+  assert.equal(M.julianDate(2026, 1, 0), 2461041.5, "1 January 2026, the model's own anchor");
+  assert.equal(M.julianDate(2000, 1, 12), 2451545.0, "J2000.0");
+  // day 60 is 1 March in every year: a leap year's 29 February is skipped
+  assert.equal(M.julianDate(2028, 60, 0) - M.julianDate(2028, 59, 0), 2, "28 February to 1 March 2028");
+  assert.equal(M.julianDate(2027, 60, 0) - M.julianDate(2027, 59, 0), 1, "28 February to 1 March 2027");
+  assert.equal(M.julianDate(2026, 365, 0) - M.julianDate(2026, 1, 0), 364);
+});
+
+test("the Moon is new at solar eclipses and full at lunar eclipses", () => {
+  // elongation from the Sun, and ecliptic latitude, at the middle of each eclipse (UT)
+  const at = (year, month, day, hours) => {
+    const jd = M.julianDate(year, dayOfYear(month, day), hours);
+    const moon = M.moonEphemeris(jd);
+    const elongation = ((moon.eclLonDeg - M.sunEclipticLonDeg(jd)) % 360 + 360) % 360;
+    return { fromNew: Math.min(elongation, 360 - elongation), fromFull: Math.abs(elongation - 180), lat: moon.eclLatDeg };
+  };
+  const solar2026 = at(2026, 8, 12, 17.77);     // total solar eclipse, 12 August 2026
+  const solar2027 = at(2027, 8, 2, 10.12);      // total solar eclipse, 2 August 2027
+  const lunar2026 = at(2026, 3, 3, 11.55);      // total lunar eclipse, 3 March 2026
+  for (const [name, e] of [["2026", solar2026], ["2027", solar2027]]) {
+    assert.ok(e.fromNew < 0.4, `solar ${name}: Moon ${e.fromNew.toFixed(2)} deg from the Sun in longitude`);
+    assert.ok(Math.abs(e.lat) < 1.3, `solar ${name}: latitude ${e.lat.toFixed(2)}`);
+  }
+  assert.ok(lunar2026.fromFull < 0.4, `lunar 2026: ${lunar2026.fromFull.toFixed(2)} deg from opposition`);
+  assert.ok(Math.abs(lunar2026.lat) < 1.0, `lunar 2026: latitude ${lunar2026.lat.toFixed(2)}`);
+  // an ordinary full and new Moon: 24 November 2026 14:53 UT, 9 November 2026 07:02 UT
+  assert.ok(at(2026, 11, 24, 14.88).fromFull < 0.5);
+  assert.ok(at(2026, 11, 9, 7.03).fromNew < 0.5);
+  // the Moon's distance stays between perigee and apogee
+  for (let d = 1; d <= 365; d += 3) {
+    const r = M.moonEphemeris(M.julianDate(2026, d, 0)).distanceEarthRadii;
+    assert.ok(r > 55.5 && r < 64, `day ${d}: ${r.toFixed(2)} Earth radii`);
+  }
+});
+
+test("the Moon's phase follows its age, and a full Moon stands opposite the Sun", () => {
+  const base = { latDeg: 40, doy: dayOfYear(12, 21), solarTimeHours: 0, moon: "phase" };
+  const full = M.moonState({ ...base, moonAgeDays: M.SYNODIC_MONTH_DAYS / 2 }, data);
+  assert.ok(full.illuminated > 0.999, "full: " + full.illuminated);
+  // at midnight on the December solstice the full Moon is high in the south:
+  // about 90 - 40 + 23.4 degrees up
+  assert.ok(Math.abs(full.altDeg - 73.4) < 1.5, "altitude " + full.altDeg.toFixed(1));
+  assert.ok(Math.abs(full.azDeg - 180) < 3, "azimuth " + full.azDeg.toFixed(1));
+  const quarter = M.moonState({ ...base, moonAgeDays: M.SYNODIC_MONTH_DAYS / 4 }, data);
+  assert.ok(Math.abs(quarter.illuminated - 0.5) < 0.005, "first quarter: " + quarter.illuminated);
+  const fresh = M.moonState({ ...base, moonAgeDays: 0 }, data);
+  assert.ok(fresh.illuminated < 0.001 && fresh.altDeg < 0, "new: with the Sun, below the horizon at midnight");
+  assert.equal(fresh.magnitude, null, "a Moon that is down has no apparent magnitude");
+  // waxing: lit fraction rises through the first half of the month
+  let last = -1;
+  for (let age = 0; age <= 14.5; age += 0.5) {
+    const lit = M.moonState({ ...base, moonAgeDays: age }, data).illuminated;
+    assert.ok(lit > last, `age ${age}`);
+    last = lit;
+  }
+  assert.equal(M.moonState({ ...base, moon: "off" }, data), null);
+  assert.equal(M.moonState({ latDeg: 40, doy: 100, solarTimeHours: 0 }, data), null, "no Moon unless one is asked for");
+});
+
+test("the Moon of a date: full on 24 November 2026, and not in other years", () => {
+  const state = { latDeg: 40, doy: dayOfYear(11, 24), solarTimeHours: 15, moon: "date" };
+  const y2026 = M.moonState({ ...state, year: 2026 }, data);
+  assert.ok(y2026.illuminated > 0.995, "2026: " + y2026.illuminated);
+  assert.ok(Math.abs(y2026.ageDays - 14.77) < 0.3, "age " + y2026.ageDays);
+  const y2027 = M.moonState({ ...state, year: 2027 }, data);
+  assert.ok(y2027.illuminated < 0.3, "2027, ten days after full: " + y2027.illuminated);
+  // with no year given the Moon is the model's own year's
+  assert.deepEqual(M.moonState(state, data), y2026);
+  // seen from the surface the Moon is lower than from the Earth's centre, by up to about a degree
+  const horizon = M.moonState({ latDeg: 40, doy: dayOfYear(11, 24), solarTimeHours: 17.2, moon: "date", year: 2026 }, data);
+  assert.ok(horizon.altDeg > -3 && horizon.altDeg < 12, "rising near sunset: " + horizon.altDeg.toFixed(1));
+});
+
+test("the Moon's brightness and its light in the sky (Krisciunas and Schaefer 1991)", () => {
+  assert.equal(M.moonMagnitude(0), -12.73);
+  assert.ok(Math.abs(M.moonMagnitude(90) - -10.13) < 0.01, "a quarter Moon is a tenth of a full one");
+  assert.equal(M.moonMagnitude(-90), M.moonMagnitude(90));
+  // worked by hand from their equations: full Moon 60 deg from the zenith,
+  // sky at the zenith, k = 0.172: 1,089 nanoLamberts, 18.74 mag/arcsec^2
+  assert.ok(Math.abs(M.moonSkyMu(60, 60, 0, 0, 0.172) - 18.74) < 0.02, "got " + M.moonSkyMu(60, 60, 0, 0, 0.172));
+  // brighter near the Moon, fainter for a thinner Moon, fainter for a lower Moon
+  assert.ok(M.moonSkyMu(20, 60, 40, 0, 0.2) < M.moonSkyMu(90, 60, 40, 0, 0.2));
+  assert.ok(M.moonSkyMu(60, 60, 0, 90, 0.2) > M.moonSkyMu(60, 60, 0, 0, 0.2) + 2);
+  assert.ok(M.moonSkyMu(60, 85, 0, 0, 0.2) > M.moonSkyMu(60, 30, 0, 0, 0.2));
+  // inside 5 degrees of the Moon the model is held at its 5-degree value
+  assert.equal(M.moonSkyMu(1, 60, 60, 0, 0.2), M.moonSkyMu(5, 60, 60, 0, 0.2));
+});
+
+test("moonlight hides stars and satellites when the Moon is up, and does nothing when it is down", () => {
+  const night = { latDeg: 40, doy: dayOfYear(12, 21), solarTimeHours: 19, userLimitingMag: 6.5 };
+  const dark = M.summarize(C0, night, data, catalog);
+  const fullUp = M.summarize(C0, { ...night, moon: "phase", moonAgeDays: 14.77 }, data, catalog);
+  assert.ok(fullUp.light.moon.altDeg > 10, "the full Moon is up in the evening: " + fullUp.light.moon.altDeg);
+  assert.ok(fullUp.zenithSkyMu < dark.zenithSkyMu - 2, `sky ${dark.zenithSkyMu} -> ${fullUp.zenithSkyMu}`);
+  assert.ok(fullUp.visibleStars < dark.visibleStars * 0.5, `stars ${dark.visibleStars} -> ${fullUp.visibleStars}`);
+  assert.ok(fullUp.visible <= dark.visible);
+  assert.equal(fullUp.aboveHorizon, dark.aboveHorizon, "the Moon moves no satellite");
+  assert.equal(fullUp.light.sbdcMag, dark.light.sbdcMag, "nor changes their light");
+
+  const newMoon = M.summarize(C0, { ...night, moon: "phase", moonAgeDays: 0 }, data, catalog);
+  assert.ok(newMoon.light.moon.altDeg < 0);
+  assert.equal(newMoon.visibleStars, dark.visibleStars);
+  assert.equal(newMoon.visible, dark.visible);
+  assert.equal(newMoon.zenithSkyMu, dark.zenithSkyMu);
+  assert.equal(newMoon.light.toMoon, null, "no ratio to a Moon that is down");
+
+  // a quarter Moon lights the sky less than a full one
+  const quarter = M.summarize(C0, { ...night, moon: "phase", moonAgeDays: 7.4 }, data, catalog);
+  assert.ok(quarter.visibleStars > fullUp.visibleStars && quarter.visibleStars <= dark.visibleStars);
+});
+
+test("light totals: the satellites' summed light against the Moon and the sky", () => {
+  const k = data.photometry.extinctionCoefficient.value;
+  assert.ok(Math.abs(M.magnitudeToLux(-12.73) - 0.263) < 0.005, "the full Moon is about a quarter of a lux");
+  // a natural moonless sky summed over the hemisphere is about a millilux
+  const night = M.hemisphereMagnitude(M.zenithMu(-90, data));
+  assert.ok(Math.abs(night - -6.67) < 0.01, "night sky as one magnitude: " + night);
+  assert.ok(Math.abs(M.magnitudeToLux(night) - 0.001) < 0.0001);
+  // summing a uniform sky direction by direction gives the same total
+  assert.ok(Math.abs(M.hemisphereMagnitude(null, () => 21.9) - night) < 0.01);
+
+  const state = { latDeg: 40, doy: dayOfYear(12, 21), solarTimeHours: 18.5, userLimitingMag: 6.5 };
+  const ev = M.evaluate(C0, state, data);
+  // the total is the sum over every sunlit satellite above the horizon
+  let flux = 0;
+  for (const i of ev.above) if (ev.sunlit[i]) flux += Math.pow(10, -0.4 * ev.mag[i]);
+  // (the per-satellite magnitudes are stored to single precision)
+  assert.ok(Math.abs(ev.sbdcLightMag - -2.5 * Math.log10(flux)) < 1e-4);
+  const light = M.lightSummary(ev, state, data);
+  const ratio = (a, b) => Math.pow(10, -0.4 * (a - b));
+  const near = (got, want, what) => assert.ok(Math.abs(got / want - 1) < 0.006, `${what}: ${got} against ${want}`);
+  near(light.toFullMoon, ratio(ev.sbdcLightMag, -12.73 + k), "full Moon overhead");
+  near(light.toNaturalNight, ratio(ev.sbdcLightMag, night), "natural night");
+  near(light.sbdcLux, M.magnitudeToLux(ev.sbdcLightMag), "lux");
+  assert.equal(light.toMoon, null);
+  assert.equal(light.moon, null);
+  // with a dark sky, "the sky now" is the natural night sky
+  near(light.toSkyNow, light.toNaturalNight, "sky now, moonless and dark");
+  // more satellites, more light: 20 times the satellites is about 20 times the light
+  const big = M.generateConstellation(M.defaultConfig(data, { totalSats: 400000, seed: 12345 }), data);
+  const bigLight = M.lightSummary(M.evaluate(big, state, data), state, data);
+  assert.ok(bigLight.toFullMoon / light.toFullMoon > 15 && bigLight.toFullMoon / light.toFullMoon < 25);
+
+  // with the Moon up the ratio to it is the satellites' light over the Moon's, both through the air
+  const moonState = { ...state, moon: "phase", moonAgeDays: 14.77 };
+  const evMoon = M.evaluate(C0, moonState, data);
+  const withMoon = M.lightSummary(evMoon, moonState, data);
+  near(withMoon.toMoon, ratio(evMoon.sbdcLightMag, evMoon.sky.moon.magnitude), "this Moon");
+  assert.ok(withMoon.toMoon > withMoon.toFullMoon, "a Moon low in the sky is dimmer than a full Moon overhead");
+  assert.ok(withMoon.toSkyNow < light.toSkyNow / 5, "the moonlit sky is much brighter than the dark one");
+});
+
+test("light totals: no sunlit satellite, no light", () => {
+  // the equator at midnight on the equinox: every satellite overhead is in the Earth's shadow
+  const s = M.summarize(C0, { latDeg: 0, doy: 79, solarTimeHours: 0 }, data, catalog);
+  assert.equal(s.sunlitAbove, 0);
+  assert.equal(s.light.sbdcMag, null);
+  assert.equal(s.light.sbdcLux, 0);
+  assert.equal(s.light.toFullMoon, null);
+  assert.equal(s.light.toNaturalNight, null);
+});
+
+test("the sky's light, part by part", () => {
+  const state = { latDeg: 40, doy: dayOfYear(12, 21), solarTimeHours: 19, ambientBortle: 6, moon: "phase", moonAgeDays: 14.77 };
+  const sky = M.skyExtras(state, data);
+  const sun = M.sunVector(state.doy, state.solarTimeHours, data);
+  const up = M.observerUnit(40);
+  const parts = M.muParts(up, sun, -30, data, sky);
+  assert.equal(parts.natural, M.muAt(up, sun, -30, data));
+  assert.equal(parts.artificial, M.artificialMu(6, data));
+  assert.ok(parts.moon > 17 && parts.moon < 20, "a full Moon lights the zenith to about 18 or 19: " + parts.moon);
+  assert.ok(Math.abs(parts.total - M.addMu(M.addMu(parts.natural, parts.artificial), parts.moon)) < 1e-12);
+  assert.equal(parts.total, M.muAt(up, sun, -30, data, sky));
+  // no Moon above the horizon, no moonlight
+  const down = M.muParts(up, sun, -30, data, M.skyExtras({ ...state, moonAgeDays: 0 }, data));
+  assert.equal(down.moon, null);
+  // nothing added: only the natural sky
+  assert.deepEqual(M.muParts(up, sun, -30, data), { natural: parts.natural, artificial: null, moon: null, total: parts.natural });
+});

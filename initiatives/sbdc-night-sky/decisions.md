@@ -340,3 +340,53 @@ sunrise, now show about half the SBDCs they did.
   it.
 - The two twilight curves still differ by about half a magnitude with the Sun
   10° to 11° down. This simulator keeps the one its data file cites.
+
+## 2026-11-15 — Beta upgrade, unit 4: what "the light of the SBDCs" and "the Moon" mean here
+
+The user asked for "an option to include moonlight and its effects" and to
+"calculate an approximate ratio of the SBDC light to that of the moon". Unit 4
+had to fix what is compared with what.
+
+**SBDC light is every sunlit satellite above the horizon, added up.** The
+visible ones alone would leave out most of the light when the satellites are
+faint, and the question is about light, which the satellites give whether or
+not each one can be picked out. The total is written as one magnitude.
+
+**It is compared with three things.** A full Moon overhead, which is the
+figure a person can picture and does not change with the date. The Moon as
+set, when it is up, with its phase and its dimming near the horizon. And a
+moonless natural night sky summed over the hemisphere, about magnitude -6.7 or
+a thousandth of a lux, because for much of the month there is no Moon and that
+is the light the satellites add to. All three are ratios of apparent
+brightness. They are not illuminance on the ground, which would also weight
+each source by its altitude.
+
+**The year moves the Moon and nothing else.** The Sun and stars are computed
+for 2026 throughout the model, and changing that would move every frozen
+number by a little for no visible gain. The Moon's phase depends on the year
+completely, so the Moon is placed by its angle from the Sun for the year asked
+for.
+
+**The Moon is off by default.** With it off the simulator is as it was. A
+person who wants the sky of a particular night turns it on.
+
+**The readout moved below the sky.** It had grown to three lines and covered
+the horizon. Putting it under the sky costs a strip of sky height and shows
+the part of the sky where the constellation is densest.
+
+### Alternatives considered
+
+| Option | Consequence |
+| --- | --- |
+| Total light of all sunlit satellites, against a full Moon, the Moon as set, and a natural night sky | Three numbers that answer "how much light is this" on any night. Chosen. |
+| Only the naked-eye-visible satellites | A total that falls to nothing under mitigation while the satellites still light the sky. |
+| Illuminance on the ground, each source weighted by the sine of its altitude | Closer to what a light meter reads, and a ratio that changes with the Moon's altitude in a way a reader has to work out. |
+| A Moon that is always on | The default view would depend on the date's Moon, and every earlier screenshot and count would need one stated. |
+| Add a longitude so that the Moon's place is exact | A control the rest of the model has no use for, for a gain of a few degrees. |
+
+### What this settles, and what it does not
+
+- The ratios are approximate, as asked. Their largest uncertainty is the
+  satellites' brightness, not the Moon's.
+- Moonlight scattered when the Moon is just below the horizon is not modelled.
+- Unit 5's count of hours uses these totals for one of its three definitions.

@@ -13,6 +13,7 @@
 const App = {
   data: null, catalog: null,
   cons: null, ev: null, stars: null, starVis: null, summary: null,
+  evCons: null,                            // the constellation App.ev was evaluated from
   renderer: null,
   playing: null, playTimer: null,          // null | "rt" | "ff"
   timeLock: false, timeAnchor: null,       // twilight-locked time (v3)
@@ -21,6 +22,7 @@ const App = {
     latDeg: 40, doy: 172, solarTimeHours: 20.7,
     brightnessRefMag: 0.5, phaseLaw: "lambert", userLimitingMag: 6.0, propagationSec: 0,
     ambientBortle: 1, nakedEyeThreshold: "table",
+    moon: "off", year: 2026, moonAgeDays: 14.8,
   },
   cfg: {
     totalSats: 300000, ssoFraction: 0.7, shellPreset: "spread",
@@ -126,6 +128,31 @@ const TR = {
   hintEyeModel: ["how the sky\u2019s brightness sets the faintest magnitude seen",
                  "comment la luminosité du ciel fixe la magnitude la plus faible visible"],
   rSky: ["zenith sky", "ciel au zénith"], rLimit: ["naked-eye limit", "limite à l\u2019œil nu"],
+  moon: ["Moon", "Lune"],
+  moOff: ["Off (no Moon)", "Sans Lune"], moDate: ["As on this date", "Comme à cette date"],
+  moPhase: ["Set the phase", "Choisir la phase"],
+  year: ["Year", "Année"],
+  hintYear: ["the Moon\u2019s place on this date, taking the solar time as universal time · it is within a few degrees for any longitude",
+             "la position de la Lune à cette date, l\u2019heure solaire étant prise comme temps universel · à quelques degrés près pour toute longitude"],
+  moonAge: ["Days since new Moon", "Jours depuis la nouvelle Lune"],
+  hintMoon: ["moonlight brightens the sky, which hides faint satellites and stars",
+             "le clair de Lune éclaircit le ciel, ce qui cache les satellites et étoiles faibles"],
+  phases: [
+    ["new", "waxing crescent", "first quarter", "waxing gibbous", "full", "waning gibbous", "last quarter", "waning crescent"],
+    ["nouvelle", "premier croissant", "premier quartier", "gibbeuse croissante", "pleine", "gibbeuse décroissante", "dernier quartier", "dernier croissant"],
+  ],
+  mLit: ["lit", "éclairée"], mUp: ["up", "de hauteur"], mDown: ["below the horizon", "sous l\u2019horizon"],
+  lSbdc: ["SBDC light", "Lumière des SBDC"], lTotal: ["mag in total", "mag au total"],
+  lNone: ["none: no sunlit SBDC is above the horizon", "aucune : aucun SBDC éclairé au-dessus de l\u2019horizon"],
+  // each comparison in two forms: after a multiple ("10× a full Moon") and
+  // after a fraction ("1/22 of a full Moon")
+  lFullMoon: ["a full Moon", "une pleine Lune"],
+  lFullMoonOf: ["of a full Moon", "d\u2019une pleine Lune"],
+  lNight: ["a moonless natural night sky", "un ciel nocturne naturel sans Lune"],
+  lNightOf: ["of a moonless natural night sky", "d\u2019un ciel nocturne naturel sans Lune"],
+  lThisMoon: ["this Moon\u2019s light", "la lumière de cette Lune"],
+  lThisMoonOf: ["of this Moon\u2019s light", "de la lumière de cette Lune"],
+  ttMoon: ["Moon", "Lune"],
   showStars: ["Show stars (Yale Bright Star Catalog)", "Afficher les étoiles (catalogue Yale)"],
   tint: ["Tint by orbit family (analysis aid)", "Colorer par famille d'orbite (aide à l'analyse)"],
   longexp: ["Long-exposure camera (30 s) — the astronomy view", "Pose longue (30 s) — la vue astronomique"],
@@ -248,6 +275,10 @@ function applyLang(lang) {
   txt('label[for="eyemodel"]', "eyeModel"); txt("#hint-eyemodel", "hintEyeModel");
   txt('#eyemodel option[value="table"]', "emTable"); txt('#eyemodel option[value="schaefer"]', "emSchaefer");
   if ($("ambient-label") && App.state) $("ambient-label").textContent = bortleLabel(App.state.ambientBortle);
+  lbl('label[for="moon"]', "moon"); lbl('label[for="moonage"]', "moonAge"); txt('label[for="year"]', "year");
+  txt('#moon option[value="off"]', "moOff"); txt('#moon option[value="date"]', "moDate");
+  txt('#moon option[value="phase"]', "moPhase"); txt("#hint-year", "hintYear"); txt("#hint-moon", "hintMoon");
+  if ($("moonage-label") && App.state) $("moonage-label").textContent = moonAgeLabel(App.state.moonAgeDays);
   txt("#hint-longexp", "hintLongexp"); txt("#busy", "busy");
   txt('label[for="preset"]', "presetLbl"); txt('#preset option[value=""]', "presetNone");
   txt("#settings-export", "exportBtn"); txt("#settings-import", "importBtn");
@@ -300,6 +331,10 @@ function reevaluate() {
     evalPending = false;
     const { data, catalog, cons, state } = App;
     App.ev = MODEL.evaluate(cons, state, data);
+    // The picture and the tooltips read the evaluation together with the
+    // constellation it came from. App.cons is replaced a frame before its
+    // first evaluation exists, so anything drawn in between has to use this.
+    App.evCons = cons;
     const st = MODEL.starAltAz(catalog, state.latDeg, state.doy, state.solarTimeHours, data);
     App.stars = st;
     App.starVis = MODEL.starVisibility(
@@ -327,7 +362,7 @@ function redraw() {
   updateCompass();
   if (!App.ev) return;
   const cam = App.renderer.longExposure;
-  App.renderer.draw(App.state, App.ev, App.cons, App.stars,
+  App.renderer.draw(App.state, App.ev, App.evCons, App.stars,
     cam ? App.starVisCam : App.starVis, cam ? App.streaks : null);
   // what is inside the picture changes with every pan and zoom
   App.inView = App.renderer.countInView(App.ev, App.stars, App.starVis);
@@ -354,6 +389,41 @@ function brightLabel(m) {
 /** "Bortle 5 — suburban" in the current language. */
 function bortleLabel(n) {
   return `Bortle ${n} \u2014 ${TR.bortle[LANG.cur === "fr" ? 1 : 0][n - 1]}`;
+}
+
+/** The name of the phase a Moon of this age is nearest to. */
+function phaseName(ageDays) {
+  const eighth = Math.round(ageDays / MODEL.SYNODIC_MONTH_DAYS * 8) % 8;
+  return TR.phases[LANG.cur === "fr" ? 1 : 0][eighth];
+}
+const moonAgeLabel = (ageDays) => `${ageDays.toFixed(1)} \u2014 ${phaseName(ageDays)}`;
+
+/** "98% lit, 25° up" or "43% lit, below the horizon" for the Moon of a summary. */
+function moonText(moon) {
+  const lit = `${Math.round(moon.illuminated * 100)}% ${T("mLit")}`;
+  return moon.altDeg > 0 ? `${lit}, ${Math.round(moon.altDeg)}° ${T("mUp")}` : `${lit}, ${T("mDown")}`;
+}
+
+/** The light line of the readout: the satellites' summed light against a
+ *  full Moon, a natural night sky, and the Moon as set. */
+function lightLine(light) {
+  if (light.sbdcMag == null) return `${T("lSbdc")}: ${T("lNone")}`;
+  const mag = (light.sbdcMag < 0 ? "\u2212" : "+") + Math.abs(light.sbdcMag).toFixed(1);
+  // "10× a full Moon" or "1/22 of a full Moon"
+  const against = (ratio, key) => {
+    const text = FORMAT.formatRatio(ratio);
+    return `${text} ${T(text.startsWith("1/") ? key + "Of" : key)}`;
+  };
+  const parts = [
+    `${T("lSbdc")} ${mag} ${T("lTotal")}`,
+    against(light.toFullMoon, "lFullMoon"),
+    against(light.toNaturalNight, "lNight"),
+  ];
+  if (light.moon) {
+    parts.push(`${T("moon")} ${moonText(light.moon)}` +
+      (light.toMoon != null ? `: ${against(light.toMoon, "lThisMoon")}` : ""));
+  }
+  return parts.join("  ·  ");
 }
 
 function brightAnchor(m) {
@@ -393,6 +463,8 @@ function updateReadout() {
     (s.brightestObjectMag != null
       ? `  ·  ${T("rBrightest")} ${s.brightestObjectMag.toFixed(1)} (${brightAnchor(s.brightestObjectMag)})` : "");
   $("readout").textContent = line;
+  $("readout-light").textContent = lightLine(s.light);
+  $("moon-label").textContent = s.light.moon ? moonText(s.light.moon) : "";
   const rel = twilightOffsetText();
   const bortle = App.state.ambientBortle > 1 ? ` (Bortle ${App.state.ambientBortle})` : "";
   $("readout-sub").textContent =
@@ -540,7 +612,7 @@ function buildAssumptions() {
 
 function snapshot() {
   const src = App.renderer.canvas;
-  const CAP = 96;
+  const CAP = 122;
   const out = document.createElement("canvas");
   out.width = src.width; out.height = src.height + CAP;
   const g = out.getContext("2d");
@@ -555,10 +627,11 @@ function snapshot() {
     g.fillText(text, 14, y);
   };
   caption($("readout").textContent, src.height + 30, "#e8e4d8");
-  caption($("readout-sub").textContent, src.height + 56, "#8b8fa3");
+  caption($("readout-light").textContent, src.height + 56, "#d9c9a3");
+  caption($("readout-sub").textContent, src.height + 82, "#8b8fa3");
   g.fillStyle = "#6b6f83";
   g.font = `${Math.max(10, out.width / 130)}px ui-monospace, monospace`;
-  g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 82);
+  g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 108);
   out.toBlob((blob) => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -637,8 +710,8 @@ function hover(e) {
   if (!hit) { tip.style.display = "none"; return; }
   let html;
   if (hit.kind === "sat") {
-    const i = hit.i, ev = App.ev, fam = [T("famSso"), T("fam30"), T("famTrain")][App.cons.family[i]];
-    const ci = ev.clusterInfo && ev.clusterInfo.get(App.cons.clusterId[i]);
+    const i = hit.i, ev = App.ev, fam = [T("famSso"), T("fam30"), T("famTrain")][App.evCons.family[i]];
+    const ci = ev.clusterInfo && ev.clusterInfo.get(App.evCons.clusterId[i]);
     if (ci && ci.compact) {
       html = `<b>${T("ttCluster")}</b><br>` +
         `${ci.count} ${T("ttMembers")} · ${(ci.extentDeg * 60).toFixed(0)}\u2032 ${T("ttExtent")}<br>` +
@@ -647,9 +720,13 @@ function hover(e) {
     } else {
       html = `<b>SBDC — ${fam}</b><br>` +
         `alt ${ev.alt[i].toFixed(1)}° · az ${ev.az[i].toFixed(0)}°<br>` +
-        `${T("ttRange")} ${Math.round(ev.range[i]).toLocaleString()} km · ${T("ttShell")} ${Math.round(App.cons.shellAlt[i])} km<br>` +
+        `${T("ttRange")} ${Math.round(ev.range[i]).toLocaleString()} km · ${T("ttShell")} ${Math.round(App.evCons.shellAlt[i])} km<br>` +
         `mag ${ev.mag[i].toFixed(1)} · ${ev.sunlit[i] ? T("ttSunlit") : T("ttShadow")}`;
     }
+  } else if (hit.kind === "moon") {
+    const moon = App.summary.light.moon;
+    html = `<b>${T("ttMoon")}</b> \u2014 ${phaseName(moon.ageDays)}<br>${moonText(moon)}` +
+      (moon.magnitude != null ? `<br>mag ${moon.magnitude.toFixed(1)}` : "");
   } else {
     const i = hit.i, name = App.catalog.names[String(i)] || T("ttStar");
     html = `<b>${name}</b><br>V mag ${(App.catalog.v[i] / 10).toFixed(1)}`;
@@ -817,6 +894,23 @@ function bindControls() {
     reevaluate();
   });
   on("eyemodel", "change", (e) => { App.state.nakedEyeThreshold = e.target.value; reevaluate(); });
+  on("moon", "change", (e) => {
+    App.state.moon = e.target.value;
+    $("moon-date").style.display = e.target.value === "date" ? "" : "none";
+    $("moon-phase").style.display = e.target.value === "phase" ? "" : "none";
+    reevaluate();
+  });
+  on("year", "change", (e) => {
+    const y = Math.round(+e.target.value);
+    App.state.year = Number.isFinite(y) ? Math.max(1900, Math.min(2100, y)) : App.state.year;
+    e.target.value = App.state.year;
+    reevaluate();
+  });
+  on("moonage", "input", (e) => {
+    App.state.moonAgeDays = +e.target.value / 10;
+    $("moonage-label").textContent = moonAgeLabel(App.state.moonAgeDays);
+    reevaluate();
+  });
   on("show-stars", "change", (e) => { App.renderer.showStars = e.target.checked; redraw(); });
   on("tint", "change", (e) => { App.renderer.tintFamilies = e.target.checked; redraw(); });
   on("viewmode", "change", (e) => {
@@ -878,6 +972,7 @@ function readSettings() {
     latitude: App.state.latDeg,
     date: App.state.doy,
     time: currentTimeSetting(),
+    year: App.state.year,
     hold_time_to_twilight: App.timeLock,
   });
   Object.assign(s.constellation, {
@@ -902,6 +997,8 @@ function readSettings() {
     field_of_view: view.fovDeg,
     sky_limit_mag: App.state.userLimitingMag,
     ambient_light: App.state.ambientBortle,
+    moon: App.state.moon,
+    moon_age_days: App.state.moonAgeDays,
     show_stars: App.renderer.showStars,
     long_exposure: App.renderer.longExposure,
   });
@@ -987,6 +1084,9 @@ function applySettings(s) {
     updateCompass();
     setControl("starlim", Math.round(d.sky_limit_mag * 10), "input");
     setControl("ambient", d.ambient_light, "input");
+    setControl("year", o.year, "change");
+    setControl("moonage", Math.round(d.moon_age_days * 10), "input");
+    setControl("moon", d.moon, "change");
     setControl("eyemodel", a.naked_eye_threshold, "change");
     setControl("show-stars", d.show_stars, "change");
     setControl("longexp", d.long_exposure, "change");
@@ -1168,7 +1268,7 @@ function installErrorBanner() {
 }
 
 function resizeCanvas() {
-  const wrap = $("canvas-wrap");
+  const wrap = $("sky-area");
   const cv = App.renderer.canvas;
   const dpr = Math.min(1.5, window.devicePixelRatio || 1);
   // Never let a collapsed layout produce a zero-size canvas (iOS Safari
@@ -1211,6 +1311,16 @@ function boot() {
   }
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 250));
+  // The readout strip below the sky changes height when its lines wrap, and
+  // the sky takes up the difference.
+  if (typeof ResizeObserver === "function") {
+    let queued = false;
+    new ResizeObserver(() => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; resizeCanvas(); });
+    }).observe($("sky-area"));
+  }
   resizeCanvas();
   // A page opened with settings in its address starts from them; applying
   // them builds the constellation.

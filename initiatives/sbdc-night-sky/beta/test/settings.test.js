@@ -85,6 +85,9 @@ test("defaults match the page's own starting values", () => {
   assert.equal(d.display.view, selected("viewmode"));
   assert.equal(d.display.sky_limit_mag, +attr("starlim", "value") / 10);
   assert.equal(d.display.ambient_light, +attr("ambient", "value"));
+  assert.equal(d.display.moon, selected("moon"));
+  assert.equal(d.display.moon_age_days, +attr("moonage", "value") / 10);
+  assert.equal(d.observer.year, +attr("year", "value"));
   assert.equal(d.advanced.naked_eye_threshold, selected("eyemodel"));
   assert.equal(d.display.show_stars, checked("show-stars"));
   assert.equal(d.display.long_exposure, checked("longexp"));
@@ -118,6 +121,8 @@ test("defaults match the page's own starting values", () => {
   assert.deepEqual(range("constellation", "brightness_scatter_mag"),
     [+attr("scatter", "min") / 10, +attr("scatter", "max") / 10]);
   assert.deepEqual(range("display", "ambient_light"), [+attr("ambient", "min"), +attr("ambient", "max")]);
+  assert.deepEqual(range("display", "moon_age_days"), [+attr("moonage", "min") / 10, +attr("moonage", "max") / 10]);
+  assert.deepEqual(range("observer", "year"), [+attr("year", "min"), +attr("year", "max")]);
 
   // every choice a file may name is a choice on the page
   const options = (id) => [...html.match(new RegExp(`<select id="${id}">[\\s\\S]*?</select>`))[0]
@@ -127,6 +132,23 @@ test("defaults match the page's own starting values", () => {
   assert.deepEqual(options("planes"), choices("constellation", "plane_layout"));
   assert.deepEqual(options("phaselaw"), choices("constellation", "phase_law"));
   assert.deepEqual(options("eyemodel"), choices("advanced", "naked_eye_threshold"));
+  assert.deepEqual(options("moon"), choices("display", "moon"));
+});
+
+test("reading: a bare off is the choice named off, where there is one", () => {
+  // The YAML reader takes off, on, yes and no as true or false. "moon: off"
+  // has to mean the Moon setting named off; an export writes it that way.
+  const got = settingsFromYaml("display:\n  moon: off\n  show_stars: off\n");
+  assert.deepEqual(got.errors, []);
+  assert.equal(got.settings.display.moon, "off");
+  assert.equal(got.settings.display.show_stars, false);
+  assert.equal(settingsFromYaml('display:\n  moon: "date"\n').settings.display.moon, "date");
+  assert.equal(settingsFromYaml("display:\n  moon: Phase\n").settings.display.moon, "phase");
+  // a choice with no such option still refuses it
+  assert.match(settingsFromYaml("display:\n  view: off\n").errors[0], /expected one of horizon, fisheye/);
+  // and a link reads the same way
+  assert.equal(settingsFromQuery("display.moon=off&display.moon_age_days=3").settings.display.moon, "off");
+  assert.equal(settingsFromQuery("display.moon=phase&observer.year=2027").settings.observer.year, 2027);
 });
 
 test("the defaults of the model settings are the data file's values", () => {

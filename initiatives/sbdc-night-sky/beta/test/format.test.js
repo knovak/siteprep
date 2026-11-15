@@ -54,3 +54,17 @@ test("a shell list is summarised in one line", () => {
   for (let i = 0; i < 54; i++) many.push({ altKm: 565 + i * (437 / 53), share: 1 / 54 });
   assert.equal(F.formatShellSummary(many), "54 shells · 565–1,002 km");
 });
+
+test("a ratio is a multiple above 1 and one part in so many below it", () => {
+  assert.equal(F.formatRatio(23.4), "23×");
+  assert.equal(F.formatRatio(2.44), "2.4×");
+  assert.equal(F.formatRatio(1), "1.0×");
+  assert.equal(F.formatRatio(0.5), "1/2.0");
+  assert.equal(F.formatRatio(0.0461), "1/22");
+  assert.equal(F.formatRatio(0.00077), "1/1,299");
+  assert.equal(F.formatRatio(1234.5), "1,235×");
+  // just under 1 is still "about the same", written as a multiple
+  assert.equal(F.formatRatio(0.97), "1.0×");
+  assert.equal(F.formatRatio(0), "0");
+  assert.equal(F.formatRatio(NaN), "0");
+});

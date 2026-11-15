@@ -98,14 +98,18 @@ input[type="range"] {
 .seedrow input { width: 120px; font-family: var(--mono); }
 
 /* ---------------- canvas area ---------------- */
-#canvas-wrap { position: relative; min-height: 0; background: #05060a; }
+/* The sky fills what the readout strip leaves. The strip sits below the sky,
+   not over it: it has grown to three lines, and the part of the sky it used to
+   cover is the horizon, where most of the constellation is. */
+#canvas-wrap { position: relative; min-height: 0; background: #05060a; display: flex; flex-direction: column; }
+#sky-area { position: relative; flex: 1; min-height: 0; }
 #sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
 #sky:active { cursor: grabbing; }
 
 #readout-strip {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  background: rgba(10, 12, 20, 0.82); border-top: 1px solid var(--line);
-  padding: 8px 14px 9px; pointer-events: none; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  position: relative; flex: none;
+  background: #0a0c14; border-top: 1px solid var(--line);
+  padding: 8px 14px 9px; pointer-events: none;
 }
 /* The first line holds the counts. On a wide screen it wraps when it is long,
    so that no count is cut off; on a narrow one it stays one line, where a
@@ -184,3 +188,8 @@ input[type="range"] {
 .numrow { display: flex; align-items: center; gap: 8px; }
 .numrow input[type="range"] { flex: 1; min-width: 0; }
 .numrow input[type="number"] { width: 72px; flex: none; font-family: var(--mono); }
+
+/* the light line of the readout: SBDC light against the Moon and the sky */
+#readout-light { font: 12px var(--mono); color: #d9c9a3; margin-top: 3px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 900px) { #readout-light { white-space: nowrap; } }
+.numrow label { flex: none; margin: 0; }

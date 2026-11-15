@@ -51,6 +51,8 @@ the code in this folder as it stood before Unit 1.
 | 7 | With one plane per shell, every Sun-synchronous satellite was placed at one edge of the plane spread. A launch train of one satellite had no position. Neither could be reached from the controls | Reading `model.js` | 1 |
 | 8 | The readout gave whole-sky totals only. The document compares them with Site 2's "in this view" counts and says the two must stay distinct | The document, pages 1 and 23 | 1 |
 | 9 | The twilight sky-brightness table is darker than the photometry it cites: 16.5 mag/arcsec² with the Sun 6° down, where Patat et al. (2006) measured 13.3. Stars and satellites are counted as visible too early in the evening | Comparison with Site 2's twilight model, then the paper | 3 |
+| 10 | Turning or zooming the view in the instant after the constellation was rebuilt could raise "Simulator error": the picture paired the new constellation with the old evaluation | A screenshot run during Unit 4 | 4 |
+| 11 | The readout strip lay over the bottom of the sky, covering the horizon and the compass points | The same | 4 |
 
 Fault 9 is the largest. At the end of civil twilight the simulator's sky is
 about 19 times darker than the measured sky, so the limiting magnitude there is
@@ -215,6 +217,13 @@ What the correction moved for a person who changes nothing: the opening view,
   one magnitude, and its ratio to the full Moon, to the Moon as set, and to
   the natural moonless night sky.
 
+As done: the year applies to the Moon only. The Sun and stars stay on the
+model's 2026 calendar, and the Moon is placed by its angle from the Sun, so
+its phase is right for the year asked for. The Moon series is checked against
+three eclipses. With the default constellation on a winter evening at 40° N
+the SBDC light is about an eighth of a full Moon's; with a million satellites
+about four tenths. Faults 10 and 11 were found and corrected in this unit.
+
 ### Unit 5 - Hours of significant SBDC light, and display items from the comparison
 
 - A "Night and year" panel. For the chosen latitude and date it computes the
@@ -270,6 +279,6 @@ simulator stays as released.
 | --- | --- |
 | 1 - Faults and checks | Merged 2026-11-15, [knovak/siteprep#652](https://github.com/knovak/siteprep/pull/652) |
 | 2 - Constellation and brightness settings, presets | Merged 2026-11-15, [knovak/siteprep#653](https://github.com/knovak/siteprep/pull/653) |
-| 3 - Twilight correction and ambient light | In its pull request |
-| 4 - Moonlight and light ratios | Planned |
+| 3 - Twilight correction and ambient light | Merged 2026-11-15, [knovak/siteprep#654](https://github.com/knovak/siteprep/pull/654) |
+| 4 - Moonlight and light ratios | In its pull request |
 | 5 - Hours of significant light, display items | Planned |

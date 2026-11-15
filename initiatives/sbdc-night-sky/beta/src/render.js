@@ -123,18 +123,21 @@ export function muToColor(mu) {
 }
 
 /**
- * Sky color for a surface brightness, part of which is artificial light.
- * artificialFraction is the share of the sky's light that is skyglow, 0 to 1.
- * Skyglow has no twilight colors: that share of the color keeps the ramp's
- * brightness and takes a warm gray hue.
+ * Sky color for a surface brightness, part of which is artificial light and
+ * part moonlight. Each fraction is that light's share of the sky's light, 0
+ * to 1. Neither has twilight colors: its share of the color keeps the ramp's
+ * brightness and takes a hue of its own, warm gray for skyglow and blue gray
+ * for moonlight.
  */
-export function skyColor(mu, artificialFraction = 0) {
+export function skyColor(mu, artificialFraction = 0, moonFraction = 0) {
   const c = muToColor(mu);
-  const f = Math.max(0, Math.min(1, artificialFraction));
-  if (f === 0) return c;
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+  const fa = clamp(artificialFraction), fm = clamp(Math.min(moonFraction, 1 - fa));
+  if (fa === 0 && fm === 0) return c;
   const level = (c[0] + c[1] + c[2]) / 3;
   const glow = [1.30 * level, 1.00 * level, 0.72 * level];
-  return c.map((v, k) => v + f * (glow[k] - v));
+  const moonlit = [0.78 * level, 0.97 * level, 1.25 * level];
+  return c.map((v, k) => v + fa * (glow[k] - v) + fm * (moonlit[k] - v));
 }
 
 /** Flux for splatting from magnitude (relative, saturates in tonemap). */
@@ -227,9 +230,9 @@ export class SkyRenderer {
             Math.sin(aa) * basis.up[k]);
           // the sky the counts were made against: twilight plus what the
           // observer's settings add (ev.sky), and how much of it is skyglow
-          const natural = model.muAt(dir, sunDir, sunAlt, data);
-          const mu = model.muAt(dir, sunDir, sunAlt, data, ev.sky);
-          rgb = skyColor(mu, 1 - Math.pow(10, -0.4 * (natural - mu)));
+          const parts = model.muParts(dir, sunDir, sunAlt, data, ev.sky);
+          const share = (mu) => (mu == null ? 0 : Math.pow(10, -0.4 * (mu - parts.total)));
+          rgb = skyColor(parts.total, share(parts.artificial), share(parts.moon));
         }
         const o = (j * BW + i) * 4;
         img.data[o] = rgb[0] * 255; img.data[o + 1] = rgb[1] * 255;
@@ -428,9 +431,58 @@ export class SkyRenderer {
     }
 
     ctx.globalCompositeOperation = "source-over";
+    this._drawMoon(state, ev, pxPerDeg, put);
     this._groundAndLabels(state.latDeg);
     this._grid = { grid, cell };
     return { drawnBright };
+  }
+
+  /** The Moon, when the evaluation has one above the horizon: a disc with
+   *  its phase, the lit side toward the Sun, and a glow. It is drawn about
+   *  three times its true size so that the phase can be seen. */
+  _drawMoon(state, ev, pxPerDeg, put) {
+    const moon = ev.sky && ev.sky.moon;
+    if (!moon || moon.altDeg <= 0) return;
+    const { ctx, model } = this;
+    const p = this.project(moon.azDeg, moon.altDeg);
+    if (!p.visible) return;
+    const r = Math.max(7, 0.8 * pxPerDeg);
+
+    // Which way the Sun lies from the Moon in the picture: project a point a
+    // short way along the great circle from the Moon toward the Sun.
+    const along = model.dot(ev.sunDir, moon.dir);
+    const toward = model.normalize([0, 1, 2].map((i) =>
+      moon.dir[i] + 0.03 * (ev.sunDir[i] - along * moon.dir[i])));
+    const near = model.dirToAltAz(toward, model.enuBasis(state.latDeg));
+    const q = this.project(near.azDeg, near.altDeg);
+    const sunward = Math.atan2(q.y - p.y, q.x - p.x);
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    const glowR = r * (2.5 + 6 * moon.illuminated);
+    const glow = ctx.createRadialGradient(p.x, p.y, r * 0.8, p.x, p.y, glowR);
+    glow.addColorStop(0, `rgba(210,220,245,${0.10 + 0.28 * moon.illuminated})`);
+    glow.addColorStop(1, "rgba(210,220,245,0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(p.x, p.y, glowR, 0, 2 * Math.PI); ctx.fill();
+
+    ctx.globalCompositeOperation = "source-over";
+    ctx.translate(p.x, p.y);
+    ctx.rotate(sunward);                     // +x now points toward the Sun
+    ctx.fillStyle = "#2b3040";               // the unlit part
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 2 * Math.PI); ctx.fill();
+    // The lit part: the sunward half of the limb, closed by the terminator,
+    // a half-ellipse whose width is the cosine of the phase angle. Gibbous:
+    // it bulges onto the far half. Crescent: it cuts into the near half.
+    const c = Math.cos(moon.phaseAngleDeg * Math.PI / 180);
+    ctx.fillStyle = "#f3f0e2";
+    ctx.beginPath();
+    ctx.arc(0, 0, r, -Math.PI / 2, Math.PI / 2, false);
+    ctx.ellipse(0, 0, Math.max(0.01, r * Math.abs(c)), r, 0, Math.PI / 2, 3 * Math.PI / 2, c < 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    put(p.x, p.y, "moon", 0);
   }
 
   /** Naked-eye-visible satellites and stars inside the picture, as opposed to
