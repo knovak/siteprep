@@ -466,3 +466,30 @@ test("clustering: launch trains stay per-member (not knots)", () => {
   const c = M.generateConstellation(cfg, data);
   for (let i = 5000; i < c.n; i++) assert.ok(c.clusterId[i] < 0, "train sats own objects");
 });
+
+test("one plane per shell sits at the centre of the spread; a train of one is placed", () => {
+  // Both were divisions by (count - 1). With one plane every SSO satellite
+  // sat at one edge of the spread; a train of one had no position at all.
+  const cfg = M.defaultConfig(data, {
+    totalSats: 2000, ssoFraction: 1, planesPerShell: 1, trains: 1, seed: 7,
+    train: { satsPerTrain: 1, altKm: 400, arcLengthDeg: 8, m0BonusMag: -0.3 },
+  });
+  const c = M.generateConstellation(cfg, data);
+  assert.equal(c.n, 2001);
+  for (let i = 0; i < c.n; i++) {
+    assert.ok(Number.isFinite(c.px[i]) && Number.isFinite(c.py[i]) && Number.isFinite(c.pz[i]), `satellite ${i}`);
+  }
+  // With one plane and LTAN 6 or 18, every orbit normal has the same tilt
+  // toward or away from the Sun: |h . x| is one value, cos(inclination).
+  const tilts = new Set();
+  for (let i = 0; i < 2000; i++) {
+    const hx = c.py[i] * c.vz[i] - c.pz[i] * c.vy[i];
+    const hy = c.pz[i] * c.vx[i] - c.px[i] * c.vz[i];
+    const hz = c.px[i] * c.vy[i] - c.py[i] * c.vx[i];
+    const n = Math.hypot(hx, hy, hz);
+    // node on the Y axis (dawn-dusk): the normal has no Y component
+    assert.ok(Math.abs(hy / n) < 1e-6, `satellite ${i}: plane is off the dawn-dusk line by ${hy / n}`);
+    tilts.add(Math.abs(hx / n).toFixed(2));
+  }
+  assert.ok(tilts.size <= 4, `one plane per shell altitude: ${[...tilts].join(", ")}`);
+});

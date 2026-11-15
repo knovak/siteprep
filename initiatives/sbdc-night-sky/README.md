@@ -49,6 +49,11 @@ change the beta, to see how the label works, or to promote the beta to the
 released version, read `beta/README.md`
 ([on GitHub](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/README.md)).
 
+Since 2026-11-15 the beta is being upgraded in five units, following a
+comparison with another simulator. The plan is `beta/PLAN.md`
+([on GitHub](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/PLAN.md)),
+and the reasons are in [Decisions](decisions.html).
+
 ## Original file map
 
 | Supplied document | Read in this initiative | Original file |

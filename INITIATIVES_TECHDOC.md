@@ -988,6 +988,13 @@ the beta. It reads `channels`, so a new beta is covered without editing it. It
 fails when a change removes the anchor element, so that `beta.stamp` is updated
 when the page's structure changes.
 
+`tests/e2e/sbdc-beta.spec.js` is specific to one beta. It drives the published
+SBDC Night-Sky Simulator beta in a browser - shell altitudes, the readout's
+whole-sky and in-view counts, the presets, the language switch - because that
+beta's own Node suites cover its model and do not load the page. It is where a
+change to that beta adds the check for a new control;
+`initiatives/sbdc-night-sky/beta/README.md` says how to run it.
+
 `tests/initiatives-rendering.test.mjs` covers wrapped and nested lists, code
 blocks, and URL autolinks. `tests/initiatives-digest.test.mjs` covers the survey, and
 `tests/initiatives-sweep.test.mjs` covers selection, proposal selection,

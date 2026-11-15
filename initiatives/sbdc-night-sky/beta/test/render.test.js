@@ -69,3 +69,30 @@ test("mu color ramp: monotone darkening, no NaN, clamped ends", () => {
 test("magToFlux: 5 magnitudes = 100x flux", () => {
   assert.ok(Math.abs(R.magToFlux(0) / R.magToFlux(5) - 100) < 1e-9);
 });
+
+test("the hills are the same hills on both sides of north", () => {
+  // The view centred on north runs from azimuth -55 to 55. The silhouette has
+  // to repeat every 360 degrees, or the hills change as the view pans past 0.
+  for (let az = -180; az <= 180; az += 3.5) {
+    assert.ok(Math.abs(R.hillAltDeg(az) - R.hillAltDeg(az + 360)) < 1e-9, `az ${az}`);
+    assert.ok(Math.abs(R.hillAltDeg(az) - R.hillAltDeg(az - 360)) < 1e-9, `az ${az}`);
+  }
+});
+
+test("in view: inside the picture and above the hills, or anywhere in the all-sky view", () => {
+  const W = 1600, H = 760;
+  const view = { mode: "horizon", centerAz: 315, centerAlt: 25, fovDeg: 110 };
+  assert.equal(R.inFrame(315, 25, view, W, H), true, "the centre of the picture");
+  assert.equal(R.inFrame(135, 25, view, W, H), false, "behind the viewer");
+  assert.equal(R.inFrame(315, 80, view, W, H), false, "above the top edge");
+  assert.equal(R.inFrame(315, 0.2, view, W, H), false, "behind the hills");
+  assert.equal(R.inFrame(315, -5, view, W, H), false, "below the horizon");
+  // a view centred on north takes in both 350 and 10
+  const north = { mode: "horizon", centerAz: 0, centerAlt: 28, fovDeg: 110 };
+  assert.equal(R.inFrame(350, 20, north, W, H), true);
+  assert.equal(R.inFrame(10, 20, north, W, H), true);
+  // the all-sky view shows every direction above the horizon
+  const fisheye = { mode: "fisheye", centerAz: 0, centerAlt: 28, fovDeg: 110 };
+  assert.equal(R.inFrame(135, 25, fisheye, W, H), true);
+  assert.equal(R.inFrame(135, -1, fisheye, W, H), false);
+});

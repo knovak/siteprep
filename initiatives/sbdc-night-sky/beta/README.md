@@ -44,6 +44,10 @@ On the day it was created, the beta built a page byte-identical to the released
 | Since | Feature | Section below |
 | --- | --- | --- |
 | 2026-11-11 | Export and import of all settings as a text file, and presets | Settings files; Presets |
+| 2026-11-15 | Eight faults corrected; counts in view beside the whole-sky totals; the time relative to sunset or sunrise | The November 2026 upgrade |
+
+`PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
+units. Unit 1 is described below; the others are added here as they merge.
 
 ## Settings files
 
@@ -134,8 +138,9 @@ time, so a place is its latitude: New York City is 41, Taos 36, Alice Springs
 
 ## How the settings feature is built
 
-The display and the simulation are not changed by it. `src/model.js` and
-`src/render.js` are the same as in `../lib/`.
+The display and the simulation are not changed by it. On 2026-11-11
+`src/model.js` and `src/render.js` were the same as in `../lib/`; the November
+2026 upgrade changes them, as described in its own section.
 
 - `src/settings.js` is new. It has no DOM and no simulation: the schema, the
   defaults, and the YAML writer and reader. `build.js` puts it in the page
@@ -155,9 +160,74 @@ The display and the simulation are not changed by it. `src/model.js` and
   renderer's `DEFAULT_VIEW`. If a default changes in the page, that test fails
   until `SETTINGS_FIELDS` matches.
 
-After loading settings the compass label reads the direction the view faces.
-On first load it reads "facing 180°" while the view faces north, as it does in
-the released simulator; the settings code does not change that.
+The compass label reads the direction the view faces. Until 2026-11-15 it read
+"facing 180°" on first load while the view faced north, as it still does in
+the released simulator.
+
+## The November 2026 upgrade
+
+The upgrade follows a comparison of this simulator with
+`sdross0/orbital-datacenter-brightness`. `PLAN.md` lists the faults found, the
+differences between the two simulators, and the five units.
+
+### Unit 1: faults corrected
+
+None of these changes a number the model produces. `test/golden/golden.json`
+is unchanged.
+
+- **Custom shells.** Choosing "Custom…" and then typing the shells now uses
+  them. Before, they were ignored until another option was chosen and
+  "Custom…" chosen again. Text that cannot be read as `altitude:share` pairs
+  leaves the shells in use as they are, and the hint under the box says so. A
+  long list is summarised in the hint: "54 shells · 565–1,002 km".
+- **Solar time.** The time control is labelled "Solar time", with a hint: the
+  Sun is highest at 12:00, and a clock can differ by an hour or more. The
+  second readout line gives the time relative to the nearer of sunset and
+  sunrise: "19:22 solar time (82 min after sunset)".
+- **Clock text.** A time within half a minute of the next hour was written
+  with the old hour, 19:59.6 as "19:00". It is now "20:00".
+- **Compass label.** It is right on first load, follows the arrow keys as well
+  as the pointer, and changes language with the rest of the page.
+- **Hills.** The silhouette along the horizon repeats every 360°, so it no
+  longer changes shape when the view pans past north. Its outline differs
+  slightly from the released simulator's.
+- **Satellites slider.** It lands on round totals when its own value is within
+  1% of one, so 500,000 can be chosen. Its nearest position used to be 501,000.
+- **One plane, one satellite.** With one plane per shell, the plane sits at the
+  centre of the spread; it used to sit at one edge. A launch train of one
+  satellite has a position. Neither case can be reached from the controls yet;
+  Unit 2 adds a control for the first.
+
+### Whole sky and in view
+
+The first readout line gives whole-sky totals. In the horizon view it now also
+gives how many of them are in the picture:
+
+```
+naked-eye VISIBLE 28,652 (17,242 in view)  ·  visible stars 2,267 (432 in view)
+```
+
+That line is the comparison document's first case, facing northwest: 37° N,
+September 22, 19:22, 500,000 satellites in the 54 filed levels, reference
+brightness +1.0.
+
+"In view" means inside the picture and above the hills. Turning or zooming the
+view changes that number and leaves the total alone. The all-sky view shows the
+whole sky, so it gives one number. The two kinds of count answer different
+questions and should not be compared with each other.
+
+### What Unit 1 changed in the code
+
+- `src/format.js` is new: clock text, the time relative to sunset or sunrise,
+  the Satellites slider's totals, and the one-line shell summary. It has no
+  DOM, so `test/format.test.js` covers it. `build.js` puts it in the page
+  between `settings.js` and `ui.js`.
+- `src/render.js`: `hillAltDeg` repeats every 360°; `inFrame` and
+  `SkyRenderer.countInView` are new.
+- `src/model.js`: the plane offset and the train position no longer divide by
+  a count minus one when the count is one.
+- `src/ui.js`: `redraw()` writes the compass label and the readout, so both
+  follow every pan and zoom.
 
 ## Changing the beta
 
@@ -173,6 +243,22 @@ build runs `publish.mjs`, which runs every `test/*.test.js` suite and then
 builds the page into the published `beta/` folder. If a test fails, the site
 build fails and the pull request's check goes red, so a beta that does not pass
 its own tests is not published.
+
+The site workflow then runs `tests/e2e/sbdc-beta.spec.js`, at the repository
+root, which drives the published beta page in Chromium. Add the checks for a
+new control there. To run it locally, from the repository root, after
+`npm ci` and `npm run build`:
+
+```sh
+npx playwright test tests/e2e/sbdc-beta.spec.js --project=chromium --trace off
+```
+
+Two fixture files freeze numbers the model produces:
+`test/golden/golden.json` for the default constellation, and
+`test/fixtures/paired-comparisons.json` for the 16 cases of the 12 October 2026
+comparison document. A change that is not meant to move those numbers leaves
+both files as they are. A change that is meant to move them updates the files
+in the same pull request and says why.
 
 `test/smoke-browser.mjs` and the scripts in `tools/` are not run by the site
 build. `tools/make-golden.mjs` rewrites `test/golden/golden.json`; run it only
