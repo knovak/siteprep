@@ -1,5 +1,5 @@
-// Build: inline CSS, data, catalog, and JS (model -> render -> ui, one
-// module scope) into dist/sbdc-sky-simulator.html. Asserts: size budget,
+// Build: inline CSS, data, catalog, and JS (model -> render -> settings ->
+// format -> ui, one module scope) into dist/sbdc-sky-simulator.html. Asserts: size budget,
 // no external network references, data block present.
 //
 // Beta line: `node build.js <directory>` writes the same page to
@@ -57,6 +57,7 @@ const sources = [
   ["model.js (tested core)", "src/model.js", "MODEL"],
   ["render.js", "src/render.js", "RENDER"],
   ["settings.js", "src/settings.js", "SETTINGS"],
+  ["format.js", "src/format.js", "FORMAT"],
   ["ui.js", "src/ui.js", null],
 ];
 // The files share one scope in the page, so a name declared at the top level

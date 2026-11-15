@@ -53,8 +53,9 @@
         <div class="hint" id="sun-events">sunset —</div>
       </div>
       <div class="ctl">
-        <label for="time">Local time <output id="time-label">20:11</output></label>
+        <label for="time">Solar time <output id="time-label">20:11</output></label>
         <input id="time" type="range" min="0" max="1439" step="1" value="1211">
+        <div class="hint" id="hint-solar">local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more</div>
       </div>
       <div class="row">
         <button id="jump-sunset">Sunset</button>
@@ -164,11 +165,11 @@
 
   <div id="canvas-wrap">
     <canvas id="sky" aria-label="Simulated sky view"></canvas>
-    <div id="compass">facing 180°</div>
+    <div id="compass">facing 0°</div>
     <div id="busy">computing…</div>
     <div id="tooltip" role="status"></div>
-    <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
     <div id="readout-strip" aria-live="polite">
+      <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
       <div id="readout">—</div>
       <div id="readout-sub">—</div>
     </div>

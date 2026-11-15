@@ -35,10 +35,25 @@ export function unprojHorizon(x, y, view, W, H) {
 /** All-sky fisheye (equidistant): zenith at center, horizon at the rim,
  *  north up, east LEFT (astronomical convention: looking up). */
 /** Rolling-hills silhouette height (deg above the horizon) as a
- *  deterministic function of azimuth — stable under panning. */
+ *  deterministic function of azimuth — stable under panning. Each term
+ *  repeats every 360 degrees (6, 2 and 1 cycles around the horizon), so the
+ *  hills at azimuth 350 and at -10 are the same hills. */
+const HILL_RAD = Math.PI / 180;
 export const hillAltDeg = (azDeg) =>
-  Math.max(0.4, 1.7 + 1.15 * Math.sin(azDeg * 0.11) * Math.sin(azDeg * 0.041 + 1.3)
-                 + 0.75 * Math.sin(azDeg * 0.023 + 2.2));
+  Math.max(0.4, 1.7 + 1.15 * Math.sin(6 * azDeg * HILL_RAD) * Math.sin(2 * azDeg * HILL_RAD + 1.3)
+                 + 0.75 * Math.sin(azDeg * HILL_RAD + 2.2));
+
+/** Is a sky position inside the picture? The horizon view shows part of the
+ *  sky, above the hills; the all-sky view shows everything above the horizon.
+ *  The readout uses this for its "in view" counts, which are a different
+ *  thing from the whole-sky totals beside them. */
+export function inFrame(azDeg, altDeg, view, W, H) {
+  if (!(altDeg > 0)) return false;
+  if (view.mode !== "horizon") return true;
+  if (altDeg < hillAltDeg(azDeg)) return false;
+  const p = projHorizon(azDeg, altDeg, view, W, H);
+  return p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H;
+}
 
 export function projFisheye(azDeg, altDeg, W, H, marginPx = 30) {
   // Map convention (per review): north at top, EAST ON THE RIGHT — like a
@@ -384,6 +399,23 @@ export class SkyRenderer {
     this._groundAndLabels(state.latDeg);
     this._grid = { grid, cell };
     return { drawnBright };
+  }
+
+  /** Naked-eye-visible satellites and stars inside the picture, as opposed to
+   *  anywhere in the sky. ev: model.evaluate(); starVis: per-star visibility. */
+  countInView(ev, stars, starVis) {
+    const { canvas, view } = this;
+    const W = canvas.width, H = canvas.height;
+    let sats = 0, starCount = 0;
+    for (const i of ev.above) {
+      if (ev.visible[i] && inFrame(ev.az[i], ev.alt[i], view, W, H)) sats++;
+    }
+    if (stars && starVis) {
+      for (let i = 0; i < stars.altDeg.length; i++) {
+        if (starVis[i] && inFrame(stars.azDeg[i], stars.altDeg[i], view, W, H)) starCount++;
+      }
+    }
+    return { sats, stars: starCount };
   }
 
   /** Nearest drawn point within maxPx of (x, y): {kind, i} | null */

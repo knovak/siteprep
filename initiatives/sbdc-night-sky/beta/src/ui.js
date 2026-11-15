@@ -8,7 +8,7 @@
  *   pan/zoom       -> redraw only (cached evaluation)
  */
 
-/* global MODEL, RENDER, SETTINGS — injected by the build (same module scope) */
+/* global MODEL, RENDER, SETTINGS, FORMAT — injected by the build (same module scope) */
 
 const App = {
   data: null, catalog: null,
@@ -45,7 +45,9 @@ const TR = {
   grpConstellation: ["Constellation", "Constellation"],
   grpSky: ["Sky & display", "Ciel et affichage"],
   lat: ["Latitude", "Latitude"], date: ["Date", "Date"],
-  time: ["Local time", "Heure locale"],
+  time: ["Solar time", "Heure solaire"],
+  hintSolar: ["local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more",
+              "heure solaire locale : le Soleil culmine à 12:00, et une horloge peut différer d\u2019une heure ou plus"],
   jumpSunset: ["Sunset", "Coucher"], jumpD30: ["+30 min", "+30 min"],
   jumpD60: ["+60 min", "+60 min"], jumpMid: ["Midnight", "Minuit"],
   jumpDawn: ["Dawn −30", "Aube −30"], jumpDawn60: ["Dawn −60", "Aube −60"],
@@ -63,6 +65,9 @@ const TR = {
   shCustom: ["Custom…", "Personnalisé…"],
   customFmt: ["format: altitude:share, e.g. 550:0.5, 1200:0.5",
               "format : altitude:part, ex. 550:0.5, 1200:0.5"],
+  customKept: ["not read as altitude:share pairs; the shells in use are unchanged",
+               "non lu comme des paires altitude:part ; les coquilles utilisées sont inchangées"],
+  shellsWord: ["shells", "coquilles"],
   bright: ["SBDC brightness", "Luminosité des SBDC"],
   bUnmit: ["unmitigated", "sans atténuation"],
   bStrong: ["strong mitigation", "atténuation forte"],
@@ -106,7 +111,10 @@ const TR = {
   rSun: ["SUN", "SOLEIL"], rAbove: ["SBDCs above horizon", "SBDC au-dessus de l'horizon"],
   rSunlit: ["sunlit", "éclairés"], rVisible: ["naked-eye VISIBLE", "VISIBLES à l'œil nu"],
   rStars: ["visible stars", "étoiles visibles"], rBrightest: ["brightest mag", "mag la plus brillante"],
-  rTime: ["local time", "heure locale"], rSeed: ["seed", "graine"],
+  rTime: ["solar time", "heure solaire"], rSeed: ["seed", "graine"],
+  rInView: ["in view", "dans le champ"],
+  rAfter: ["min after", "min après le"], rBefore: ["min before", "min avant le"],
+  rAt: ["at", "au"],
   rDef: ["visible = sunlit + above horizon + brighter than the twilight naked-eye threshold",
          "visibles = éclairés + au-dessus de l'horizon + plus brillants que le seuil crépusculaire à l'œil nu"],
   rCam: ["camera mode: streaks = one 30 s exposure, stars to catalog limit",
@@ -169,7 +177,7 @@ function applyLang(lang) {
   lbl('label[for="cvar"]', "cvar"); lbl('label[for="cdvar"]', "cdvar");
   txt('label[for="clusteron"]', "clusterOn"); txt('label[for="timelock"]', "timelock");
   txt('label[for="shimmer"]', "shimmer"); txt("#jump-dawn60", "jumpDawn60");
-  txt("#hint-bright", "hintBright");
+  txt("#hint-bright", "hintBright"); txt("#hint-solar", "hintSolar");
   $("play-rt").textContent = App.playing === "rt" ? T("pauseRt") : T("playRt");
   $("play-ff").textContent = App.playing === "ff" ? T("pauseFf") : T("playFf");
   if ($("bright-label") && App.state) $("bright-label").textContent = brightLabel(App.state.brightnessRefMag);
@@ -196,11 +204,7 @@ function applyLang(lang) {
   txt("#hint-settings", "hintSettings");
   if (App.summary) { updateReadout(); updateDateLabels(); }
 }
-const fmtTime = (h) => {
-  const t = ((h % 24) + 24) % 24;
-  const hh = Math.floor(t), mm = Math.round((t - hh) * 60);
-  return `${String(hh).padStart(2, "0")}:${String(mm % 60).padStart(2, "0")}`;
-};
+const fmtTime = (h) => FORMAT.formatClock(h);
 const MONTH_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31];
 function fmtDoy(doy) {
   const names = MONTHS[LANG.cur] || MONTHS.en;
@@ -257,18 +261,27 @@ function reevaluate() {
       App.streaks = null;
     }
     App.summary = MODEL.summarize(cons, state, data, catalog);
-    redraw();
-    updateReadout();
+    redraw();                       // also writes the readout
     updateDateLabels();
     setBusy(false);
   });
 }
 
 function redraw() {
+  updateCompass();
   if (!App.ev) return;
   const cam = App.renderer.longExposure;
   App.renderer.draw(App.state, App.ev, App.cons, App.stars,
     cam ? App.starVisCam : App.starVis, cam ? App.streaks : null);
+  // what is inside the picture changes with every pan and zoom
+  App.inView = App.renderer.countInView(App.ev, App.stars, App.starVis);
+  if (App.summary) updateReadout();
+}
+
+/** The direction the horizon view faces, in the current language. */
+function updateCompass() {
+  if (!App.renderer) return;
+  $("compass").textContent = `${T("facing")} ${Math.round(App.renderer.view.centerAz)}°`;
 }
 
 /* ------------------------- readouts ------------------------- */
@@ -291,20 +304,38 @@ function brightAnchor(m) {
   return T("aStar");
 }
 
+/** "82 min after sunset", "80 min before sunrise", "at sunset", or "" on a
+ *  day when the Sun neither sets nor rises. */
+function twilightOffsetText() {
+  const r = twilightRefs();
+  const off = FORMAT.formatTwilightOffset(App.state.solarTimeHours, r.sunset, r.dawn);
+  if (!off) return "";
+  const event = T(off.ref === "sunset" ? "sunsetLbl" : "sunriseLbl");
+  if (off.minutes === 0) return `${T("rAt")} ${event}`;
+  return `${Math.abs(off.minutes)} ${T(off.minutes > 0 ? "rAfter" : "rBefore")} ${event}`;
+}
+
 function updateReadout() {
   const s = App.summary;
+  // The totals are for the whole sky. The horizon view shows part of it, so
+  // the count inside the picture is given beside each total.
+  const framed = App.inView && App.renderer.view.mode === "horizon";
+  const inView = (n) => (framed ? ` (${n.toLocaleString()} ${T("rInView")})` : "");
   const line =
     `${T("rSun")} ${s.sunAltDeg > 0 ? "+" : ""}${s.sunAltDeg.toFixed(1)}°  ·  ` +
     `${T("rAbove")} ${s.aboveHorizon.toLocaleString()}  ·  ${T("rSunlit")} ${s.sunlitAbove.toLocaleString()}  ·  ` +
     (App.cfg.clustering && App.cfg.clustering.enabled
       ? `${T("rVisObjects")} ${s.visibleObjects.toLocaleString()} (${s.visible.toLocaleString()} ${T("rSatsIn")})`
       : `${T("rVisible")} ${s.visible.toLocaleString()}`) +
-    `  ·  ${T("rStars")} ${s.visibleStars.toLocaleString()}` +
+    (framed ? inView(App.inView.sats) : "") +
+    `  ·  ${T("rStars")} ${s.visibleStars.toLocaleString()}` + (framed ? inView(App.inView.stars) : "") +
     (s.brightestObjectMag != null
       ? `  ·  ${T("rBrightest")} ${s.brightestObjectMag.toFixed(1)} (${brightAnchor(s.brightestObjectMag)})` : "");
   $("readout").textContent = line;
+  const rel = twilightOffsetText();
   $("readout-sub").textContent =
     `lat ${App.state.latDeg}°  ·  ${fmtDoy(App.state.doy)}  ·  ${fmtTime(App.state.solarTimeHours)} ${T("rTime")}` +
+    (rel ? ` (${rel})` : "") +
     `  ·  ${T("rSeed")} ${App.cfg.seed}  ·  ` +
     (App.renderer && App.renderer.longExposure ? T("rCam") : T("rDef"));
 }
@@ -452,11 +483,16 @@ function snapshot() {
   const g = out.getContext("2d");
   g.drawImage(src, 0, 0);
   g.fillStyle = "#0d0f16"; g.fillRect(0, src.height, out.width, CAP);
-  g.fillStyle = "#e8e4d8";
-  g.font = `${Math.max(12, out.width / 105)}px ui-monospace, monospace`;
-  g.fillText($("readout").textContent, 14, src.height + 30);
-  g.fillStyle = "#8b8fa3";
-  g.fillText($("readout-sub").textContent, 14, src.height + 56);
+  // each caption line is one line of the image: a long one is set smaller
+  const fitted = (text) => Math.max(8, Math.min(Math.max(12, out.width / 105),
+    (out.width - 28) / (0.61 * Math.max(1, text.length))));
+  const caption = (text, y, color) => {
+    g.fillStyle = color;
+    g.font = `${fitted(text)}px ui-monospace, monospace`;
+    g.fillText(text, 14, y);
+  };
+  caption($("readout").textContent, src.height + 30, "#e8e4d8");
+  caption($("readout-sub").textContent, src.height + 56, "#8b8fa3");
   g.fillStyle = "#6b6f83";
   g.font = `${Math.max(10, out.width / 130)}px ui-monospace, monospace`;
   g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 82);
@@ -509,7 +545,6 @@ function bindCanvas() {
       v.centerAlt = Math.max(-5, Math.min(80,
         drag.alt + (e.clientY - drag.y) * degPerPx));
       redraw();
-      $("compass").textContent = `${T("facing")} ${Math.round(v.centerAz)}°`;
     } else if (!drag && !pinch) {
       hover(e);
     }
@@ -568,13 +603,8 @@ function hover(e) {
    below read a value through these, and applySettings uses the same functions
    to find the position for a value from a settings file. */
 const SLIDER_SCALES = {
-  // log slider 0..100 -> 10k..1M (per review; lower bound was 50k)
-  nsats: (pos) => {
-    const f = pos / 100;
-    let n = Math.round(10000 * Math.pow(100, f) / 1000) * 1000;
-    if (Math.abs(n - 300000) <= 5000) n = 300000;  // snap to the report default
-    return n;
-  },
+  // log slider 0..100 -> 10k..1M, landing on round totals such as 500,000
+  nsats: (pos) => FORMAT.formatSatelliteCount(pos),
   cpc: (pos) => Math.round(10 * Math.pow(100, pos / 100)),
   cdia: (pos) => Math.round(0.2 * Math.pow(50, pos / 100) * 10) / 10,
 };
@@ -610,26 +640,30 @@ function bindControls() {
     $("sso-label").textContent = `${e.target.value}% SSO / ${100 - e.target.value}% 30°`;
   });
   on("sso", "change", rebuildConstellation);
+  // Custom shells are in use only once the box holds a spec that can be read.
+  // Until then the shells already in use stay, and the hint says so. Both
+  // handlers go through here, so choosing "Custom…" first and typing the spec
+  // second works the same as the other order.
+  const useCustomShells = () => {
+    const text = $("shells-custom-input").value;
+    const parsed = MODEL.parseShellSpec(text);
+    $("shells-custom-hint").textContent = parsed
+      ? FORMAT.formatShellSummary(parsed).replace("shells", T("shellsWord"))
+      : (text.trim() ? T("customKept") : T("customFmt"));
+    if (!parsed) return;
+    App.cfg.customShells = parsed;
+    App.cfg.shellPreset = "custom";
+    rebuildConstellation();
+  };
   on("shells", "change", (e) => {
     const custom = e.target.value === "custom";
     $("shells-custom").style.display = custom ? "" : "none";
-    if (custom) {
-      const parsed = MODEL.parseShellSpec($("shells-custom-input").value);
-      if (!parsed) return; // wait for a valid spec
-      App.cfg.customShells = parsed;
-    }
+    if (custom) { useCustomShells(); return; }
     App.cfg.shellPreset = e.target.value;
     rebuildConstellation();
   });
-  on("shells-custom-input", "change", (e) => {
-    const parsed = MODEL.parseShellSpec(e.target.value);
-    $("shells-custom-hint").textContent = parsed
-      ? parsed.map((s) => `${s.altKm} km ${(s.share * 100).toFixed(0)}%`).join(" · ")
-      : T("customFmt");
-    if (parsed && $("shells").value === "custom") {
-      App.cfg.customShells = parsed;
-      rebuildConstellation();
-    }
+  on("shells-custom-input", "change", () => {
+    if ($("shells").value === "custom") useCustomShells();
   });
   on("longexp", "change", (e) => {
     App.renderer.longExposure = e.target.checked;
@@ -846,7 +880,7 @@ function applySettings(s) {
     view.centerAz = ((d.facing % 360) + 360) % 360;
     view.centerAlt = d.look_altitude;
     view.fovDeg = d.field_of_view;
-    $("compass").textContent = `${T("facing")} ${Math.round(view.centerAz)}°`;
+    updateCompass();
     setControl("starlim", Math.round(d.sky_limit_mag * 10), "input");
     setControl("show-stars", d.show_stars, "change");
     setControl("longexp", d.long_exposure, "change");
@@ -1008,6 +1042,7 @@ function boot() {
   const tw = MODEL.twilightTimes(App.state.latDeg, App.state.doy, App.data);
   if (tw.sunset.sets.length) App.state.solarTimeHours = tw.sunset.sets[0] + 0.5;
   $("time").value = Math.round(App.state.solarTimeHours * 60);
+  updateCompass();
 
   buildAssumptions();
   bindControls();

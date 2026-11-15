@@ -243,6 +243,9 @@ export function generateConstellation(cfg, data) {
 
   const nSso = Math.round(cfg.totalSats * cfg.ssoFraction);
   const planeCount = cfg.planesPerShell;
+  // Planes are evenly spaced across the spread, from -0.5 to +0.5 of its
+  // width. A single plane sits at the centre, not at one edge.
+  const planeOffset = (plane) => (planeCount > 1 ? plane / (planeCount - 1) - 0.5 : 0);
   const cl = cfg.clustering;
   if (cl && cl.enabled) {
     // hierarchical clustering (v3): cluster CENTERS are placed with the
@@ -259,8 +262,7 @@ export function generateConstellation(cfg, data) {
       if (isSso) {
         incDeg = ssoInclinationDeg(sh.altKm, data);
         const plane = Math.floor(rng() * planeCount);
-        const ltan = cfg.ltanHours +
-          ((plane / Math.max(1, planeCount - 1)) - 0.5) * 2 * (cfg.ltanSpreadMinutes / 60);
+        const ltan = cfg.ltanHours + planeOffset(plane) * 2 * (cfg.ltanSpreadMinutes / 60);
         nodeDeg = ((rng() < 0.5 ? ltan : ltan + 12) - 12) * 15;
       } else {
         incDeg = cfg.inclinedDeg;
@@ -306,8 +308,7 @@ export function generateConstellation(cfg, data) {
     if (isSso) {
       incDeg = ssoInclinationDeg(sh.altKm, data);
       const plane = Math.floor(rng() * planeCount);
-      const ltan = cfg.ltanHours +
-        ((plane / Math.max(1, planeCount - 1)) - 0.5) * 2 * (cfg.ltanSpreadMinutes / 60);
+      const ltan = cfg.ltanHours + planeOffset(plane) * 2 * (cfg.ltanSpreadMinutes / 60);
       // half the planes use the descending-node twin (LTAN + 12 h) — same
       // physical dawn-dusk geometry, opposite travel direction.
       nodeDeg = nodeFromLtan(rng() < 0.5 ? ltan : ltan + 12);
@@ -336,7 +337,9 @@ export function generateConstellation(cfg, data) {
       const Nx = Math.cos(th), Ny = Math.sin(th);
       const Ex = -Math.sin(th), Ey = Math.cos(th);
       const Wx = Math.cos(inci) * Ex, Wy = Math.cos(inci) * Ey, Wz = Math.sin(inci);
-      const u = (u0 + (k / (tr.satsPerTrain - 1) - 0.5) * tr.arcLengthDeg) * DEG;
+      // a train of one satellite sits at the centre of the arc
+      const along = tr.satsPerTrain > 1 ? k / (tr.satsPerTrain - 1) - 0.5 : 0;
+      const u = (u0 + along * tr.arcLengthDeg) * DEG;
       const cu = Math.cos(u), su = Math.sin(u);
       px[idx] = r * (Nx * cu + Wx * su);
       py[idx] = r * (Ny * cu + Wy * su);

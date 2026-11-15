@@ -107,7 +107,11 @@ input[type="range"] {
   background: rgba(10, 12, 20, 0.82); border-top: 1px solid var(--line);
   padding: 8px 14px 9px; pointer-events: none; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
 }
-#readout { font: 12.5px var(--mono); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The first line holds the counts. On a wide screen it wraps when it is long,
+   so that no count is cut off; on a narrow one it stays one line, where a
+   second line would cover the sky. */
+#readout { font: 12.5px var(--mono); color: var(--text); line-height: 1.45; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 900px) { #readout { white-space: nowrap; } }
 #readout-sub { font: 11px var(--mono); color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 #compass {
@@ -166,8 +170,10 @@ input[type="range"] {
 #errbar span { flex: 1; overflow-wrap: anywhere; }
 #errbar button { background: none; border: none; color: #ffd9de; font-size: 16px; }
 
+/* The credit line sits just above the readout strip, whatever the strip's
+   height: it is inside the strip and positioned from the strip's top edge. */
 #attribution {
-  position: absolute; right: 10px; bottom: 54px; z-index: 4;
+  position: absolute; right: 10px; bottom: calc(100% + 5px); z-index: 4;
   font: 10px var(--mono); color: rgba(199, 205, 224, 0.55);
   pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.7);
 }

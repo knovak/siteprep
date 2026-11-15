@@ -44,8 +44,23 @@ on every build.
 3. While the beta is meant to equal the release, `node beta/build.js <dir>`
    produces a page identical to `work/index.html`. This held on 2026-11-11 and
    stops applying at the first beta change.
-4. After a beta change, open the beta in the pull request's branch preview and
-   repeat the browser checks in step 5 above that the change could affect.
+4. `tests/e2e/sbdc-beta.spec.js`, at the repository root, drives the published
+   beta page in Chromium. The site workflow runs it on every push, after the
+   build. It asserts no page errors and no network requests in every test.
+   Each change to the beta adds the checks for its own controls there.
+5. `beta/test/fixtures/paired-comparisons.json` holds the 16 cases of the
+   12 October 2026 comparison document: this simulator's whole-sky counts on
+   that date, and the other simulator's for the same cases.
+   `beta/test/paired.test.js` reproduces the first set. A change that is
+   meant to move those counts, or `beta/test/golden/golden.json`, regenerates
+   the fixture in the same pull request and says why; any other change leaves
+   both files as they are.
+6. After a beta change, open the beta in the pull request's branch preview and
+   look at what the change affects. The checks in step 5 of the adoption list
+   that the spec does not cover - physical devices, PNG export, the feel of
+   drag and pinch - still need a person.
+
+`beta/PLAN.md` describes how the November 2026 upgrade uses these.
 
 ## What the inherited suite covers
 

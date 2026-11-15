@@ -154,3 +154,136 @@ line at publish time.
 - The nine supplied documents are not copied into `beta/`. Whether the beta
   gets its own tutorial or specification is open until the beta differs enough
   to need one.
+
+## 2026-11-15 — Upgrade the beta in five units, from a comparison with another simulator
+
+The user supplies "Visual Comparison of Two Orbital Data Center Sky
+Simulators", 16 paired scenarios captured on 12 October 2026, and asks: "Plan a
+set of upgrades to the beta version of SBDC. Study this doc, and compare the
+code and the display to
+https://github.com/sdross0/orbital-datacenter-brightness. Correct any bugs you
+discover in SBDC." The features asked for are presets that correspond to that
+project's default setups, an option to include moonlight and its effects, an
+approximate ratio of SBDC light to the Moon's, an option to simulate ambient
+light, and "perhaps" the number of hours in a night or a year in which SBDC
+light is significant at a location, plus any improvement the document
+suggests.
+
+The user adds: "Consider the testing strategy when make the plan, to
+streamline the process. Break the entire plan into 5 units of work, and
+immediately start to execute the first unit. Each unit should involve
+deployment to beta, and a corresponding PR." A later message in the same
+session asks that the decisions made and the plan to be executed be
+documented.
+
+**Decided:** the work is five units, each one pull request, in this order.
+The full plan, the fault list and the testing strategy are in `beta/PLAN.md`.
+
+| Unit | Content |
+| --- | --- |
+| 1 | The eight faults that do not change the model's numbers, and the checks the later units reuse |
+| 2 | Constellation and brightness settings that let the sdross0 setups be reproduced, presets for them, and a link that carries the settings |
+| 3 | The twilight sky-brightness correction, and ambient light by Bortle class |
+| 4 | Moonlight, and SBDC light compared with the Moon |
+| 5 | Hours of significant SBDC light per night and per year, a perspective view, and aiming at the densest sky |
+
+### What was decided, and why
+
+**The plan is in `beta/PLAN.md`.** `plan.md` and `spec.md` are the supplied
+July 2026 documents, byte for byte, and `adoption-manifest.json` records them
+as such. A beta plan appended to `plan.md` would break that record.
+
+**The initiative stays `dormant`, and the units are not todo items.** The work
+is done in the session that was asked for it. An actionable todo item in a
+non-dormant initiative is work the scheduled sweep may pick up, so listing the
+units there would let a sweep run start a unit the session is already in. This
+follows the 2026-11-11 settings work, which was also done at the user's request
+with the stage unchanged. `release-after-testing` and `mobile-sky-follow-up`
+keep their blockers.
+
+**Each unit's pull request is merged when the site workflow has passed.** The
+beta is published by the site build from `main`, so a merge is the only way a
+unit reaches the beta, and the user asked that each unit include that
+deployment. The units also build on each other, and the session has one branch,
+so unit 2 cannot be opened until unit 1 has merged. Nothing here releases the
+simulator: `lib/`, `work/` and `demos/SBDC Night Sky/` are not changed, and the
+2026-09-11 instruction "no additional releases" still governs them.
+
+**The other project's code is read, not copied and not run.** The checks use
+the numbers it has published: the 16 whole-sky counts in the comparison
+document and the tables in its README. The formulas this simulator needs from
+it are from the papers it cites (Boley, Lawler and Rein 2026; Mallama et al.
+2023; Patat et al. 2006; Schaefer 1990), written here from those descriptions.
+
+**Every new model setting defaults to the current behaviour.** A person who
+opens the beta and changes nothing sees the same constellation and the same
+brightness as before. The two fixture files are the check: a unit that adds a
+setting may not change `test/golden/golden.json` or the Site 1 column of
+`test/fixtures/paired-comparisons.json`.
+
+**The twilight table is the one exception, because it is a fault.**
+`skyBrightness.table` in `sbdc-data.json` cites Patat et al. (2006) and gives
+16.5 mag/arcsec² at the zenith with the Sun 6° below the horizon. That paper's
+V-band fit gives 13.30 there, 17.00 at 9° and 19.67 at 12°; the table has 16.5,
+18.2 and 19.5. The sky at the end of civil twilight is therefore drawn about 19
+times darker than measured, and stars and satellites are counted as visible too
+early. Unit 3 corrects the table. This lowers the counts at dusk and dawn, which
+includes the opening view and the three existing presets, all 30 to 60 minutes
+from sunset or sunrise. The fixtures are regenerated in that pull request and
+the change is listed there.
+
+**The naked-eye threshold table is left as it is.** The other project uses a
+closed form from Schaefer (1990), which is stricter under a bright sky: with the
+Sun 6° down it gives a limit near magnitude -0.6, where this simulator's table,
+once the sky is corrected, gives about 1.5. The brightest stars are in practice
+visible at the end of civil twilight, which the table matches more closely. The
+two limits agree to about 0.2 magnitude once the sky is dark.
+
+**"In view" and "whole sky" are separate numbers in the readout.** The document
+compares whole-sky totals and notes that the other site also prints a smaller
+count for its picture. The readout now gives both in the horizon view.
+
+**Ambient light is a second control beside the eye limit.** The existing "Eye /
+sky quality limit" is a cap on the faintest magnitude seen. Ambient light is a
+sky brightness, by Bortle class, added to the twilight sky. They are different
+things, so both stay and the first is relabelled.
+
+**The Moon needs a year, and is placed for longitude 0.** The simulator has a
+latitude, a date and a local solar time, and no longitude. The Moon moves about
+half a degree an hour, so taking the solar time as universal time places it
+within about 7° for any longitude. A phase can also be set by hand, which needs
+no date.
+
+**"Significant" is reported under three definitions.** The request does not
+define it. Unit 5 reports the hours for each of: at least 100 SBDCs visible to
+the naked eye; visible SBDCs outnumber visible stars; SBDC light exceeds the
+natural moonless night sky. All three include moonlight and ambient light when
+those are on.
+
+### Alternatives considered
+
+| Option | Consequence |
+| --- | --- |
+| Five units ordered as above: faults and checks first, then settings, sky, Moon, hours | Each later unit has the checks and the settings it needs. The fault that moves the numbers is isolated in Unit 3. Chosen. |
+| One pull request for everything | One review of a change that touches the model, the sky, the page and the tests, with no beta deployment until the end. The user asked for five. |
+| Correct the twilight table in Unit 1 with the other faults | The first unit would move every dusk number while also adding the fixtures that are meant to show nothing moved. |
+| Keep the old twilight table as a selectable option | A setting whose only purpose is to reproduce a fault. |
+| Move the stage to `refining` and add the units as todo items | The overview page would show the work, and the sweep could start a unit in parallel with the session doing it. |
+| Add the other project's layout file and physics to the beta | Its counts would match to the satellite. The page would grow by about 2.9 MB against a 600 KB budget, and the beta would carry a second model. |
+| Run the other project's code in the checks | Not available: the session may read that repository and may not execute it. |
+| Replace the naked-eye threshold table with the Schaefer closed form | Closer agreement with the other project in twilight, and a limit at dusk that is stricter than what observers report. |
+
+### What this settles, and what it does not
+
+- The user's fifth feature was asked for with "perhaps". It is planned as
+  Unit 5; the user may drop or change it before then.
+- The document refers to a "main evaluation" that was not supplied. Faults it
+  lists that are not in the paired-comparison document are not covered. The
+  phrase "the known Site 1 twilight behavior" is taken to be fault 9, the
+  twilight table; that reading is this session's, not the document's.
+- The sticky sky on phones is still not corrected. Its todo item needs the
+  user's explicit choice to resume it, and "correct any bugs you discover"
+  is not read as that choice for an item the user parked by name.
+- Whether the beta gets its own tutorial is still open. Unit 5 adds a short
+  guide to the new controls to `beta/README.md`.
+- Promotion of the beta to the released simulator is not part of this work.

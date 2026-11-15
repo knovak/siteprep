@@ -106,3 +106,29 @@ Found while testing, in the released simulator as well as the beta, and left
 as it is: choosing "Custom…" for shell altitudes and then typing the shells
 has no effect until another shell option is chosen and "Custom…" is chosen
 again.
+
+## 2026-11-15 — Beta upgrade, unit 1: faults found by a comparison, and checks
+
+The user supplied a paired comparison of this simulator with
+`sdross0/orbital-datacenter-brightness` and asked for the beta to be upgraded
+in five units. `beta/PLAN.md` is the plan and `decisions.md` has the reasons.
+
+The beta model, run with the document's settings, gave the document's count
+for this simulator in all 16 cases.
+
+Unit 1 corrects eight faults in `beta/`, none of which changes a number the
+model produces: custom shells typed after choosing "Custom…" are now used; the
+time control is labelled solar time and the readout gives minutes from sunset
+or sunrise; a time just under the hour is written with the right hour; the
+compass label matches the view on first load and follows the arrow keys; the
+hills no longer change when the view pans past north; the Satellites slider
+reaches 500,000 and other round totals; one plane per shell sits at the centre
+of the spread; and the readout gives the count in view beside each whole-sky
+total. `beta/src/format.js` is new.
+
+Added `beta/test/paired.test.js` with the 16 documented cases as a fixture,
+`beta/test/format.test.js`, and `tests/e2e/sbdc-beta.spec.js`, which drives
+the published beta in Chromium in the site workflow. The spec fails on the
+code before this unit in five of its six tests and passes after it. 93 tests
+pass in `beta/`; `test/golden/golden.json` is unchanged. `lib/`, `work/` and
+`demos/SBDC Night Sky/` are unchanged.
