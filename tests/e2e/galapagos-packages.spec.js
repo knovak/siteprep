@@ -144,27 +144,71 @@ test('research notes and holding records are linked and receive one shared foote
   await expect(page.locator('.comparison-table, .map-container')).toHaveCount(0);
 });
 
-test('2027 expanded window includes all nine officially scheduled Delfina leads and an El Niño topic', async ({ page }) => {
+test('Delfina follows the same stock-qualified rule and all nine dated price records remain in holding', async ({ page }) => {
+  const delfinaIds = ['385', '701', '689', '702', '703', '704', '705', '706', '707'];
+  const starts = ['2027-04-16', '2027-04-23', '2027-05-07', '2027-05-14', '2027-05-21', '2027-05-28', '2027-06-04', '2027-06-11', '2027-06-18'];
+  const selector = delfinaIds.map((id) => `li#package-${id}`).join(', ');
+
   await page.goto(url);
   await expect(page.locator('article .card-header')).toContainText('April 15–June 20, 2027');
-  const starts = ['2027-04-16', '2027-04-23', '2027-05-07', '2027-05-14', '2027-05-21', '2027-05-28', '2027-06-04', '2027-06-11', '2027-06-18'];
-  // Collapsible topics wrap headings and their content into separate DOM nodes.
-  // Use permanent package IDs rather than a fragile heading-sibling selector.
-  const ids = ['385', '701', '689', '702', '703', '704', '705', '706', '707'];
-  const list = page.locator(ids.map((id) => `li#package-${id}`).join(', '));
-  await expect(list).toHaveCount(starts.length);
-  const records = await list.evaluateAll((items) => items.map((item) => ({
+  await expect(page.locator(selector)).toHaveCount(0);
+  await expect(page.locator('a[href="overview-reject.html#delfina-sailings"]').first()).toBeAttached();
+  await expect(page.locator(rows)).toHaveCount(34);
+  await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
+
+  await page.goto(holding);
+  const list = page.locator(selector);
+  await expect(list).toHaveCount(9);
+  const found = await list.evaluateAll((items) => items.map((item) => ({
     id: item.id,
     start: item.querySelector('.package-dates')?.dataset.start,
     title: item.querySelector(':scope > strong')?.textContent,
+    price: item.querySelector('.package-price')?.textContent,
+    stock: item.querySelector('.package-availability')?.textContent,
+    party: item.querySelector('.party-availability')?.textContent,
+    numeric: item.querySelector('.package-price')?.dataset.usd,
   })));
-  expect(records.map((record) => record.id)).toEqual(ids.map((id) => `package-${id}`));
-  expect(records.map((record) => record.start)).toEqual(starts);
-  for (const record of records) expect(record.title).toContain('Delfina');
-  await expect(list.locator('.package-price[data-usd]')).toHaveCount(0);
-  await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
-  await expect(page.locator('#coverage')).toBeVisible();
+  expect(found.map((item) => item.id)).toEqual(delfinaIds.map((id) => `package-${id}`));
+  expect(found.map((item) => item.start)).toEqual(starts);
+  for (const record of found) {
+    expect(record.title).toContain('Delfina');
+    expect(record.price).toMatch(/Category 04.*Category 05/);
+    expect(record.price).toContain('internal air');
+    expect(record.stock.toLowerCase()).toContain('unverified');
+    expect(record.party.toLowerCase()).toContain('unverified');
+    expect(record.numeric).toBeUndefined();
+  }
+  await expect(page.locator('#delfina-sailings')).toContainText('Delfina');
+  const all = await page.locator('li[id^="package-"]').evaluateAll((items) => items.map((item) => item.id));
+  expect(new Set(all).size).toBe(all.length);
+  await expect(page.locator('.comparison-table')).toHaveCount(0);
+
   await page.goto('/decks/ecuador/sections/galapagos-islands/overview.html');
   await expect(page.locator('#el-nino-effects')).toContainText('El Niño');
   await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
+});
+
+test('June refresh has six source-qualified departures with unverified two-cabin status', async ({ page }) => {
+  await page.goto(url);
+  const cases = [
+    ['710', '2027-06-01', '13400'],
+    ['711', '2027-06-03', '4893'],
+    ['713', '2027-06-08', '4665'],
+    ['714', '2027-06-10', '5150'],
+    ['715', '2027-06-09', '5385'],
+    ['716', '2027-06-17', '5616'],
+  ];
+  for (const [id, date, price] of cases) {
+    const detail = page.locator(`li#package-${id}`);
+    await expect(detail).toHaveCount(1);
+    await expect(detail.locator('.package-dates')).toHaveAttribute('data-start', date);
+    await expect(detail.locator('.package-price')).toHaveAttribute('data-usd', price);
+    await expect(detail.locator('.package-availability')).toContainText('November 16, 2026');
+    await expect(detail.locator('.package-availability a[href*="galapagosdanatours.com"]').first()).toHaveAttribute('href', /galapagosdanatours.com/);
+    await expect(detail.locator('.party-availability')).toContainText('unverified');
+    await expect(page.locator(`${rows}[data-package-id="package-${id}"]`)).toHaveCount(1);
+  }
+  const mainIds = await page.locator('li[id^="package-"]').evaluateAll((items) => items.map((item) => item.id));
+  expect(new Set(mainIds).size).toBe(mainIds.length);
+  await expect(page.locator('footer.site-footer')).toHaveCount(1);
 });
