@@ -121,7 +121,6 @@ test('guest, duration, USD price and room-evidence filters compose without break
     'All trip lengths', '5 days', '6 days', '8 days', '10 days',
   ]);
   const roomChoices = await byRooms.locator('option').allTextContents();
-  console.log('Galápagos cabin filter choices:', roomChoices);
   expect(roomChoices).toContain('Two-cabin quote (not held)');
   await expect(clear).toBeDisabled();
   await byShip.selectOption('16 guests');
