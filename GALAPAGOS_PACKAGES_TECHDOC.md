@@ -52,17 +52,17 @@ and StandardMap remain the deck's existing mechanisms.
 ## Column dropdown filters
 
 The comparison also adds native, keyboard-operable dropdowns inside selected
-table headings. The shared helper \`shared/package_table_filters.js\` supplies
+table headings. The shared helper `shared/package_table_filters.js` supplies
 the option list, AND-combination of active filters and a Clear filters button;
 the Ecuador script defines the value for each field. All choices come from the
 detailed records, and the unfiltered row order and eight sortable headings are
 unchanged. Filtering applies only to the comparison, never the source entries.
 
-- **Ship / guests:** exact \`data-pax\` where known, except an explicit
+- **Ship / guests:** exact `data-pax` where known, except an explicit
   **20 or 36 guests (vessel unassigned)** category for Coral alternatives.
-- **Departure / duration:** the published \`N days / N nights\` trip length;
+- **Departure / duration:** the published `N days / N nights` trip length;
   this may include mainland nights. Unparsable lengths are **Unknown duration**.
-- **Known USD / person:** source \`data-usd\` in three bands: below US$5,000,
+- **Known USD / person:** source `data-usd` in three bands: below US$5,000,
   US$5,000–10,000 inclusive, above US$10,000, plus an unknown option. These
   are known subtotals, not all-in vacation costs.
 - **Two private cabins:** precisely worded two-cabin priced-together
