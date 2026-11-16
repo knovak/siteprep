@@ -255,13 +255,13 @@ a.tag:focus {
 .comparison-count { padding:.25rem .7rem; border-radius:999px; background:var(--highlight); color:var(--primary); font-size:.85rem; font-weight:700; white-space:nowrap; }
 .card-content .comparison-key { font-size:.83rem; color:#475569; margin-bottom:1rem; line-height:1.6; }
 .comparison-scroll { overflow:auto; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 5px 18px rgba(30,58,138,.06); }
-.comparison-table { width:100%; min-width:1250px; border-collapse:separate; border-spacing:0; font-size:.84rem; line-height:1.5; }
+.comparison-table { width:100%; min-width:1450px; border-collapse:separate; border-spacing:0; font-size:.84rem; line-height:1.5; }
 .comparison-table thead th { background:var(--primary); color:#fff; padding:0; text-align:left; }
-.comparison-table thead th:first-child { width:19%; }
-.comparison-table thead th:nth-child(2) { width:7%; }
+.comparison-table thead th:first-child { width:18%; }
+.comparison-table thead th:nth-child(2) { width:10%; }
 .comparison-table thead th:nth-child(3) { width:14%; }
-.comparison-table thead th:nth-child(4), .comparison-table thead th:nth-child(5), .comparison-table thead th:nth-child(6) { width:18%; }
-.comparison-table thead th:last-child { width:6%; }
+.comparison-table thead th:nth-child(4), .comparison-table thead th:nth-child(5), .comparison-table thead th:nth-child(6) { width:17%; }
+.comparison-table thead th:last-child { width:7%; }
 .comparison-table thead button { display:flex; align-items:center; justify-content:space-between; gap:.4rem; width:100%; padding:.85rem .75rem; border:0; background:transparent; color:inherit; font:inherit; font-weight:700; cursor:pointer; text-align:left; }
 .comparison-table thead button:hover { background:rgba(255,255,255,.12); }
 .sort-indicator { opacity:.65; font-size:1rem; }
@@ -284,6 +284,37 @@ a.tag:focus {
 .review-rank-low { background:#ffe4e6; color:#9f1239; }
 .comparison-scroll:focus-visible, .comparison-table a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
 .comparison-table thead button:focus-visible { outline:3px solid #bae6fd; outline-offset:-4px; }
+/* Filtering controls remain in the same headers as the sort buttons. */
+.comparison-table thead .comparison-filter {
+  display: block;
+  width: calc(100% - 1rem);
+  min-width: 0;
+  margin: 0 0.5rem 0.65rem;
+  padding: 0.35rem 0.2rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 0.78rem;
+}
+.comparison-filter:focus-visible, .comparison-clear:focus-visible {
+  outline: 3px solid #bae6fd;
+  outline-offset: 2px;
+}
+.comparison-clear {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--primary);
+  padding: 0.35rem 0.65rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.comparison-clear:disabled { opacity: 0.5; cursor: default; }
+.comparison-empty { text-align: center !important; font-style: italic; }
+
 .comparison-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 @media(max-width:600px) { .comparison-scroll { border-radius:9px; } }
 
