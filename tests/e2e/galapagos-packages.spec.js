@@ -7,6 +7,7 @@ const holding = `${deck}/sections/galapagos-packages/overview-reject.html`;
 const notes = `${deck}/galapagos-research-notes.html`;
 const rows = '#package-comparison-rows > tr';
 const script = path.join(__dirname, '../../decks/ecuador/assets/package-table.js');
+const filtersScript = path.join(__dirname, '../../shared/package_table_filters.js');
 
 test('the comparison keeps all source records and their availability and review qualifications', async ({ page }) => {
   await page.goto(url);
@@ -69,6 +70,7 @@ test('sorts use capacity, dates and comparable prices; missing evidence remains 
         <p class="package-price" data-usd="unknown">Price unknown</p>
       </li>
     </ul>`);
+  await page.addScriptTag({ path: filtersScript });
   await page.addScriptTag({ path: script });
   const identities = () => page.locator(rows).evaluateAll((elements) => elements.map((element) => element.dataset.packageId));
   expect(await identities()).toEqual(['package-528', 'package-311', 'package-872']);
@@ -101,6 +103,57 @@ test('sorts use capacity, dates and comparable prices; missing evidence remains 
   }
   expect(await page.locator('.package-list > li').evaluateAll((elements) => elements.map((element) => element.id)))
     .toEqual(['package-528', 'package-311', 'package-872']);
+});
+
+test('guest, duration, USD price and room-evidence filters compose without breaking sorting', async ({ page }) => {
+  await page.goto(url);
+  const byShip = page.locator('[data-filter="ship"]');
+  const byDays = page.locator('[data-filter="dates"]');
+  const byPrice = page.locator('[data-filter="price"]');
+  const byRooms = page.locator('[data-filter="party"]');
+  const clear = page.getByRole('button', { name: 'Clear all column filters' });
+
+  await expect(byShip.locator('option')).toContainText([
+    'All guest capacities', '16 guests', '20 or 36 guests (vessel unassigned)',
+    '32 guests', '40 guests',
+  ]);
+  await expect(byDays.locator('option')).toContainText([
+    'All trip lengths', '5 days', '6 days', '8 days', '10 days',
+  ]);
+  await expect(clear).toBeDisabled();
+  await byShip.selectOption('16 guests');
+  await byDays.selectOption('5 days');
+  const subset = page.locator(rows + '[data-package-id]');
+  expect(await subset.count()).toBeGreaterThan(0);
+  expect(await subset.count()).toBeLessThan(34);
+  for (const item of await subset.all()) {
+    await expect(item.locator('.comparison-ship')).toContainText('16 guests');
+    await expect(item.locator('.comparison-dates')).toContainText('5 days / 4 nights');
+  }
+  await byPrice.selectOption('USD:under');
+  expect(await subset.count()).toBeGreaterThan(0);
+  for (const id of await subset.evaluateAll((elements) => elements.map((row) => row.dataset.packageId))) {
+    const numeric = await page.locator('#' + id + ' .package-price').getAttribute('data-usd');
+    expect(Number(numeric)).toBeLessThan(5000);
+  }
+  await byRooms.selectOption('Two cabins not verified');
+  const expected = await subset.count();
+  await page.locator('[data-sort="price"]').click();
+  await expect(subset).toHaveCount(expected);
+  await expect(page.locator('[data-sort="price"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
+
+  await byShip.selectOption('32 guests');
+  await expect(page.locator('.comparison-empty')).toBeVisible();
+  await expect(page.locator('#comparison-count')).toContainText('0 of 34 packages');
+  await clear.click();
+  await expect(clear).toBeDisabled();
+  await expect(page.locator(rows)).toHaveCount(34);
+  await expect(page.locator('#comparison-count')).toContainText('34 packages.');
+  await expect(page.locator('[data-sort="price"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
+  await byRooms.selectOption('Two-cabin quote (not held)');
+  await expect(page.locator(rows)).toHaveCount(3);
+  expect(await subset.evaluateAll((elements) => elements.map((row) => row.dataset.packageId).sort()))
+    .toEqual(['package-138', 'package-461', 'package-872']);
 });
 
 test('detail links open collapsed evidence and the comparison stays within a phone viewport', async ({ page }) => {
