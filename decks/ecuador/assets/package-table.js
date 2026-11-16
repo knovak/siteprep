@@ -68,7 +68,10 @@
       : /Coral I.*or Coral II/i.test(entry.ship) ? '20 or 36 guests (vessel unassigned)'
         : entry.numeric.ship + ' guests';
     entry.filterDuration = duration ? Number(duration[1]) + ' days' : 'Unknown duration';
-    entry.filterParty = /\btwo (?:queen|king|private twin) cabins? priced together\b/i.test(entry.party)
+    // The detailed paragraph's bold lead may contain the evidence qualification;
+    // paragraphText deliberately removes that lead from the comparison cell.
+    const originalPartyText = item.querySelector('.party-availability')?.textContent || '';
+    entry.filterParty = /\btwo (?:queen|king|private twin) cabins? priced together\b/i.test(originalPartyText)
       ? 'Two-cabin quote (not held)' : 'Two cabins not verified';
     entry.filterPrice = SiteprepPackageTableFilters.priceBucket({
       currency: 'USD', amount: entry.numeric.price,
