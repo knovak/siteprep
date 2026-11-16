@@ -8,7 +8,7 @@ Current scope (expanded November 16): embark April 15–June 20, 2027 inclusive.
 
 The maintained inventory is the detailed HTML on [Galápagos packages](./sections/galapagos-packages/overview.html), with the comparison generated from those records. [Research holding](./sections/galapagos-packages/overview-reject.html) retains unverified, insufficient-stock and size-excluded options. This document is the evidence/change record, not a second live price list.
 
-Main-list rule: in-scope exact departures with a current public general-stock signal. <strong>Exception made on November 16 at user request:</strong> all nine officially scheduled Lindblad Delfina starts are displayed in the main comparison with unmistakable calendar-only / no-inventory-verified status. That exception does not imply live availability or alter the standard rule for other providers. A quote calculator or enquiry button alone does not qualify. A dated seller catalogue explicitly stating that its departures still have cabins is a stock signal, but not proof of four berths or two intact rooms. Explicit two-berth allocations fail this party. Four seats or an AVAILABLE label is general evidence only. Boat assignments, cabin categories, bedding, quote conditions and known price conflicts remain visible.
+Main-list rule (reconfirmed November 16): in-scope exact departures with a current public general-stock signal, for **every provider including Lindblad's Delfina**. A prior exception temporarily placed nine Delfina calendar-only records in the main comparison earlier on November 16; the user withdrew that exception, so those original IDs have been preserved in research holding. A date sheet or price listing alone is not a live stock signal. A quote calculator or enquiry button alone does not qualify. A dated seller catalogue explicitly stating that its departures still have cabins is a stock signal, but not proof of four berths or two intact rooms. Explicit two-berth allocations fail this party. Four seats or an AVAILABLE label is general evidence only. Boat assignments, cabin categories, bedding, quote conditions and known price conflicts remain visible.
 
 No user rejections exist as of this initial research. Research holding may return to the main page after it qualifies on an authorized refresh, preserving its number and recording the move. A future user rejection must never be restored without the user's request. Preserve promoted order; sorting the comparison never reorders the underlying records. Do not recycle retired IDs.
 
@@ -146,3 +146,57 @@ For the new Integrity entry, [Galapagos Travel Center's ship review section](htt
 - **Personal reference:** Charlie and Cheryl Schaff are user-supplied Lindblad used/referred contacts; their exact ship, voyage and date are unspecified. The Islands provider text/table and Packages coverage/entries have been updated accordingly.
 - **Other June leads, without stock:** official [Grace](https://www.quasarex.com/galapagos/my-grace) calendar shows June 1, 8 and 15 starts (16 guests); [Evolution](https://www.quasarex.com/galapagos/mv-evolution) shows June 5, 12 and 19 starts (32 guests). June dates across Royal, Ecoventura, Metropolitan and other providers still require systematic four-adult/two-cabin checks; neither missing listings nor dated calendars demonstrate sellout or open inventory.
 - **Delfina due diligence:** obtain simultaneous two-cabin quote for each preferred sailing, category/bedding, all charges and actual park-site programme, operator confirmation of medical coverage (vessel sheet explicitly says no onboard medical professional although generic inclusions mention consultations), written cancellation terms and recent yacht-specific reviews. Different seller descriptions of April 16 or May 7 stock are not treated as confirmed availability. Review before paying a large nonrefundable deposit, especially given El Niño conditions.
+
+## Research refresh — November 16, 2026 (Australia/Brisbane; after the earlier scope expansion)
+
+### Uniform selection rule and Delfina availability attempt
+
+The user clarified: **do not give Delfina an exception** to the standard package-selection rule. The nine Lindblad–National Geographic Delfina 10-day Quito–Quito dates added earlier today remain valid official calendar leads, but **none has verified remaining dated general stock**. They have been moved from the main comparison to [research holding](./sections/galapagos-packages/overview-reject.html#delfina-sailings) with their permanent IDs **{385}, {701}, {689}, {702}, {703}, {704}, {705}, {706}, {707}**. This reverses the earlier November 16 exception, not the earlier discovery or the user's preferred boat size. The main comparison no longer includes stock-unqualified exceptions for any company. This is not a user rejection; stock evidence may restore any date later.
+
+Public checks on November 16:
+
+1. [Lindblad's official 2027 Delfina departure schedule](https://sell-sheet.v1.prod.expeditions.lindblad.cloud/GetSellSheets?expedition=GALA+DA&itinerary=6T147jU4Dlu2YjQ1Hqp7K6&region=au) confirms April 16/23, May 7/14/21/28 and June 4/11/18 starts, but is not a cabin inventory feed.
+2. [Natural Habitat Adventures' date-and-fees page](https://www.nathab.com/adventure-cruises/galapagos-by-catamaran-intimate-voyage/dates-fees) advertises each of those nine dates and **dated Category 04 and 05 fares**. This is stronger price evidence than the previous generic Lindblad starting fare, but contains no dated count of available berths or a public selector allocating two cabins together. Its contact-an-specialist path is an enquiry, not public stock evidence.
+3. Lindblad's [official sales page](https://www.expeditions.com/en-US/expeditions/galapagos-by-catamaran-an-intimate-voyage) advertises a general starting fare; it did not expose a simultaneous two-cabin allocation in accessible public materials. The [third-party May 7 reseller page](https://deluxecruises.com/lindblad-expeditions/national-geographic-delfina/cruises-2027/may-7-16.htm) appeared to say sold out in some retrievals but omitted an unambiguous status in others. Neither a resale banner nor its absence is operator-confirmed stock status. No date has been marked definitely sold out or available from this conflicting evidence.
+4. No provider contact, user/guest information, quote request, hold, reservation or payment was submitted. **Result:** all nine general-stock checks unverified; all nine two-cabin checks unverified. Request a dated cabin-category allocation, two actual rooms for two adults each, written full cost and deposit/cancellation terms.
+
+Partner fare table (USD pp sharing, not an inventory/room quote; category costs exclude separately billed US$570 internal air and any other unpriced extras):
+
+| Delfina Quito start | Permanent ID | Category 04 pp | Category 05 pp | Cat 04 + internal air pp | Four persons at illustrative lowest tier |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Apr 16 | {385} | $13,600 | $16,226 | $14,170 | $56,680 |
+| Apr 23 | {701} | $13,600 | $16,226 | $14,170 | $56,680 |
+| May 7 | {689} | $15,000 | $18,000 | $15,570 | $62,280 |
+| May 14 | {702} | $15,000 | $18,000 | $15,570 | $62,280 |
+| May 21 | {703} | $15,000 | $17,250 | $15,570 | $62,280 |
+| May 28 | {704} | $15,000 | $17,250 | $15,570 | $62,280 |
+| Jun 4 | {705} | $15,000 | $17,250 | $15,570 | $62,280 |
+| Jun 11 | {706} | $15,000 | $17,250 | $15,570 | $62,280 |
+| Jun 18 | {707} | $15,000 | $18,000 | $15,570 | $62,280 |
+
+The four-person illustration assumes four fares and two Category 04 cabins at double occupancy; neither two-room allocation nor final all-fees quote has been verified. NatHab quotes a 15% deposit of the cabin fare and invoices internal air separately, but trip/seller-specific written terms control. The published $10,613 Lindblad “from” figure is **not** used for these dates.
+
+### Newly stocked June 2027 departures from original provider set
+
+A targeted November 16 review of [Dana Tours' June 2027 dated catalogue](https://www.galapagosdanatours.com/availability/cruises/june) (the first 160 of 218 advertised June departures with cabins) and [TourTheTropics' June availability page](https://tourthetropics.com/galapagos-cruises/june-2027/) found these new in-window stock-qualified leads. This is a selection, **not an exhaustive sweep of all June boats**. The stock signals establish only the seller's advertised general availability, not a reservable pair of private cabins.
+
+| Main ID | Yacht / dates (2027) | Advertised cruise USD pp | General stock shown | Known comparison subtotal pp incl. $220 park/TCT allowance where applicable |
+| --- | --- | ---: | --- | ---: |
+| {710} | Grace Jun 1–8 | $13,400 | 4 places (Dana) | $13,400 (Quasar cruise rate ordinarily includes fees; confirm seller scope) |
+| {711} | Isabela II Jun 3–7 | $4,673 | Available (Dana) | $4,893 |
+| {713} | Natural Paradise Jun 8–12 | $4,445 reduced from $5,445 | 4 places (Dana) | $4,665 |
+| {714} | EcoGalaxy Jun 10–15 | $4,930 reduced from $5,600 | Available (Dana); 8 places (TourTheTropics) | $5,150 |
+| {715} | Coral I or II Jun 9–16 | $5,165 | Available (Dana) | $5,385 |
+| {716} | Monserrat Jun 17–24 | $5,396 reduced from $5,995 | Available (Dana) | $5,616 |
+
+Each of these six has a detailed main-list record with departure URL, route, seller price, separate general and party availability, separately dated older provider/ship reviews and open questions. **No two cabins were priced together for any of these six on November 16**; the seller routes led to request-offer/agent confirmation rather than a simultaneous two-room public allocation. Four advertised berths could be in an unsuitable combination of cabins. The seller's Mindo hotel “all-inclusive” offer is a distinct mainland gift, not an all-in cruise declaration. All party totals remain indicative and fees may vary. For Coral, exact yacht remains unidentified; Dana calls the 40-passenger Isabela II “M/V Isabela,” cross-checked against its [Isabela II vessel profile](https://www.galapagosdanatours.com/product/isabela-ii-galapagos-ship/). The Natural Paradise June promotional fare conflicts with an earlier operator standard-rate sheet: keep both figures and request written terms. Dana and TourTheTropics EcoGalaxy inventory can overlap; do not add their seat counts.
+
+**Insufficient-stock June lead:** Quasar Evolution June 12–19 is marked **one place left** in the [Dana June catalogue](https://www.galapagosdanatours.com/availability/cruises/june), not enough for four; it has **not** been added to main. Official June 5 and June 19 Quasar Evolution and June 8/15 Grace dates remain calendar leads only in this pass. No conclusion of sold out for those untested dates.
+
+All earlier November 12 April–May stock and older reviews retain their own dates; they were not blanket reverified on November 16. Priority follow-up: obtain current general stock and simultaneous two-cabin offers for preferred Delfina starts (especially April 16/23, May 7/14) and new June shortlist, reconcile all required fees and cancellation/air terms, and revisit independent vessel reviews before paying. No future research automation or notification was created by this refresh.
+
+### Additional April–May recheck, November 16
+
+[The current Dana Tours April 2027 catalogue](https://www.galapagosdanatours.com/availability/cruises/april) changed **Grand Majestic April 22–26 {682}** from **four places on November 12** to **two places on November 16** at US$4,645 pp. The user's four-adult requirement cannot be met from this displayed allocation; the record has moved to research holding as a *stock-insufficient* lead, not a user rejection or a vessel-wide sold-out statement. Its old review assessments retain their original dates. Restore {682} only after new dated sufficient seats (and ideally a two-cabin checkout) are verified. This holding move occurred after the new six June offers were added.
+
+Additional public checks on November 16: [Dana May catalogue](https://www.galapagosdanatours.com/availability/cruises/may) still showed Evolution May 1 (four), May 8/15/22/29 (available), Coral May 16/19 (available), Isabela May 6 (four) and Grace May 25 (available). [Dana April catalogue](https://www.galapagosdanatours.com/availability/cruises/april) showed Evolution April 17/24 available and Natural Paradise April 27 available. [Quasar's spring page](https://www.quasarex.com/galapagos/spring-cruises) continues to advertise May 2027 Grace dates at four or six places and Evolution at four, five or six places on selected dates; these are general-stock signals only. Dana's May EcoGalaxy listings do not cover all the TourTheTropics entries, so an omitted seller listing is not proof of zero cabins. Royal's date-specific booking summary and TourTheTropics May page did not reliably load in the current retrieval; their November 12 checks are not upgraded by this partial pass. June stock coverage remains selective.

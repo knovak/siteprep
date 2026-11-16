@@ -70,14 +70,25 @@ meet the two-cabin brief. Keep unresolved or insufficient stock in holding under
 the page's documented selection rule. No scheduling is implemented by this
 code.
 
-Special case (November 16, 2026): the nine user-requested Lindblad Delfina
-2027 schedule-only entries live in the comparison alongside stock-qualified
-records. Their `package-availability` and `party-availability` paragraphs must
-explicitly state that neither general inventory nor two cabins were verified.
-They omit `data-usd` because the provider's generic starting price is not a
-departure-specific subtotal. Preserve the permanent IDs {385} and {689} moved
-from research holding; the others have new distinct IDs. The booking window is
-April 15–June 20, 2027 (embarkation dates).
+Current uniform rule (November 16, 2026): Delfina is **not a special case**.
+All nine formally published 2027 Delfina dates belong to research holding
+(`overview-reject.html#delfina-sailings`) until a dated public general-stock
+signal is verified, just like any other operator. Published itineraries and
+dated Category 04/05 partner fares are **not inventory**. They have individual
+`package-price`, `package-availability` and `party-availability` fields, with
+genuine date-specific published fares and zero verified two-cabin allocations.
+Keep their permanent IDs {385}, {701}, {689}, {702}–{707}. Do not invent a
+sortable main-table `data-usd` or re-promote these items on a fare alone.
+
+Six June 2027 operator-family departures with dated Dana seller stock signals
+were added to the main comparison as {710}, {711}, {713}, {714}, {715}, {716}.
+Their numeric price keys include the documented known fee allowance where not
+already included; four advertised seats do not prove two private cabins. Confirm
+fee treatment for Grace's Quasar inclusions before booking. June seller
+catalogues and partner booking leads must be kept distinct from verified room
+pairs and full seller contract terms. The embarkation search ends June 20, 2027,
+although sailings may end afterward. Detailed source checks and historical
+changes are in `decks/ecuador/galapagos-research-notes.md`.
 
 ## Verification
 
