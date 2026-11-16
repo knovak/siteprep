@@ -143,3 +143,20 @@ test('research notes and holding records are linked and receive one shared foote
   await page.goto(holding);
   await expect(page.locator('.comparison-table, .map-container')).toHaveCount(0);
 });
+
+test('2027 expanded window includes all nine officially scheduled Delfina leads and an El Niño topic', async ({ page }) => {
+  await page.goto(url);
+  await expect(page.locator('article .card-header')).toContainText('April 15–June 20, 2027');
+  const starts = ['2027-04-16', '2027-04-23', '2027-05-07', '2027-05-14', '2027-05-21', '2027-05-28', '2027-06-04', '2027-06-11', '2027-06-18'];
+  const list = page.locator('#delfina-sailings + p + ul.package-list > li');
+  await expect(list).toHaveCount(starts.length);
+  expect(await list.locator('.package-dates').evaluateAll(items => items.map(item => item.dataset.start))).toEqual(starts);
+  await expect(list.locator('.package-price[data-usd]')).toHaveCount(0);
+  for (const id of ['385', '689']) {
+    await expect(page.locator('#package-' + id)).toHaveCount(1);
+  }
+  await expect(page.locator('#coverage')).toBeVisible();
+  await page.goto('/decks/ecuador/sections/galapagos-islands/overview.html');
+  await expect(page.locator('#el-nino-effects')).toContainText('El Niño');
+  await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
+});
