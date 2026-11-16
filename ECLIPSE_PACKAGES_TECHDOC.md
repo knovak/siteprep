@@ -31,7 +31,7 @@ the price filter is not a normalized cost comparison. No cross-currency
 conversion is made, and unknown prices have their own option. None of the
 room-evidence labels is a booking confirmation.
 
-The shared helper \`shared/package_table_filters.js\` derives dropdown choices
+The shared helper `shared/package_table_filters.js` derives dropdown choices
 from the current source records, combines selected columns using AND logic,
 and provides an accessible Clear filters control. Sorting remains independent
 and is retained across filter selections and reset. Visible counts update, and
