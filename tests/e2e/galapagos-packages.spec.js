@@ -144,22 +144,28 @@ test('research notes and holding records are linked and receive one shared foote
   await expect(page.locator('.comparison-table, .map-container')).toHaveCount(0);
 });
 
-test('Delfina follows the same stock-qualified rule and all nine dated price records remain in holding', async ({ page }) => {
-  const delfinaIds = ['385', '701', '689', '702', '703', '704', '705', '706', '707'];
-  const starts = ['2027-04-16', '2027-04-23', '2027-05-07', '2027-05-14', '2027-05-21', '2027-05-28', '2027-06-04', '2027-06-11', '2027-06-18'];
-  const selector = delfinaIds.map((id) => `li#package-${id}`).join(', ');
-
+test('Delfina date-specific booking lead is distinct from actual two-cabin proof; other eight are user-reported full', async ({ page }) => {
+  const ids = ['385', '701', '689', '702', '703', '704', '705', '707'];
+  const starts = ['2027-04-16', '2027-04-23', '2027-05-07', '2027-05-14', '2027-05-21', '2027-05-28', '2027-06-04', '2027-06-18'];
   await page.goto(url);
   await expect(page.locator('article .card-header')).toContainText('April 15–June 20, 2027');
-  await expect(page.locator(selector)).toHaveCount(0);
-  await expect(page.locator('a[href="overview-reject.html#delfina-sailings"]').first()).toBeAttached();
-  await expect(page.locator(rows)).toHaveCount(33);
+  const june = page.locator('#package-706');
+  await expect(june).toHaveCount(1);
+  await expect(june.locator('.package-dates')).toHaveAttribute('data-start', '2027-06-11');
+  await expect(june.locator('.package-price')).toHaveAttribute('data-usd', '15570');
+  await expect(june.locator('.package-availability')).toContainText('reported November 16, 2026');
+  await expect(june.locator('a[href*="DAGALADA-270611"]').first()).toHaveAttribute('href', /DAGALADA-270611/);
+  await expect(june.locator('.party-availability')).toContainText('unverified');
+  await expect(page.locator(rows)).toHaveCount(34);
+  await expect(page.locator('[data-package-id="package-706"]')).toHaveCount(1);
+  await expect(page.locator('#cabin-audit')).toContainText('Two-cabin availability evidence');
   await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
+  for (const id of ids) await expect(page.locator(`li#package-${id}`)).toHaveCount(0);
 
   await page.goto(holding);
-  const list = page.locator(selector);
-  await expect(list).toHaveCount(9);
-  const found = await list.evaluateAll((items) => items.map((item) => ({
+  await expect(page.locator('#delfina-sailings')).toContainText('eight user-reported full');
+  await expect(page.locator('li#package-706')).toHaveCount(0);
+  const found = await page.locator(ids.map(id => `li#package-${id}`).join(', ')).evaluateAll(items => items.map(item => ({
     id: item.id,
     start: item.querySelector('.package-dates')?.dataset.start,
     title: item.querySelector(':scope > strong')?.textContent,
@@ -168,18 +174,19 @@ test('Delfina follows the same stock-qualified rule and all nine dated price rec
     party: item.querySelector('.party-availability')?.textContent,
     numeric: item.querySelector('.package-price')?.dataset.usd,
   })));
-  expect(found.map((item) => item.id)).toEqual(delfinaIds.map((id) => `package-${id}`));
-  expect(found.map((item) => item.start)).toEqual(starts);
-  for (const record of found) {
-    expect(record.title).toContain('Delfina');
-    expect(record.price).toMatch(/Category 04.*Category 05/);
-    expect(record.price).toContain('internal air');
-    expect(record.stock.toLowerCase()).toContain('unverified');
-    expect(record.party.toLowerCase()).toContain('unverified');
-    expect(record.numeric).toBeUndefined();
+  expect(found.map(it => it.id)).toEqual(ids.map(id => `package-${id}`));
+  expect(found.map(it => it.start)).toEqual(starts);
+  for (const it of found) {
+    expect(it.title).toContain('Delfina');
+    expect(it.price).toMatch(/Category 04.*Category 05/);
+    expect(it.price).toContain('internal air');
+    expect(it.stock).toContain('Reported full by the user');
+    expect(it.stock).toContain('independent operator status unverified');
+    expect(it.party).toContain('independently unverified');
+    expect(it.numeric).toBeUndefined();
   }
-  await expect(page.locator('#delfina-sailings')).toContainText('Delfina');
-  const all = await page.locator('li[id^="package-"]').evaluateAll((items) => items.map((item) => item.id));
+  await expect(page.locator('a[href="overview.html#package-706"]').first()).toBeAttached();
+  const all = await page.locator('li[id^="package-"]').evaluateAll(items => items.map(it => it.id));
   expect(new Set(all).size).toBe(all.length);
   await expect(page.locator('.comparison-table')).toHaveCount(0);
 
