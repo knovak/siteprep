@@ -242,3 +242,21 @@ is the other simulator's projection, and an "Aim at densest sky" button.
 148 tests pass in `beta/`, and the browser spec has twenty-two. `lib/`, `work/`
 and `demos/SBDC Night Sky/` are unchanged. This is the last of the five units
 in `beta/PLAN.md`.
+
+## 2026-11-16 — Beta: the page fits a phone again
+
+Checking the sticky sky at phone size (iPhone 13, 390 px) found that the beta
+page was 1,452 px wide, so the phone shrank it to fit and the controls were too
+small to use. Unit 4 moved the readout strip out from over the sky and into the
+page's flow; its lines do not wrap on a narrow screen, and the grid and flex
+containers around it took their width from the longest line. The columns now
+take the screen's width, and a long line is cut with an ellipsis. The released
+simulator never had this fault. At that width the credit line takes two lines
+and covered the compass points along the horizon, so on a narrow screen it is
+now at the top of the readout strip, below the sky.
+
+`beta/PLAN.md` lists it as fault 12, and the browser spec has a test at
+390 × 844. The sticky sky itself is unchanged: on a phone the sky still scrolls
+away in both the released simulator and the beta, and it stays the
+`mobile-sky-follow-up` todo item.
+

@@ -629,6 +629,28 @@ test.describe('SBDC beta', () => {
     expect(problems.errors).toEqual([]);
   });
 
+  test('on a phone the page is the width of the screen', async ({ page }) => {
+    // The readout lines do not wrap on a narrow screen. Once the strip that
+    // holds them sat in the page's flow, the longest line set the width of
+    // the whole page: 1,452 px on a 390 px phone, which the phone shrank to
+    // fit, leaving the controls too small to use.
+    await page.setViewportSize({ width: 390, height: 844 });
+    const problems = await openBeta(page);
+    const widths = await page.evaluate(() => ({
+      page: document.documentElement.scrollWidth,
+      controls: document.querySelector('aside').getBoundingClientRect().right,
+      strip: document.getElementById('readout-strip').getBoundingClientRect().width,
+      // the credit is below the sky, where it cannot cover the compass points
+      creditTop: document.getElementById('attribution').getBoundingClientRect().top,
+      skyBottom: document.getElementById('sky-area').getBoundingClientRect().bottom,
+    }));
+    expect(widths.page).toBeLessThanOrEqual(390);
+    expect(widths.controls).toBeLessThanOrEqual(390);
+    expect(widths.strip).toBeLessThanOrEqual(390);
+    expect(widths.creditTop).toBeGreaterThanOrEqual(widths.skyBottom);
+    expect(problems.errors).toEqual([]);
+  });
+
   test('every preset loads and draws', async ({ page }) => {
     const problems = await openBeta(page);
     const options = await page.locator('#preset option').evaluateAll((list) =>

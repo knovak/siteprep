@@ -18,6 +18,10 @@ body {
   background: var(--ink); color: var(--text);
   font: 14px/1.45 var(--sans);
   display: grid; grid-template-rows: auto 1fr; overflow: hidden;
+  /* the one column is the screen's width: a line that does not wrap is cut
+     with an ellipsis and cannot widen the page (a phone shrinks a page that
+     is wider than its screen) */
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* ---------------- top bar ---------------- */
@@ -42,7 +46,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
 button.primary { border-color: var(--gold); color: var(--gold); }
 
 /* ---------------- layout ---------------- */
-main { display: grid; grid-template-columns: 302px 1fr; min-height: 0; }
+main { display: grid; grid-template-columns: 302px minmax(0, 1fr); min-height: 0; min-width: 0; }
 @media (max-width: 900px) {
   body { overflow: auto; height: auto; min-height: 100%; }
   main { display: flex; flex-direction: column; }
@@ -101,13 +105,13 @@ input[type="range"] {
 /* The sky fills what the readout strip leaves. The strip sits below the sky,
    not over it: it has grown to three lines, and the part of the sky it used to
    cover is the horizon, where most of the constellation is. */
-#canvas-wrap { position: relative; min-height: 0; background: #05060a; display: flex; flex-direction: column; }
+#canvas-wrap { position: relative; min-height: 0; min-width: 0; background: #05060a; display: flex; flex-direction: column; }
 #sky-area { position: relative; flex: 1; min-height: 0; }
 #sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
 #sky:active { cursor: grabbing; }
 
 #readout-strip {
-  position: relative; flex: none;
+  position: relative; flex: none; min-width: 0;
   background: #0a0c14; border-top: 1px solid var(--line);
   padding: 8px 14px 9px; pointer-events: none;
 }
@@ -181,6 +185,12 @@ input[type="range"] {
   position: absolute; right: 10px; bottom: calc(100% + 5px); z-index: 4;
   font: 10px var(--mono); color: rgba(199, 205, 224, 0.55);
   pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+}
+/* On a narrow screen the credit takes two lines, which would cover the
+   compass points along the horizon, so it moves below the sky, to the top of
+   the readout strip. */
+@media (max-width: 900px) {
+  #attribution { position: static; text-align: right; margin-top: 4px; }
 }
 
 /* a slider with a number box beside it (latitude: whole degrees by dragging,

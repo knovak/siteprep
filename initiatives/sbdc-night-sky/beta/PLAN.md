@@ -53,6 +53,7 @@ the code in this folder as it stood before Unit 1.
 | 9 | The twilight sky-brightness table is darker than the photometry it cites: 16.5 mag/arcsec² with the Sun 6° down, where Patat et al. (2006) measured 13.3. Stars and satellites are counted as visible too early in the evening | Comparison with Site 2's twilight model, then the paper | 3 |
 | 10 | Turning or zooming the view in the instant after the constellation was rebuilt could raise "Simulator error": the picture paired the new constellation with the old evaluation | A screenshot run during Unit 4 | 4 |
 | 11 | The readout strip lay over the bottom of the sky, covering the horizon and the compass points | The same | 4 |
+| 12 | On a phone the page was 1,452 px wide on a 390 px screen, so the phone shrank it to fit and the controls were too small to use. Fault 11's fix put the readout strip in the page's flow, and its lines do not wrap on a narrow screen, so the longest line set the page's width. With the page at the screen's width, the credit line wrapped onto two lines and covered the compass points | Checking the sticky sky at phone size, 2026-11-16 | After unit 5 |
 
 Fault 9 is the largest. At the end of civil twilight the simulator's sky is
 about 19 times darker than the measured sky, so the limiting magnitude there is
@@ -290,4 +291,5 @@ simulator stays as released.
 | 2 - Constellation and brightness settings, presets | Merged 2026-11-15, [knovak/siteprep#653](https://github.com/knovak/siteprep/pull/653) |
 | 3 - Twilight correction and ambient light | Merged 2026-11-15, [knovak/siteprep#654](https://github.com/knovak/siteprep/pull/654) |
 | 4 - Moonlight and light ratios | Merged 2026-11-15, [knovak/siteprep#655](https://github.com/knovak/siteprep/pull/655) |
-| 5 - Hours of significant light, display items | In its pull request |
+| 5 - Hours of significant light, display items | Merged 2026-11-15, [knovak/siteprep#656](https://github.com/knovak/siteprep/pull/656) |
+| Fault 12 - page width on a phone | In its pull request |
