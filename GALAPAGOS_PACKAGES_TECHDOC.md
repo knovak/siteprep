@@ -70,6 +70,15 @@ meet the two-cabin brief. Keep unresolved or insufficient stock in holding under
 the page's documented selection rule. No scheduling is implemented by this
 code.
 
+Special case (November 16, 2026): the nine user-requested Lindblad Delfina
+2027 schedule-only entries live in the comparison alongside stock-qualified
+records. Their `package-availability` and `party-availability` paragraphs must
+explicitly state that neither general inventory nor two cabins were verified.
+They omit `data-usd` because the provider's generic starting price is not a
+departure-specific subtotal. Preserve the permanent IDs {385} and {689} moved
+from research holding; the others have new distinct IDs. The booking window is
+April 15–June 20, 2027 (embarkation dates).
+
 ## Verification
 
 After the final source changes, run `npm run build` once, then
