@@ -81,6 +81,41 @@ test('all seven headings sort in both directions, including numeric fares and ev
   expect(await page.locator(`${rows} .comparison-price`).allTextContents()).toEqual([...fares].sort((a, b) => compareFare(a, b, -1)));
 });
 
+test('country, currency-aware price, room evidence and review rank dropdowns filter together', async ({ page }) => {
+  await page.goto(url);
+  const country = page.locator('[data-filter="country"]');
+  const price = page.locator('[data-filter="price"]');
+  const party = page.locator('[data-filter="party"]');
+  const rank = page.locator('[data-filter="rank"]');
+  const clear = page.getByRole('button', { name: 'Clear all column filters' });
+  await expect(clear).toBeDisabled();
+  await expect(country.locator('option')).toContainText([
+    'All countries', 'Algeria', 'Egypt', 'Morocco', 'Spain', 'Tunisia',
+  ]);
+  await country.selectOption('Morocco');
+  await expect(page.locator(rows)).toHaveCount(2);
+  await price.selectOption('EUR:under');
+  await expect(page.locator(rows)).toHaveCount(1);
+  await expect(page.locator(rows).first()).toHaveAttribute('data-package-id', 'package-592');
+  await page.locator('[data-sort="name"]').click();
+  await expect(page.locator(rows)).toHaveCount(1);
+  await rank.selectOption('High');
+  await expect(page.locator('.comparison-empty')).toBeVisible();
+  await expect(page.locator('#comparison-count')).toHaveText('0 of 34 packages');
+  await clear.click();
+  await expect(page.locator(rows)).toHaveCount(34);
+  await expect(page.locator('#comparison-count')).toHaveText('34 packages');
+  await expect(page.locator('[data-sort="name"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
+
+  await party.selectOption('Operator-reported fit (not held)');
+  const matches = await page.locator(rows + '[data-package-id]').evaluateAll(
+    (elements) => elements.map((row) => row.dataset.packageId).sort());
+  expect(matches).toEqual(['package-240', 'package-603', 'package-973']);
+  await party.selectOption('Cannot meet two private rooms');
+  expect(await page.locator(rows + '[data-package-id]').count()).toBeGreaterThan(0);
+  await expect(page.locator(rows).first().locator('.comparison-party')).toContainText(/No|not offered/i);
+});
+
 test('a future source refresh updates prices, review phrases, ranks and removed packages automatically', async ({ page }) => {
   let expectedCount;
   await page.route(`**${url}`, async (route) => {
