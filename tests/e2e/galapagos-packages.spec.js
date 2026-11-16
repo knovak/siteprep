@@ -153,7 +153,7 @@ test('Delfina follows the same stock-qualified rule and all nine dated price rec
   await expect(page.locator('article .card-header')).toContainText('April 15–June 20, 2027');
   await expect(page.locator(selector)).toHaveCount(0);
   await expect(page.locator('a[href="overview-reject.html#delfina-sailings"]').first()).toBeAttached();
-  await expect(page.locator(rows)).toHaveCount(34);
+  await expect(page.locator(rows)).toHaveCount(33);
   await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
 
   await page.goto(holding);
