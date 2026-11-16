@@ -44,6 +44,17 @@
     return { main: excerpt(main, 180), caution: excerpt(caution || '', 120) };
   }
 
+  function roomEvidence(text) {
+    if (/^Operator-reported yes\b/i.test(text)) return 'Operator-reported fit (not held)';
+    if (/^(?:Priced selection for four|Provider reports six rooms)\b/i.test(text)) {
+      return 'Four-person selection (not held)';
+    }
+    if (/^(?:No\b|Four places advertised; two private rooms throughout are not offered)/i.test(text)) {
+      return 'Cannot meet two private rooms';
+    }
+    return 'Two rooms not confirmed';
+  }
+
   function firstFare(text) {
     const match = text.match(/(US\$|€|£|USD|EUR|GBP)\s*([\d,]+(?:\.\d+)?)/);
     const currency = { 'US$': 'USD', '€': 'EUR', '£': 'GBP' }[match?.[1]] || match?.[1] || '';
@@ -72,7 +83,7 @@
     const rank = evidenceRank(assessment);
     const summary = reviewSummary(assessment, rank);
     packages.push({ id: element.id, itemId, name, country, price, availability, party, rank, summary,
-      reviews: `${summary.main} ${summary.caution}`, fare: firstFare(price) });
+      reviews: `${summary.main} ${summary.caution}`, fare: firstFare(price), roomStatus: roomEvidence(party) });
   });
 
   function render(rows) {
@@ -115,23 +126,47 @@
       row.appendChild(rank);
       fragment.appendChild(row);
     });
+    if (!rows.length) {
+      const empty = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = 7;
+      cell.className = 'comparison-empty';
+      cell.textContent = 'No packages match the selected column filters.';
+      empty.appendChild(cell);
+      fragment.appendChild(empty);
+    }
     body.replaceChildren(fragment);
   }
 
-  document.getElementById('comparison-count').textContent = `${packages.length} packages`;
-  render(packages);
+  const count = document.getElementById('comparison-count');
+  const status = document.getElementById('comparison-sort-status');
+  const buttons = Array.from(document.querySelectorAll('.comparison-table [data-sort]'));
+  const rankValues = { Low: 0, Medium: 1, High: 2 };
   let activeColumn = '';
   let direction = 'ascending';
-  const rankValues = { Low: 0, Medium: 1, High: 2 };
-  const buttons = Array.from(document.querySelectorAll('.comparison-table [data-sort]'));
-  buttons.forEach((button) => button.addEventListener('click', () => {
-    const column = button.dataset.sort;
-    direction = activeColumn === column
-      ? (direction === 'ascending' ? 'descending' : 'ascending')
-      : (column === 'rank' ? 'descending' : 'ascending');
-    activeColumn = column;
+  const filters = SiteprepPackageTableFilters.mount({
+    table: document.querySelector('.comparison-table'),
+    items: packages,
+    resetHost: document.querySelector('.comparison-intro'),
+    onChange: refresh,
+    configs: [
+      { key: 'country', label: 'Country', allLabel: 'All countries',
+        value: (item) => item.country },
+      { key: 'price', label: 'Price', allLabel: 'All original-currency price bands',
+        value: (item) => SiteprepPackageTableFilters.priceBucket(item.fare),
+        choices: SiteprepPackageTableFilters.priceChoices(packages, (item) => item.fare) },
+      { key: 'party', label: '4 people · 2 rooms', allLabel: 'All room evidence',
+        value: (item) => item.roomStatus },
+      { key: 'rank', label: 'Review evidence rank', allLabel: 'All review ranks',
+        value: (item) => item.rank },
+    ],
+  });
+
+  function orderedPackages() {
+    if (!activeColumn) return packages;
+    const column = activeColumn;
     const multiplier = direction === 'ascending' ? 1 : -1;
-    render([...packages].sort((a, b) => {
+    return [...packages].sort((a, b) => {
       let result;
       if (column === 'price') {
         // Missing prices stay last. No conversion or unstated exchange rate.
@@ -145,15 +180,38 @@
         result = collator.compare(a[column], b[column]);
       }
       return result * multiplier;
-    }));
+    });
+  }
+
+  function refresh() {
+    const visible = filters.apply(orderedPackages());
+    render(visible);
+    count.textContent = filters.activeCount()
+      ? visible.length + ' of ' + packages.length + ' packages'
+      : packages.length + ' packages';
+    status.textContent = activeColumn ? 'Sorted by ' + activeColumn + ', ' + direction + '.'
+      : 'Original list order.';
+    if (filters.activeCount()) {
+      status.textContent += ' ' + visible.length + ' of ' + packages.length + ' packages match '
+        + filters.activeCount() + ' active column filter(s).';
+    }
+  }
+
+  buttons.forEach((button) => button.addEventListener('click', () => {
+    const column = button.dataset.sort;
+    direction = activeColumn === column
+      ? (direction === 'ascending' ? 'descending' : 'ascending')
+      : (column === 'rank' ? 'descending' : 'ascending');
+    activeColumn = column;
     buttons.forEach((other) => {
       const selected = other === button;
       other.closest('th').setAttribute('aria-sort', selected ? direction : 'none');
       other.querySelector('.sort-indicator').textContent = selected
         ? (direction === 'ascending' ? '↑' : '↓') : '↕';
     });
-    document.getElementById('comparison-sort-status').textContent = `Sorted by ${column}, ${direction}.`;
+    refresh();
   }));
+  refresh();
 
   // A jump also opens a topic that the reader has previously collapsed.
   document.addEventListener('click', (event) => {

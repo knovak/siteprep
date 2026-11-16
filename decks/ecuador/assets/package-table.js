@@ -63,12 +63,29 @@
       dates: startDate(item.querySelector('.package-dates')),
       price: numericAttribute(item.querySelector('.package-price'), 'data-usd'),
     };
+    const duration = entry.dates.match(/\b(\d+)\s+days?\s*\/\s*\d+\s+nights?\b/i);
+    entry.filterShip = entry.numeric.ship === null ? 'Unknown capacity'
+      : /Coral I.*or Coral II/i.test(entry.ship) ? '20 or 36 guests (vessel unassigned)'
+        : entry.numeric.ship + ' guests';
+    entry.filterDuration = duration ? Number(duration[1]) + ' days' : 'Unknown duration';
+    // The detailed paragraph's bold lead may contain the evidence qualification;
+    // paragraphText deliberately removes that lead from the comparison cell.
+    const originalPartyText = item.querySelector('.party-availability')?.textContent || '';
+    entry.filterParty = /\btwo (?:queen|king|private twin) cabins? priced together\b/i.test(originalPartyText)
+      ? 'Two-cabin quote (not held)' : 'Two cabins not verified';
+    entry.filterPrice = SiteprepPackageTableFilters.priceBucket({
+      currency: 'USD', amount: entry.numeric.price,
+    });
     return entry;
   });
 
   const count = document.createElement('p');
   count.id = 'comparison-count';
-  count.textContent = `${packages.length} packages. The initial order follows the detailed list. Sort by any column; open a package for sources and full costs.`;
+  const initialCount = packages.length + ' packages. The initial order follows the detailed list. Sort or filter by column; open a package for sources and full costs.';
+  count.textContent = initialCount;
+  const toolbar = document.createElement('div');
+  toolbar.className = 'comparison-controls';
+  toolbar.appendChild(count);
   const scroll = document.createElement('div');
   scroll.className = 'table-scroll comparison-scroll';
   scroll.tabIndex = 0;
@@ -105,7 +122,7 @@
   status.setAttribute('aria-live', 'polite');
   status.textContent = 'Original list order. Price sorting uses only the stated USD per-person subtotal; unknown values stay last.';
   scroll.appendChild(table);
-  container.replaceChildren(count, scroll, status);
+  container.replaceChildren(toolbar, scroll, status);
 
   function render(rows) {
     const fragment = document.createDocumentFragment();
@@ -132,18 +149,45 @@
       });
       fragment.appendChild(row);
     });
+    if (!rows.length) {
+      const empty = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = columns.length;
+      cell.className = 'comparison-empty';
+      cell.textContent = 'No packages match the selected column filters.';
+      empty.appendChild(cell);
+      fragment.appendChild(empty);
+    }
     body.replaceChildren(fragment);
   }
 
-  render(packages);
   let activeColumn = '';
   let direction = 'ascending';
-  buttons.forEach((button) => button.addEventListener('click', () => {
-    const field = button.dataset.sort;
-    direction = activeColumn === field && direction === 'ascending' ? 'descending' : 'ascending';
-    activeColumn = field;
+  const initialStatus = status.textContent;
+  const filters = SiteprepPackageTableFilters.mount({
+    table,
+    items: packages,
+    resetHost: toolbar,
+    onChange: refresh,
+    configs: [
+      { key: 'ship', label: 'Ship / guests', allLabel: 'All guest capacities',
+        value: (item) => item.filterShip },
+      { key: 'dates', label: 'Departure / duration', allLabel: 'All trip lengths',
+        value: (item) => item.filterDuration },
+      { key: 'price', label: 'Known USD / person', allLabel: 'All USD price bands',
+        value: (item) => item.filterPrice,
+        choices: SiteprepPackageTableFilters.priceChoices(packages,
+          (item) => ({ currency: 'USD', amount: item.numeric.price })) },
+      { key: 'party', label: 'Two private cabins', allLabel: 'All cabin evidence',
+        value: (item) => item.filterParty },
+    ],
+  });
+
+  function orderedPackages() {
+    if (!activeColumn) return packages;
+    const field = activeColumn;
     const multiplier = direction === 'ascending' ? 1 : -1;
-    render([...packages].sort((a, b) => {
+    return [...packages].sort((a, b) => {
       let result;
       if (Object.hasOwn(a.numeric, field)) {
         const left = a.numeric[field], right = b.numeric[field];
@@ -156,16 +200,41 @@
         result = collator.compare(a[field], b[field]);
       }
       return result * multiplier || a.index - b.index;
-    }));
+    });
+  }
+
+  function refresh() {
+    const visible = filters.apply(orderedPackages());
+    render(visible);
+    count.textContent = filters.activeCount()
+      ? visible.length + ' of ' + packages.length + ' packages match the selected filters.'
+      : initialCount;
+    if (activeColumn) {
+      const title = columns.find(([key]) => key === activeColumn)[1];
+      status.textContent = 'Sorted by ' + title + ', ' + direction
+        + '. Unknown numeric values stay last. Detailed list order is unchanged.';
+    } else {
+      status.textContent = initialStatus;
+    }
+    if (filters.activeCount()) {
+      status.textContent += ' ' + visible.length + ' of ' + packages.length + ' packages match '
+        + filters.activeCount() + ' active column filter(s).';
+    }
+  }
+
+  buttons.forEach((button) => button.addEventListener('click', () => {
+    const field = button.dataset.sort;
+    direction = activeColumn === field && direction === 'ascending' ? 'descending' : 'ascending';
+    activeColumn = field;
     buttons.forEach((other) => {
       const selected = other === button;
       other.closest('th').setAttribute('aria-sort', selected ? direction : 'none');
       other.querySelector('.sort-indicator').textContent = selected
         ? (direction === 'ascending' ? '↑' : '↓') : '↕';
     });
-    const title = columns.find(([key]) => key === field)[1];
-    status.textContent = `Sorted by ${title}, ${direction}. Unknown numeric values stay last. Detailed list order is unchanged.`;
+    refresh();
   }));
+  refresh();
 
   // Links still reach evidence when readers have collapsed the containing topic.
   function revealTarget(hash) {

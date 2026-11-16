@@ -322,6 +322,45 @@ a.tag:focus {
   overflow-wrap: anywhere;
 }
 
+/* Filter controls are independent of the sortable heading buttons. */
+.comparison-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 0.4rem;
+}
+.comparison-controls #comparison-count { margin: 0; }
+.comparison-table thead .comparison-filter {
+  display: block;
+  width: calc(100% - 0.9rem);
+  min-width: 0;
+  margin: 0 0.45rem 0.55rem;
+  padding: 0.35rem 0.25rem;
+  font: inherit;
+  font-size: 0.82rem;
+  color: #0f172a;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+}
+.comparison-filter:focus-visible, .comparison-clear:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.comparison-clear {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #b6c8dc;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--primary);
+  font: inherit;
+  cursor: pointer;
+}
+.comparison-clear:disabled { opacity: 0.5; cursor: default; }
+.comparison-empty { text-align: center !important; font-style: italic; }
+
 .comparison-status {
   color: var(--muted);
   font-size: 0.88rem;
