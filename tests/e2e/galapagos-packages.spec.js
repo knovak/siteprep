@@ -107,6 +107,7 @@ test('sorts use capacity, dates and comparable prices; missing evidence remains 
 
 test('guest, duration, USD price and room-evidence filters compose without breaking sorting', async ({ page }) => {
   await page.goto(url);
+  const total = await page.locator(rows).count();
   const byShip = page.locator('[data-filter="ship"]');
   const byDays = page.locator('[data-filter="dates"]');
   const byPrice = page.locator('[data-filter="price"]');
@@ -114,7 +115,7 @@ test('guest, duration, USD price and room-evidence filters compose without break
   const clear = page.getByRole('button', { name: 'Clear all column filters' });
 
   await expect(byShip.locator('option')).toContainText([
-    'All guest capacities', '16 guests', '20 or 36 guests (vessel unassigned)',
+    'All guest capacities', '16 guests', '20 guests', '20 or 36 guests (vessel unassigned)',
     '32 guests', '40 guests',
   ]);
   await expect(byDays.locator('option')).toContainText([
@@ -127,7 +128,7 @@ test('guest, duration, USD price and room-evidence filters compose without break
   await byDays.selectOption('5 days');
   const subset = page.locator(rows + '[data-package-id]');
   expect(await subset.count()).toBeGreaterThan(0);
-  expect(await subset.count()).toBeLessThan(34);
+  expect(await subset.count()).toBeLessThan(total);
   for (const item of await subset.all()) {
     await expect(item.locator('.comparison-ship')).toContainText('16 guests');
     await expect(item.locator('.comparison-dates')).toContainText('5 days / 4 nights');
@@ -146,16 +147,19 @@ test('guest, duration, USD price and room-evidence filters compose without break
 
   await byShip.selectOption('32 guests');
   await expect(page.locator('.comparison-empty')).toBeVisible();
-  await expect(page.locator('#comparison-count')).toContainText('0 of 34 packages');
+  await expect(page.locator('#comparison-count')).toContainText(`0 of ${total} packages`);
   await clear.click();
   await expect(clear).toBeDisabled();
-  await expect(page.locator(rows)).toHaveCount(34);
-  await expect(page.locator('#comparison-count')).toContainText('34 packages.');
+  await expect(page.locator(rows)).toHaveCount(total);
+  await expect(page.locator('#comparison-count')).toContainText(`${total} packages.`);
   await expect(page.locator('[data-sort="price"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
   await byRooms.selectOption('Two-cabin quote (not held)');
-  await expect(page.locator(rows)).toHaveCount(3);
+  await expect(page.locator(rows)).toHaveCount(7);
   expect(await subset.evaluateAll((elements) => elements.map((row) => row.dataset.packageId).sort()))
-    .toEqual(['package-138', 'package-461', 'package-872']);
+    .toEqual(['package-138', 'package-404', 'package-461', 'package-582', 'package-607', 'package-872', 'package-976']);
+  await byRooms.selectOption('Named cabins listed (not held)');
+  await expect(page.locator(rows)).toHaveCount(1);
+  await expect(page.locator(rows)).toHaveAttribute('data-package-id', 'package-706');
 });
 
 test('detail links open collapsed evidence and the comparison stays within a phone viewport', async ({ page }) => {
@@ -211,7 +215,7 @@ test('Delfina date-specific booking lead is distinct from actual two-cabin proof
   await expect(june.locator('.package-availability')).toContainText('reported November 16, 2026');
   await expect(june.locator('a[href*="DAGALADA-270611"]').first()).toHaveAttribute('href', /DAGALADA-270611/);
   await expect(june.locator('.party-availability')).toContainText('unverified');
-  await expect(page.locator(rows)).toHaveCount(34);
+  await expect(june.locator('.party-availability')).toContainText('301 (port) and 302 (starboard)');
   await expect(page.locator('[data-package-id="package-706"]')).toHaveCount(1);
   await expect(page.locator('#cabin-audit')).toContainText('Two-cabin availability evidence');
   await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
@@ -273,4 +277,18 @@ test('June refresh has six source-qualified departures with unverified two-cabin
   const mainIds = await page.locator('li[id^="package-"]').evaluateAll((items) => items.map((item) => item.id));
   expect(new Set(mainIds).size).toBe(mainIds.length);
   await expect(page.locator('footer.site-footer')).toHaveCount(1);
+});
+
+test('new research distinguishes extension-inclusive USD prices from split-currency fares', async ({ page }) => {
+  await page.goto(url);
+  await expect(page.locator('.package-list > li').filter({ has: page.locator('strong', { hasText: /^O\.A\.T\. —/ }) })).toHaveCount(20);
+  for (const [id, price] of [['564', '10898'], ['154', '10298'], ['848', '10398'], ['156', '9698']]) {
+    await expect(page.locator(`#package-${id} .package-price`)).toHaveAttribute('data-usd', price);
+  }
+  for (const id of ['661', '396', '778', '838']) {
+    const price = page.locator(`#package-${id} .package-price`);
+    await expect(price).toContainText('US$880');
+    expect(await price.getAttribute('data-usd')).toBeNull();
+  }
+  await expect(page.locator('#package-976 .package-dates')).toContainText('Sun Jun 20');
 });
