@@ -70,9 +70,17 @@
     entry.filterDuration = duration ? Number(duration[1]) + ' days' : 'Unknown duration';
     // The detailed paragraph's bold lead may contain the evidence qualification;
     // paragraphText deliberately removes that lead from the comparison cell.
-    const originalPartyText = item.querySelector('.party-availability')?.textContent || '';
-    entry.filterParty = /\btwo (?:queen|king|private twin) cabins? priced together\b/i.test(originalPartyText)
-      ? 'Two-cabin quote (not held)' : 'Two cabins not verified';
+    const partyParagraph = item.querySelector('.party-availability');
+    const roomEvidence = partyParagraph?.dataset.roomEvidence;
+    const previousQuote = /\btwo (?:queen|king|private twin) cabins? priced together\b/i
+      .test(partyParagraph?.textContent || '');
+    if (roomEvidence === 'listed') {
+      entry.filterParty = 'Named cabins listed (not held)';
+    } else if (roomEvidence === 'quoted' || previousQuote) {
+      entry.filterParty = 'Two-cabin quote (not held)';
+    } else {
+      entry.filterParty = 'Two cabins not verified';
+    }
     entry.filterPrice = SiteprepPackageTableFilters.priceBucket({
       currency: 'USD', amount: entry.numeric.price,
     });
