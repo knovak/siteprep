@@ -254,12 +254,11 @@ test('Delfina date-specific booking lead is distinct from actual two-cabin proof
   await expect(page.locator('body')).toContainText('Charlie and Cheryl Schaff');
 });
 
-test('June refresh has six source-qualified departures with unverified two-cabin status', async ({ page }) => {
+test('June records follow current stock and fare evidence with unverified two-cabin status', async ({ page }) => {
   await page.goto(url);
   const cases = [
-    ['710', '2027-06-01', '13400'],
-    ['711', '2027-06-03', '4893'],
-    ['713', '2027-06-08', '4665'],
+    ['711', '2027-06-03', '4659'],
+    ['713', '2027-06-08', '5665'],
     ['714', '2027-06-10', '5150'],
     ['715', '2027-06-09', '5385'],
     ['716', '2027-06-17', '5616'],
@@ -269,11 +268,16 @@ test('June refresh has six source-qualified departures with unverified two-cabin
     await expect(detail).toHaveCount(1);
     await expect(detail.locator('.package-dates')).toHaveAttribute('data-start', date);
     await expect(detail.locator('.package-price')).toHaveAttribute('data-usd', price);
-    await expect(detail.locator('.package-availability')).toContainText('November 16, 2026');
+    await expect(detail.locator('.package-availability')).toContainText('November 19, 2026');
     await expect(detail.locator('.package-availability a[href*="galapagosdanatours.com"]').first()).toHaveAttribute('href', /galapagosdanatours.com/);
     await expect(detail.locator('.party-availability')).toContainText('unverified');
     await expect(page.locator(`${rows}[data-package-id="package-${id}"]`)).toHaveCount(1);
   }
+  await expect(page.locator('li#package-710')).toHaveCount(0);
+  const holdingPage = await page.context().newPage();
+  await holdingPage.goto(holding);
+  await expect(holdingPage.locator('#package-710')).toContainText('two places');
+  await holdingPage.close();
   const mainIds = await page.locator('li[id^="package-"]').evaluateAll((items) => items.map((item) => item.id));
   expect(new Set(mainIds).size).toBe(mainIds.length);
   await expect(page.locator('footer.site-footer')).toHaveCount(1);
