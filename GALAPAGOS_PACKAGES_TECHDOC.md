@@ -106,13 +106,15 @@ mandatory extension in the comparable price. An AUD fare with additional USD
 fees has no single USD sort key.
 
 A dated stock signal is required for each main-list entry. Delfina June 11
-{706} lists cabins 301 and 302 in the operator’s November 18 selector. Its
+{706} lists cabins 301 and 302 in the operator’s November 19 selector. Its
 earlier USD partner rate has a separate date and scope. Eight other Delfina
 dates remain in holding under their original IDs. See the research notes for
 the operator and seller observations behind each change.
 
-Six June 2027 operator-family departures with dated Dana seller stock signals
-were added to the main comparison as {710}, {711}, {713}, {714}, {715}, {716}.
+The original six June seller-stock records retain their IDs. On November 19,
+Grace June 1 {710} moved to insufficient-stock holding (two places). The five
+remaining June records are {711}, {713}, {714}, {715}, {716}; fresh fares and
+stock replace older snapshot assertions in the existing browser check.
 Their numeric price keys include the documented known fee allowance where not
 already included; four advertised seats do not prove two private cabins. Confirm
 fee treatment for Grace's Quasar inclusions before booking. June seller
