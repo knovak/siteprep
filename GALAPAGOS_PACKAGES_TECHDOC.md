@@ -65,9 +65,12 @@ unchanged. Filtering applies only to the comparison, never the source entries.
 - **Known USD / person:** source `data-usd` in three bands: below US$5,000,
   US$5,000–10,000 inclusive, above US$10,000, plus an unknown option. These
   are known subtotals, not all-in vacation costs.
-- **Two private cabins:** precisely worded two-cabin priced-together
-  quotation versus **Two cabins not verified**. A quote is not a booking
-  confirmation or hold.
+- **Two private cabins.** Set `data-room-evidence="quoted"` on the party paragraph
+  when an operator prices two private rooms in a single four-adult selection.
+  Use `data-room-evidence="listed"` when two named rooms are displayed for
+  that party and a joint quote is still outstanding. Older queen, king and
+  private-twin quotations retain their existing text-based classification.
+  All other records use the unverified filter.
 
 Multiple dropdown selections are intersected. Sorting remains active and is
 retained when filters are reset. The header selects have independent accessible
@@ -96,15 +99,17 @@ meet the two-cabin brief. Keep unresolved or insufficient stock in holding under
 the page's documented selection rule. No scheduling is implemented by this
 code.
 
-Current uniform rule (November 16, 2026): Delfina is **not a special case**.
-All nine formally published 2027 Delfina dates belong to research holding
-(`overview-reject.html#delfina-sailings`) until a dated public general-stock
-signal is verified, just like any other operator. Published itineraries and
-dated Category 04/05 partner fares are **not inventory**. They have individual
-`package-price`, `package-availability` and `party-availability` fields, with
-genuine date-specific published fares and zero verified two-cabin allocations.
-Keep their permanent IDs {385}, {701}, {689}, {702}–{707}. Do not invent a
-sortable main-table `data-usd` or re-promote these items on a fare alone.
+Use the vessel embarkation date for the April 15–June 20 window. For
+land-and-cruise packages, store the operator’s package start in `data-start`
+and spell out the cruise dates and any inference in the record. Keep a
+mandatory extension in the comparable price. An AUD fare with additional USD
+fees has no single USD sort key.
+
+A dated stock signal is required for each main-list entry. Delfina June 11
+{706} lists cabins 301 and 302 in the operator’s November 18 selector. Its
+earlier USD partner rate has a separate date and scope. Eight other Delfina
+dates remain in holding under their original IDs. See the research notes for
+the operator and seller observations behind each change.
 
 Six June 2027 operator-family departures with dated Dana seller stock signals
 were added to the main comparison as {710}, {711}, {713}, {714}, {715}, {716}.
