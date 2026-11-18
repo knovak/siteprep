@@ -76,3 +76,17 @@ may use an offshore viewing-region marker (Tunisia) when the included offer
 is a sea departure. Hotel and city additions are orientation points, with
 coordinate sources in research-notes.md; unpublished observing sites stay
 explicitly unknown.
+
+## 19 November 2026 inventory refresh
+
+The source inventory has 36 offers, including Siwa Classic {270} and the distinct
+15-day Rail & Sail {214}. `package-map.js` adds only a Siwa orientation point;
+research-notes.md records its coordinate source and unpublished exact site.
+
+Availability history is kept in dated details for changed stock and fares.
+The active source paragraphs still drive every comparison cell and dropdown.
+Dar Habu's one room must classify as unable to meet two private rooms; Al Wadi
+and Villa Kamose remain the two operator-reported room-fit records. Priced
+four-person selections retain their assignment/fee limitations and are not
+reservations. New entries use the existing `Priced selection for four` wording
+so the room-evidence dropdown recognizes the same evidence as the description.

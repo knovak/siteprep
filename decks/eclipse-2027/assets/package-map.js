@@ -2,6 +2,13 @@
 (() => {
   const locations = [
   {
+    "name": "Siwa Oasis / واحة سيوة",
+    "country": "Egypt",
+    "lat": 29.203171,
+    "lng": 25.519545,
+    "description": "Oasis orientation only; final META hotel and eclipse site are unpublished"
+  },
+  {
     "name": "Cádiz viewing region",
     "country": "Spain",
     "lat": 36.53,
