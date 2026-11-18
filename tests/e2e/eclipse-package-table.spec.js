@@ -101,16 +101,16 @@ test('country, currency-aware price, room evidence and review rank dropdowns fil
   await expect(page.locator(rows)).toHaveCount(1);
   await rank.selectOption('High');
   await expect(page.locator('.comparison-empty')).toBeVisible();
-  await expect(page.locator('#comparison-count')).toHaveText('0 of 34 packages');
+  await expect(page.locator('#comparison-count')).toHaveText('0 of 36 packages');
   await clear.click();
-  await expect(page.locator(rows)).toHaveCount(34);
-  await expect(page.locator('#comparison-count')).toHaveText('34 packages');
+  await expect(page.locator(rows)).toHaveCount(36);
+  await expect(page.locator('#comparison-count')).toHaveText('36 packages');
   await expect(page.locator('[data-sort="name"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
 
   await party.selectOption('Operator-reported fit (not held)');
   const matches = await page.locator(rows + '[data-package-id]').evaluateAll(
     (elements) => elements.map((row) => row.dataset.packageId).sort());
-  expect(matches).toEqual(['package-240', 'package-603', 'package-973']);
+  expect(matches).toEqual(['package-240', 'package-973']);
   await party.selectOption('Cannot meet two private rooms');
   expect(await page.locator(rows + '[data-package-id]').count()).toBeGreaterThan(0);
   await expect(page.locator(rows).first().locator('.comparison-party')).toContainText(/No|not offered/i);
