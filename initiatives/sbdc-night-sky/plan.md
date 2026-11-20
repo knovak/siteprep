@@ -6,6 +6,8 @@ Companion to SPECIFICATION.md · July 9, 2026
 
 > **Status: complete.** All phases executed; see PHASE1/PHASE23/PHASE4 reports and FINAL_REPORT.md. Deviations from this plan are listed in the SPECIFICATION.md addendum.
 
+**Beta follow-up, 20 November 2026:** The [ranked audit and cloud-browser evidence](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-2026-11-20.md) cover eleven issues. The [work-package record](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-implementation-2026-11-20.md) tracks A–D, reproduction commands, and acceptance. Next: test the interaction on a physical phone with a screen reader; have a science reviewer assess the sampling limits before any external use of the estimates. The released line and the dormant initiative status are unchanged.
+
 ## 0. Development shape
 
 Source is developed as separable files, then a tiny build step inlines them into the single deliverable:

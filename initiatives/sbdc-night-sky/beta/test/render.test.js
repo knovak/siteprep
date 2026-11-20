@@ -6,6 +6,12 @@ import { zenithMu } from "../src/model.js";
 
 const skyData = JSON.parse(readFileSync(new URL("../data/sbdc-data.json", import.meta.url)));
 
+test("camera trails may cross the frame with both endpoints outside, but not across the panorama seam", () => {
+  assert.ok(R.trailMayCross({ x: -50, y: 30 }, { x: 150, y: 80 }, 100, 100, 500));
+  assert.ok(!R.trailMayCross({ x: -151, y: 30 }, { x: 151, y: 30 }, 100, 100, 500));
+  assert.ok(!R.trailMayCross({ x: NaN, y: 20 }, { x: 10, y: 20 }, 100, 100));
+});
+
 test("horizon projection round-trips az/alt", () => {
   const view = { centerAz: 200, centerAlt: 25, fovDeg: 100 };
   for (const [az, alt] of [[200, 25], [160, 5], [250, 60], [359, 10]]) {

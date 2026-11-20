@@ -90,9 +90,8 @@ const TR = {
   bright: ["SBDC brightness", "Luminosité des SBDC"],
   bUnmit: ["unmitigated", "sans atténuation"],
   bStrong: ["strong mitigation", "atténuation forte"],
-  bIau: ["IAU target", "cible UAI"],
-  hintBright: ["median mag at 1,000 km reference · +0.5 ≈ unmitigated · +5.5 ≈ strong mitigation (Starlink record) · +7 = IAU target",
-               "mag médiane à la référence 1 000 km · +0,5 ≈ sans atténuation · +5,5 ≈ atténuation forte (record Starlink) · +7 = cible UAI"],
+  hintBright: ["Population median at 1,000 km and 90° phase. Apparent brightness varies with range, angle and design; this is not a compliance test.",
+               "Médiane à 1 000 km et 90° de phase. La luminosité apparente dépend de la distance, de l’angle et de la conception ; ce réglage ne vérifie pas la conformité."],
   trains: ["Recent launch trains", "Trains de lancement récents"],
   seed: ["Seed (reproducibility)", "Graine (reproductibilité)"],
   grpAdvanced: ["Advanced", "Avancé"],
@@ -115,21 +114,26 @@ const TR = {
   viewFish: ["All-sky fisheye (zenith at center)", "Ciel entier (zénith au centre)"],
   aim: ["Aim at densest sky", "Viser le ciel le plus dense"],
   grpNight: ["Night & year", "Nuit et année"],
-  hintNight: ["the hours in which SBDC light is significant at this latitude, with these settings · three definitions, side by side",
-              "les heures où la lumière des SBDC est significative à cette latitude, avec ces réglages · trois définitions, côte à côte"],
+  hintNight: ["Estimates. Night: 5-minute steps, about 100k satellites or fewer. Year: 15-minute steps, about 30k or fewer, 24 equally weighted nights. Counts and flux are scaled; rare clusters can change the result. Model calendar skips Feb 29.",
+              "Estimations. Nuit : pas de 5 min, environ 100 000 satellites ou moins. Année : pas de 15 min, environ 30 000 ou moins, 24 nuits de même poids. Comptages et flux extrapolés ; les grappes rares influent sur le résultat. Le calendrier saute le 29 février."],
+  cancel: ["Cancel", "Annuler"], cancelled: ["Calculation cancelled.", "Calcul annulé."],
+  analysisError: ["Calculation unavailable. Try again in a browser that supports background workers.", "Calcul indisponible. Réessayez dans un navigateur prenant en charge les calculs en arrière-plan."],
+  chartTime: ["Explore chart time", "Explorer l’heure du graphique"], details: ["Sky measurements", "Mesures du ciel"],
+  objects: ["visible objects", "objets visibles"], skyTotal: ["across the sky", "dans tout le ciel"],
+  lightNote: ["Satellite light is summed over the visible hemisphere. It is neither diffuse skyglow nor illuminance on the ground.", "La lumière des satellites est intégrée sur l’hémisphère visible. Elle ne mesure ni le halo diffus ni l’éclairement au sol."],
   nightRun: ["Compute this night", "Calculer cette nuit"], yearRun: ["Compute the year", "Calculer l\u2019année"],
   nightCol: ["this night", "cette nuit"], yearCol: ["a year", "une année"],
   nightRows: {
     night: ["night (Sun below the horizon)", "nuit (Soleil sous l\u2019horizon)"],
-    atLeast100: ["at least 100 SBDCs visible to the naked eye", "au moins 100 SBDC visibles à l\u2019œil nu"],
-    outnumberStars: ["visible SBDCs outnumber visible stars", "les SBDC visibles dépassent les étoiles visibles"],
+    atLeast100: ["at least 100 visible SBDC objects", "au moins 100 objets SBDC visibles"],
+    outnumberStars: ["visible SBDC objects outnumber visible stars", "objets SBDC visibles plus nombreux que les étoiles visibles"],
     exceedsSky: ["SBDC light exceeds the sky\u2019s own light", "la lumière des SBDC dépasse celle du ciel"],
   },
   nightStale: ["settings have changed since this was computed", "les réglages ont changé depuis ce calcul"],
   nightDone: ["computed for", "calculé pour"],
   nightYearOf: ["dates", "dates"],
-  nightLegend: ["gold: visible SBDCs · blue: visible stars · bars below: when each definition holds · click to go to a time",
-                "or : SBDC visibles · bleu : étoiles visibles · barres : quand chaque définition est remplie · cliquer pour aller à une heure"],
+  nightLegend: ["Gold: visible objects (an unresolved group counts once). Blue: visible stars. Bars follow the table order. Click or use the time slider.",
+                "Or : objets visibles (une grappe non résolue compte une fois). Bleu : étoiles visibles. Barres dans l’ordre du tableau. Cliquer ou utiliser le curseur horaire."],
   nightHours: ["h", "h"],
   eyelim: ["Eye limit", "Limite de l\u2019œil"],
   ambient: ["Ambient light", "Lumière ambiante"],
@@ -151,8 +155,8 @@ const TR = {
   moOff: ["Off (no Moon)", "Sans Lune"], moDate: ["As on this date", "Comme à cette date"],
   moPhase: ["Set the phase", "Choisir la phase"],
   year: ["Year", "Année"],
-  hintYear: ["the Moon\u2019s place on this date, taking the solar time as universal time · it is within a few degrees for any longitude",
-             "la position de la Lune à cette date, l\u2019heure solaire étant prise comme temps universel · à quelques degrés près pour toute longitude"],
+  hintYear: ["Approximate Moon position. The model uses solar time as universal time; it does not use your longitude.",
+             "Position approximative de la Lune. Le modèle assimile l’heure solaire au temps universel et ne tient pas compte de votre longitude."],
   moonAge: ["Days since new Moon", "Jours depuis la nouvelle Lune"],
   hintMoon: ["moonlight brightens the sky, which hides faint satellites and stars",
              "le clair de Lune éclaircit le ciel, ce qui cache les satellites et étoiles faibles"],
@@ -161,7 +165,7 @@ const TR = {
     ["nouvelle", "premier croissant", "premier quartier", "gibbeuse croissante", "pleine", "gibbeuse décroissante", "dernier quartier", "dernier croissant"],
   ],
   mLit: ["lit", "éclairée"], mUp: ["up", "de hauteur"], mDown: ["below the horizon", "sous l\u2019horizon"],
-  lSbdc: ["SBDC light", "Lumière des SBDC"], lTotal: ["mag in total", "mag au total"],
+  lSbdc: ["Summed SBDC light over the whole sky", "Lumière des SBDC intégrée sur tout le ciel"], lTotal: ["mag in total", "mag au total"],
   lNone: ["none: no sunlit SBDC is above the horizon", "aucune : aucun SBDC éclairé au-dessus de l\u2019horizon"],
   // each comparison in two forms: after a multiple ("10× a full Moon") and
   // after a fraction ("1/22 of a full Moon")
@@ -181,10 +185,10 @@ const TR = {
   poleS: ["south celestial pole", "pôle céleste sud"],
   hintStarlim: ["the faintest magnitude this observer sees under a dark sky · twilight and ambient light lower it further",
                 "la magnitude la plus faible vue par cet observateur sous un ciel sombre · le crépuscule et la lumière ambiante l\u2019abaissent"],
-  hintDrag: ["Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details",
-             "Glisser pour se déplacer · pincer/molette pour zoomer · flèches/±/espace au clavier · toucher un point brillant pour les détails"],
-  hintLongexp: ["every sunlit satellite becomes a 12–27° streak; stars to the catalog limit",
-                "chaque satellite éclairé devient une traînée de 12–27° ; étoiles jusqu'à la limite du catalogue"],
+  hintDrag: ["Drag to pan; scroll to zoom. With the sky focused: arrows pan, +/− zoom, Space plays or pauses.",
+             "Glisser pour déplacer la vue ; molette pour zoomer. Avec le focus sur le ciel : flèches pour déplacer, +/− pour zoomer, espace pour lire ou suspendre."],
+  hintLongexp: ["30 s trails for sunlit members starting above the horizon at magnitude 9 or brighter. Very faint trails are omitted; length depends on motion and viewing geometry.",
+                "Traînées de 30 s pour les satellites éclairés initialement au-dessus de l’horizon, de magnitude 9 ou plus brillants. Les traînées très faibles sont omises ; la longueur dépend du mouvement et de la géométrie."],
   busy: ["computing…", "calcul…"],
   facing: ["facing", "cap"],
   rSun: ["SUN", "SOLEIL"], rAbove: ["SBDCs above horizon", "SBDC au-dessus de l'horizon"],
@@ -251,6 +255,10 @@ function applyLang(lang) {
   };
   txt("header .sub", "tagline");
   txt("#open-assumptions", "assumBtn"); txt("#snapshot", "saveBtn");
+  txt("#assump-title", "assumBtn"); $("close-assumptions").textContent = LANG.cur === "fr" ? "Fermer" : "Close";
+  txt("#headline-aim", "aim"); txt("#detail-label", "details"); txt("#light-note", "lightNote");
+  txt("#analysis-stop", "cancel"); txt("#night-picker", "chartTime");
+  $("night-chart").setAttribute("aria-label", T("nightLegend"));
   const sums = document.querySelectorAll("aside details.grp > summary");
   ["grpSettings", "grpObserver", "grpConstellation", "grpSky", "grpNight", "grpAdvanced"].forEach((k, i) => {
     if (sums[i]) sums[i].textContent = T(k);
@@ -324,10 +332,14 @@ function fmtDoy(doy) {
 
 /* ------------------------- recompute pipeline ------------------------- */
 
+let rebuildTimer = null;
 function rebuildConstellation() {
   if (Settings.applying) return;   // applySettings rebuilds once, when it is done
   setBusy(true);
-  setTimeout(() => {
+  $("night-run").disabled = $("year-run").disabled = true;
+  clearTimeout(rebuildTimer);
+  rebuildTimer = setTimeout(() => {
+    rebuildTimer = null;
     const d = App.data;
     const cfg = MODEL.defaultConfig(d, {
       totalSats: App.cfg.totalSats,
@@ -344,6 +356,7 @@ function rebuildConstellation() {
     });
     App.state.propagationSec = 0;   // fresh constellation, fresh clock
     App.cons = MODEL.generateConstellation(cfg, d);
+    $("night-run").disabled = $("year-run").disabled = false;
     reevaluate();
   }, 10);
 }
@@ -364,9 +377,10 @@ function reevaluate() {
     App.evCons = cons;
     const st = MODEL.starAltAz(catalog, state.latDeg, state.doy, state.solarTimeHours, data);
     App.stars = st;
-    App.starVis = MODEL.starVisibility(
+    const starResult = MODEL.starVisibility(
       catalog, st, state.latDeg, App.ev.sunDir, App.ev.sunAltDeg,
-      state.userLimitingMag, data, App.ev.sky).vis;
+      state.userLimitingMag, data, App.ev.sky);
+    App.starVis = starResult.vis;
     // camera mode: a 30 s exposure records the whole catalog, and each
     // satellite needs its end-of-exposure sky position
     if (App.renderer.longExposure) {
@@ -378,7 +392,7 @@ function reevaluate() {
     } else {
       App.streaks = null;
     }
-    App.summary = MODEL.summarize(cons, state, data, catalog);
+    App.summary = MODEL.summarize(cons, state, data, catalog, App.ev, starResult.count);
     redraw();                       // also writes the readout
     updateDateLabels();
     Night.render();                 // its results may be out of date now, and its time cursor has moved
@@ -410,7 +424,6 @@ function brightLabel(m) {
   const s = (m >= 0 ? "+" : "\u2212") + Math.abs(m).toFixed(1);
   if (Math.abs(m - 0.5) < 0.26) return `${s} \u2014 ${T("bUnmit")}`;
   if (Math.abs(m - 5.5) < 0.26) return `${s} \u2014 ${T("bStrong")}`;
-  if (m >= 6.75) return `${s} \u2014 ${T("bIau")}`;
   return `${s} mag`;
 }
 
@@ -479,6 +492,9 @@ function updateReadout() {
   // The totals are for the whole sky. The horizon view shows part of it, so
   // the count inside the picture is given beside each total.
   const framed = App.inView && App.renderer.view.mode !== "fisheye";
+  const format = count => count.toLocaleString(LANG.cur);
+  $("headline").textContent = `${T("objects")} · ${format(framed ? App.inView.sats : s.visibleObjects)} ${T("rInView")} / ${format(s.visibleObjects)} ${T("skyTotal")} · ${T("rStars")} ${format(framed ? App.inView.stars : s.visibleStars)} / ${format(s.visibleStars)}`;
+  $("headline-aim").disabled = !framed || !s.visibleObjects;
   const inView = (n) => (framed ? ` (${n.toLocaleString()} ${T("rInView")})` : "");
   const line =
     `${T("rSun")} ${s.sunAltDeg > 0 ? "+" : ""}${s.sunAltDeg.toFixed(1)}°  ·  ` +
@@ -586,7 +602,7 @@ function setPlaying(p) {
     let last = Date.now();
     App.playTimer = setInterval(() => {
       const now = Date.now(), dt = (now - last) / 1000; last = now;
-      App.state.solarTimeHours = (App.state.solarTimeHours + dt / 3600) % 24;
+      advanceClock(dt / 3600);
       App.state.propagationSec = (App.state.propagationSec || 0) + dt;
       $("time").value = Math.round(App.state.solarTimeHours * 60);
       reevaluate();
@@ -594,12 +610,18 @@ function setPlaying(p) {
   } else {
     const stepMin = slow ? 20 : 6;       // simulated minutes per tick
     App.playTimer = setInterval(() => {
-      App.state.solarTimeHours = (App.state.solarTimeHours + stepMin / 60) % 24;
+      advanceClock(stepMin / 60);
       if (App.shimmer) App.state.propagationSec = (App.state.propagationSec || 0) + stepMin * 60;
       $("time").value = Math.round(App.state.solarTimeHours * 60);
       reevaluate();
     }, slow ? 650 : 140);
   }
+}
+
+function advanceClock(hours) {
+  Object.assign(App.state, MODEL.calendarAt(App.state, App.state.solarTimeHours + hours, App.data.geometryModel.yearAnchor.value));
+  $("date").value = App.state.doy;
+  $("year").value = App.state.year;
 }
 
 /* ------------------------- night and year ------------------------- */
@@ -613,7 +635,7 @@ function setPlaying(p) {
 const Night = {
   night: null,       // { key, samples, hours, stepMinutes, label }
   year: null,        // { key, hours, label }
-  job: 0,            // a year in progress is abandoned when this changes
+  worker: null,
 
   /** Everything a result depends on: the constellation and the observer,
    *  without the time of day and, for a year, without the date. */
@@ -622,45 +644,40 @@ const Night = {
     return JSON.stringify([forYear ? null : doy, rest, App.cfg, $("shells-custom-input").value]);
   },
 
-  place() { return `${Math.abs(App.state.latDeg)}°${App.state.latDeg >= 0 ? "N" : "S"}`; },
-
-  computeNight() {
-    if (!App.cons) return;
-    setBusy(true);
-    setTimeout(() => {
-      const step = 5;
-      const thin = MODEL.thinConstellation(App.cons, 100000);
-      const samples = MODEL.nightSamples(thin, App.state, App.data, App.catalog, step);
-      Night.night = { key: Night.key(false), samples, stepMinutes: step,
-                      hours: MODEL.significantHours(samples, step),
-                      label: `${Night.place()}, ${fmtDoy(App.state.doy)}` };
-      setBusy(false);
-      Night.render();
-    }, 20);
+  stop(message = "") {
+    Night.worker?.terminate();
+    Night.worker = null;
+    Night.progress = message;
+    $("analysis-stop").hidden = true;
+    Night.render();
   },
 
-  computeYear() {
-    if (!App.cons) return;
-    const job = ++Night.job, step = 15, key = Night.key(true);
-    const thin = MODEL.thinConstellation(App.cons, 30000);
-    const state = { ...App.state }, days = MODEL.YEAR_SAMPLE_DAYS, perNight = [];
-    const next = () => {
-      if (job !== Night.job) return;                    // a newer run replaced this one
-      if (perNight.length === days.length) {
-        Night.year = { key, hours: MODEL.yearHours(perNight), label: Night.place() };
-        Night.progress = null;
-        Night.render();
-        return;
-      }
-      const samples = MODEL.nightSamples(thin, { ...state, doy: days[perNight.length] }, App.data, App.catalog, step);
-      perNight.push(MODEL.significantHours(samples, step));
-      Night.progress = `${perNight.length}/${days.length} ${T("nightYearOf")}`;
+  run(kind) {
+    if (!App.cons || rebuildTimer !== null) return;
+    Night.stop();
+    const annual = kind === "year", key = Night.key(annual), state = { ...App.state };
+    const url = URL.createObjectURL(new Blob([$("analysis-code").textContent], { type: "text/javascript" }));
+    try {
+      const worker = new Worker(url);
+      Night.worker = worker;
+      worker.onmessage = ({ data: result }) => {
+        if (Night.worker !== worker) return;
+        if (result.dates) {
+          Night.progress = `${T("busy")} ${result.dates}/${MODEL.YEAR_SAMPLE_DAYS.length} ${T("nightYearOf")}`;
+          Night.render();
+        } else {
+          Night[kind] = { ...result, key, state };
+          Night.stop();
+        }
+      };
+      worker.onerror = () => { if (Night.worker === worker) Night.stop(T("analysisError")); };
+      const thin = MODEL.thinConstellation(App.cons, annual ? 30000 : 100000);
+      worker.postMessage({ kind, thin, state, data: App.data, catalog: App.catalog });
+      Night.progress = T("busy");
+      $("analysis-stop").hidden = false;
       Night.render();
-      setTimeout(next, 0);
-    };
-    Night.progress = `0/${days.length} ${T("nightYearOf")}`;
-    Night.render();
-    setTimeout(next, 20);
+    } catch { Night.stop(T("analysisError")); }
+    finally { URL.revokeObjectURL(url); }
   },
 
   /** Write the table, the status line and the chart. */
@@ -672,15 +689,30 @@ const Night = {
       const key = row.dataset.key;
       row.children[1].textContent = Night.night ? hours(Night.night.hours[key]) : "\u2014";
       row.children[2].textContent = Night.year ? hours(Night.year.hours[key]) : "\u2014";
+      row.children[1].classList.toggle("stale", !!Night.night && !fresh(Night.night, false));
+      row.children[2].classList.toggle("stale", !!Night.year && !fresh(Night.year, true));
     }
     const stale = (Night.night && !fresh(Night.night, false)) || (Night.year && !fresh(Night.year, true));
     $("night-grp").classList.toggle("stale", !!stale);
     const lines = [];
-    if (Night.progress) lines.push(`${T("busy")} ${Night.progress}`);
-    if (Night.night) lines.push(`${T("nightCol")}: ${T("nightDone")} ${Night.night.label}`);
-    if (Night.year) lines.push(`${T("yearCol")}: ${T("nightDone")} ${Night.year.label}`);
-    if (stale) lines.push(T("nightStale"));
-    $("night-status").textContent = lines.join("\n");
+    if (Night.progress) lines.push(Night.progress);
+    for (const [kind, col] of [["night", "nightCol"], ["year", "yearCol"]]) {
+      const result = Night[kind];
+      if (!result) continue;
+      const { latDeg, doy, year } = result.state;
+      const label = `${Math.abs(latDeg)}°${latDeg >= 0 ? "N" : "S"}, ${kind === "year" ? "" : fmtDoy(doy) + " "}${year}`;
+      lines.push(`${T(col)}: ${T("nightDone")} ${label}${fresh(result, kind === "year") ? "" : " — " + T("nightStale")}`);
+    }
+    const status = lines.join("\n");
+    if ($("night-status").textContent !== status) $("night-status").textContent = status;
+    $("night-time").disabled = !Night.night;
+    if (Night.night) {
+      const index = Math.round(+$("night-time").value / Night.night.stepMinutes);
+      const sample = Night.night.samples[index];
+      const description = `${fmtDoy(sample.doy)} ${fmtTime(sample.hours)} · ${sample.night ? `${sample.visibleObjects} ${T("objects")} (${sample.visibleMembers} ${T("rSatsIn")}) · ${sample.visibleStars} ${T("rStars")}` : (LANG.cur === "fr" ? "jour" : "daylight")}`;
+      $("night-selection").textContent = description;
+      $("night-time").setAttribute("aria-valuetext", description);
+    }
     Night.drawChart();
   },
 
@@ -703,7 +735,7 @@ const Night = {
     const samples = Night.night.samples.filter((s) => s.minutes >= span.from && s.minutes <= span.to);
     const padL = 8, padR = 8, top = 28, bars = 3 * 12 + 6, base = H - bars - 26;
     const X = (minutes) => padL + (minutes - span.from) / (span.to - span.from) * (W - padL - padR);
-    const most = Math.max(10, ...samples.map((s) => Math.max(s.visible, s.visibleStars)));
+    const most = Math.max(10, ...samples.map((s) => Math.max(s.visibleObjects, s.visibleStars)));
     const scale = Math.ceil(Math.log10(most * 1.05));
     const Y = (count) => base - Math.log10(Math.max(count, 1)) / scale * (base - top);
     // decades
@@ -723,7 +755,7 @@ const Night = {
       g.stroke();
     };
     line("visibleStars", "#8fb4ff");
-    line("visible", "#e0b060");
+    line("visibleObjects", "#e0b060");
     // when each definition holds
     const colors = ["#e0b060", "#c9d2ee", "#d98a5a"];
     const width = Night.night.stepMinutes / (span.to - span.from) * (W - padL - padR);
@@ -751,8 +783,19 @@ const Night = {
     const cv = $("night-chart"), rect = cv.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width * cv.width;
     const minutes = span.from + (x - 8) / (cv.width - 16) * (span.to - span.from);
-    const clock = Math.round(((12 * 60 + Math.max(span.from, Math.min(span.to, minutes))) % 1440));
-    $("time").value = clock % 1440;
+    Night.goTo(Math.round(Math.max(span.from, Math.min(span.to, minutes))));
+  },
+
+  goTo(minutes) {
+    if (!Night.night) return;
+    const step = Night.night.stepMinutes;
+    minutes = Math.min(1440 - step, Math.max(0, Math.round(minutes / step) * step));
+    const date = MODEL.calendarAt(Night.night.state, 12 + minutes / 60, Night.night.state.year);
+    Object.assign(App.state, date, { propagationSec: 0 });
+    $("date").value = date.doy;
+    $("year").value = date.year;
+    $("night-time").value = minutes;
+    $("time").value = Math.round(date.solarTimeHours * 60) % 1440;
     $("time").dispatchEvent(new Event("input", { bubbles: true }));
   },
 };
@@ -794,8 +837,16 @@ function buildAssumptions() {
 /* ------------------------- snapshot ------------------------- */
 
 function snapshot() {
+  if (evalPending || rebuildTimer !== null) { requestAnimationFrame(snapshot); return; }
   const src = App.renderer.canvas;
-  const CAP = 122;
+  const CAP = 144;
+  const yaml = SETTINGS.settingsToYaml(readSettings());
+  const reference = PROVENANCE.settingsReference(yaml);
+  const build = document.querySelector('meta[name="sbdc-build"]').content;
+  const channel = $("siteprep-channel-stamp")?.textContent.replace(/^[\s·]+/, "").trim() || "standalone";
+  const provenance = `${channel} · build ${build} · settings ${reference}`;
+  const metadata = `# ${provenance}\n# Solar hours: ${App.state.solarTimeHours}; orbit propagation seconds: ${App.state.propagationSec}\n${yaml}`;
+  const file = `sbdc-sky_${build}_${reference}.png`;
   const out = document.createElement("canvas");
   out.width = src.width; out.height = src.height + CAP;
   const g = out.getContext("2d");
@@ -812,13 +863,13 @@ function snapshot() {
   caption($("readout").textContent, src.height + 30, "#e8e4d8");
   caption($("readout-light").textContent, src.height + 56, "#d9c9a3");
   caption($("readout-sub").textContent, src.height + 82, "#8b8fa3");
-  g.fillStyle = "#6b6f83";
-  g.font = `${Math.max(10, out.width / 130)}px ui-monospace, monospace`;
-  g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 108);
+  caption("Ken Novak · David Sandalow", src.height + 105, "#a5aec3");
+  caption(provenance, src.height + 130, "#d9c9a3");
   out.toBlob((blob) => {
+    if (!blob) return;
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `sbdc-sky_lat${App.state.latDeg}_${fmtDoy(App.state.doy).replace(" ", "")}_${fmtTime(App.state.solarTimeHours).replace(":", "")}.png`;
+    a.href = URL.createObjectURL(PROVENANCE.embedSettings(blob, metadata));
+    a.download = file;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   });
@@ -1107,21 +1158,25 @@ function bindControls() {
     // face the direction that takes in the most visible SBDCs
     if (!App.ev || App.renderer.view.mode === "fisheye") return;
     const azimuths = [];
-    for (const i of App.ev.above) if (App.ev.visible[i]) azimuths.push(App.ev.az[i]);
+    if (App.ev.objects) for (const object of App.ev.objects.values()) azimuths.push(object.az);
+    else for (const i of App.ev.above) if (App.ev.visible[i]) azimuths.push(App.ev.az[i]);
     const az = RENDER.densestAzimuth(azimuths, App.renderer.view.fovDeg);
     if (az == null) return;
     App.renderer.view.centerAz = Math.round(az);
     redraw();
   });
-  on("night-run", "click", () => Night.computeNight());
-  on("year-run", "click", () => Night.computeYear());
+  on("headline-aim", "click", () => $("aim").click());
+  on("night-run", "click", () => Night.run("night"));
+  on("year-run", "click", () => Night.run("year"));
+  on("analysis-stop", "click", () => Night.stop(T("cancelled")));
+  on("night-time", "input", e => Night.goTo(+e.target.value));
   on("night-chart", "click", (e) => Night.clickChart(e));
-  on("open-assumptions", "click", () => { $("assump").classList.add("open"); });
-  on("close-assumptions", "click", () => { $("assump").classList.remove("open"); });
+  on("open-assumptions", "click", () => $("assump").showModal());
+  on("close-assumptions", "click", () => $("assump").close());
   on("snapshot", "click", snapshot);
 
-  document.addEventListener("keydown", (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+  on("sky", "keydown", (e) => {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) e.preventDefault();
     const v = App.renderer.view;
     if (e.key === "ArrowLeft") { v.centerAz = (v.centerAz - 5 + 360) % 360; redraw(); }
     else if (e.key === "ArrowRight") { v.centerAz = (v.centerAz + 5) % 360; redraw(); }
@@ -1326,7 +1381,7 @@ function exportSettings() {
   });
   const file = `sbdc-settings_lat${s.observer.latitude}_` +
     `${SETTINGS.settingsFormatDate(s.observer.date).replace(" ", "")}_` +
-    `${fmtTime(App.state.solarTimeHours).replace(":", "")}.yaml`;
+    `${fmtTime(App.state.solarTimeHours).replace(":", "")}_${PROVENANCE.settingsReference(SETTINGS.settingsToYaml(s))}.yaml`;
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([text], { type: "text/yaml;charset=utf-8" }));
   a.download = file;
@@ -1436,8 +1491,7 @@ function bindSettings() {
   aside.addEventListener("click", (e) => { if (e.target.tagName === "BUTTON") outside(e); });
   App.renderer.canvas.addEventListener("pointerdown", settingsTouched);
   App.renderer.canvas.addEventListener("wheel", settingsTouched, { passive: true });
-  document.addEventListener("keydown", (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+  App.renderer.canvas.addEventListener("keydown", (e) => {
     if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-", " "].includes(e.key)) settingsTouched();
   });
 }
@@ -1496,11 +1550,10 @@ function boot() {
   bindSettings();
   $("lang-toggle").addEventListener("click", () =>
     applyLang(LANG.cur === "en" ? "fr" : "en"));
-  // On phones, keep the sky pinned and start with only the settings panel and
-  // Observer expanded — the other groups stay one tap away without pushing
-  // the sky off screen.
   const narrow = typeof window.matchMedia === "function" &&
     window.matchMedia("(max-width: 900px)").matches;
+  $("readout-details").open = !narrow;
+  applyLang("en");
   if (narrow) {
     document.querySelectorAll("aside details.grp").forEach((d, i) => {
       if (i > 1) d.open = false;

@@ -260,3 +260,13 @@ now at the top of the readout strip, below the sky.
 away in both the released simulator and the beta, and it stays the
 `mobile-sky-follow-up` todo item.
 
+## 2026-11-20 — Independent review of the published beta
+
+The [beta evaluation and evidence](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-2026-11-20.md) ranks eleven findings from the hosted desktop/phone experience, local browser measurements, model probes, and an external lunar ephemeris. The evidence and three screenshots live in `notes/`.
+
+Recommended beta work, in order: **A** distinguish visible objects from members and correct brightness claims; **B** bind calculations to their starting settings and keep the interface responsive; **C** expose the counts on phones and restore standard keyboard behavior; **D** validate overnight dates and quantify uncertainty before citing annual estimates. Each package has an acceptance gate in the report. No beta code, production release authorization, dormant status, or sticky-sky decision changes here.
+
+## 2026-11-20 — Implemented audit packages A–D on the beta line
+
+The beta now distinguishes visible objects from satellites, runs cancellable analyses using captured inputs, exposes readable counts and keyboard controls, and records export provenance. The [verification record](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-implementation-2026-11-20.md) includes sampling comparisons, a measured dark-sky reference, response timings and outstanding real-device checks. No change to the released simulator.
+

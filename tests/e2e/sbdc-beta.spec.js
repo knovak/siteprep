@@ -57,7 +57,7 @@ async function openBeta(page, hash = '') {
   const problems = { errors: [], requests: [] };
   page.on('pageerror', (error) => problems.errors.push(String(error)));
   page.on('request', (request) => {
-    if (!request.url().split('#')[0].endsWith(BETA)) problems.requests.push(request.url());
+    if (!request.url().startsWith('blob:') && !request.url().split('#')[0].endsWith(BETA)) problems.requests.push(request.url());
   });
   await page.goto(BETA + hash);
   await settled(page);
@@ -174,7 +174,7 @@ test.describe('SBDC beta', () => {
 
     // Turning the view changes what is in it and leaves the sky totals alone.
     // The compass follows the keyboard as well as the pointer.
-    await page.locator('#sky').hover();
+    await page.locator('#sky').focus();
     for (let i = 0; i < 18; i++) await page.keyboard.press('ArrowRight');
     await expect(page.locator('#compass')).toHaveText('facing 90°');
     const east = await readout(page);
@@ -530,7 +530,7 @@ test.describe('SBDC beta', () => {
     expect(camera.visibleInView).toBeGreaterThan(0);
     expect(camera.visibleInView).toBeLessThanOrEqual(camera.visible);
     // it turns with the keyboard like the panorama
-    await page.locator('#sky').hover();
+    await page.locator('#sky').focus();
     for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowLeft');
     await expect(page.locator('#compass')).toHaveText('facing 285°');
 
@@ -558,7 +558,7 @@ test.describe('SBDC beta', () => {
     const problems = await openBeta(page);
     await choosePreset(page, 'sdross0 default, no mitigation');
     // turn away from the ring first: east, where the sky is nearly empty
-    await page.locator('#sky').hover();
+    await page.locator('#sky').focus();
     for (let i = 0; i < 27; i++) await page.keyboard.press('ArrowRight');
     await expect(page.locator('#compass')).toHaveText('facing 90°');
     const away = await readout(page);
@@ -593,7 +593,11 @@ test.describe('SBDC beta', () => {
     const box = await page.locator('#night-chart').boundingBox();
     await page.locator('#night-chart').click({ position: { x: box.width / 2, y: box.height / 2 } });
     await expect(page.locator('#time-label')).toHaveText(/^(23:[3-5]\d|00:[0-2]\d)$/);
-    // the time is not one of the things a night's result depends on
+    await page.locator('#night-time').press('End');
+    await expect(page.locator('#date-label')).toHaveText('Jun 22');
+    await expect(page.locator('#night-time')).toHaveAttribute('aria-valuetext', /Jun 22 11:55/);
+    await page.locator('#night-time').press('Home');
+    await expect(page.locator('#date-label')).toHaveText('Jun 21');
     await expect(page.locator('#night-grp')).not.toHaveClass(/stale/);
 
     // the latitude is: the result is kept, dimmed, and says why
@@ -649,6 +653,118 @@ test.describe('SBDC beta', () => {
     expect(widths.strip).toBeLessThanOrEqual(390);
     expect(widths.creditTop).toBeGreaterThanOrEqual(widths.skyBottom);
     expect(problems.errors).toEqual([]);
+  });
+
+  test('assumptions use native keyboard activation and restore focus', async ({ page }) => {
+    await openBeta(page);
+    const button = page.locator('#open-assumptions');
+    const initial = await page.locator('#play-ff').textContent();
+    await button.press('Space');
+    await expect(page.locator('dialog:modal')).toBeVisible();
+    await expect(page.locator('#close-assumptions')).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.locator('#assump .sheet')).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.locator('#close-assumptions')).toBeFocused();
+    await page.locator('#sky').evaluate(el => el.focus());
+    await expect(page.locator('#sky')).not.toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(button).toBeFocused();
+    await expect(page.locator('#play-ff')).toHaveText(initial);
+  });
+
+  test('results retain their starting latitude after an edit during the year', async ({ page }) => {
+    const problems = await openBeta(page);
+    await setValue(page, '#nsats', 0);
+    await settled(page);
+    await page.locator('#night-grp summary').click();
+    await page.evaluate(() => new Promise(resolve => {
+      const status = document.querySelector('#night-status');
+      const observer = new MutationObserver(() => {
+        if (!status.textContent.includes('/24')) return;
+        observer.disconnect();
+        const box = document.querySelector('#lat-num');
+        box.value = '15'; box.dispatchEvent(new Event('input', { bubbles: true }));
+        box.dispatchEvent(new Event('change', { bubbles: true }));
+        resolve();
+      });
+      observer.observe(status, { childList: true });
+      document.querySelector('#year-run').click();
+    }));
+    await expect(page.locator('#night-status')).toHaveText(/a year: computed for 40°N.*settings have changed/, { timeout: 60000 });
+    const previous = await page.locator('[data-key="night"] td').nth(2).textContent();
+    await page.locator('#year-run').click();
+    await page.locator('#analysis-stop').click();
+    await expect(page.locator('#night-status')).toContainText('cancelled');
+    await expect(page.locator('[data-key="night"] td').nth(2)).toHaveText(previous);
+    const annualHours = () => page.locator('#night-table tbody tr td:last-child').allTextContents();
+    const captured = await annualHours();
+    await setValue(page, '#lat-num', 40);
+    await settled(page);
+    await page.locator('#year-run').click();
+    await expect(page.locator('#analysis-stop')).toBeHidden({ timeout: 60000 });
+    expect(await annualHours()).toEqual(captured);
+    await expect(page.locator('#night-status')).not.toContainText('settings have changed');
+    expect(problems).toEqual({ errors: [], requests: [] });
+  });
+
+  for (const [width, zoom] of [[320, 1], [390, 1], [640, 2]]) {
+    test(`mobile answers wrap in both languages at ${width}px and ${zoom * 100}%`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await openBeta(page);
+      await page.evaluate(scale => { document.body.style.zoom = scale; }, zoom);
+      for (const language of ['en', 'fr']) {
+        if (language === 'fr') await page.locator('#lang-toggle').click();
+        await expect(page.locator('#headline')).toContainText(language === 'en' ? '546 across the sky' : '546 dans tout le ciel');
+        await page.locator('#readout-details').evaluate(el => { el.open = true; });
+        const dimensions = await page.evaluate(() => [document.documentElement, ...document.querySelectorAll('#headline,#readout,#readout-sub,#readout-light')]
+          .map(el => [el.scrollWidth, el.clientWidth, getComputedStyle(el).textOverflow]));
+        for (const [content, frame, overflow] of dimensions) {
+          expect(content).toBeLessThanOrEqual(frame + 1);
+          expect(overflow).not.toBe('ellipsis');
+        }
+      }
+    });
+  }
+
+  test('the picture and chart count compact groups once in both languages', async ({ page }) => {
+    const problems = await openBeta(page);
+    const content = 'observer:\n  time: "20:15"\nconstellation:\n  satellites: 10000\n  launch_trains: 0\n  clustering: true\n  satellites_per_cluster: 100\n  cluster_diameter_km: 0.2\nadvanced:\n  cluster_membership_variation: 0\n  cluster_diameter_variation: 0\n';
+    await page.locator('#settings-file').setInputFiles({ name: 'compact.yaml', mimeType: 'text/plain', buffer: Buffer.from(content) });
+    await expect(page.locator('#readout')).toContainText('VISIBLE objects 3 (300 satellites within)');
+    await page.locator('#night-grp summary').click();
+    await page.locator('#night-run').click();
+    await expect(page.locator('#night-time')).toBeEnabled();
+    await setValue(page, '#night-time', 495);
+    await expect(page.locator('#night-selection')).toHaveText(/20:15 · 3 visible objects \(300 satellites within\) · 44 visible stars/);
+    await page.locator('#lang-toggle').click();
+    await expect(page.locator('#night-selection')).toHaveText(/3 objets visibles \(300 satellites inclus\) · 44 étoiles visibles/);
+    await expect(page.locator('#readout')).toContainText('300 satellites inclus');
+    expect(problems).toEqual({ errors: [], requests: [] });
+  });
+
+  test('PNG embeds the same settings as the downloadable YAML', async ({ page }) => {
+    const fs = require('node:fs/promises');
+    await openBeta(page);
+    const download = async selector => {
+      const [file] = await Promise.all([page.waitForEvent('download'), page.locator(selector).click()]);
+      return { name: file.suggestedFilename(), data: await fs.readFile(await file.path()) };
+    };
+    const png = await download('#snapshot');
+    const yaml = await download('#settings-export');
+    const match = png.name.match(/^sbdc-sky_([\da-f]{12})_([\da-f]{8})\.png$/);
+    expect(match).toBeTruthy();
+    expect(yaml.name).toContain(`_${match[2]}.yaml`);
+    const chunks = [];
+    for (let offset = 8; offset < png.data.length;) {
+      const size = png.data.readUInt32BE(offset);
+      chunks.push([png.data.toString('ascii', offset + 4, offset + 8), png.data.toString('utf8', offset + 8, offset + 8 + size)]);
+      offset += size + 12;
+    }
+    expect(chunks.at(-1)[0]).toBe('IEND');
+    expect(chunks.at(-2)[0]).toBe('iTXt');
+    expect(chunks.at(-2)[1]).toContain(`build ${match[1]} · settings ${match[2]}`);
+    expect(chunks.at(-2)[1]).toContain(yaml.data.toString('utf8').replace(/^# Exported .*\n/m, '').trim());
   });
 
   test('every preset loads and draws', async ({ page }) => {

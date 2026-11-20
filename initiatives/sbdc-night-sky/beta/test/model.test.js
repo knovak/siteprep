@@ -958,7 +958,7 @@ test("a thinned constellation stands for the whole one", () => {
   // counts from the thinned one, scaled up, are close to the full counts
   const state = { latDeg: 40, doy: dayOfYear(12, 21), solarTimeHours: 18.5, userLimitingMag: 6.5 };
   const a = M.summarize(full, state, data, catalog), b = M.sampleInstant(thin, state, data, catalog);
-  assert.ok(Math.abs(b.visible / a.visible - 1) < 0.05, `visible ${b.visible} against ${a.visible}`);
+  assert.ok(Math.abs(b.visibleObjects / a.visibleObjects - 1) < 0.05);
   assert.equal(b.visibleStars, a.visibleStars, "the stars are not thinned");
   // the summed light depends on the brightest few percent, so a tenth of the
   // satellites gives it to within about a fifth
@@ -985,7 +985,7 @@ test("a night: 24 hours from noon, sampled when the Sun is down", () => {
   assert.equal(samples[48].hours, 0, "midnight is half way");
   for (const s of samples) {
     assert.equal(s.night, s.sunAltDeg <= M.NIGHT_SUN_ALT_DEG, `at ${s.hours}`);
-    if (!s.night) { assert.equal(s.visible, 0); assert.equal(s.toSkyNow, null); }
+    if (!s.night) { assert.equal(s.visibleObjects, 0); assert.equal(s.toSkyNow, null); }
   }
   const hours = M.significantHours(samples, 15);
   // 40 N on the June solstice: about 9 hours between sunset and sunrise
@@ -997,7 +997,7 @@ test("a night: 24 hours from noon, sampled when the Sun is down", () => {
 });
 
 test("hours are counted from samples by each definition", () => {
-  const night = (visible, visibleStars, toSkyNow) => ({ night: true, visible, visibleStars, toSkyNow });
+  const night = (visibleObjects, visibleStars, toSkyNow) => ({ night: true, visibleObjects, visibleStars, toSkyNow });
   const samples = [
     { night: false, visible: 0, visibleStars: 0, toSkyNow: null },
     night(0, 0, null),            // dark, nothing sunlit
@@ -1006,8 +1006,51 @@ test("hours are counted from samples by each definition", () => {
     night(5000, 2000, 3),         // all three
     night(100, 100, 1),           // exactly 100; not more than the stars; exactly the sky's light
   ];
-  assert.deepEqual(M.significantHours(samples, 30), { night: 2.5, atLeast100: 1.5, outnumberStars: 1, exceedsSky: 1 });
+  assert.deepEqual(M.significantHours(samples, 30), { night: 2.5, atLeast100: 1.5, outnumberStars: 1, exceedsSky: 0.5 });
   assert.deepEqual(M.SIGNIFICANCE.map((d) => d.key), ["atLeast100", "outnumberStars", "exceedsSky"]);
+});
+
+test("unresolved points compete with stars; members remain inventory", () => {
+  const constellation = M.generateConstellation(M.defaultConfig(data, { totalSats: 10000, seed: 12345, trains: 0,
+    clustering: { enabled: true, satsPerCluster: 100, memberSigma: 0, clusterDiameterKm: 0.1, diameterSigma: 0 } }), data);
+  const state = { doy: 172, latDeg: 40, solarTimeHours: 20.25, brightnessRefMag: 0.5 };
+  const sample = M.sampleInstant(constellation, state, data, catalog);
+  const evaluation = M.evaluate(constellation, state, data);
+  assert.deepEqual([evaluation.objects.size, sample.visibleObjects, sample.visibleMembers, sample.visibleStars], [3, 3, 300, 44]);
+  assert.equal(M.SIGNIFICANCE[0].test(sample), false);
+  assert.equal(M.SIGNIFICANCE[1].test(sample), false);
+  assert.deepEqual(M.summarize(constellation, state, data, catalog, evaluation, sample.visibleStars),
+    M.summarize(constellation, state, data, catalog));
+});
+
+test("morning uses the next dated Moon, including New Year and a full polar night", () => {
+  const thin = M.thinConstellation(C0, 1000);
+  const state = { year: 2026, doy: 365, latDeg: 85, moon: "date" };
+  const samples = M.nightSamples(thin, state, data, catalog, 60);
+  assert.equal(M.significantHours(samples, 60).night, 24);
+  assert.deepEqual([samples[11].year, samples[11].doy, samples[12].year, samples[12].doy], [2026, 365, 2027, 1]);
+  const moon = M.moonState({ ...state, year: 2027, doy: 1, solarTimeHours: 0 }, data);
+  assert.ok(Math.abs(samples[12].moonAltDeg - moon.altDeg) <= 0.051);
+  assert.deepEqual(M.calendarAt({ year: 2028, doy: 59 }, 24), { year: 2028, doy: 60, solarTimeHours: 0 });
+});
+
+test("exceedance uses the unrounded hemisphere ratio", () => {
+  const state = { doy: 172, latDeg: 40, solarTimeHours: 22 };
+  const evaluation = M.evaluate(M.thinConstellation(C0, 1000), state, data);
+  const base = M.lightSummary(evaluation, state, data, true).toSkyNow;
+  for (const target of [0.9999, 1.0001]) {
+    const adjusted = { ...evaluation, sbdcLightMag: evaluation.sbdcLightMag - 2.5 * Math.log10(target / base) };
+    assert.equal(M.lightSummary(adjusted, state, data).toSkyNow, 1);
+    assert.equal(M.SIGNIFICANCE[2].test(M.lightSummary(adjusted, state, data, true)), target > 1);
+  }
+});
+
+test("dark zenith V at Paranal is within one observed night-to-night RMS", () => {
+  const observed = JSON.parse(readFileSync(new URL("./fixtures/paranal-dark-v.json", import.meta.url)));
+  const state = { latDeg: -24.63, doy: 172, solarTimeHours: 0, ambientBortle: 1, moon: "off" };
+  const evaluation = M.evaluate(M.thinConstellation(C0, 1000), state, data);
+  assert.ok(evaluation.sunAltDeg < -30);
+  assert.ok(Math.abs(evaluation.zenithSkyMu - observed.mean) <= observed.rms);
 });
 
 test("a year is its sampled nights, each standing for an equal share", () => {

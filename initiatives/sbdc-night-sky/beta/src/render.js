@@ -16,6 +16,12 @@
 
 export function wrap180(d) { let x = ((d + 180) % 360 + 360) % 360 - 180; return x; }
 
+export function trailMayCross(start, end, width, height, panoramaPeriod = Infinity) {
+  return Number.isFinite(start.x + start.y + end.x + end.y) && Math.abs(start.x - end.x) < panoramaPeriod / 2 &&
+    Math.min(start.x, end.x) <= width && Math.max(start.x, end.x) >= 0 &&
+    Math.min(start.y, end.y) <= height && Math.max(start.y, end.y) >= 0;
+}
+
 /** Horizon panorama: equirectangular about (centerAz, centerAlt).
  *  fovDeg = horizontal field of view; vertical fov derives from aspect. */
 export function projHorizon(azDeg, altDeg, view, W, H) {
@@ -501,8 +507,8 @@ export class SkyRenderer {
         if (!ev.sunlit[i] || ev.mag[i] > camLim) continue;
         const p1 = this.project(ev.az[i], ev.alt[i]);
         const p2 = this.project(streaks.az2[i], Math.max(streaks.alt2[i], 0));
-        if (!p1.visible && !p2.visible) continue;
-        if (!Number.isFinite(p1.x + p1.y + p2.x + p2.y)) continue;   // one end is behind the camera
+        const period = this.view.mode === "horizon" ? 360 * canvas.width / this.view.fovDeg : Infinity;
+        if (!trailMayCross(p1, p2, canvas.width, canvas.height, period)) continue;
         const len = Math.max(2, Math.hypot(p2.x - p1.x, p2.y - p1.y));
         const flux = magToFlux(ev.mag[i]);
         const alpha = Math.min(0.9, 1.6 * flux / len);
@@ -524,11 +530,12 @@ export class SkyRenderer {
         `rgba(${c.map((v) => Math.round(v * 255)).join(",")},0.75)`);
 
       const BRIGHT_CAP = 9000, BRIGHT_MAG = 3.2;
-      for (const i of ev.above) {
+      for (const i of ev.objects ? ev.objects.keys() : ev.above) {
         if (!ev.visible[i]) continue;
-        const p = this.project(ev.az[i], ev.alt[i]);
+        const object = ev.objects?.get(i);
+        const p = this.project(object?.az ?? ev.az[i], object?.alt ?? ev.alt[i]);
         if (!p.visible) continue;
-        const m = ev.mag[i], fam = constellation.family[i];
+        const m = object?.mag ?? ev.mag[i], fam = constellation.family[i];
         if (m < BRIGHT_MAG && drawnBright < BRIGHT_CAP) {
           const flux = magToFlux(m);
           const size = sizeScale * Math.min(46, 4.5 + 5.5 * Math.log10(1 + flux) * 4);
@@ -604,8 +611,9 @@ export class SkyRenderer {
     const { canvas, view } = this;
     const W = canvas.width, H = canvas.height;
     let sats = 0, starCount = 0;
-    for (const i of ev.above) {
-      if (ev.visible[i] && inFrame(ev.az[i], ev.alt[i], view, W, H)) sats++;
+    for (const i of ev.objects ? ev.objects.keys() : ev.above) {
+      const object = ev.objects?.get(i);
+      if (ev.visible[i] && inFrame(object?.az ?? ev.az[i], object?.alt ?? ev.alt[i], view, W, H)) sats++;
     }
     if (stars && starVis) {
       for (let i = 0; i < stars.altDeg.length; i++) {

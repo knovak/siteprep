@@ -10,6 +10,7 @@
 // order. A preset that does not read cleanly fails the build.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
+import { createHash } from "node:crypto";
 import { settingsFromYaml } from "./src/settings.js";
 
 const read = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
@@ -58,6 +59,7 @@ const sources = [
   ["render.js", "src/render.js", "RENDER"],
   ["settings.js", "src/settings.js", "SETTINGS"],
   ["format.js", "src/format.js", "FORMAT"],
+  ["provenance.js", "src/provenance.js", "PROVENANCE"],
   ["ui.js", "src/ui.js", null],
 ];
 // The files share one scope in the page, so a name declared at the top level
@@ -73,12 +75,14 @@ const js = sources
   .map(([title, path, exportsAs]) => `// ==== ${title} ====\n` + inlineModule(read(path), exportsAs))
   .join("\n");
 
-const out = html
+const template = html
   .replace("/*INJECT:CSS*/", () => css)
   .replace("/*INJECT:DATA*/", () => data)
   .replace("/*INJECT:CATALOG*/", () => catalog)
   .replace("/*INJECT:PRESETS*/", () => presets)
+  .replace("/*INJECT:WORKER*/", () => inlineModule(read("src/model.js")) + "\n" + read("src/analysis-worker.js"))
   .replace("/*INJECT:JS*/", () => js);
+const out = template.replace("/*INJECT:BUILD*/", createHash("sha256").update(template).digest("hex").slice(0, 12));
 
 // ---- assertions ----
 const bytes = Buffer.byteLength(out, "utf8");

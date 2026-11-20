@@ -6,6 +6,8 @@
 
 **Status:** Implemented — see the addendum at the end for final status against this spec. · July 9, 2026
 
+**Beta behavior, 20 November 2026:** Naked-eye totals count unresolved groups as single objects; the inventory still reports member satellites. Night and annual estimates use captured settings and the unrounded flux ratio strictly greater than one. After midnight the morning belongs to the next model date. See the [beta implementation record](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-implementation-2026-11-20.md) for the measurement definitions and limitations. Earlier unit reports and numerical examples describe the builds that produced them.
+
 ---
 
 ## 1. Background and scope

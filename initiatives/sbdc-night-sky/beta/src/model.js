@@ -873,8 +873,9 @@ export function evaluate(constellation, state, data) {
   // are individually invisible can sum to a visible knot. Wide groupings
   // (launch trains, extent > resolveExtentDeg) stay per-member. Rewrites
   // the per-satellite visible flags so renderers draw knots correctly.
-  let objectStats = null, clusterInfo = null;
+  let objectStats = null, clusterInfo = null, objects = null;
   if (constellation.clustered) {
+    objects = new Map();
     const resolveDeg = data.clustering.resolveExtentDeg.value;
     const groups = new Map();
     for (const i of above) {
@@ -897,6 +898,7 @@ export function evaluate(constellation, state, data) {
     for (const [id, mem] of groups) {
       if (id < 0 || mem.length === 1) {           // independent satellites
         for (const i of mem) if (visible[i]) {
+          objects.set(i, { az: az[i], alt: alt[i], mag: mag[i] });
           visibleObjects++; visibleSats++;
           if (mag[i] < brightestObj) brightestObj = mag[i];
         }
@@ -918,6 +920,7 @@ export function evaluate(constellation, state, data) {
       const extentDeg = (2 * maxAng) / DEG;
       if (extentDeg > resolveDeg) {               // wide: per-member objects
         for (const i of mem) if (visible[i]) {
+          objects.set(i, { az: az[i], alt: alt[i], mag: mag[i] });
           visibleObjects++; visibleSats++;
           if (mag[i] < brightestObj) brightestObj = mag[i];
         }
@@ -930,6 +933,8 @@ export function evaluate(constellation, state, data) {
       for (const i of mem) visible[i] = vis ? 1 : 0;
       clusterInfo.set(id, { count: mem.length, combinedMag: Math.round(mc * 100) / 100, extentDeg, compact: true });
       if (vis) {
+        const center = dirToAltAz(cen, basis);
+        objects.set(mem[0], { az: center.azDeg, alt: center.altDeg, mag: mc });
         visibleObjects++; visibleSats += mem.length;
         if (mc < brightestObj) brightestObj = mc;
       }
@@ -944,7 +949,7 @@ export function evaluate(constellation, state, data) {
   return { alt, az, range, mag, sunlit, visible, above, sunAltDeg: sunAlt, sunDir: s, sky,
            zenithSkyMu, zenithLimitMag: Math.min(limitingMag(zenithSkyMu, data, sky.threshold), userCap),
            sbdcLightMag: lightFlux > 0 ? -2.5 * Math.log10(lightFlux) : null,
-           objectStats, clusterInfo };
+           objectStats, clusterInfo, objects };
 }
 
 /* ------------------------------------------------------------------ */
@@ -1082,7 +1087,7 @@ export function hemisphereMagnitude(mu, skyLight = null) {
  *   toSkyNow          against the sky as it is now: twilight, ambient light
  *                     and scattered moonlight, summed over the hemisphere
  */
-export function lightSummary(ev, state, data) {
+export function lightSummary(ev, state, data, rawSkyRatio = false) {
   const k = data.photometry.extinctionCoefficient.value;
   const ratio = (a, b) => (a == null || b == null ? null : Math.pow(10, -0.4 * (a - b)));
   const basis = enuBasis(state.latDeg);
@@ -1102,7 +1107,7 @@ export function lightSummary(ev, state, data) {
     toFullMoon: sig(ratio(ev.sbdcLightMag, moonMagnitude(0) + k)),
     toMoon: moon ? sig(ratio(ev.sbdcLightMag, moon.magnitude)) : null,
     toNaturalNight: sig(ratio(ev.sbdcLightMag, hemisphereMagnitude(nightMu))),
-    toSkyNow: sig(ratio(ev.sbdcLightMag, skyNowMag)),
+    toSkyNow: rawSkyRatio ? ratio(ev.sbdcLightMag, skyNowMag) : sig(ratio(ev.sbdcLightMag, skyNowMag)),
     skyNowMag: round(skyNowMag),
     moon: moon ? {
       altDeg: round(moon.altDeg, 1), azDeg: round(moon.azDeg, 1), illuminated: round(moon.illuminated, 3),
@@ -1115,8 +1120,7 @@ export function lightSummary(ev, state, data) {
  * The aggregate API the UI readouts and acceptance tests consume.
  * Returns counts, brightest satellite, star comparison, and sun context.
  */
-export function summarize(constellation, state, data, catalog = null) {
-  const ev = evaluate(constellation, state, data);
+export function summarize(constellation, state, data, catalog = null, ev = evaluate(constellation, state, data), starCount = null) {
   let aboveHorizon = 0, sunlitAbove = 0, vis = 0, brightest = Infinity;
   const perFamily = { sso: 0, inclined: 0, train: 0 };
   const famName = ["sso", "inclined", "train"];
@@ -1133,8 +1137,8 @@ export function summarize(constellation, state, data, catalog = null) {
       }
     }
   }
-  let visibleStars = 0;
-  if (catalog) {
+  let visibleStars = starCount ?? 0;
+  if (catalog && starCount == null) {
     const st = starAltAz(catalog, state.latDeg, state.doy, state.solarTimeHours, data);
     const userCap = state.userLimitingMag ?? data.limitingMagnitude.userLimitingMagCap.value;
     visibleStars = starVisibility(catalog, st, state.latDeg, ev.sunDir, ev.sunAltDeg, userCap, data, ev.sky).count;
@@ -1211,9 +1215,10 @@ export function sampleInstant(thin, state, data, catalog = null) {
     visibleStars = starVisibility(catalog, st, state.latDeg, ev.sunDir, ev.sunAltDeg, userCap, data, ev.sky).count;
   }
   const sbdcLightMag = ev.sbdcLightMag == null ? null : ev.sbdcLightMag - 2.5 * Math.log10(scale);
-  const light = lightSummary({ ...ev, sbdcLightMag }, state, data);
+  const light = lightSummary({ ...ev, sbdcLightMag }, state, data, true);
   return {
-    sunAltDeg: ev.sunAltDeg, visible: Math.round(visible * scale), visibleStars,
+    sunAltDeg: ev.sunAltDeg, visibleMembers: Math.round(visible * scale), visibleStars,
+    visibleObjects: Math.round((ev.objectStats?.visibleObjects ?? visible) * scale),
     sbdcMag: light.sbdcMag, toSkyNow: light.toSkyNow, toFullMoon: light.toFullMoon,
     toNaturalNight: light.toNaturalNight, moonAltDeg: light.moon ? light.moon.altDeg : null,
   };
@@ -1222,20 +1227,26 @@ export function sampleInstant(thin, state, data, catalog = null) {
 /**
  * The 24 hours of the state's date, from noon through midnight to noon, one
  * sample every stepMinutes. A sample with the Sun up is marked night: false
- * and is not evaluated. The model has one date for the whole day, so this is
- * the date's evening and its morning, which together are as long as a night.
+ * and is not evaluated. Midnight starts the following model date.
  */
+export function calendarAt(state, hours, defaultYear) {
+  const day = state.doy - 1 + Math.floor(hours / 24);
+  return { doy: ((day % 365) + 365) % 365 + 1, year: (state.year ?? defaultYear) + Math.floor(day / 365),
+    solarTimeHours: ((hours % 24) + 24) % 24 };
+}
+
 export function nightSamples(thin, state, data, catalog = null, stepMinutes = 5) {
   const out = [];
   for (let minutes = 0; minutes < 1440; minutes += stepMinutes) {
-    const hours = (12 + minutes / 60) % 24;
-    const sunAltDeg = sunAltAz(state.latDeg, state.doy, hours, data).altDeg;
+    const date = calendarAt(state, 12 + minutes / 60, data.geometryModel.yearAnchor.value);
+    const hours = date.solarTimeHours;
+    const sunAltDeg = sunAltAz(state.latDeg, date.doy, hours, data).altDeg;
     if (sunAltDeg > NIGHT_SUN_ALT_DEG) {
-      out.push({ minutes, hours, night: false, sunAltDeg, visible: 0, visibleStars: 0,
+      out.push({ minutes, hours, ...date, night: false, sunAltDeg, visibleObjects: 0, visibleMembers: 0, visibleStars: 0,
                  sbdcMag: null, toSkyNow: null, toFullMoon: null, toNaturalNight: null, moonAltDeg: null });
     } else {
-      const at = sampleInstant(thin, { ...state, solarTimeHours: hours, propagationSec: 0 }, data, catalog);
-      out.push({ minutes, hours, night: true, ...at });
+      const at = sampleInstant(thin, { ...state, ...date, propagationSec: 0 }, data, catalog);
+      out.push({ minutes, hours, ...date, night: true, ...at });
     }
   }
   return out;
@@ -1246,9 +1257,9 @@ export function nightSamples(thin, state, data, catalog = null, stepMinutes = 5)
  * night-time sample. They are reported side by side; none is the definition.
  */
 export const SIGNIFICANCE = [
-  { key: "atLeast100", test: (s) => s.visible >= 100 },
-  { key: "outnumberStars", test: (s) => s.visible > 0 && s.visible > s.visibleStars },
-  { key: "exceedsSky", test: (s) => s.toSkyNow != null && s.toSkyNow >= 1 },
+  { key: "atLeast100", test: (s) => s.visibleObjects >= 100 },
+  { key: "outnumberStars", test: (s) => s.visibleObjects > s.visibleStars },
+  { key: "exceedsSky", test: (s) => s.toSkyNow != null && s.toSkyNow > 1 },
 ];
 
 /** Hours of night in a set of samples, and hours for which each definition
