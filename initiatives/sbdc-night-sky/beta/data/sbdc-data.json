@@ -262,12 +262,6 @@
       "source": "published typical value (0.15-0.30 clear sites)",
       "confidence": "published"
     },
-    "iauRecommendationMag": {
-      "value": 7.0,
-      "units": "mag (fainter-than target for LEO constellations)",
-      "source": "IAU CPS / Dark & Quiet Skies recommendations",
-      "confidence": "published"
-    },
     "launchTrain": {
       "value": {
         "satsPerTrain": 60,
@@ -302,7 +296,7 @@
         }
       },
       "units": "V mag at the reference condition: 1,000 km range, 90 deg phase angle, zenith (median of the population; per-satellite scatter m0Sigma retained)",
-      "source": "direct-brightness semantics per v3 review: the slider IS the assumption, no hidden baseline. Anchors: +0.5 reproduces the report-annex unmitigated envelope (-2..+4 apparent); +5.5 = strong mitigation, the Starlink-class darkening record; +7.0 = IAU CPS recommendation. Values brighter than -4 (Venus) explore beyond any plausible design and are provided as bounds only. Mitigation measures (darkening coatings, attitude control) are the engineering that moves a design toward fainter values on this scale.",
+      "source": "Scenario assumption: +0.5 represents an unmitigated design and +5.5 a strongly mitigated design. The population median at the reference geometry is not a per-satellite apparent magnitude or a compliance measure. Values brighter than -4 explore illustrative bounds.",
       "confidence": "modeled"
     }
   },

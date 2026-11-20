@@ -1,0 +1,9 @@
+{
+  "source": "F. Patat, The dancing sky: 6 years of night-sky observations at Cerro Paranal (2008), section 3 and Table 3",
+  "url": "https://arxiv.org/pdf/0801.2270",
+  "geometry": "Johnson V, zenith-corrected, photometric nights, airmass <= 1.4, more than 1 hour from twilight, no Moon or lunar elevation <= -18 degrees",
+  "units": "mag/arcsec²",
+  "mean": 21.71,
+  "rms": 0.24,
+  "count": 692
+}

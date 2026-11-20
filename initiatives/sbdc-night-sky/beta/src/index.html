@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="sbdc-build" content="/*INJECT:BUILD*/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SBDC Night-Sky Simulator</title>
 <meta name="description" content="Interactive, physics-based simulation of how a large constellation of space-based data centers would appear in the night sky. Standalone — runs entirely offline.">
@@ -118,7 +119,7 @@
       <div class="ctl">
         <label for="brightness">SBDC brightness <output id="bright-label">+0.5 — unmitigated</output></label>
         <input id="brightness" type="range" min="-70" max="70" step="1" value="5">
-        <div class="hint" id="hint-bright">median mag at 1,000 km reference · +0.5 ≈ unmitigated · +5.5 ≈ strong mitigation (Starlink record) · +7 = IAU target</div>
+        <div class="hint" id="hint-bright"></div>
       </div>
       <div class="ctl">
         <label for="scatter">Brightness scatter <output id="scatter-label">1.3 mag</output></label>
@@ -186,7 +187,7 @@
             <label for="year">Year</label>
             <input id="year" type="number" min="1900" max="2100" step="1" value="2026">
           </div>
-          <div class="hint" id="hint-year">the Moon's place on this date, taking the solar time as universal time · it is within a few degrees for any longitude</div>
+          <div class="hint" id="hint-year">Approximate Moon position. The model uses solar time as universal time; it does not use your longitude.</div>
         </div>
         <div id="moon-phase" style="display:none; margin-top:6px">
           <label for="moonage">Days since new Moon <output id="moonage-label">14.8 — full</output></label>
@@ -196,7 +197,7 @@
       </div>
       <div class="check"><input id="show-stars" type="checkbox" checked><label for="show-stars">Show stars (Yale Bright Star Catalog)</label></div>
       <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
-      <div class="hint" id="hint-longexp">every sunlit satellite becomes a 12–27° streak; stars to the catalog limit</div>
+      <div class="hint" id="hint-longexp"></div>
       <div class="hint" id="hint-drag">Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details</div>
     </details>
 
@@ -206,10 +207,14 @@
       <div class="row">
         <button id="night-run">Compute this night</button>
         <button id="year-run">Compute the year</button>
+        <button id="analysis-stop" hidden>Cancel</button>
       </div>
       <div class="hint" id="night-status" role="status" aria-live="polite"></div>
       <canvas id="night-chart" width="540" height="240" aria-label="Visible SBDCs and stars through the night"></canvas>
       <div class="hint" id="night-legend"></div>
+      <label for="night-time" id="night-picker">Chart time</label>
+      <input id="night-time" type="range" min="0" max="1435" step="5" value="720" disabled>
+      <output for="night-time" id="night-selection"></output>
       <table id="night-table">
         <thead><tr><th></th><th id="night-col">this night</th><th id="year-col">a year</th></tr></thead>
         <tbody>
@@ -254,29 +259,33 @@
 
   <div id="canvas-wrap">
     <div id="sky-area">
-      <canvas id="sky" aria-label="Simulated sky view"></canvas>
+      <canvas id="sky" tabindex="0" aria-label="Simulated sky view" aria-describedby="hint-drag headline"></canvas>
       <div id="compass">facing 0°</div>
       <div id="busy">computing…</div>
       <div id="tooltip" role="status"></div>
     </div>
-    <div id="readout-strip" aria-live="polite">
+    <div id="readout-strip">
       <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
+      <div id="headline-row"><strong id="headline">—</strong><button id="headline-aim">Aim at densest sky</button></div>
+      <details id="readout-details"><summary id="detail-label">Sky measurements</summary>
       <div id="readout">—</div>
       <div id="readout-light">—</div>
       <div id="readout-sub">—</div>
+      <div class="hint" id="light-note"></div></details>
     </div>
   </div>
 </main>
 
-<div id="assump" role="dialog" aria-label="Assumptions and data">
-  <div class="sheet">
-    <button class="closer" id="close-assumptions">Close</button>
-    <h2>Assumptions &amp; data</h2>
+<dialog id="assump" aria-labelledby="assump-title">
+  <div class="sheet" tabindex="0">
+    <button class="closer" id="close-assumptions" autofocus>Close</button>
+    <h2 id="assump-title">Assumptions &amp; data</h2>
     <p class="lede">Everything the simulation believes, in one auditable table. Rendered live from the embedded <span style="font-family:var(--mono)">sbdc-data.json</span> block — replace that block to change the physics without touching code. Confidence: <span class="chip chip-measured">measured</span> <span class="chip chip-published">published</span> <span class="chip chip-modeled">modeled</span> <span class="chip chip-assumed">assumed</span>. The photometry section is the least certain — the FCC filing gives no satellite sizes or albedos; the renders are illustrative, not photometric predictions.</p>
     <div id="assump-body"></div>
   </div>
-</div>
+</dialog>
 
+<script type="text/plain" id="analysis-code">/*INJECT:WORKER*/</script>
 <script type="application/json" id="sbdc-data">
 /*INJECT:DATA*/
 </script>

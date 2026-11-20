@@ -136,7 +136,7 @@ export const SETTINGS_FIELDS = [
   { section: "constellation", key: "plane_spread_deg", type: "number", min: 0, max: 30, digits: 2, def: 11.25,
     note: "how far the Sun-synchronous planes spread to each side of the dawn-dusk line, degrees, 0 to 30" },
   { section: "constellation", key: "brightness_mag", type: "number", min: -7, max: 7, digits: 1, def: 0.5,
-    note: "median magnitude at 1,000 km; 0.5 unmitigated, 5.5 strong mitigation, 7 IAU target" },
+    note: "population median at 1,000 km and 90 degrees phase; not an apparent-magnitude target" },
   { section: "constellation", key: "brightness_scatter_mag", type: "number", min: 0, max: 2, digits: 1, def: 1.3,
     note: "spread in brightness between satellites, magnitudes (1 sigma), 0 to 2; 0 makes them identical" },
   { section: "constellation", key: "phase_law", type: "choice", options: ["lambert", "mini"], def: "lambert",
