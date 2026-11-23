@@ -37,32 +37,26 @@ jobs:
             }
             async function clickText(page,pattern){const els=page.getByText(pattern);for(const el of await els.all())if(await el.isVisible()){await el.click({timeout:2800});return true}return false}
             await Promise.all([
-             run('G CLASSIC','https://www.gadventures.com/checkout/26380/overview/',async p=>{
-               await p.locator('#onetrust-reject-all-handler:visible,#onetrust-accept-btn-handler:visible').first().click({timeout:3500}).catch(()=>false);
-               const n=p.getByRole('spinbutton',{name:'number of adults'});await n.fill('4');await n.press('Tab');await p.waitForTimeout(900);
-               const arrow=p.locator('button[class*="DepartureDateSelectorstyle__ArrowIconButton"]:visible').last();
-               let section=()=>p.locator('body').innerText();const seen=new Set();
-               for(let k=0;k<10;k++){
-                 await p.waitForTimeout(650);let txt=await section();const marks=txt.split('\n').filter(x=>/^(November|December|January|February|March|April|May|June|July) 202[67]$/.test(x));console.log('G months',marks,await n.inputValue());
-                 if(marks.some(x=>/^April|^May|^June/.test(x))){
-                   console.log('G CALTEXT '+marks.join('/'), txt.slice(txt.indexOf('Searching tours for'),txt.indexOf('Clear dates')>0?txt.indexOf('Clear dates'):txt.indexOf('Save my spot')).replace(/\n/g,'|').slice(0,6500));
-                   console.log('G CAL STYLES',await p.locator('body *').evaluateAll(es=>es.filter(e=>e.children.length===0&&e.innerText?.trim()==='15'&&e.checkVisibility()).map(e=>e.parentElement.outerHTML.slice(0,400))));
-                   const list=await p.getByRole('button',{name:'Select',exact:true}).all();
-                   const cards=[];for(const b of list){if(await b.isVisible()){let card=await b.evaluate(e=>{let n=e;for(let i=0;i<8&&n.parentElement;i++){n=n.parentElement;if(/(?:April|May|June)\s+\d+\s+to\s+/.test(n.innerText))break}return n.innerText.trim()});if(card.length<280)cards.push(card.replace(/\s+/g,' '));}}
-                   console.log('G four-person dated cards',marks,cards);
-                   for(const key of ['April 15','June 15','April 17','June 12']){if(seen.has(key))continue;const target=p.getByText(new RegExp('^(Sun|Mon|Tue|Wed|Thu|Fri|Sat) '+key+' to ')).filter({visible:true}).first();if(await target.count()){const parent=target.locator('xpath=ancestor::*[.//button[normalize-space()="Select"]][1]');if(await parent.count()){await parent.getByRole('button',{name:'Select',exact:true}).click();await p.waitForTimeout(500);const t=await section();console.log('G CLASSIC SELECTED',key,t.slice(t.lastIndexOf('Tour summary')).replace(/\s+/g,' '));seen.add(key);}}}
-                 }
-                 if(marks.some(x=>/^July/.test(x)))break;
-                 if(!await arrow.count()){console.log('G CAL BUTTONS',await p.locator('button').evaluateAll(e=>e.filter(b=>b.querySelector('svg')&&!b.innerText).map(b=>b.outerHTML.slice(0,240)).slice(-12)));break}
-                 await arrow.click();await p.waitForTimeout(600);
-               }
-             }),...['Apr','Jun'].map(month=>run('HIKEDATE '+month,'https://www.peruhike.com/tour/sacred-valley-and-machu-picchu-2-days/?currency=usd',async p=>{
-               await p.locator('input.tourmaster-datepicker:visible').first().click();
-               const want=month==='Apr'?'April 2027':'June 2027';for(let i=0;i<9;i++){const current=await p.locator('.ui-datepicker-title:visible').first().innerText();if(current.replace(/\s+/g,'').toLowerCase()===want.replace(/\s+/g,'').toLowerCase())break;await p.locator('.ui-datepicker-next:visible').first().click();};
-               const day=month==='Apr'?'17':'12';await p.locator('.ui-datepicker-calendar:visible a').filter({hasText:new RegExp('^'+day+'$')}).first().click();await p.waitForTimeout(650);
-               console.log('HIKEDATE actual '+month,await p.locator('input.tourmaster-datepicker:visible').first().inputValue());await clickText(p,/^Select a package$/i).catch(()=>false);await p.waitForTimeout(1200);console.log('SELECT package body '+month,(await p.locator('body').innerText()).split('\n').map(x=>x.trim()).filter(x=>/private|service|package|travelers|persons|April|June|group|room/i.test(x)).slice(0,48));const form=p.locator('input.tourmaster-datepicker:visible').locator('xpath=ancestor::form[1]'); console.log('PERU FORM '+month,await form.innerText(),await form.locator('select,input,button').evaluateAll(ns=>ns.filter(n=>n.type!=='hidden').map(n=>{const label=[n.tagName,n.name,n.value,n.type,n.className];if(n.tagName==='SELECT')label.push([...n.options].map(o=>[o.value,o.text]));return label})));
-               for(const sel of await form.locator('select:visible').all()){const opts=await sel.locator('option').allTextContents();const four=opts.find(s=>/^4([ ]+(adults|persons|people|travellers|travelers))?$/i.test(s.trim()));const priv=opts.find(s=>/private/i.test(s));if(four)await sel.selectOption({label:four});if(priv)await sel.selectOption({label:priv});}
-               await p.waitForTimeout(900);console.log('PERU results '+month,await form.innerText()); 
+             run('G June total','https://www.gadventures.com/checkout/26380/overview/',async p=>{
+               await p.locator('#onetrust-reject-all-handler:visible,#onetrust-accept-btn-handler:visible').first().click({timeout:3000}).catch(()=>false);
+               const n=p.getByRole('spinbutton',{name:'number of adults'});await n.fill('4');await n.press('Tab');const arrow=p.locator('button[class*="DepartureDateSelectorstyle__ArrowIconButton"]:visible').last();
+               const day=p.getByRole('button',{name:/^departure on June 15th, 2027 starting from/i});
+               for(let k=0;k<10;k++){await p.waitForTimeout(950);if(await day.count())break;await arrow.click();}
+               await day.click();await p.waitForTimeout(1200);
+               const txt=()=>p.locator('body').innerText();
+               if(!(await txt()).includes('4 travellers • Jun 15')){const row=p.getByText(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat) June 15 to /).filter({visible:true}).first();const card=row.locator('xpath=ancestor::*[.//button[normalize-space()="Select"]][1]');if(await card.count())await card.getByRole('button',{name:'Select',exact:true}).click();await p.waitForTimeout(420);}
+               console.log('G FINAL', (await txt()).slice(-1200).replace(/\s+/g,' '));
+             }),
+             ...[['April','3','17'],['June','5','12']].map(([month,monthNum,day])=>run('PERU PRIVATE '+month,'https://www.peruhike.com/tour/sacred-valley-and-machu-picchu-2-days/?currency=usd',async p=>{
+               const picker=p.locator('input.tourmaster-datepicker:visible').first();await picker.click();
+               const date=p.locator('.ui-datepicker-calendar:visible td[data-year="2027"][data-month="'+monthNum+'"] a').filter({hasText:new RegExp('^'+day+'$')}).first();
+               for(let k=0;k<12;k++){if(await date.count())break;console.log('PERU month',month,await p.locator('.ui-datepicker-title:visible').first().innerText());await p.locator('.ui-datepicker-next:visible').first().click();await p.waitForTimeout(100);}
+               await date.click();await p.waitForTimeout(650);const actual=await picker.inputValue();console.log('PERU actual selected',month,actual);
+               if(!actual.includes(month.slice(0,3)))return;
+               await clickText(p,/^Select a package$/i);await p.waitForTimeout(400);const form=picker.locator('xpath=ancestor::form[1]');console.log('PERU public stock',month,await form.innerText());await clickText(p,/^Private Service$/i);await p.waitForTimeout(700);
+               console.log('PERU controls',month,await form.locator('select,input,button,a').evaluateAll(ns=>ns.filter(e=>e.checkVisibility()).map(n=>[n.tagName,n.type,n.name,n.value,n.className,n.innerText?.slice(0,120),n.tagName==='SELECT'?[...n.options].slice(0,8).map(o=>[o.value,o.text]):null])));
+               for(const sel of await form.locator('select:visible').all()){const name=await sel.getAttribute('name');const opts=await sel.locator('option').allTextContents();const four=opts.find(s=>/^4([ ]+(adults|persons|people|travellers|travelers))?$/i.test(s.trim()));if(four&&!/child|infant/i.test(name||''))await sel.selectOption({label:four});}
+               await p.waitForTimeout(700);console.log('PERU summary',month,await form.innerText(),await form.locator('input:visible').evaluateAll(es=>es.map(e=>[e.name,e.value,e.id,e.className])));
              })),            ]);            await browser.close();
           })().catch(e=>{console.log(String(e));process.exit(1)});
           NODE
