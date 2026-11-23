@@ -1,0 +1,63 @@
+name: Look up Peru trip availability
+on:
+  push:
+    branches: ['deploy-record/machu-browser-check-20261123']
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Read public trip pages in Chrome
+        run: |
+          node <<'NODE'
+          const {chromium} = require('playwright');
+          (async () => {
+            const browser=await chromium.launch({channel:'chrome',headless:true});
+            const region=async (page, label, match) => {
+              const lines=(await page.locator('body').innerText()).split(/\n/).map(x=>x.trim()).filter(Boolean);
+              const ids=new Set(); lines.forEach((x,i)=>{if(match.test(x))for(let j=Math.max(0,i-1);j<=Math.min(lines.length-1,i+2);j++)ids.add(j)});
+              console.log(label, page.url(), Array.from(ids).sort((a,b)=>a-b).slice(0,125).map(i=>lines[i].slice(0,230)).join(' | '));
+            };
+            const controls=async (page,label) => console.log(label, (await page.locator('button,select,input:not([type=hidden]),[role=button],a').evaluateAll(es=>es.filter(e=>e.checkVisibility()&&e.getBoundingClientRect().height).map(e=>[e.tagName,e.getAttribute('type'),e.getAttribute('aria-label'),e.getAttribute('title'),e.id,e.className,e.innerText?.trim().slice(0,65),e.value].map(x=>String(x||'').slice(0,80)).join('|')).filter(x=>/edit|room|adult|guest|traveler|traveller|plus|more|increase|add|minus|less|select|person|capacity|quantity|count|date|price|availability|continue|apply/i.test(x)).slice(-110))).join('\n'));
+            async function run(label,url,fn) {
+              const page=await browser.newPage({viewport:{width:1400,height:950},locale:'en-US'});page.setDefaultTimeout(4000);
+              try {const res=await page.goto(url,{waitUntil:'domcontentloaded',timeout:35000});await page.waitForTimeout(2500);
+                console.log(label,'HTTP',res?.status(),'title',await page.title(),'first',(await page.locator('body').innerText()).slice(0,200)); await fn(page);
+              }catch(e){console.log(label,'ERROR',String(e).slice(0,700))}
+              await page.close();
+            }
+            async function clickText(page,pattern){const els=page.getByText(pattern);for(const el of await els.all())if(await el.isVisible()){await el.click({timeout:2800});return true}return false}
+            await Promise.all([
+             run('BACK','https://www.backroads.com/trips/WPEI-9/peru-lodge-lodge-trekking-tour',async p=>{
+               await clickText(p,/^Accept All Cookies$|^Accept all$/i).catch(()=>false);
+               await clickText(p,/^View Dates$/i).catch(()=>false);
+               await clickText(p,/^Let.s Go!$/i).catch(()=>false);
+               await clickText(p,/^2027$/).catch(()=>false);
+               await region(p,'BACK DATES',/Apr 24|May 29|1 adult|Select Guests|challenge/);
+               await clickText(p,/^Edit$/).catch(()=>false);
+               console.log('BACK edit UI', (await p.locator('body').innerText()).split('Select Guests & Rooms').pop().slice(0,1800));await controls(p,'BACK visible controls');
+             }),
+             run('57HOURS','https://57hours.com/product/machu-picchu-rainbow-mountain-and-caving-hiking-adventure-in-peru/?select_date=2027-06-05',async p=>{
+               await controls(p,'57 initial controls');
+               const select=p.locator('select:visible');
+               for(const sel of await select.all()){const opts=await sel.locator('option').allTextContents(); console.log('57 options',opts.join('|').slice(0,400));if(opts.some(x=>/^4(\s+(people|guests|travelers|persons|adults))?$/i.test(x.trim()))){const o=opts.find(x=>/^4(\s+(people|guests|travelers|persons|adults))?$/i.test(x.trim()));await sel.selectOption({label:o});}}
+               const inc=p.locator('button.plus:visible, button[aria-label*="increase" i]:visible, .quantity .plus:visible, input.plus:visible, button:visible').filter({hasText:/^\+$/}).first();
+               if(await inc.count())for(let i=0;i<3;i++) await inc.click();
+               await p.waitForTimeout(700); await region(p,'57 READ',/June|Jun 5|traveler|person|room|twin|total|Standard|\$|available|spots|adult|quantity|double|occupancy/i);
+             }),
+             run('G','https://www.gadventures.com/checkout/26374/overview/',async p=>{
+               await region(p,'G DATES',/May 8|8 May|May 15|15 May|traveller|traveler|room|double|accept all|June/i); await controls(p,'G controls');
+             })
+            ]);
+            await browser.close();
+          })().catch(e=>{console.log(String(e));process.exit(1)});
+          NODE
