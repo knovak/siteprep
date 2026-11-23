@@ -37,27 +37,27 @@ jobs:
             }
             async function clickText(page,pattern){const els=page.getByText(pattern);for(const el of await els.all())if(await el.isVisible()){await el.click({timeout:2800});return true}return false}
             await Promise.all([
-             run('BACK','https://www.backroads.com/trips/WPEI-9/peru-lodge-lodge-trekking-tour',async p=>{
-               await clickText(p,/^Accept All Cookies$|^Accept all$/i).catch(()=>false);
-               await clickText(p,/^View Dates$/i).catch(()=>false);
-               await clickText(p,/^Let.s Go!$/i).catch(()=>false);
-               await clickText(p,/^2027$/).catch(()=>false);
-               await region(p,'BACK DATES',/Apr 24|May 29|1 adult|Select Guests|challenge/);
-               await clickText(p,/^Edit$/).catch(()=>false);
-               console.log('BACK edit UI', (await p.locator('body').innerText()).split('Select Guests & Rooms').pop().slice(0,1800));await controls(p,'BACK visible controls');
-             }),
-             run('57HOURS','https://57hours.com/product/machu-picchu-rainbow-mountain-and-caving-hiking-adventure-in-peru/?select_date=2027-06-05',async p=>{
-               await controls(p,'57 initial controls');
-               const select=p.locator('select:visible');
-               for(const sel of await select.all()){const opts=await sel.locator('option').allTextContents(); console.log('57 options',opts.join('|').slice(0,400));if(opts.some(x=>/^4(\s+(people|guests|travelers|persons|adults))?$/i.test(x.trim()))){const o=opts.find(x=>/^4(\s+(people|guests|travelers|persons|adults))?$/i.test(x.trim()));await sel.selectOption({label:o});}}
-               const inc=p.locator('button.plus:visible, button[aria-label*="increase" i]:visible, .quantity .plus:visible, input.plus:visible, button:visible').filter({hasText:/^\+$/}).first();
-               if(await inc.count())for(let i=0;i<3;i++) await inc.click();
-               await p.waitForTimeout(700); await region(p,'57 READ',/June|Jun 5|traveler|person|room|twin|total|Standard|\$|available|spots|adult|quantity|double|occupancy/i);
-             }),
-             run('G','https://www.gadventures.com/checkout/26374/overview/',async p=>{
-               await region(p,'G DATES',/May 8|8 May|May 15|15 May|traveller|traveler|room|double|accept all|June/i); await controls(p,'G controls');
-             })
-            ]);
-            await browser.close();
+             ...['Apr 24','May 29'].map(d=>run('BACK '+d,'https://www.backroads.com/trips/WPEI-9/peru-lodge-lodge-trekking-tour',async p=>{
+               await clickText(p,/^Reject All$/i).catch(()=>false);
+               await clickText(p,/^View Dates$/i); await clickText(p,/^2027$/).catch(()=>false);
+               await clickText(p,new RegExp('^'+d+'$')); await p.waitForTimeout(650);
+               const el=p.getByText(d,{exact:true}).filter({visible:true}).first();
+               console.log('BACKDATECARD '+d,await el.evaluate(e=>{let x=e; for(let n=0;n<8&&x.parentElement;n++){x=x.parentElement;if(/book|room|\$/i.test(x.innerText)&&x.innerText.length>120)break}return x.outerHTML.slice(0,9000)}));
+               await region(p,'BACK SELECTED '+d,/USD|\$|guest & room|book now|hold|reserve|select guest/i);
+               await controls(p,'BACK controls '+d);
+             })),
+             ...['2027-05-08','2027-05-22','2027-06-05'].map(d=>run('57 '+d,'https://57hours.com/product/machu-picchu-rainbow-mountain-and-caving-hiking-adventure-in-peru/?select_date='+d+'&booking_persons=4&cancellation_policy=standard&deposit_option=full',async p=>{
+               const num=p.locator('#wc_bookings_field_persons'); console.log('57 initial number '+d,await num.inputValue(),await num.getAttribute('max'));
+               if(await num.inputValue()!=='4'){await num.fill('4');await num.dispatchEvent('change');await num.press('Tab');await p.waitForTimeout(1200);}
+               const t=await p.locator('body').innerText();console.log('57SUMMARY '+d,p.url(),t.slice(t.lastIndexOf('A message or note for the guide'),-1).slice(0,1700), 'room options:', t.split('\n').filter(x=>/room|occupancy|bed/i.test(x)).slice(-20));
+             })),
+             ...['Sat May 8 to Sun May 16','Sat May 15 to Sun May 23'].map(d=>run('G '+d,'https://www.gadventures.com/checkout/26374/overview/',async p=>{
+               const num=p.getByRole('spinbutton',{name:'number of adults'}); console.log('Gstepper',await num.evaluate(e=>e.parentElement.parentElement.outerHTML.slice(0,3200))); 
+               if(await num.getAttribute('readonly')===null){await num.fill('4');await num.press('Tab');} else {const plus=num.locator('..').locator('button').last();for(let i=0;i<3;i++)await plus.click();}
+               await p.waitForTimeout(1200); console.log('Gcount',await num.inputValue()); await region(p,'G dates after guest selection '+d,/Searching tours|travellers|May 8 to|May 15 to|Only.*spots left|selected itinerary/i);
+               const title=p.getByText(d,{exact:true}); const parent=title.locator('xpath=ancestor::*[.//button[normalize-space()="Select"]][1]');console.log('Gdatecard',await parent.innerText());await parent.getByRole('button',{name:'Select',exact:true}).click();await p.waitForTimeout(1000);
+               const txt=await p.locator('body').innerText(); console.log('GAFTER '+d,txt.slice(-2400)); 
+             }))
+            ]);            await browser.close();
           })().catch(e=>{console.log(String(e));process.exit(1)});
           NODE
