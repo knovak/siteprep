@@ -41,18 +41,15 @@ jobs:
                await clickText(p,/^Reject All$/i).catch(()=>false);
                await clickText(p,/^View Dates$/i); await clickText(p,/^2027$/).catch(()=>false);
                await clickText(p,new RegExp('^'+d+'$')); await p.waitForTimeout(650);
-               const el=p.getByText(d,{exact:true}).filter({visible:true}).first();
-               console.log('BACKDATECARD '+d,await el.evaluate(e=>{let x=e; for(let n=0;n<8&&x.parentElement;n++){x=x.parentElement;if(/book|room|\$/i.test(x.innerText)&&x.innerText.length>120)break}return x.outerHTML.slice(0,9000)}));
-               await region(p,'BACK SELECTED '+d,/USD|\$|guest & room|book now|hold|reserve|select guest/i);
-               await controls(p,'BACK controls '+d);
-             })),
-             ...['2027-05-08','2027-05-22','2027-06-05'].map(d=>run('57 '+d,'https://57hours.com/product/machu-picchu-rainbow-mountain-and-caving-hiking-adventure-in-peru/?select_date='+d+'&booking_persons=4&cancellation_policy=standard&deposit_option=full',async p=>{
-               const num=p.locator('#wc_bookings_field_persons'); console.log('57 initial number '+d,await num.inputValue(),await num.getAttribute('max'));
-               if(await num.inputValue()!=='4'){await num.fill('4');await num.dispatchEvent('change');await num.press('Tab');await p.waitForTimeout(1200);}
-               const t=await p.locator('body').innerText();console.log('57SUMMARY '+d,p.url(),t.slice(t.lastIndexOf('A message or note for the guide'),-1).slice(0,1700), 'room options:', t.split('\n').filter(x=>/room|occupancy|bed/i.test(x)).slice(-20));
+               await clickText(p,/^Book Now$/i);await p.waitForTimeout(1000);
+               if(await clickText(p,/^Let.s Go!$/i).catch(()=>false))await p.waitForTimeout(500);
+               console.log('BACK FLOW '+d,(await p.locator('body').innerText()).split('Dates & Prices').slice(-1)[0].slice(0,2400));
+               const chosen=p.getByText(/Select Guests & Rooms/i).filter({visible:true}).first();
+               console.log('BACK PANEL '+d,await chosen.evaluate(e=>{let x=e;for(let i=0;i<8&&x.parentElement;i++){x=x.parentElement;if(x.querySelectorAll('input,select,button,[class*="plus"],[class*="add"]').length>=3)break}return x.outerHTML.slice(0,20000)}).catch(()=>null));
+               console.log('BACK active numeric '+d,await p.locator('select:visible,input:visible,[class*="plus"]:visible,[class*="minus"]:visible,[class*="add-room"]:visible,[class*="increment"]:visible').evaluateAll(es=>es.map(e=>[e.outerHTML.slice(0,520),e.parentElement.innerText?.trim().slice(0,140)]).slice(-32)));
              })),
              ...['Sat May 8 to Sun May 16','Sat May 15 to Sun May 23'].map(d=>run('G '+d,'https://www.gadventures.com/checkout/26374/overview/',async p=>{
-               const num=p.getByRole('spinbutton',{name:'number of adults'}); console.log('Gstepper',await num.evaluate(e=>e.parentElement.parentElement.outerHTML.slice(0,3200))); 
+               await p.waitForTimeout(1300);await p.locator('#onetrust-reject-all-handler:visible, #onetrust-accept-btn-handler:visible').first().click({timeout:2500}).catch(()=>false);const num=p.getByRole('spinbutton',{name:'number of adults'}); console.log('Gstepper',await num.evaluate(e=>e.parentElement.parentElement.outerHTML.slice(0,3200))); 
                if(await num.getAttribute('readonly')===null){await num.fill('4');await num.press('Tab');} else {const plus=num.locator('..').locator('button').last();for(let i=0;i<3;i++)await plus.click();}
                await p.waitForTimeout(1200); console.log('Gcount',await num.inputValue()); await region(p,'G dates after guest selection '+d,/Searching tours|travellers|May 8 to|May 15 to|Only.*spots left|selected itinerary/i);
                const title=p.getByText(d,{exact:true}); const parent=title.locator('xpath=ancestor::*[.//button[normalize-space()="Select"]][1]');console.log('Gdatecard',await parent.innerText());await parent.getByRole('button',{name:'Select',exact:true}).click();await p.waitForTimeout(1000);
