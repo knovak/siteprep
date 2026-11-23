@@ -42,24 +42,30 @@ jobs:
                await clickText(p,/^View Dates$/i); await clickText(p,/^2027$/).catch(()=>false);
                await clickText(p,new RegExp('^'+d+'$')); await p.waitForTimeout(650);
                await p.locator('.tripcal-dep-row.tripcal-open a.book-now').filter({visible:true}).first().click();await p.waitForTimeout(1500);
+               await p.locator('.guests-and-rooms__challenging-ack-button:visible').first().click({timeout:3000}).catch(()=>false);
+               await p.locator('.add-room:visible').first().click();
+               const adults=p.locator('input.adults-input:visible');
+               for(const num of await adults.all()){
+                 const inc=num.locator('..').locator('.update-value--increment');
+                 for(let i=0;i<2&&Number(await num.inputValue())<2;i++)await inc.click();
+               }
+               const bed=p.locator('input.beds-input:visible'); console.log('BACK CONFIG '+d,'adults',await adults.evaluateAll(es=>es.map(e=>e.value)),'beds',await bed.evaluateAll(es=>es.map(e=>e.value)));
+               await p.locator('button.continue-rooms-configuration:visible').first().click(); await p.waitForTimeout(4200);
                for(const tab of p.context().pages()){
-                 console.log('BACK TAB '+d,tab.url());
-                 await clickText(tab,/^Let.s Go!$/i).catch(()=>false);
-                 await tab.waitForTimeout(500);
-                 for(const fr of tab.frames()){const txt=await fr.locator('body').innerText({timeout:3000}).catch(()=> ''); const lines=txt.split('\n').map(x=>x.trim()).filter(Boolean);console.log('BACK FR '+d,fr.url(),lines.filter(x=>/bed|room|select guests|let.s go|adult|booking|guest|contact us|request|continue|next/i.test(x)).slice(-70));
-                  if(!/trip-dates-prices/.test(fr.url())||lines.some(x=>/^Room 1$|^Select Guests & Rooms$/i.test(x)))console.log('BACK FR CONTROLS '+d,await fr.locator('button,select,input,a,[role=button],[class*="plus"],[class*="add-room"]').evaluateAll(es=>es.filter(e=>e.checkVisibility()&&e.getBoundingClientRect().height).filter(e=>((e.tagName==='SELECT'||e.tagName==='INPUT')||/room|guest|adult|increase|add|bed|count|increment|plus|minus|continue/i.test(e.outerHTML.slice(0,400)))).slice(-45).map(e=>[e.outerHTML.slice(0,850),e.parentElement.innerText?.trim().slice(0,100)])));
-                 }
+                 const t=(await tab.locator('body').innerText()).split('\n').map(x=>x.trim()).filter(Boolean);
+                 console.log('BACK RESULT '+d,tab.url(),t.filter(x=>/room|guest|adult|reserve|price|\$|itinerary|cannot|available|request|selected|checkout|deposit|continue|full|limited|space|trip summary|traveler/i.test(x)).slice(0,95));
+                 console.log('BACK first '+d,t.slice(0,55));
                }
              })),
-                          run('MNR','https://www.melissanoelrenzi.com/retreats-and-workshops/2027-peru-machu-picchu-retreat/',async p=>{
-               const btn=p.getByRole('button',{name:'Check Availability'}).filter({visible:true}).last(); console.log('MNR btn',await btn.evaluate(e=>e.outerHTML));
-               await btn.click();await p.waitForTimeout(2200);for(const tab of p.context().pages())for(const frame of tab.frames()){const txt=(await frame.locator('body').innerText({timeout:1600}).catch(()=> '')).trim();if(/WeTravel|King Room|Casita|Deposit/i.test(txt)){console.log('MNR FRAME',frame.url());console.log('MNR PACKAGES',txt.split('\n').map(x=>x.trim()).filter(x=>/available|left|sold out|king|casita|double|deposit|\$|choose your|select package|roommate|spot/i.test(x)).slice(-75));console.log('MNR SELECT',await frame.locator('select:visible').evaluateAll(os=>os.map(e=>[e.outerHTML.slice(0,1200),e.parentElement.parentElement.innerText.slice(0,600)])))}}
+                          run('MNR','https://www.wetravel.com/checkout_embed?uuid=1774145122',async p=>{
+              console.log('MNR DIRECT',p.url(),(await p.locator('body').innerText()).slice(0,4000));console.log('MNR SELECTIONS',await p.locator('select:visible,button:visible').evaluateAll(es=>es.map(e=>[e.outerHTML.slice(0,500),e.parentElement.parentElement.innerText?.slice(0,220)]).slice(0,40)));
              }),
-             run('VIATOR','https://www.viator.com/tours/Cusco/2-Day-Tour-of-Machu-Picchu-from-Cusco-with-Maras-and-Moray/d937-319951P21?date=2027-04-17',async p=>{
-               console.log('VIATOR CONTEXT',(await p.locator('body').innerText()).slice(0,3000));console.log('VIATOR BUTTONS',await p.getByRole('button').allTextContents().then(z=>z.slice(0,50)));
-             }),
-             run('PERUHIKE','https://www.peruhike.com/tour/sacred-valley-and-machu-picchu-2-days/?currency=usd',async p=>{
-               const txt=await p.locator('body').innerText();console.log('PERU HIKE INIT',p.url(),txt.split('\n').filter(x=>/book|date|available|person|private|calendar|room/i.test(x)).slice(-85));console.log('PERU HIKE ARGS',await p.locator('select,input,button,a').evaluateAll(es=>es.filter(e=>e.checkVisibility()&&e.getBoundingClientRect().height).filter(e=>/book|date|private|person|travel/i.test(e.outerHTML.slice(0,250))).slice(-24).map(e=>e.outerHTML.slice(0,550))));
-             }),            ]);            await browser.close();
+             ...['11170-adventures-sacred-valley-machu-picchu-peru','10988-adventures-peru-machu-picchu-trekking'].map(slug=>run('MBA '+slug,'https://www.muchbetteradventures.com/en-us/products/'+slug+'/',async p=>{
+               const text=await p.locator('body').innerText();console.log('MBA DATES '+slug,text.slice(text.lastIndexOf('Secure your spot')-100,text.lastIndexOf('Secure your spot')+1700)); 
+               const card=p.getByText(/^(Sat 1 May 2027|Sat 29 May 2027|Sun 30 May 2027)/i).filter({visible:true}).first();
+               console.log('MBA date raw '+slug,await card.evaluate(e=>e.parentElement.parentElement.outerHTML.slice(0,2700)).catch(()=>null)); const url=await card.evaluate(e=>e.closest('a')?.href||e.parentElement.parentElement.querySelector('a')?.href).catch(()=>null);
+               console.log('MBA url '+slug,url);
+               if(await card.count()){await card.click({timeout:2300}).catch(()=>false);await p.waitForTimeout(1100);console.log('MBA render '+slug,p.url(),(await p.locator('body').innerText()).split('\n').map(x=>x.trim()).filter(x=>/number of|guest|person|room|booking|deposit|available|\/group|group size/i.test(x)).slice(-52));}
+             })),            ]);            await browser.close();
           })().catch(e=>{console.log(String(e));process.exit(1)});
           NODE
