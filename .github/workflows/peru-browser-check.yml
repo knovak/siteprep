@@ -41,20 +41,25 @@ jobs:
                await clickText(p,/^Reject All$/i).catch(()=>false);
                await clickText(p,/^View Dates$/i); await clickText(p,/^2027$/).catch(()=>false);
                await clickText(p,new RegExp('^'+d+'$')); await p.waitForTimeout(650);
-               await clickText(p,/^Book Now$/i);await p.waitForTimeout(1000);
-               if(await clickText(p,/^Let.s Go!$/i).catch(()=>false))await p.waitForTimeout(500);
-               console.log('BACK FLOW '+d,(await p.locator('body').innerText()).split('Dates & Prices').slice(-1)[0].slice(0,2400));
-               const chosen=p.getByText(/Select Guests & Rooms/i).filter({visible:true}).first();
-               console.log('BACK PANEL '+d,await chosen.evaluate(e=>{let x=e;for(let i=0;i<8&&x.parentElement;i++){x=x.parentElement;if(x.querySelectorAll('input,select,button,[class*="plus"],[class*="add"]').length>=3)break}return x.outerHTML.slice(0,20000)}).catch(()=>null));
-               console.log('BACK active numeric '+d,await p.locator('select:visible,input:visible,[class*="plus"]:visible,[class*="minus"]:visible,[class*="add-room"]:visible,[class*="increment"]:visible').evaluateAll(es=>es.map(e=>[e.outerHTML.slice(0,520),e.parentElement.innerText?.trim().slice(0,140)]).slice(-32)));
+               await p.locator('.tripcal-dep-row.tripcal-open a.book-now').filter({visible:true}).first().click();await p.waitForTimeout(1500);
+               for(const tab of p.context().pages()){
+                 console.log('BACK TAB '+d,tab.url());
+                 await clickText(tab,/^Let.s Go!$/i).catch(()=>false);
+                 await tab.waitForTimeout(500);
+                 for(const fr of tab.frames()){const txt=await fr.locator('body').innerText({timeout:3000}).catch(()=> ''); const lines=txt.split('\n').map(x=>x.trim()).filter(Boolean);console.log('BACK FR '+d,fr.url(),lines.filter(x=>/bed|room|select guests|let.s go|adult|booking|guest|contact us|request|continue|next/i.test(x)).slice(-70));
+                  if(!/trip-dates-prices/.test(fr.url())||lines.some(x=>/^Room 1$|^Select Guests & Rooms$/i.test(x)))console.log('BACK FR CONTROLS '+d,await fr.locator('button,select,input,a,[role=button],[class*="plus"],[class*="add-room"]').evaluateAll(es=>es.filter(e=>e.checkVisibility()&&e.getBoundingClientRect().height).filter(e=>((e.tagName==='SELECT'||e.tagName==='INPUT')||/room|guest|adult|increase|add|bed|count|increment|plus|minus|continue/i.test(e.outerHTML.slice(0,400)))).slice(-45).map(e=>[e.outerHTML.slice(0,850),e.parentElement.innerText?.trim().slice(0,100)])));
+                 }
+               }
              })),
-             ...['Sat May 8 to Sun May 16','Sat May 15 to Sun May 23'].map(d=>run('G '+d,'https://www.gadventures.com/checkout/26374/overview/',async p=>{
-               await p.waitForTimeout(1300);await p.locator('#onetrust-reject-all-handler:visible, #onetrust-accept-btn-handler:visible').first().click({timeout:2500}).catch(()=>false);const num=p.getByRole('spinbutton',{name:'number of adults'}); console.log('Gstepper',await num.evaluate(e=>e.parentElement.parentElement.outerHTML.slice(0,3200))); 
-               if(await num.getAttribute('readonly')===null){await num.fill('4');await num.press('Tab');} else {const plus=num.locator('..').locator('button').last();for(let i=0;i<3;i++)await plus.click();}
-               await p.waitForTimeout(1200); console.log('Gcount',await num.inputValue()); await region(p,'G dates after guest selection '+d,/Searching tours|travellers|May 8 to|May 15 to|Only.*spots left|selected itinerary/i);
-               const title=p.getByText(d,{exact:true}); const parent=title.locator('xpath=ancestor::*[.//button[normalize-space()="Select"]][1]');console.log('Gdatecard',await parent.innerText());await parent.getByRole('button',{name:'Select',exact:true}).click();await p.waitForTimeout(1000);
-               const txt=await p.locator('body').innerText(); console.log('GAFTER '+d,txt.slice(-2400)); 
-             }))
-            ]);            await browser.close();
+                          run('MNR','https://www.melissanoelrenzi.com/retreats-and-workshops/2027-peru-machu-picchu-retreat/',async p=>{
+               const btn=p.getByRole('button',{name:'Check Availability'}).filter({visible:true}).last(); console.log('MNR btn',await btn.evaluate(e=>e.outerHTML));
+               await btn.click();await p.waitForTimeout(2200);for(const tab of p.context().pages())for(const frame of tab.frames()){const txt=(await frame.locator('body').innerText({timeout:1600}).catch(()=> '')).trim();if(/WeTravel|King Room|Casita|Deposit/i.test(txt)){console.log('MNR FRAME',frame.url());console.log('MNR PACKAGES',txt.split('\n').map(x=>x.trim()).filter(x=>/available|left|sold out|king|casita|double|deposit|\$|choose your|select package|roommate|spot/i.test(x)).slice(-75));console.log('MNR SELECT',await frame.locator('select:visible').evaluateAll(os=>os.map(e=>[e.outerHTML.slice(0,1200),e.parentElement.parentElement.innerText.slice(0,600)])))}}
+             }),
+             run('VIATOR','https://www.viator.com/tours/Cusco/2-Day-Tour-of-Machu-Picchu-from-Cusco-with-Maras-and-Moray/d937-319951P21?date=2027-04-17',async p=>{
+               console.log('VIATOR CONTEXT',(await p.locator('body').innerText()).slice(0,3000));console.log('VIATOR BUTTONS',await p.getByRole('button').allTextContents().then(z=>z.slice(0,50)));
+             }),
+             run('PERUHIKE','https://www.peruhike.com/tour/sacred-valley-and-machu-picchu-2-days/?currency=usd',async p=>{
+               const txt=await p.locator('body').innerText();console.log('PERU HIKE INIT',p.url(),txt.split('\n').filter(x=>/book|date|available|person|private|calendar|room/i.test(x)).slice(-85));console.log('PERU HIKE ARGS',await p.locator('select,input,button,a').evaluateAll(es=>es.filter(e=>e.checkVisibility()&&e.getBoundingClientRect().height).filter(e=>/book|date|private|person|travel/i.test(e.outerHTML.slice(0,250))).slice(-24).map(e=>e.outerHTML.slice(0,550))));
+             }),            ]);            await browser.close();
           })().catch(e=>{console.log(String(e));process.exit(1)});
           NODE
