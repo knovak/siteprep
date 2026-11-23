@@ -377,7 +377,9 @@
         "cusco",
         "salkantay",
         "pueblo",
-        "machupicchu"
+        "machupicchu",
+        "soraypampa",
+        "llactapata"
       ],
       "sources": [
         {
@@ -410,7 +412,7 @@
           "fare": "Per adult, double occupancy",
           "general": "Available",
           "generalEvidence": "Backroads marked this departure Available on its dated calendar.",
-          "party": "Two rooms selected",
+          "party": "Two rooms selected · unconfirmed",
           "partyEvidence": "Cloud Chromium accepted room 1 and room 2 together, each set to two adults and one bed. Continuing opened the Backroads account site before a final price or room allocation appeared. The four-person cost is calculated from the published double-occupancy fare.",
           "checked": "2026-11-23",
           "sources": [
@@ -432,7 +434,7 @@
           "fare": "Per adult, double occupancy",
           "general": "Available",
           "generalEvidence": "Backroads marked this departure Available on its dated calendar.",
-          "party": "Two rooms selected",
+          "party": "Two rooms selected · unconfirmed",
           "partyEvidence": "Cloud Chromium accepted room 1 and room 2 together, each set to two adults and one bed. Continuing opened the Backroads account site before a final price or room allocation appeared. The four-person cost is calculated from the published double-occupancy fare.",
           "checked": "2026-11-23",
           "sources": [
@@ -469,7 +471,11 @@
         "ollantaytambo",
         "pueblo",
         "machupicchu",
-        "pisac"
+        "pisac",
+        "huaypo",
+        "km104",
+        "winaywayna",
+        "sungate"
       ],
       "sources": [
         {
@@ -548,7 +554,9 @@
         "ollantaytambo",
         "salkantay",
         "pueblo",
-        "machupicchu"
+        "machupicchu",
+        "humantay",
+        "llactapata"
       ],
       "sources": [
         {
@@ -706,7 +714,7 @@
           "general": "5 spots advertised",
           "generalEvidence": "The latest retreat index shows five spots. The room grid lists one king bedroom and four shared-category places; all private casitas have sold.",
           "party": "One king room listed",
-          "partyEvidence": "A second private bedroom would require allocating an entire shared-category room to a couple. The booking anchor reached a scripted WeTravel button and the public text view did not display a joint quote.",
+          "partyEvidence": "The public room list showed one private king and four shared places. Cloud Chromium opened the WeTravel booking widget, which showed no usable controls to price two rooms together. A second private bedroom would require assigning an entire shared-category room to one couple.",
           "checked": "2026-11-23",
           "sources": [
             {
@@ -716,6 +724,10 @@
             {
               "label": "Remaining spots on the retreat calendar",
               "url": "https://www.melissanoelrenzi.com/retreats-and-workshops/"
+            },
+            {
+              "label": "WeTravel room selector",
+              "url": "https://www.wetravel.com/checkout_embed?uuid=1774145122"
             }
           ]
         }
@@ -907,7 +919,8 @@
         "ollantaytambo",
         "pueblo",
         "machupicchu",
-        "pisac"
+        "pisac",
+        "km104"
       ],
       "sources": [
         {
@@ -993,7 +1006,8 @@
         "ollantaytambo",
         "pueblo",
         "machupicchu",
-        "pisac"
+        "pisac",
+        "sanpedro"
       ],
       "sources": [
         {
@@ -1033,6 +1047,421 @@
             {
               "label": "Date-specific inquiry",
               "url": "https://www.adiosadventuretravel.com/contact?message=I+want+to+join+The+Great+Machu+Picchu+Foodie+Adventure+on+Jun+14%2C+2027.+Please+tell+me+if+this+date+is+available."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 329,
+      "name": "Peru’s Sacred Valley & Machu Picchu by Train",
+      "operator": "G Adventures",
+      "style": "Escorted rail tours",
+      "itinerary": "Seven days, Cusco to Cusco, with up to 16 travelers. Spend the first two nights in Cusco, visit the Ccaccaccollo weaving cooperative, watch potters at Cuyo Chico and eat at the community-run Parwa restaurant. Two nights in Ollantaytambo allow time for the Maras salt pans, Moray terraces, Chinchero and the fortress above town. Take the train to Aguas Calientes, stay overnight and visit Machu Picchu with a guide on day six before returning to Cusco by train and road. Depart on day seven.",
+      "accommodation": "Six hotel nights across Cusco (three), Ollantaytambo (two) and Aguas Calientes (one). G Adventures lists Hotel Prisma or similar in Cusco. Properties can vary by departure. Ask G to place each couple together and confirm its preferred bed arrangement for every night.",
+      "costs": "The selected April 15 departure totaled US$2,937 including tax for four. April 17 totaled US$3,021 for four. June 15 totaled US$3,776 for four. Other calendar prices are rounded per-person amounts. Includes guided Machu Picchu and Sacred Valley visits, six hotel nights, six breakfasts, three lunches and transport for scheduled visits. Allow extra for airfare, airport transfers, other meals, tips, travel insurance and optional activities.",
+      "terms": "U.S. Classic terms list a US$350 standard deposit per traveler and a balance due 60 days before departure. Cancellations 60 or more days out preserve the deposit as credit. At 30–59 days the operator refunds half the amount above the deposit, and below 30 days it retains the fare. Machu Picchu circuit choice depends on ticket supply.",
+      "operatorReview": "Travelers on Trustpilot rate G Adventures 4.9/5 across 17,820 company-wide reviews. Guides and small-group organization draw praise, while some travelers find the pace demanding. The rating covers G’s worldwide tours.",
+      "accommodationReview": "In an April 2026 Tripadvisor review of Hotel Prisma, a traveler on a G Adventures trip liked the cleanliness and access to Cusco’s historic center but reported service-area noise, dated rooms and a basic breakfast. Prisma is an example property.",
+      "operatorReviewShort": "4.9/5 across G Adventures’ worldwide Trustpilot reviews",
+      "accommodationReviewShort": "Cusco example hotel praised for location and cleanliness, with noise concerns",
+      "reviewChecked": "2026-11-23",
+      "locations": [
+        "cusco",
+        "ollantaytambo",
+        "maras",
+        "moray",
+        "chinchero",
+        "pueblo",
+        "machupicchu",
+        "ccaccaccollo",
+        "cuyochico",
+        "parwa"
+      ],
+      "sources": [
+        {
+          "label": "Operator itinerary and inclusions",
+          "url": "https://www.gadventures.com/trips/perus-sacred-valley-machu-picchu-by-train/SPCS/"
+        },
+        {
+          "label": "Day-by-day operator trip notes (PDF)",
+          "url": "https://www.gadventures.com/trips/perus-sacred-valley-machu-picchu-by-train/10405/details/download/?language=en"
+        },
+        {
+          "label": "G Adventures live departure checkout",
+          "url": "https://www.gadventures.com/checkout/26380/overview/"
+        },
+        {
+          "label": "Hosted Chrome date and price check",
+          "url": "https://github.com/knovak/siteprep/actions/runs/45268966438"
+        },
+        {
+          "label": "G Adventures U.S. booking terms",
+          "url": "https://www.gadventures.com/terms-conditions/booking-terms/usa-booking-terms/"
+        },
+        {
+          "label": "G Adventures traveler reviews",
+          "url": "https://www.trustpilot.com/review/gadventures.com"
+        },
+        {
+          "label": "Hotel Prisma traveler reviews",
+          "url": "https://www.tripadvisor.com/Hotel_Review-g294314-d1008737-Reviews-Hotel_PRISMA-Cusco_Cusco_Region.html"
+        }
+      ],
+      "departures": [
+        {
+          "start": "2027-04-15",
+          "end": "2027-04-21",
+          "amount": 734,
+          "party": "Four priced · rooms unconfirmed",
+          "partyEvidence": "Selecting this departure showed a total of US$2,937 for four travelers, including tax. The checkout did not display a two-room allocation."
+        },
+        {
+          "start": "2027-04-16",
+          "end": "2027-04-22",
+          "amount": 755
+        },
+        {
+          "start": "2027-04-17",
+          "end": "2027-04-23",
+          "amount": 755,
+          "party": "Four priced · rooms unconfirmed",
+          "partyEvidence": "Selecting this departure showed a total of US$3,021 for four travelers, including tax. The checkout did not display a two-room allocation."
+        },
+        {
+          "start": "2027-04-18",
+          "end": "2027-04-24",
+          "amount": 755
+        },
+        {
+          "start": "2027-04-19",
+          "end": "2027-04-25",
+          "amount": 755
+        },
+        {
+          "start": "2027-04-21",
+          "end": "2027-04-27",
+          "amount": 755
+        },
+        {
+          "start": "2027-04-23",
+          "end": "2027-04-29",
+          "amount": 755
+        },
+        {
+          "start": "2027-04-24",
+          "end": "2027-04-30",
+          "amount": 755
+        },
+        {
+          "start": "2027-04-25",
+          "end": "2027-05-01",
+          "amount": 755
+        },
+        {
+          "start": "2027-04-28",
+          "end": "2027-05-04",
+          "amount": 755
+        },
+        {
+          "start": "2027-05-02",
+          "end": "2027-05-08",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-05",
+          "end": "2027-05-11",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-06",
+          "end": "2027-05-12",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-07",
+          "end": "2027-05-13",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-08",
+          "end": "2027-05-14",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-09",
+          "end": "2027-05-15",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-10",
+          "end": "2027-05-16",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-12",
+          "end": "2027-05-18",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-13",
+          "end": "2027-05-19",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-14",
+          "end": "2027-05-20",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-15",
+          "end": "2027-05-21",
+          "amount": 971
+        },
+        {
+          "start": "2027-05-16",
+          "end": "2027-05-22",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-17",
+          "end": "2027-05-23",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-19",
+          "end": "2027-05-25",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-20",
+          "end": "2027-05-26",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-21",
+          "end": "2027-05-27",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-22",
+          "end": "2027-05-28",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-25",
+          "end": "2027-05-31",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-26",
+          "end": "2027-06-01",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-27",
+          "end": "2027-06-02",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-28",
+          "end": "2027-06-03",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-29",
+          "end": "2027-06-04",
+          "amount": 944
+        },
+        {
+          "start": "2027-05-30",
+          "end": "2027-06-05",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-01",
+          "end": "2027-06-07",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-02",
+          "end": "2027-06-08",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-03",
+          "end": "2027-06-09",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-04",
+          "end": "2027-06-10",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-05",
+          "end": "2027-06-11",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-07",
+          "end": "2027-06-13",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-09",
+          "end": "2027-06-15",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-10",
+          "end": "2027-06-16",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-11",
+          "end": "2027-06-17",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-12",
+          "end": "2027-06-18",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-13",
+          "end": "2027-06-19",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-14",
+          "end": "2027-06-20",
+          "amount": 944
+        },
+        {
+          "start": "2027-06-15",
+          "end": "2027-06-21",
+          "amount": 944,
+          "party": "Four priced · rooms unconfirmed",
+          "partyEvidence": "Selecting this departure showed a total of US$3,776 for four travelers, including tax. The checkout did not display a two-room allocation.",
+          "sources": [
+            {
+              "label": "G Adventures departure checkout",
+              "url": "https://www.gadventures.com/checkout/26380/overview/"
+            },
+            {
+              "label": "Hosted Chrome date and price check",
+              "url": "https://github.com/knovak/siteprep/actions/runs/45268966438"
+            },
+            {
+              "label": "June 15 checkout total",
+              "url": "https://github.com/knovak/siteprep/actions/runs/45269317400"
+            }
+          ]
+        }
+      ],
+      "departureDefaults": {
+        "currency": "USD",
+        "fare": "Per adult, four-traveler search",
+        "general": "Available",
+        "generalEvidence": "The operator displayed a price on this date with the search set to four adults.",
+        "party": "Four on calendar · rooms unconfirmed",
+        "partyEvidence": "This date and per-person fare appeared together in the four-adult calendar. It gave neither a final group total nor a room allocation.",
+        "checked": "2026-11-23",
+        "sources": [
+          {
+            "label": "G Adventures departure checkout",
+            "url": "https://www.gadventures.com/checkout/26380/overview/"
+          },
+          {
+            "label": "Hosted Chrome date and price check",
+            "url": "https://github.com/knovak/siteprep/actions/runs/45268966438"
+          }
+        ]
+      }
+    },
+    {
+      "id": 364,
+      "name": "Sacred Valley & Machu Picchu Tour, 2 Days",
+      "operator": "Peru Hike",
+      "style": "Short rail trips",
+      "itinerary": "Start at a hotel in Cusco’s historic center. Visit Písac’s archaeological site and traditional market, stop for lunch in Urubamba, and explore the Ollantaytambo fortress before taking the evening train to Aguas Calientes. After the hotel breakfast on day two, ride the bus up for a guided Machu Picchu visit of about 2½ hours. Return by bus, train to Ollantaytambo and van to Cusco.",
+      "accommodation": "One included hotel night in Aguas Calientes. Peru Hike does not name the property or list its bedding. The private-service form accepted four adults but showed no room selector. Both couples’ bedroom assignments need confirmation.",
+      "costs": "Private service is US$450 per adult, or US$1,800 calculated for four. Shared-group service was also displayed at US$360 per adult, or US$1,440 calculated for four. The fare includes the hotel, guide, Sacred Valley and Machu Picchu entry, return rail and site bus, ground transfers, and one each of breakfast, lunch and dinner. Allow extra for airfare, Cusco hotel nights, tips, insurance and the optional Huayna Picchu climb. The operator lists a 6% fee on online card or PayPal balance payments.",
+      "terms": "The itinerary asks for the balance by 6:30 p.m. two days before departure and a briefing the evening before. The general policy gives a later deadline for some payment methods, so verify the applicable date. Cancellations up to 24 hours in advance receive unused costs back after deductions for purchased, nonrefundable train or entry tickets and services. The overview names Vistadome, and the day-by-day itinerary names Expedition, so the rail class needs confirmation.",
+      "operatorReview": "The operator publishes 35 reviews for this tour, including praise for the guides’ explanations and train logistics. An independent July 2026 Tripadvisor review of another Peru Hike tour described prompt communication and organized transport.",
+      "accommodationReview": "The itinerary identifies the overnight property only as a hotel in Aguas Calientes. The published reviews do not identify the booked property or room category.",
+      "operatorReviewShort": "Guides praised in the tour’s 35 operator-hosted reviews",
+      "accommodationReviewShort": "Overnight hotel unnamed",
+      "reviewChecked": "2026-11-23",
+      "locations": [
+        "cusco",
+        "pisac",
+        "urubamba",
+        "ollantaytambo",
+        "pueblo",
+        "machupicchu"
+      ],
+      "sources": [
+        {
+          "label": "Peru Hike itinerary, USD fares and booking form",
+          "url": "https://www.peruhike.com/tour/sacred-valley-and-machu-picchu-2-days/?currency=usd"
+        },
+        {
+          "label": "Peru Hike payment and cancellation policies",
+          "url": "https://www.peruhike.com/booking-policies/"
+        },
+        {
+          "label": "Independent Peru Hike traveler reviews",
+          "url": "https://www.tripadvisor.com/Attraction_Review-g294314-d15188069-Reviews-Peru_Hike-Cusco_Cusco_Region.html"
+        },
+        {
+          "label": "Hosted Chrome availability check",
+          "url": "https://github.com/knovak/siteprep/actions/runs/45269317400"
+        }
+      ],
+      "departures": [
+        {
+          "start": "2027-04-17",
+          "end": "2027-04-18",
+          "amount": 450,
+          "currency": "USD",
+          "fare": "Per adult, private service",
+          "general": "24 seats listed",
+          "generalEvidence": "The USD booking form displayed 24 seats for private service at US$450 per adult. It separately displayed 24 seats for shared-group service at US$360 per adult.",
+          "party": "Four selected · rooms unconfirmed",
+          "partyEvidence": "Hosted Chrome selected private service and four adults on this date. The form offered Proceed Booking without displaying a combined price, the hotel’s name or bedroom assignments. US$1,800 is calculated from the adult rate.",
+          "checked": "2026-11-23",
+          "sources": [
+            {
+              "label": "Peru Hike itinerary, USD fares and booking form",
+              "url": "https://www.peruhike.com/tour/sacred-valley-and-machu-picchu-2-days/?currency=usd"
+            },
+            {
+              "label": "Hosted Chrome availability check",
+              "url": "https://github.com/knovak/siteprep/actions/runs/45269317400"
+            }
+          ]
+        },
+        {
+          "start": "2027-06-12",
+          "end": "2027-06-13",
+          "amount": 450,
+          "currency": "USD",
+          "fare": "Per adult, private service",
+          "general": "24 seats listed",
+          "generalEvidence": "The USD booking form displayed 24 seats for private service at US$450 per adult. It separately displayed 24 seats for shared-group service at US$360 per adult.",
+          "party": "Four selected · rooms unconfirmed",
+          "partyEvidence": "Hosted Chrome selected private service and four adults on this date. The form offered Proceed Booking without displaying a combined price, the hotel’s name or bedroom assignments. US$1,800 is calculated from the adult rate.",
+          "checked": "2026-11-23",
+          "sources": [
+            {
+              "label": "Peru Hike itinerary, USD fares and booking form",
+              "url": "https://www.peruhike.com/tour/sacred-valley-and-machu-picchu-2-days/?currency=usd"
+            },
+            {
+              "label": "Hosted Chrome availability check",
+              "url": "https://github.com/knovak/siteprep/actions/runs/45269317400"
             }
           ]
         }
@@ -1102,25 +1531,6 @@
         {
           "label": "Distributor inventory",
           "url": "https://exploretan.com/our-adventures/peru-lima-the-sacred-valley-machu-picchu-by-train/"
-        }
-      ]
-    },
-    {
-      "id": 329,
-      "name": "G Adventures · Peru’s Sacred Valley & Machu Picchu by Train",
-      "style": "Short rail trips",
-      "status": "Operator dates unverified",
-      "reason": "The reseller advertises May 8–14 and May 16–22 among many starts. The operator’s initial view only showed the current month. This seven-day Classic itinerary differs from the nine-day Geluxe trip.",
-      "next": "Select a spring month on the operator site and test four travelers in two rooms.",
-      "checked": "2026-11-23",
-      "sources": [
-        {
-          "label": "Operator calendar",
-          "url": "https://www.gadventures.com/trips/perus-sacred-valley-machu-picchu-by-train/10405/"
-        },
-        {
-          "label": "Reseller dates",
-          "url": "https://pavlus.com/tours/g-adventures-tours/peru-s-sacred-valley-machu-picchu-by-train/"
         }
       ]
     },
@@ -1463,11 +1873,11 @@
     },
     "humantay": {
       "name": "Humantay Lake",
-      "lat": -13.383102,
-      "lng": -72.572772,
+      "lat": -13.3794,
+      "lng": -72.5844,
       "type": "Lake",
       "address": "Laguna Humantay, Mollepata District, Anta Province, Cusco, Peru",
-      "source": "https://transparencia.mincetur.gob.pe/documentos/newweb/portals/0/transparencia/pmi/Anexo_4-CPS-CB-ZonaDesarrolloTuristico-14102025.pdf"
+      "source": "https://es.wikipedia.org/wiki/Laguna_Humantay"
     },
     "salkantay": {
       "name": "Salkantay Pass",
@@ -1492,6 +1902,86 @@
       "type": "Town",
       "address": "Urubamba, Urubamba Province, Cusco, Peru",
       "source": "https://en.wikipedia.org/wiki/Urubamba,_Peru"
+    },
+    "soraypampa": {
+      "name": "Soraypampa",
+      "lat": -13.38719,
+      "lng": -72.57374,
+      "type": "Village",
+      "address": "Soraypampa, Mollepata District, Anta Province, Cusco, Peru",
+      "source": "https://mapcarta.com/es/N497118622"
+    },
+    "llactapata": {
+      "name": "Llactapata · Salkantay route",
+      "lat": -13.185889,
+      "lng": -72.58475,
+      "type": "Archaeological site",
+      "address": "Lucmabamba sector, Santa Teresa District, La Convención Province, Cusco, Peru",
+      "source": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14716"
+    },
+    "huaypo": {
+      "name": "Huaypo Lake",
+      "lat": -13.402465,
+      "lng": -72.12766,
+      "type": "Lake",
+      "address": "Laguna de Huaypo, between Anta and Chinchero, Cusco, Peru",
+      "source": "https://www.ana.gob.pe/sites/default/files/normatividad/files/fuentes_agua_superficial_vilcanota_0_0_3.pdf"
+    },
+    "km104": {
+      "name": "Chachabamba · Km 104",
+      "lat": -13.186554,
+      "lng": -72.510325,
+      "type": "Archaeological site",
+      "address": "Km 104, Cusco–Hidroeléctrica railway, left bank of the Vilcanota, Machupicchu District, Urubamba, Cusco, Peru",
+      "source": "https://www.machupicchu.gob.pe/wp-content/uploads/2022/02/29-Art.-Investigaciones-en-el-monumento-arqueol%C3%B3gico-Chachabamba.pdf"
+    },
+    "winaywayna": {
+      "name": "Wiñay Wayna",
+      "lat": -13.19278,
+      "lng": -72.53639,
+      "type": "Archaeological site",
+      "address": "Inca Trail, Machu Picchu Historic Sanctuary, Machupicchu District, Urubamba, Cusco, Peru",
+      "source": "https://en.wikipedia.org/wiki/Wi%C3%B1ay_Wayna"
+    },
+    "sungate": {
+      "name": "Intipunku · Sun Gate",
+      "lat": -13.169741,
+      "lng": -72.533956,
+      "type": "Archaeological site",
+      "address": "Inca Trail approach to Machu Picchu, Machupicchu District, Urubamba, Cusco, Peru",
+      "source": "https://es.wikipedia.org/wiki/Inti_Punku"
+    },
+    "sanpedro": {
+      "name": "San Pedro Market",
+      "lat": -13.520997,
+      "lng": -71.982618,
+      "type": "Market",
+      "address": "Calle Thupaq Amaru 477, by Plazoleta San Pedro, Cusco 08002, Peru",
+      "source": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=6899"
+    },
+    "ccaccaccollo": {
+      "name": "Ccaccaccollo",
+      "lat": -13.455222,
+      "lng": -71.887841,
+      "type": "Village",
+      "address": "Ccaccaccollo, Taray District, Calca Province, Cusco, Peru",
+      "source": "https://www.deperu.com/centros-poblados/ccaccaccollo-40054"
+    },
+    "cuyochico": {
+      "name": "Cuyo Chico",
+      "lat": -13.409019,
+      "lng": -71.831073,
+      "type": "Village",
+      "address": "Cuyo Chico, Pisac District, Calca Province, Cusco, Peru",
+      "source": "https://deperu.com/centros-poblados/cuyo-chico-39952"
+    },
+    "parwa": {
+      "name": "Parwa Community Restaurant",
+      "lat": -13.364933,
+      "lng": -71.929934,
+      "type": "Restaurant",
+      "address": "Comunidad de Huchuy Qosqo, Lamay District, Calca Province, Cusco, Peru",
+      "source": "https://aloftandaway.com/place/parwa-community-restaurant/"
     }
   }
 }

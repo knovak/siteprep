@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machu Picchu packages | Peru</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script defer src="../../assets/scripts.js"></script>
+  <script defer src="../../../../shared/package_table_filters.js"></script>
+  <script defer src="../../assets/machu-picchu-packages.js"></script>
+</head>
+<body class="package-page">
+<header class="card">
+  <div class="card-header">
+    <a class="tag" href="../../index.html">Peru</a>
+    <h1>Machu Picchu packages</h1>
+    <p class="package-brief">April 15–June 15, 2027 departures &nbsp;·&nbsp; Four adults in two private rooms</p>
+  </div>
+  <div class="card-content package-links">
+    <a href="../machu-picchu/overview.html">Machu Picchu travel guide</a>
+    <a href="overview-reject.html">Rejected options and research holding</a>
+    <a href="../../machu-picchu-research-notes.html">Research notes</a>
+  </div>
+</header>
+<main class="card"><div class="card-content">
+  <h2>Compare departures</h2>
+  <p>Departures are grouped by travel style, earliest first. Select the date heading to see all styles in chronological order. Open a package for the itinerary, fare terms and dated booking evidence.</p>
+  <!-- departure-comparison -->
+  <!-- package-details -->
+  <h2>Route map</h2>
+  <p>The markers locate towns, trail areas and sights on the listed itineraries. Open a location for its address or map reference.</p>
+  <!-- package-locations -->
+  <h3>OpenStreetMap</h3>
+  <div id="package-map-osm" class="map-container"></div>
+  <div id="package-legend-osm" class="map-legend"></div>
+  <h3>OpenTopoMap</h3>
+  <div id="package-map-topo" class="map-container"></div>
+  <div id="package-legend-topo" class="map-legend"></div>
+</div></main>
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script defer src="../../../../shared/standard_map/standard_map.js"></script>
+</body>
+</html>
