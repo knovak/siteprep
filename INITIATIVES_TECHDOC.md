@@ -988,6 +988,14 @@ the beta. It reads `channels`, so a new beta is covered without editing it. It
 fails when a change removes the anchor element, so that `beta.stamp` is updated
 when the page's structure changes.
 
+The release-history cases in `tests/initiatives-deployments.test.mjs` -
+unreleased counts, change lists, test ahead of production, a released copy's
+date - do not read this repository's history, which a shallow clone cuts short.
+`historyRepo()` in that file builds a throwaway git repository with five known
+commits, copies `scripts/initiatives.mjs` and `tests/fixtures/` into it, and
+those cases run the script there. A new case that needs commits behind a source
+uses that repository, and adds a commit to it if it needs one.
+
 `tests/e2e/sbdc-beta.spec.js` is specific to one beta. It drives the published
 SBDC Night-Sky Simulator beta in a browser - shell altitudes, the readout's
 whole-sky and in-view counts, the presets, the language switch - because that
