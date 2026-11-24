@@ -8,9 +8,11 @@
       0.02,
       0.05,
       0.1,
+      0.2,
       0.25,
       0.5,
       0.75,
+      0.8,
       0.9,
       0.95,
       0.98,
@@ -21,9 +23,11 @@
       2.302,
       2.42,
       2.594,
+      2.856,
       2.933,
       3.265,
       3.501,
+      3.542,
       3.649,
       3.741,
       3.84,
@@ -34,9 +38,11 @@
       -1.074,
       -0.801,
       -0.493,
+      -0.196,
       -0.057,
       0.81,
       1.972,
+      2.155,
       2.378,
       2.473,
       2.591,
@@ -66,7 +72,7 @@
           "height": "3.64 m",
           "value": 3.636,
           "isPast": true,
-          "tier": null,
+          "tier": "notable",
           "top": 11
         },
         {
@@ -86,7 +92,7 @@
           "height": "3.61 m",
           "value": 3.606,
           "isPast": false,
-          "tier": null,
+          "tier": "notable",
           "top": 14
         },
         {
@@ -96,7 +102,7 @@
           "height": "-1.07 m",
           "value": -1.072,
           "isPast": false,
-          "tier": "notable",
+          "tier": "exceptional",
           "top": 3
         }
       ],
@@ -118,7 +124,7 @@
           "height": "3.79 m",
           "value": 3.79,
           "isPast": false,
-          "tier": "notable",
+          "tier": "exceptional",
           "top": 4
         },
         {
@@ -138,7 +144,7 @@
           "height": "3.57 m",
           "value": 3.57,
           "isPast": false,
-          "tier": null,
+          "tier": "notable",
           "top": 17
         },
         {
@@ -264,7 +270,7 @@
           "height": "-0.92 m",
           "value": -0.919,
           "isPast": false,
-          "tier": "notable",
+          "tier": "exceptional",
           "top": 4
         },
         {
@@ -274,7 +280,7 @@
           "height": "3.84 m",
           "value": 3.839,
           "isPast": false,
-          "tier": "notable",
+          "tier": "exceptional",
           "top": 3
         },
         {

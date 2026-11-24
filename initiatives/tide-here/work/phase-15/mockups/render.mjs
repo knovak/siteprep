@@ -12,7 +12,7 @@ const shots = [
   {file: 'option-A-phone.png', query: 'option=A', width: 390},
   {file: 'option-B-explanation.png', query: 'option=B&explain=1-3', width: 1240}
 ];
-const browser = await chromium.launch();
+const browser = await chromium.launch(process.env.CHROMIUM_PATH ? {executablePath: process.env.CHROMIUM_PATH} : {});
 for (const shot of shots) {
   const page = await browser.newPage({viewport: {width: shot.width, height: 200}, deviceScaleFactor: 2});
   await page.addInitScript(`window.MOCKUP_DATA = ${data};`);

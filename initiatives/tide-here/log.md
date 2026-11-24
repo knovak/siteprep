@@ -370,3 +370,10 @@ high/low requests for NOAA Seattle and CHS Halifax and one-year FES extremes for
 the seven validation points, and rendered six presentation mockups from real
 Seattle predictions for 24–28 November 2026. Details are in
 `work/phase-15/README.md`; the presentation and threshold choices are open.
+
+## 2026-11-24 — Choose the extremity-indicator presentation
+
+The user chose Option B (two underline weights), two levels at 20% and 5%, and
+blue and amber. Recorded in `decisions.md`, updated `work/phase-15/README.md`
+and re-rendered the mockups at the chosen levels. `extremity-indicators` is now
+actionable.

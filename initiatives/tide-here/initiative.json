@@ -33,11 +33,10 @@
     {
       "id": "extremity-indicators",
       "title": "Build the particularly high and low tide indicators specified in work/phase-15/README.md",
-      "state": "blocked",
+      "state": "actionable",
       "value": "medium",
       "effort": "medium",
-      "advances_stage": false,
-      "blocked_by": "human:choose the presentation (options A-F), one or two levels, thresholds and colours in work/phase-15/README.md section 8"
+      "advances_stage": false
     }
   ]
 }

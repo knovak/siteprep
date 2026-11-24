@@ -278,3 +278,47 @@ filled rising/falling arrow beside today's tide times, a moon-phase icon before
 “Sun and moon”, investigation of slow Australian output, a Test deployment,
 and a ready-for-review PR. Production release and merging remain outside this
 request. There is no blocked todo to complete for this decision.
+
+## 2026-11-24 — How should particularly high and low tides be shown?
+
+**Option B, two levels, at 20% and 5%, in blue and amber.** The user answered
+the four questions in `work/phase-15/README.md` §8:
+
+1. Presentation: “Option B. I presume the explanation is displayed when the
+   relevant tide number is clicked?” Yes: a marked height opens its
+   explanation when clicked or tapped, and also on hover with a mouse and with
+   Enter or Space from the keyboard.
+2. Levels: two.
+3. Thresholds: “I prefer 20% and 5%.” A high tide among the highest 20% of the
+   station's predicted high tides for the year (or a low tide among the lowest
+   20% of its low tides) gets a thin underline; the highest or lowest 5% get a
+   thick underline and a bold number.
+4. Colours: “As shown” — blue for high, amber for low.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| A, one solid underline | Simplest | No difference between a large spring tide and a king tide |
+| **B, two underline weights** *(chosen)* | Keeps the underline the request described; shows two levels; moves no text when marks arrive late | Two levels to explain in the legend |
+| C, wavy underline | Reads as water | Needs space reserved under every height |
+| D, underline plus a word | Explains itself | Busier; moves text when marks arrive after the first render |
+| E, year-range bar | Most informative | Most visual weight; a bar under every height |
+| F, highlighter tint | Very visible | Not an underline |
+
+The proposal had been 10% and 2%. At 20% and 5% about one tide in five is
+marked over a year, concentrated around spring tides: in the 24–28 November
+2026 Seattle example, 7 of 10 high tides and all 4 nighttime low tides are
+marked, 8 of them at the 5% level. Neap weeks still show no marks.
+
+### What this settles, and what it does not
+
+- Settles the presentation, the two levels, the thresholds and the colours. The
+  specification and the Option B mockups are updated to 20% and 5%.
+- Unblocks `extremity-indicators`; the indicator still has to be built.
+- Does not authorize building it in this pull request, a test deployment, or a
+  production release.
+- The provider work in the specification is unchanged: NOAA and CHS in the
+  browser, Bureau records at import, FES records on demand or precomputed. The
+  on-demand-versus-sidecar choice for FES is an implementation detail recorded in
+  the specification, not a question for the user.

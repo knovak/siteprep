@@ -18,7 +18,7 @@ const year = JSON.parse(readFileSync(process.argv[2], 'utf8')).predictions.map((
   height: Number(row.v)
 }));
 
-const PROBABILITIES = [0.01, 0.02, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.98, 0.99];
+const PROBABILITIES = [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.98, 0.99];
 function quantiles(values) {
   const sorted = [...values].sort((a, b) => a - b);
   return PROBABILITIES.map((p) => sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))]);
@@ -38,7 +38,7 @@ function top(event) {
 }
 function tier(event) {
   const n = top(event);
-  return n <= 2 ? 'exceptional' : n <= 10 ? 'notable' : null;
+  return n <= 5 ? 'exceptional' : n <= 20 ? 'notable' : null;
 }
 
 const rows = fiveLocalDays(now, zone);

@@ -1,9 +1,9 @@
 # Phase 15: particularly high and low tide indicators — specification
 
-Status: **proposed, not built.** This document specifies the feature and records
-the measurements behind it. No application code has changed. The mockups in
-`mockups/` are for choosing a presentation; §8 lists the decisions that are
-still open.
+Status: **specified, not built.** This document specifies the feature and records
+the measurements behind it. No application code has changed. The user chose the
+presentation, levels, thresholds and colours on 2026-11-24 (§8, and
+`../../decisions.md`): Option B, two levels at 20% and 5%, blue and amber.
 
 ## 1. What the user sees
 
@@ -15,8 +15,8 @@ low tide, at that station gets a coloured mark under the number:
 - **amber** under a particularly low low tide;
 - nothing under every other height.
 
-A short legend under the cards says what the marks mean, and tapping (or
-hovering, or focusing) a marked height gives the exact statement, for example
+A short legend under the cards says what the marks mean, and clicking or
+tapping a marked height opens a small box with the exact statement, for example
 *"Among the lowest 1% of 2026's low tides here (705 predicted low tides in
 2026). Astronomical prediction only: wind, pressure and storm surge can make the
 water higher or lower."*
@@ -33,13 +33,16 @@ A height is ranked against **every predicted tide of the same type (high or
 low) at the same station during the same calendar year**, using the same
 provider, datum and unit as the number on the page.
 
-- **Particularly high:** among the highest 10% of that year's high tides.
-- **Particularly low:** among the lowest 10% of that year's low tides.
-- **Optional second level:** among the highest or lowest 2% (§8, decision 2).
+- **Particularly high:** among the highest 20% of that year's high tides
+  (thin underline).
+- **Particularly low:** among the lowest 20% of that year's low tides
+  (thin underline).
+- **Second level:** among the highest or lowest 5% (thick underline and bold
+  number).
 
 The rank shown to the user is *N* = the share of same-type tides in the year that
 are at least as extreme, rounded up to a whole percent (minimum 1%). A height is
-marked when *N* ≤ 10, and reaches the second level when *N* ≤ 2.
+marked when *N* ≤ 20, and reaches the second level when *N* ≤ 5.
 
 Reasons for this definition:
 
@@ -56,10 +59,12 @@ Reasons for this definition:
    Mexico, Western Australia) the one daily high is compared with the other
    daily highs. No regime-specific rule is needed.
 4. **It produces a useful number of marks.** With about 705 high tides a year
-   at a semidiurnal station, the top 10% is about 70 high tides — roughly the
-   highest one to three tides around each spring tide, and no marks during neap
-   weeks. The top 2% (about 14 a year) picks out the perigean spring tides that
-   people call king tides.
+   at a semidiurnal station, the top 20% is about 140 high tides — the larger
+   tides of most spring-tide periods, and no marks during neap weeks. The top 5%
+   (about 35 a year) picks out the largest spring tides, including the perigean
+   spring tides that people call king tides. Across a year about one tide in five
+   is marked, unevenly: several a day around a big spring tide, none for days
+   around a neap tide.
 5. **It can be explained in one sentence**, which the tooltip uses verbatim.
 
 A calendar year is used, not a rolling 365 days, so a station's threshold record
@@ -72,15 +77,16 @@ thresholds is a few centimetres.
 
 NOAA Seattle (9447130), MLLW, 2026 — 705 highs and 705 lows:
 
-| | 1% | 2% | 10% | median | 90% | 98% | 99% |
+| | 1% | 5% | 20% | median | 80% | 95% | 99% |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| High tides (m) | 2.26 | 2.30 | 2.59 | 3.27 | **3.65** | **3.84** | 3.91 |
-| Low tides (m) | **−1.17** | **−1.07** | **−0.49** | 0.81 | 2.38 | 2.59 | 2.65 |
+| High tides (m) | 2.26 | 2.42 | 2.86 | 3.27 | **3.54** | **3.74** | 3.91 |
+| Low tides (m) | −1.17 | **−0.80** | **−0.20** | 0.81 | 2.16 | 2.47 | 2.65 |
 
 For this week (24–28 November 2026, a full-moon perigean spring tide), that
-marks 5 of 10 high tides and all 5 nighttime low tides, which is what the
-mockups show. The 3.64 m high at 5:08 AM today is in the highest 11% and is
-**not** marked — the threshold is a fixed line, so a near miss gets no mark.
+marks 7 of 10 high tides (4 at the 5% level) and all 4 nighttime low tides (all
+at the 5% level), which is what `mockups/option-B.png` shows. A spring-tide week
+is the busiest case; the 3.48 m high at 4:35 PM on Thursday is in the highest 29%
+and is not marked, and in a neap week nothing is marked.
 
 ### 2.3 Alternatives considered
 
@@ -106,16 +112,17 @@ Every source produces the same small record for a station and year:
   "unit": "m",
   "year": 2026,
   "computedAt": "2026-11-24T20:31:05Z",
-  "probabilities": [0.01, 0.02, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.98, 0.99],
-  "high": [2.26, 2.302, 2.42, 2.594, 2.933, 3.265, 3.501, 3.649, 3.741, 3.84, 3.907],
-  "low": [-1.165, -1.074, -0.801, -0.493, -0.057, 0.81, 1.972, 2.378, 2.473, 2.591, 2.653],
+  "probabilities": [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.98, 0.99],
+  "high": [2.26, 2.302, 2.42, 2.594, 2.856, 2.933, 3.265, 3.501, 3.542, 3.649, 3.741, 3.84, 3.907],
+  "low": [-1.165, -1.074, -0.801, -0.493, -0.196, -0.057, 0.81, 1.972, 2.155, 2.378, 2.473, 2.591, 2.653],
   "highCount": 705,
   "lowCount": 705
 }
 ```
 
-About 400 bytes. The page uses `high[7]` / `low[3]` (10%) and `high[9]` /
-`low[1]` (2%) for the marks, and interpolates between quantiles for the "among
+About 450 bytes. The page uses the 0.8 high and 0.2 low quantiles (20%) and
+the 0.95 high and 0.05 low quantiles (5%) for the marks, looked up by
+probability rather than by array position, and interpolates between quantiles for the "among
 the highest N%" sentence. Quantiles are computed from the sorted heights with
 the same index rule as `mockups/build-data.mjs`. The record never carries
 coordinates, place names or user input.
@@ -174,12 +181,12 @@ marks are added to that rendering when their data is available.
 ### 5.2 Cache
 
 - Key: `tide-here.extremity.v1.<provider>.<stationId>.<datum>.<year>`.
-- Value: the §3 record, about 400 bytes.
+- Value: the §3 record, about 450 bytes.
 - Lifetime: until the end of its year plus 31 days (so the year-boundary rule
   can still use it). A record never changes during its year, so there is no
   refresh.
 - Bound: at most 50 records; on overflow the oldest by `computedAt` is removed.
-  50 records are about 20 KB.
+  50 records are about 23 KB.
 - Like every other Tide Here cache, reads and writes are wrapped so a full or
   blocked local storage only means no marks.
 - The raw year of predictions is never stored, only the record.
@@ -218,26 +225,28 @@ move anything:
 
 | Situation | Added time to first forecast | Marks visible |
 |---|---|---|
-| Australian Bureau port or FES point | ≈0 (≈400 bytes added to `/forecast`) | With the forecast |
+| Australian Bureau port or FES point | ≈0 (≈450 bytes added to `/forecast`) | With the forecast |
 | NOAA or CHS, record cached | 0 | With the forecast |
 | NOAA or CHS, first view of the station this year | 0 | About 0.4–1.5 s after the forecast |
 | Year request fails or times out (10 s) | 0 | Never; source details say "Extremity marks unavailable for this station" |
 
 ## 6. Presentation
 
-The candidate designs are in `mockups/`. All use real NOAA Seattle predictions
-for 24–28 November 2026 and the live page's own stylesheet.
+**Chosen: Option B** (2026-11-24). The candidate designs are kept in
+`mockups/` for the record, all re-rendered at the chosen 20% / 5% levels. All use
+real NOAA Seattle predictions for 24–28 November 2026 and the live page's own
+stylesheet.
 
 | Option | Image | Levels | Summary |
 |---|---|---|---|
 | A | `mockups/option-A.png`, `mockups/option-A-phone.png` | 1 | Solid 2.5 px underline, blue or amber. The simplest. |
-| B | `mockups/option-B.png`, `mockups/option-B-explanation.png` | 2 | Thin underline at 10%; thick underline and bold number at 2%. |
-| C | `mockups/option-C.png` | 2 | Wavy underline; pale at 10%, strong and bold at 2%. Reads as water. |
-| D | `mockups/option-D.png` | 2 | Underline plus a small label: "Very high", "Top 2%", "Very low", "Lowest 2%". Self-explaining but busier, and moves text on a cold cache (§5.4). |
+| B | `mockups/option-B.png`, `mockups/option-B-explanation.png` | 2 | **Chosen.** Thin underline at 20%; thick underline and bold number at 5%. |
+| C | `mockups/option-C.png` | 2 | Wavy underline; pale at 20%, strong and bold at 5%. Reads as water. |
+| D | `mockups/option-D.png` | 2 | Underline plus a small label: "Very high", "Top 5%", "Very low", "Lowest 5%". Self-explaining but busier, and moves text on a cold cache (§5.4). |
 | E | `mockups/option-E.png` | 1 | A small bar under every height showing where it falls in the year's range; the dot turns blue or amber when marked. Most informative, most visual weight. |
 | F | `mockups/option-F.png` | 2 | Highlighter tint behind the number instead of an underline. |
 
-Common rules, whichever option is chosen:
+Rules for the chosen design:
 
 - **Colour.** Blue (`#1f6fb2`) for high and amber (`#c27c0e`) for low, added to
   the stylesheet as `--extreme-high` and `--extreme-low`. Both are at least 3:1
@@ -247,10 +256,13 @@ Common rules, whichever option is chosen:
 - **Colour is not the only signal.** Each marked height carries an accessible
   description (the §1 sentence) for screen readers, and the legend explains the
   colours in words.
-- **Explanation on demand.** A marked height is focusable and opens the
-  explanation on tap, click, hover or keyboard focus (`mockups/option-B-explanation.png`).
-  A native `title` attribute alone is not enough because it does not appear on
-  touch screens.
+- **Explanation on click or tap.** A marked height is a button. Clicking or
+  tapping it opens the explanation box beside it
+  (`mockups/option-B-explanation.png`); clicking it again, clicking elsewhere, or
+  pressing Escape closes it, and only one box is open at a time. Keyboard users
+  reach it with Tab and open it with Enter or Space. On a device with a mouse,
+  hovering also shows it. A native `title` attribute alone is not enough because
+  it does not appear on touch screens. Unmarked heights stay plain text.
 - **Legend.** One line under the cards, shown only when at least one height is
   marked, plus the record's year and that the ranking uses predicted tides at
   this station.
@@ -280,22 +292,19 @@ Common rules, whichever option is chosen:
 | Year boundary | Record for the year of the first displayed day (§2.1) |
 | Local storage unavailable | Marks still appear for stored providers; NOAA/CHS make the year request each time a station is shown, still in the background |
 
-## 8. Decisions for the user
+## 8. Decisions
 
-1. **Which presentation:** A, B, C, D, E or F (§6). Recommendation: **B** —
-   it keeps the plain underline the request described, adds a visible
-   difference for king-tide-level extremes, and moves nothing on a cold cache.
-   A is the choice if one level is enough.
-2. **One level or two:** 10% only, or 10% plus 2%. Recommendation: two.
-3. **Thresholds:** 10% / 2% are proposed. 15% marks more tides around each
-   spring tide; 5% marks only the larger springs.
-4. **Colours:** blue for high and amber for low, as mocked. An alternative is
-   coral for high, already in the palette, which reads as a warning — more
-   suitable if the main concern is flooding at high water.
+Settled by the user on 2026-11-24 and recorded in `../../decisions.md`:
+
+1. **Presentation:** Option B, two underline weights. The explanation opens
+   when a marked number is clicked or tapped (§6).
+2. **Levels:** two.
+3. **Thresholds:** 20% and 5%. The proposal had been 10% and 2%.
+4. **Colours:** blue for high and amber for low, as mocked.
 
 ## 9. Validation
 
-- Unit tests for the quantile rule, the *N*% sentence, the 10%/2% boundaries and
+- Unit tests for the quantile rule, the *N*% sentence, the 20%/5% boundaries and
   ties, using a committed one-year NOAA fixture and a committed CHS fixture.
 - Record rejection for a datum, unit, station or year mismatch, and for a
   short record.
@@ -323,7 +332,9 @@ Common rules, whichever option is chosen:
 - `mockups/build-data.mjs` — builds `mockup-data.json` from a NOAA one-year
   response, using the live page's own day-model, astronomy and formatting code.
 - `mockups/mockup.html` — renders the six options with `../../phase-6/styles.css`.
-- `mockups/render.mjs` — writes the PNGs with the pre-installed Playwright.
+- `mockups/render.mjs` — writes the PNGs with the pre-installed Playwright; set
+  `CHROMIUM_PATH=/opt/pw-browsers/chromium` when the installed Playwright does
+  not find its own browser.
 - `mockups/*.png` — the mockups listed in §6.
 
 This folder is not staged into the deployed Site (`phase-13/scripts/stage-static.mjs`

@@ -94,12 +94,12 @@
   </main>
   <script>
     const OPTIONS = {
-      A: ['Option A · Solid underline', 'One level: highest or lowest 10% of the year'],
-      B: ['Option B · Two underline weights', 'Thin: top/bottom 10% · Thick and bold: top/bottom 2%'],
-      C: ['Option C · Wavy underline', 'Pale wave: top/bottom 10% · Strong wave: top/bottom 2%'],
+      A: ['Option A · Solid underline', 'One level: highest or lowest 20% of the year'],
+      B: ['Option B · Two underline weights', 'Thin: top/bottom 20% · Thick and bold: top/bottom 5%'],
+      C: ['Option C · Wavy underline', 'Pale wave: top/bottom 20% · Strong wave: top/bottom 5%'],
       D: ['Option D · Underline with a word', 'Underline plus a short label saying how rare it is'],
       E: ['Option E · Year-range bar', 'Every height gets a small bar; the ends light up when extreme'],
-      F: ['Option F · Highlighter', 'Tinted background instead of an underline; deeper tint for top/bottom 2%']
+      F: ['Option F · Highlighter', 'Tinted background instead of an underline; deeper tint for top/bottom 5%']
     };
     const data = window.MOCKUP_DATA;
     const params = new URLSearchParams(location.search);
@@ -117,7 +117,7 @@
       : `Among the lowest ${t.top}% of ${data.year}'s low tides here`;
 
     // Year range for option E: lowest low to highest high, from the quantile table ends.
-    const lo = data.thresholds.low[0] - 0.15, hi = data.thresholds.high[10] + 0.1;
+    const lo = data.thresholds.low[0] - 0.15, hi = data.thresholds.high[12] + 0.1;
     const pos = (v) => Math.max(0, Math.min(100, 100 * (v - lo) / (hi - lo)));
 
     function heightNode(t) {
@@ -128,14 +128,14 @@
       if (option === 'D') {
         node.append(el('span', 'num', t.height));
         if (flagged) {
-          const word = t.kind === 'high' ? (t.tier === 'exceptional' ? 'Top 2%' : 'Very high') : (t.tier === 'exceptional' ? 'Lowest 2%' : 'Very low');
+          const word = t.kind === 'high' ? (t.tier === 'exceptional' ? 'Top 5%' : 'Very high') : (t.tier === 'exceptional' ? 'Lowest 5%' : 'Very low');
           const tag = el('span', 'tag', word); tag.dataset.kind = t.kind; node.append(tag);
         }
       } else if (option === 'E') {
         node.append(el('span', 'num', t.height));
         const bar = el('span', 'range');
-        const lowZone = el('span', 'zone low'); lowZone.style.width = `${pos(data.thresholds.low[3])}%`;
-        const highZone = el('span', 'zone high'); highZone.style.width = `${100 - pos(data.thresholds.high[7])}%`;
+        const lowZone = el('span', 'zone low'); lowZone.style.width = `${pos(data.thresholds.low[4])}%`;
+        const highZone = el('span', 'zone high'); highZone.style.width = `${100 - pos(data.thresholds.high[8])}%`;
         const dot = el('span', `dot${flagged ? ` ${t.kind}` : ''}`); dot.style.left = `${pos(t.value)}%`;
         bar.append(lowZone, highZone, dot); node.append(bar);
       } else {
@@ -209,12 +209,12 @@
     const txt = (s) => document.createTextNode(s);
     if (singleTier || option === 'D' || option === 'E') {
       legend.append(
-        item(sw('high', 'notable'), txt('Among the highest 10% of '), el('b', null, `${data.year}'s high tides`), txt(' here')),
-        item(sw('low', 'notable'), txt('Among the lowest 10% of '), el('b', null, `${data.year}'s low tides`), txt(' here')));
+        item(sw('high', 'notable'), txt('Among the highest 20% of '), el('b', null, `${data.year}'s high tides`), txt(' here')),
+        item(sw('low', 'notable'), txt('Among the lowest 20% of '), el('b', null, `${data.year}'s low tides`), txt(' here')));
     } else {
       legend.append(
-        item(sw('high', 'notable'), txt('Highest 10%')), item(sw('high', 'exceptional'), txt('Highest 2% of high tides')),
-        item(sw('low', 'notable'), txt('Lowest 10%')), item(sw('low', 'exceptional'), txt('Lowest 2% of low tides')));
+        item(sw('high', 'notable'), txt('Highest 20%')), item(sw('high', 'exceptional'), txt('Highest 5% of high tides')),
+        item(sw('low', 'notable'), txt('Lowest 20%')), item(sw('low', 'exceptional'), txt('Lowest 5% of low tides')));
     }
     legend.append(el('span', null, `Ranked against every predicted tide at this station in ${data.year}. Tap a height for details.`));
   </script>
