@@ -378,3 +378,22 @@ user history or cache caller-specific forecast responses at the edge.
 
 See `work/phase-14/README.md` for the measured alternatives, reproducible
 comparisons, limitations, activation and rollback instructions.
+
+## 2026-11-24 particularly high and low tides (proposed)
+
+Proposed, not built. A tide height that is among the highest 10% of the year's
+predicted high tides at that station, or the lowest 10% of its low tides, gets a
+coloured underline (blue for high, amber for low), with an optional second level
+at 2%. Ranking each height only against the same station's predictions for the
+same year needs no datum conversion and works in semidiurnal, mixed and diurnal
+regimes.
+
+The indicator never delays the forecast. NOAA and CHS thresholds come from one
+background request for the station's year of high/low predictions (measured at
+11.6 KB compressed for NOAA and 0.4–1.2 s), reduced to a 400-byte record cached
+in local storage for the rest of the year. Bureau thresholds are computed at
+import and FES thresholds are precomputed per model point; both arrive inside
+the existing `/forecast` response.
+
+The full specification, measurements, alternatives considered, six presentation
+mockups and open decisions are in `work/phase-15/README.md`.

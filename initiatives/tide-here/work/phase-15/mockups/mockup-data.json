@@ -1,0 +1,308 @@
+{
+  "station": "Seattle, Puget Sound (NOAA 9447130)",
+  "datum": "MLLW",
+  "year": 2026,
+  "thresholds": {
+    "probabilities": [
+      0.01,
+      0.02,
+      0.05,
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      0.9,
+      0.95,
+      0.98,
+      0.99
+    ],
+    "high": [
+      2.26,
+      2.302,
+      2.42,
+      2.594,
+      2.933,
+      3.265,
+      3.501,
+      3.649,
+      3.741,
+      3.84,
+      3.907
+    ],
+    "low": [
+      -1.165,
+      -1.074,
+      -0.801,
+      -0.493,
+      -0.057,
+      0.81,
+      1.972,
+      2.378,
+      2.473,
+      2.591,
+      2.653
+    ],
+    "highCount": 705,
+    "lowCount": 705
+  },
+  "progress": {
+    "direction": "up",
+    "label": "Rising",
+    "nextType": "high",
+    "nextAt": "2026-11-24T23:07:00.000Z",
+    "fill": 0.4641638225255973,
+    "description": "Fill shows time-based progress between predicted high and low tides, not measured water height."
+  },
+  "days": [
+    {
+      "date": "2026-11-24",
+      "label": "Today · Tue, Nov 24",
+      "isToday": true,
+      "tides": [
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "5:08 AM",
+          "height": "3.64 m",
+          "value": 3.636,
+          "isPast": true,
+          "tier": null,
+          "top": 11
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "10:14 AM",
+          "height": "2.36 m",
+          "value": 2.358,
+          "isPast": true,
+          "tier": null,
+          "top": 89
+        },
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "3:07 PM",
+          "height": "3.61 m",
+          "value": 3.606,
+          "isPast": false,
+          "tier": null,
+          "top": 14
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "10:26 PM",
+          "height": "-1.07 m",
+          "value": -1.072,
+          "isPast": false,
+          "tier": "notable",
+          "top": 3
+        }
+      ],
+      "moonrise": "4:04 PM",
+      "moonPhase": {
+        "phase": 0.5163468307511617,
+        "name": "Full Moon"
+      }
+    },
+    {
+      "date": "2026-11-25",
+      "label": "Wed, Nov 25",
+      "isToday": false,
+      "tides": [
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "5:57 AM",
+          "height": "3.79 m",
+          "value": 3.79,
+          "isPast": false,
+          "tier": "notable",
+          "top": 4
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "11:06 AM",
+          "height": "2.47 m",
+          "value": 2.471,
+          "isPast": false,
+          "tier": null,
+          "top": 95
+        },
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "3:48 PM",
+          "height": "3.57 m",
+          "value": 3.57,
+          "isPast": false,
+          "tier": null,
+          "top": 17
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "11:11 PM",
+          "height": "-1.17 m",
+          "value": -1.172,
+          "isPast": false,
+          "tier": "exceptional",
+          "top": 1
+        }
+      ],
+      "moonrise": "5:02 PM",
+      "moonPhase": {
+        "phase": 0.5489121351652181,
+        "name": "Full Moon"
+      }
+    },
+    {
+      "date": "2026-11-26",
+      "label": "Thu, Nov 26",
+      "isToday": false,
+      "tides": [
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "6:48 AM",
+          "height": "3.86 m",
+          "value": 3.862,
+          "isPast": false,
+          "tier": "exceptional",
+          "top": 2
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "12:00 PM",
+          "height": "2.52 m",
+          "value": 2.515,
+          "isPast": false,
+          "tier": null,
+          "top": 97
+        },
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "4:35 PM",
+          "height": "3.48 m",
+          "value": 3.475,
+          "isPast": false,
+          "tier": null,
+          "top": 29
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "11:59 PM",
+          "height": "-1.12 m",
+          "value": -1.117,
+          "isPast": false,
+          "tier": "exceptional",
+          "top": 2
+        }
+      ],
+      "moonrise": "6:16 PM",
+      "moonPhase": {
+        "phase": 0.5869147803178267,
+        "name": "Waning Gibbous"
+      }
+    },
+    {
+      "date": "2026-11-27",
+      "label": "Fri, Nov 27",
+      "isToday": false,
+      "tides": [
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "7:39 AM",
+          "height": "3.87 m",
+          "value": 3.87,
+          "isPast": false,
+          "tier": "exceptional",
+          "top": 2
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "12:59 PM",
+          "height": "2.49 m",
+          "value": 2.486,
+          "isPast": false,
+          "tier": null,
+          "top": 96
+        },
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "5:28 PM",
+          "height": "3.31 m",
+          "value": 3.307,
+          "isPast": false,
+          "tier": null,
+          "top": 47
+        }
+      ],
+      "moonrise": "7:39 PM",
+      "moonPhase": {
+        "phase": 0.6250327190834336,
+        "name": "Waning Gibbous"
+      }
+    },
+    {
+      "date": "2026-11-28",
+      "label": "Sat, Nov 28",
+      "isToday": false,
+      "tides": [
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "12:49 AM",
+          "height": "-0.92 m",
+          "value": -0.919,
+          "isPast": false,
+          "tier": "notable",
+          "top": 4
+        },
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "8:31 AM",
+          "height": "3.84 m",
+          "value": 3.839,
+          "isPast": false,
+          "tier": "notable",
+          "top": 3
+        },
+        {
+          "type": "Low tide",
+          "kind": "low",
+          "time": "2:05 PM",
+          "height": "2.37 m",
+          "value": 2.373,
+          "isPast": false,
+          "tier": null,
+          "top": 90
+        },
+        {
+          "type": "High tide",
+          "kind": "high",
+          "time": "6:29 PM",
+          "height": "3.07 m",
+          "value": 3.066,
+          "isPast": false,
+          "tier": null,
+          "top": 66
+        }
+      ],
+      "moonrise": "9:04 PM",
+      "moonPhase": {
+        "phase": 0.6625584935295947,
+        "name": "Waning Gibbous"
+      }
+    }
+  ]
+}

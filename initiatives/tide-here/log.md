@@ -361,3 +361,12 @@ review found no remaining actionable correctness issues.
 The implementation, reproducible comparisons, limitations and deployment
 evidence are in `work/phase-14/README.md`. Production remains version 8; this
 work prepares a ready-for-review pull request and does not release or merge.
+
+## 2026-11-24 — Specify particularly high and low tide indicators
+
+Wrote a specification, without code, for marking particularly high high tides
+and particularly low low tides under the height number. Measured one-year
+high/low requests for NOAA Seattle and CHS Halifax and one-year FES extremes for
+the seven validation points, and rendered six presentation mockups from real
+Seattle predictions for 24–28 November 2026. Details are in
+`work/phase-15/README.md`; the presentation and threshold choices are open.
