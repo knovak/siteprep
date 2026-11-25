@@ -33,10 +33,11 @@
     {
       "id": "verify-extremity-on-test-site",
       "title": "Deploy to the test Site and check the extremity marks for NOAA, CHS, a Bureau port and an FES point, including whether the FES year computation fits the Sites worker CPU limit",
-      "state": "actionable",
+      "state": "blocked",
       "value": "medium",
       "effort": "small",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "external:CHS catalogue and annual-prediction responses omit Access-Control-Allow-Origin, preventing browser access; the combined NOAA/CHS catalogue load also masks NOAA. Restore browser access and verify both official providers; see notes/extremity-hosted-verification-2026-11-25.md."
     }
   ]
 }
