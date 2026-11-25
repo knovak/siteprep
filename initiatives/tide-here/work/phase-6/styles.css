@@ -158,3 +158,19 @@ dd { margin: .32rem 0 0; font-size: 1.08rem; font-weight: 780; overflow-wrap: an
 @media (prefers-reduced-motion: reduce) {
   .loading-spinner { animation: none; }
 }
+
+/* Phase 15: particularly high and low tides (Option B). */
+:root { --extreme-high: #1f6fb2; --extreme-low: #c27c0e; }
+.day-card { position: relative; }
+button.height.extreme { justify-self: start; display: inline; width: auto; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; color: var(--ink); background: none; font: inherit; font-size: .72rem; font-weight: 400; line-height: inherit; text-align: left; text-decoration: underline 2px; text-underline-offset: 3px; }
+button.height.extreme:hover { background: none; }
+.height.extreme[data-kind="high"], .extreme-swatch[data-kind="high"] { text-decoration-color: var(--extreme-high); }
+.height.extreme[data-kind="low"], .extreme-swatch[data-kind="low"] { text-decoration-color: var(--extreme-low); }
+.height.extreme[data-level="exceptional"], .extreme-swatch[data-level="exceptional"] { font-weight: 800; text-decoration-thickness: 4.5px; }
+.extreme-explain { position: absolute; z-index: 5; left: .75rem; right: .75rem; max-width: 18rem; padding: .75rem .85rem; border: 1px solid var(--line); border-radius: .8rem; background: white; box-shadow: 0 14px 40px rgba(23, 48, 66, .18); font-size: .78rem; line-height: 1.45; }
+.extreme-explain strong, .extreme-explain span, .extreme-explain small { display: block; }
+.extreme-explain strong { margin-bottom: .2rem; font-size: .84rem; }
+.extreme-explain small { margin-top: .3rem; color: var(--muted); font-size: .74rem; }
+.extremity-legend { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1.2rem; margin: .9rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.extremity-legend-note { flex-basis: 100%; }
+.extreme-swatch { display: inline-block; margin-right: .35rem; color: var(--ink); font-size: .72rem; text-decoration: underline 2px; text-underline-offset: 3px; }

@@ -1,6 +1,7 @@
 import { localDateForInstant } from '../../phase-1/src/day-model.mjs';
 import { calculateMoonPhase, eventDisplayState } from '../../phase-4/src/astronomy.mjs';
 import { FAILURE_MESSAGES } from '../../phase-5/src/resolve-forecast.mjs';
+import { EXTREMITY_CAVEAT, extremityHeadline, extremitySentence, rankTide } from '../../phase-15/src/extremity.mjs';
 
 const STATE_ACTIONS = Object.freeze({
   'invalid-input': 'Edit the entry',
@@ -106,7 +107,21 @@ export function moonPhaseIcon(phase, southernHemisphere = false) {
   });
 }
 
-export function dayViewModel(day, timeZone, currentInstant = new Date(), { latitude = 0, progress = null } = {}) {
+// A marked height carries its level and the explanation shown on click or tap.
+export function tideExtremity(event, record, { modelPoint = false } = {}) {
+  const rank = rankTide(record, event);
+  if (!rank) return null;
+  const height = `${event.height.toFixed(2)} ${event.unit}`;
+  return Object.freeze({
+    level: rank.level,
+    top: rank.top,
+    headline: extremityHeadline(rank, height),
+    sentence: extremitySentence(rank, { modelPoint }),
+    caveat: EXTREMITY_CAVEAT
+  });
+}
+
+export function dayViewModel(day, timeZone, currentInstant = new Date(), { latitude = 0, progress = null, extremity = null, modelPoint = false } = {}) {
   const currentTime = new Date(currentInstant).getTime();
   if (!Number.isFinite(currentTime)) throw new RangeError(`Invalid current instant: ${currentInstant}`);
   const isToday = day.date === localDateForInstant(currentInstant, timeZone);
@@ -119,6 +134,8 @@ export function dayViewModel(day, timeZone, currentInstant = new Date(), { latit
     label: coastDateLabel(day.date),
     tides: Object.freeze(day.tides.map((event) => Object.freeze({
       type: event.type === 'high' ? 'High tide' : 'Low tide',
+      kind: event.type,
+      extremity: tideExtremity(event, extremity, { modelPoint }),
       time: formatCoastTime(event.at, timeZone),
       height: `${event.height.toFixed(2)} ${event.unit}`,
       isPast: new Date(event.at).getTime() < currentTime
@@ -132,7 +149,7 @@ export function dayViewModel(day, timeZone, currentInstant = new Date(), { latit
   });
 }
 
-export function forecastViewModel(forecast, currentInstant = new Date()) {
+export function forecastViewModel(forecast, currentInstant = new Date(), { extremity = null } = {}) {
   if (!forecast?.input?.display || !forecast?.place?.name || !forecast?.coast?.name || !forecast?.station?.name || !forecast?.timeZone) {
     throw new TypeError('A complete normalized forecast is required');
   }
@@ -150,6 +167,12 @@ export function forecastViewModel(forecast, currentInstant = new Date()) {
     source: predictionSource ? Object.freeze({...predictionSource}) : null,
     timeZone: forecast.timeZone,
     warnings: Object.freeze(forecast.warnings.map((warning) => statePresentation(warning.code))),
-    days: Object.freeze(forecast.days.map((day) => dayViewModel(day, forecast.timeZone, currentInstant, { latitude: forecast.place.lat, progress })))
+    extremityYear: extremity?.year ?? null,
+    days: Object.freeze(forecast.days.map((day) => dayViewModel(day, forecast.timeZone, currentInstant, {
+      latitude: forecast.place.lat,
+      progress,
+      extremity,
+      modelPoint: forecast.station.kind === 'model-point'
+    })))
   });
 }

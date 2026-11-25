@@ -746,3 +746,83 @@ test('typing a manual place cancels pending location before submission', async (
   await expect(page.locator('#result')).toBeHidden();
   await expect(page.locator('#state-panel')).toBeHidden();
 });
+
+// Phase 15: particularly high and low tides.
+const YEAR_FIXTURE = /phase-15\/fixtures\/noaa-9447130-2026-hilo\.fixture\.json/;
+
+async function springTideWeek(page) {
+  await page.route('**/phase-0/fixtures/noaa-seattle-hilo.json', async (route) => {
+    const original = await (await route.fetch()).json();
+    const heights = ['3.800', '-0.900', '3.600', '2.300', '3.400', '-0.300', '3.050'];
+    await route.fulfill({json: {...original, predictions: original.predictions.map((row, index) => ({...row, v: heights[index] ?? row.v}))}});
+  });
+}
+
+function heightPositions(page) {
+  return page.locator('.height').evaluateAll((nodes) => nodes.map((node) => {
+    const box = node.getBoundingClientRect();
+    return [Math.round(box.top + scrollY), Math.round(box.height)];
+  }));
+}
+
+test('a neap week shows no marks and the source details say how heights are ranked', async ({ page }) => {
+  await page.goto(pagePath);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#extremity-source')).toContainText(/ranked against the 705 high and 705 low tides predicted by the same source for 2026/);
+  await expect(page.locator('.height.extreme')).toHaveCount(0);
+  await expect(page.locator('#extremity-legend')).toBeHidden();
+});
+
+test('particularly high and low tides are underlined after the forecast without moving it', async ({ page }) => {
+  await springTideWeek(page);
+  let release;
+  const held = new Promise((resolve) => { release = resolve; });
+  const yearRequests = [];
+  await page.route(YEAR_FIXTURE, async (route) => {
+    yearRequests.push(route.request().url());
+    await held;
+    await route.continue();
+  });
+  await page.goto(pagePath);
+  await expect(page.locator('.day-card')).toHaveCount(5);
+  await expect.poll(() => yearRequests.length).toBe(1);
+  await expect(page.locator('.height.extreme')).toHaveCount(0);
+  const before = await heightPositions(page);
+  release();
+  await expect(page.locator('.height.extreme')).toHaveCount(3);
+  expect(await heightPositions(page)).toEqual(before);
+  const exceptional = page.locator('.height.extreme[data-level="exceptional"]');
+  await expect(exceptional).toHaveCount(1);
+  await expect(exceptional).toHaveText('-0.90 m');
+  await expect(exceptional).toHaveCSS('font-weight', '800');
+  await expect(page.locator('.height.extreme[data-level="notable"]').first()).toHaveCSS('font-weight', '400');
+  await expect(page.locator('#extremity-legend')).toBeVisible();
+  await expect(page.locator('#extremity-legend')).toContainText('Highest 5% of high tides');
+
+  await exceptional.click();
+  const box = page.locator('.extreme-explain:not([hidden])');
+  await expect(box).toHaveCount(1);
+  await expect(box).toContainText("Among the lowest 4% of 2026's low tides here");
+  await expect(exceptional).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Escape');
+  await expect(box).toHaveCount(0);
+  await expect(exceptional).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.extreme-explain:not([hidden])')).toHaveCount(1);
+  await page.locator('.safety-line').click();
+  await expect(page.locator('.extreme-explain:not([hidden])')).toHaveCount(0);
+
+  // A cached record marks the first render and needs no second year request.
+  await page.reload();
+  await expect(page.locator('.height.extreme')).toHaveCount(3);
+  expect(yearRequests).toHaveLength(1);
+});
+
+test('a failed year request leaves the forecast unmarked and says so', async ({ page }) => {
+  await springTideWeek(page);
+  await page.route(YEAR_FIXTURE, (route) => route.fulfill({status: 503, body: 'unavailable'}));
+  await page.goto(pagePath);
+  await expect(page.locator('#extremity-source')).toContainText(/marks are unavailable for this station/);
+  await expect(page.locator('.height.extreme')).toHaveCount(0);
+  await expect(page.locator('.day-card').first().locator('.event-group li')).toHaveCount(4);
+});
