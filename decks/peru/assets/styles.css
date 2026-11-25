@@ -259,3 +259,159 @@ a.tag:focus {
 .table-scroll tbody tr:nth-child(even) {
   background: #f8fafc;
 }
+
+/* Dated Machu Picchu comparisons and source-backed package entries. */
+.card:has(#package-comparison) {
+  max-width: 84rem;
+}
+
+#package-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .45rem .6rem;
+  margin: .85rem 0 .6rem;
+}
+
+#package-count {
+  margin: 0;
+  margin-inline-end: auto;
+  color: #424d59;
+  font-size: .9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#package-controls button {
+  padding: .35rem .65rem;
+  border: 1px solid #c4ccd4;
+  border-radius: .4rem;
+  background: white;
+  color: var(--primary);
+  font-family: inherit;
+  font-size: .81rem;
+  font-weight: 600;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+#package-controls button:enabled:hover {
+  border-color: var(--primary);
+  background: #fff7ed;
+}
+
+#package-controls button:disabled {
+  color: #69727b;
+  background: #f4f5f6;
+  cursor: default;
+}
+
+.table-scroll:has(#package-comparison) {
+  border: 1px solid #d9dfe2;
+  border-radius: .55rem;
+}
+
+#package-comparison {
+  min-width: 68rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: .84rem;
+  line-height: 1.4;
+}
+
+#package-comparison caption {
+  padding: .6rem .7rem;
+  color: #38444c;
+  font-weight: 600;
+  text-align: left;
+}
+
+#package-comparison th,
+#package-comparison td {
+  padding: .5rem .6rem;
+  border: 0;
+  border-bottom: 1px solid #dce1e2;
+  vertical-align: top;
+}
+
+#package-comparison thead th {
+  color: #48291e;
+  background: #f3e9de;
+  border-bottom-color: #c2a995;
+}
+
+#package-comparison thead button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .25em;
+  padding: .18rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+#package-comparison .sort-indicator {
+  flex-shrink: 0;
+  color: #775c4e;
+  font-weight: 500;
+}
+
+#package-comparison .comparison-filter {
+  display: block;
+  width: 100%;
+  min-width: 4.7rem;
+  max-width: 9.5rem;
+  margin-top: .25rem;
+  padding: .2rem .12rem;
+  border: 1px solid #ac9f94;
+  border-radius: .3rem;
+  background: #fffcf8;
+  color: #443b36;
+  font-family: inherit;
+  font-size: .76rem;
+}
+
+#package-comparison :focus-visible,
+#package-controls :focus-visible,
+.table-scroll:has(#package-comparison):focus-visible {
+  outline: 2px solid #235b8d;
+  outline-offset: 2px;
+}
+
+#package-comparison tbody th {
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+}
+
+#package-comparison tbody tr:nth-child(even) { background: #f7f9f9; }
+#package-comparison tbody tr:hover { background: #fff6e8; }
+#package-comparison tbody tr:last-child > * { border-bottom: 0; }
+
+#package-comparison tbody td:nth-child(3),
+#package-comparison tbody td:nth-child(4),
+#package-comparison tbody td:nth-child(5) {
+  font-variant-numeric: tabular-nums;
+}
+
+#package-comparison tbody a { text-underline-offset: .15em; }
+#package-comparison .comparison-empty { padding: 1.15rem; text-align: center; }
+
+@media (max-width: 640px) {
+  #package-count { flex-basis: 100%; }
+  .card:has(#package-comparison) { margin: .65rem; padding: 1rem; }
+}
+
+.package-page .card { max-width: 1420px; }
+.package-brief { margin: .35rem 0 0; color: #4b5563; }
+.package-links { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; }
+.package-shortcuts a { white-space: normal; }
+.package-list > li { margin-bottom: 1.4rem; }
+.package-list > li > strong { font-size: 1.08rem; color: var(--primary); }
+.package-list li p { margin: .4rem 0; }
+.package-page summary { cursor: pointer; color: var(--primary); }
+.departure-evidence > li { margin: .85rem 0; }
+#package-comparison td small { display: block; margin-top: .2rem; color: #4b5563; }
