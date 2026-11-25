@@ -262,8 +262,8 @@ a.tag:focus {
 .comparison-table thead th:nth-child(3) { width:14%; }
 .comparison-table thead th:nth-child(4), .comparison-table thead th:nth-child(5), .comparison-table thead th:nth-child(6) { width:17%; }
 .comparison-table thead th:last-child { width:7%; }
-.comparison-table thead button { display:flex; align-items:center; justify-content:space-between; gap:.4rem; width:100%; padding:.85rem .75rem; border:0; background:transparent; color:inherit; font:inherit; font-weight:700; cursor:pointer; text-align:left; }
-.comparison-table thead button:hover { background:rgba(255,255,255,.12); }
+.comparison-table thead button[data-sort] { display:flex; align-items:center; justify-content:space-between; gap:.4rem; width:100%; padding:.85rem .75rem; border:0; background:transparent; color:inherit; font:inherit; font-weight:700; cursor:pointer; text-align:left; }
+.comparison-table thead button[data-sort]:hover { background:rgba(255,255,255,.12); }
 .sort-indicator { opacity:.65; font-size:1rem; }
 .comparison-table thead th[aria-sort="ascending"], .comparison-table thead th[aria-sort="descending"] { background:#1d4ed8; }
 .comparison-table th[aria-sort="ascending"] .sort-indicator, .comparison-table th[aria-sort="descending"] .sort-indicator { opacity:1; }
@@ -283,7 +283,7 @@ a.tag:focus {
 .review-rank-medium { background:#fef3c7; color:#854d0e; }
 .review-rank-low { background:#ffe4e6; color:#9f1239; }
 .comparison-scroll:focus-visible, .comparison-table a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
-.comparison-table thead button:focus-visible { outline:3px solid #bae6fd; outline-offset:-4px; }
+.comparison-table thead button[data-sort]:focus-visible { outline:3px solid #bae6fd; outline-offset:-4px; }
 /* Filtering controls remain in the same headers as the sort buttons. */
 .comparison-table thead .comparison-filter {
   display: block;
