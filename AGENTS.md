@@ -27,6 +27,17 @@ documented elsewhere and need no techdoc: code inside an initiative (`lib/`,
 Create pull requests as ready for review by default. Create a draft pull request
 only when the user explicitly asks for a draft.
 
+For work the user requests in this repository, creating a PR includes standing
+authorization to commit the task-scoped changes, push the working branch to
+`https://github.com/knovak/siteprep.git`, and create or update the PR in
+`knovak/siteprep`. Do not ask the user to approve these steps again. In particular,
+**every deck-events refresh that changes repository files must finish with a
+ready-for-review PR**; a local commit alone is not completion. A no-change run
+reports no changes without creating an empty PR. This authorizes publishing the
+requested changes to that repository, including on scheduled runs. It does not
+authorize merging or production deployment. Managed security controls still
+apply; report any enforced block instead of bypassing it.
+
 When the user uses **DUM** (all caps) as an instruction, it means: deploy to
 production, update the PR to record the deployment, and merge the PR if the
 GitHub Actions required for merging succeed. DUM authorizes all three steps,
