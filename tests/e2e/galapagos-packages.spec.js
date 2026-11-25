@@ -38,7 +38,8 @@ test('the comparison keeps all source records and their availability and review 
       await expect(row.locator(`.comparison-${field}`)).toHaveText(item[field]);
     }
   }
-  await expect(page.locator('.comparison-table thead button')).toHaveCount(8);
+  await expect(page.locator('.comparison-table thead button[data-sort]')).toHaveCount(8);
+  await expect(page.locator('.comparison-table thead button[data-filter]')).toHaveCount(4);
   await expect(page.locator('footer.site-footer')).toHaveCount(1);
 });
 
