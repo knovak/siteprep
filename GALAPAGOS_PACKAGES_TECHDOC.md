@@ -106,15 +106,25 @@ mandatory extension in the comparable price. An AUD fare with additional USD
 fees has no single USD sort key.
 
 A dated stock signal is required for each main-list entry. Delfina June 11
-{706} lists cabins 301 and 302 in the operator’s November 19 selector. Its
+{706} lists cabins 301 and 302 in the operator’s November 25 selector. Its
 earlier USD partner rate has a separate date and scope. Eight other Delfina
 dates remain in holding under their original IDs. See the research notes for
 the operator and seller observations behind each change.
 
+The November 25 comparison has 52 main and 81 holding records, preserving all
+129 prior IDs and adding four. Three Grand Majestic dates qualify on current
+operator stock; Wildlife Worldwide/Beluga remains in holding for date and
+night-count conflicts. Grace May 25 remains on Quasar general stock but its
+agency pair no longer reproduces; the current quote filter excludes it.
+Integrity, Isabela II and four Natural Habitat pairs have fresh two-room
+calculations, never reservations.
+
 The original six June seller-stock records retain their IDs. On November 19,
-Grace June 1 {710} moved to insufficient-stock holding (two places). The five
-remaining June records are {711}, {713}, {714}, {715}, {716}; fresh fares and
-stock replace older snapshot assertions in the existing browser check.
+Grace June 1 {710} moved to insufficient-stock holding (two places). On November 25, Natural Paradise June 8 {713} moved to holding after Royal
+showed zero available and four held, and EcoGalaxy June 10 {714} moved to
+unverified holding after three selling-channel checks found no current match.
+The three original June records remaining on main are {711}, {715}, {716};
+fresh fares and stock replace older assertions in the existing browser check.
 Their numeric price keys include the documented known fee allowance where not
 already included; four advertised seats do not prove two private cabins. Confirm
 fee treatment for Grace's Quasar inclusions before booking. June seller
