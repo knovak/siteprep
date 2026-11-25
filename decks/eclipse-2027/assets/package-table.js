@@ -152,9 +152,8 @@
     configs: [
       { key: 'country', label: 'Country', allLabel: 'All countries',
         value: (item) => item.country },
-      { key: 'price', label: 'Price', allLabel: 'All original-currency price bands',
-        value: (item) => SiteprepPackageTableFilters.priceBucket(item.fare),
-        choices: SiteprepPackageTableFilters.priceChoices(packages, (item) => item.fare) },
+      SiteprepPackageTableFilters.priceFilter('price', 'Price', (item) =>
+        SiteprepPackageTableFilters.toUsd(item.fare.amount, item.fare.currency)),
       { key: 'party', label: '4 people · 2 rooms', allLabel: 'All room evidence',
         value: (item) => item.roomStatus },
       { key: 'rank', label: 'Review evidence rank', allLabel: 'All review ranks',

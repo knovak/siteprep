@@ -114,18 +114,15 @@ test('guest, duration, USD price and room-evidence filters compose without break
   const byRooms = page.locator('[data-filter="party"]');
   const clear = page.getByRole('button', { name: 'Clear all column filters' });
 
-  await expect(byShip.locator('option')).toContainText([
-    'All guest capacities', '16 guests', '20 guests', '20 or 36 guests (vessel unassigned)',
-    '32 guests', '40 guests',
-  ]);
-  await expect(byDays.locator('option')).toContainText([
-    'All trip lengths', '4 days', '5 days', '8 days', '10 days',
-  ]);
-  const roomChoices = await byRooms.locator('option').allTextContents();
-  expect(roomChoices).toContain('Two-cabin quote (not held)');
+  const box = (name) => page.getByRole('checkbox', { name, exact: true });
   await expect(clear).toBeDisabled();
-  await byShip.selectOption('16 guests');
-  await byDays.selectOption('5 days');
+  await byShip.click();
+  await expect(page.getByRole('group', { name: 'Ship / guests' }).locator('label')).toContainText([
+    '16 guests', '20 guests', '20 or 36 guests (vessel unassigned)', '32 guests', '40 guests',
+  ]);
+  await box('16 guests').check();
+  await byDays.click();
+  await box('5 days').check();
   const subset = page.locator(rows + '[data-package-id]');
   expect(await subset.count()).toBeGreaterThan(0);
   expect(await subset.count()).toBeLessThan(total);
@@ -133,19 +130,24 @@ test('guest, duration, USD price and room-evidence filters compose without break
     await expect(item.locator('.comparison-ship')).toContainText('16 guests');
     await expect(item.locator('.comparison-dates')).toContainText('5 days / 4 nights');
   }
-  await byPrice.selectOption('USD:under');
+  await byPrice.click();
+  await box('Under US$5,000').check();
   expect(await subset.count()).toBeGreaterThan(0);
   for (const id of await subset.evaluateAll((elements) => elements.map((row) => row.dataset.packageId))) {
     const numeric = await page.locator('#' + id + ' .package-price').getAttribute('data-usd');
     expect(Number(numeric)).toBeLessThan(5000);
   }
-  await byRooms.selectOption('Two cabins not verified');
+  await byRooms.click();
+  await box('Two cabins not verified').check();
   const expected = await subset.count();
   await page.locator('[data-sort="price"]').click();
   await expect(subset).toHaveCount(expected);
   await expect(page.locator('[data-sort="price"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
 
-  await byShip.selectOption('32 guests');
+  await byShip.click();
+  await box('32 guests').check();
+  await expect(subset).toHaveCount(expected);
+  await box('16 guests').uncheck();
   await expect(page.locator('.comparison-empty')).toBeVisible();
   await expect(page.locator('#comparison-count')).toContainText(`0 of ${total} packages`);
   await clear.click();
@@ -153,11 +155,13 @@ test('guest, duration, USD price and room-evidence filters compose without break
   await expect(page.locator(rows)).toHaveCount(total);
   await expect(page.locator('#comparison-count')).toContainText(`${total} packages.`);
   await expect(page.locator('[data-sort="price"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
-  await byRooms.selectOption('Two-cabin quote (not held)');
+  await byRooms.click();
+  await box('Two-cabin quote (not held)').check();
   await expect(page.locator(rows)).toHaveCount(6);
   expect(await subset.evaluateAll((elements) => elements.map((row) => row.dataset.packageId).sort()))
     .toEqual(['package-138', 'package-404', 'package-582', 'package-607', 'package-872', 'package-976']);
-  await byRooms.selectOption('Named cabins listed (not held)');
+  await box('Named cabins listed (not held)').check();
+  await box('Two-cabin quote (not held)').uncheck();
   await expect(page.locator(rows)).toHaveCount(1);
   await expect(page.locator(rows)).toHaveAttribute('data-package-id', 'package-706');
 });
@@ -287,7 +291,10 @@ test('new research distinguishes extension-inclusive USD prices from split-curre
   for (const [id, price] of [['564', '10898'], ['154', '10298'], ['848', '10398'], ['156', '9698']]) {
     await expect(page.locator(`#package-${id} .package-price`)).toHaveAttribute('data-usd', price);
   }
+  await page.locator('[data-filter="price"]').click();
+  await page.getByRole('checkbox', { name: 'US$5,000–US$10,000' }).check();
   for (const id of ['661', '396', '778', '838']) {
+    await expect(page.locator(`tr[data-package-id="package-${id}"]`)).toHaveCount(1);
     const price = page.locator(`#package-${id} .package-price`);
     await expect(price).toContainText('US$880');
     expect(await price.getAttribute('data-usd')).toBeNull();

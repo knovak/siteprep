@@ -81,39 +81,59 @@ test('all seven headings sort in both directions, including numeric fares and ev
   expect(await page.locator(`${rows} .comparison-price`).allTextContents()).toEqual([...fares].sort((a, b) => compareFare(a, b, -1)));
 });
 
-test('country, currency-aware price, room evidence and review rank dropdowns filter together', async ({ page }) => {
+test('checkbox filters combine countries and USD bands while preserving sorting', async ({ page }) => {
   await page.goto(url);
+  const total = await page.locator(rows).count();
   const country = page.locator('[data-filter="country"]');
   const price = page.locator('[data-filter="price"]');
-  const party = page.locator('[data-filter="party"]');
-  const rank = page.locator('[data-filter="rank"]');
   const clear = page.getByRole('button', { name: 'Clear all column filters' });
+  const box = (name) => page.getByRole('checkbox', { name, exact: true });
+  const matches = page.locator(rows + '[data-package-id]');
   await expect(clear).toBeDisabled();
-  await expect(country.locator('option')).toContainText([
-    'All countries', 'Algeria', 'Egypt', 'Morocco', 'Spain', 'Tunisia',
+  await country.press('Enter');
+  await box('Morocco').check();
+  await box('Spain').check();
+  await expect(country).toHaveText('2 selected');
+  await box('Spain').press('Escape');
+  await expect(country).toBeFocused();
+  await expect(matches.locator('.comparison-country')).toContainText(['Spain', 'Morocco']);
+
+  await price.click();
+  await expect(page.getByRole('group', { name: 'Price', exact: true }).locator('label')).toHaveText([
+    'Under US$5,000', 'US$5,000–US$10,000', 'Over US$10,000',
   ]);
-  await country.selectOption('Morocco');
-  await expect(page.locator(rows)).toHaveCount(2);
-  await price.selectOption('EUR:under');
-  await expect(page.locator(rows)).toHaveCount(1);
-  await expect(page.locator(rows).first()).toHaveAttribute('data-package-id', 'package-592');
+  await box('US$5,000–US$10,000').check();
+  // Both €4,799 and £4,499 cross US$5,000 after conversion.
+  await expect(matches.locator('.comparison-price')).toContainText(['€4,799', '£4,499']);
+  await expect(matches.filter({ hasText: 'Joe Capobianco' })).toHaveCount(0);
+  await box('Under US$5,000').check();
+  await expect(matches.filter({ hasText: 'Joe Capobianco' })).toHaveCount(1);
+  expect((await matches.locator('.comparison-country').allTextContents())
+    .every((value) => ['Morocco', 'Spain'].includes(value))).toBe(true);
   await page.locator('[data-sort="name"]').click();
-  await expect(page.locator(rows)).toHaveCount(1);
-  await rank.selectOption('High');
+  await expect(price).toHaveText('2 selected');
+
+  await country.click();
+  await box('Spain').uncheck();
+  await page.locator('[data-filter="rank"]').click();
+  await box('High').check();
+  await price.click();
+  await box('Under US$5,000').uncheck();
   await expect(page.locator('.comparison-empty')).toBeVisible();
-  await expect(page.locator('#comparison-count')).toHaveText('0 of 37 packages');
+  await expect(page.locator('#comparison-count')).toHaveText(`0 of ${total} packages`);
   await clear.click();
-  await expect(page.locator(rows)).toHaveCount(37);
-  await expect(page.locator('#comparison-count')).toHaveText('37 packages');
+  await expect(matches).toHaveCount(total);
+  await expect(country).toHaveText('All countries');
+  await expect(clear).toBeDisabled();
   await expect(page.locator('[data-sort="name"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
 
-  await party.selectOption('Operator-reported fit (not held)');
-  const matches = await page.locator(rows + '[data-package-id]').evaluateAll(
-    (elements) => elements.map((row) => row.dataset.packageId).sort());
-  expect(matches).toEqual(['package-240', 'package-973']);
-  await party.selectOption('Cannot meet two private rooms');
-  expect(await page.locator(rows + '[data-package-id]').count()).toBeGreaterThan(0);
-  await expect(page.locator(rows).first().locator('.comparison-party')).toContainText(/No|not offered/i);
+  await page.locator('[data-filter="party"]').click();
+  await box('Operator-reported fit (not held)').check();
+  expect(await matches.evaluateAll((elements) => elements.map((row) => row.dataset.packageId).sort()))
+    .toEqual(['package-240', 'package-973']);
+  await box('Operator-reported fit (not held)').uncheck();
+  await expect(matches).toHaveCount(total);
+  await expect(clear).toBeDisabled();
 });
 
 test('a future source refresh updates prices, review phrases, ranks and removed packages automatically', async ({ page }) => {

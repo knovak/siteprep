@@ -290,7 +290,7 @@ a.tag:focus {
   padding: 0;
 }
 
-.comparison-table thead button {
+.comparison-table thead button[data-sort] {
   display: block;
   width: 100%;
   min-height: 64px;
@@ -304,8 +304,8 @@ a.tag:focus {
   cursor: pointer;
 }
 
-.comparison-table thead button:hover,
-.comparison-table thead button:focus-visible {
+.comparison-table thead button[data-sort]:hover,
+.comparison-table thead button[data-sort]:focus-visible {
   background: #244ca1;
   outline: 2px solid #fff;
   outline-offset: -4px;

@@ -35,8 +35,11 @@ test('date sorting covers every style and dropdowns work on a phone', async ({ p
   await datesButton.click();
   expect(await visibleDates()).toEqual([...dates].sort().reverse());
   const style = active[0].style;
-  await page.locator('select[data-filter="style"]').selectOption({ label: style });
-  const expected = active.filter((item) => item.style === style)
+  const otherStyle = active.find((item) => item.style !== style).style;
+  await page.locator('[data-filter="style"]').click();
+  await page.getByRole('checkbox', { name: style, exact: true }).check();
+  await page.getByRole('checkbox', { name: otherStyle, exact: true }).check();
+  const expected = active.filter((item) => item.style === style || item.style === otherStyle)
     .reduce((count, item) => count + item.departures.length, 0);
   expect(await visibleDates()).toHaveLength(expected);
   await page.getByRole('button', { name: 'Clear all column filters' }).click();

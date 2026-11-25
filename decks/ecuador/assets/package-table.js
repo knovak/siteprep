@@ -58,10 +58,11 @@
     Object.entries(sources).forEach(([field, [selector, fallback]]) => {
       entry[field] = paragraphText(item.querySelector(selector), fallback);
     });
+    const price = item.querySelector('.package-price');
     entry.numeric = {
       ship: numericAttribute(item.querySelector('.package-ship'), 'data-pax'),
       dates: startDate(item.querySelector('.package-dates')),
-      price: numericAttribute(item.querySelector('.package-price'), 'data-usd'),
+      price: numericAttribute(price, 'data-usd'),
     };
     const duration = entry.dates.match(/\b(\d+)\s+days?\s*\/\s*\d+\s+nights?\b/i);
     entry.filterShip = entry.numeric.ship === null ? 'Unknown capacity'
@@ -81,9 +82,12 @@
     } else {
       entry.filterParty = 'Two cabins not verified';
     }
-    entry.filterPrice = SiteprepPackageTableFilters.priceBucket({
-      currency: 'USD', amount: entry.numeric.price,
-    });
+    entry.filterPrice = entry.numeric.price;
+    if (entry.filterPrice === null && price?.hasAttribute('data-fare-currency')) {
+      const base = SiteprepPackageTableFilters.toUsd(numericAttribute(price, 'data-fare'), price.dataset.fareCurrency);
+      const fees = numericAttribute(price, 'data-fees-usd');
+      if (base !== null && fees !== null) entry.filterPrice = base + fees;
+    }
     return entry;
   });
 
@@ -182,10 +186,7 @@
         value: (item) => item.filterShip },
       { key: 'dates', label: 'Departure / duration', allLabel: 'All trip lengths',
         value: (item) => item.filterDuration },
-      { key: 'price', label: 'Known USD / person', allLabel: 'All USD price bands',
-        value: (item) => item.filterPrice,
-        choices: SiteprepPackageTableFilters.priceChoices(packages,
-          (item) => ({ currency: 'USD', amount: item.numeric.price })) },
+      SiteprepPackageTableFilters.priceFilter('price', 'Known USD / person', (item) => item.filterPrice),
       { key: 'party', label: 'Two private cabins', allLabel: 'All cabin evidence',
         value: (item) => item.filterParty },
     ],

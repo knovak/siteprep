@@ -51,7 +51,7 @@ and StandardMap remain the deck's existing mechanisms.
 
 ## Column dropdown filters
 
-The comparison also adds native, keyboard-operable dropdowns inside selected
+The comparison adds keyboard-operable checkbox dropdowns inside selected
 table headings. The shared helper `shared/package_table_filters.js` supplies
 the option list, AND-combination of active filters and a Clear filters button;
 the Ecuador script defines the value for each field. All choices come from the
@@ -62,7 +62,7 @@ unchanged. Filtering applies only to the comparison, never the source entries.
   **20 or 36 guests (vessel unassigned)** category for Coral alternatives.
 - **Departure / duration:** the published `N days / N nights` trip length;
   this may include mainland nights. Unparsable lengths are **Unknown duration**.
-- **Known USD / person:** source `data-usd` in three bands: below US$5,000,
+- **Known USD / person:** per-adult USD subtotal in three bands: below US$5,000,
   US$5,000–10,000 inclusive, above US$10,000, plus an unknown option. These
   are known subtotals, not all-in vacation costs.
 - **Two private cabins.** Set `data-room-evidence="quoted"` on the party paragraph
@@ -72,8 +72,9 @@ unchanged. Filtering applies only to the comparison, never the source entries.
   private-twin quotations retain their existing text-based classification.
   All other records use the unverified filter.
 
-Multiple dropdown selections are intersected. Sorting remains active and is
-retained when filters are reset. The header selects have independent accessible
+A row may match any checked choice within a column and must match every
+active column. Unchecking the last choice removes the column restriction.
+Sorting remains active when filters are reset. The header buttons have accessible
 names, an empty-result message is shown when needed, and the visible match
 count updates. If evidence wording changes, review the room-evidence
 classification conservatively rather than implying a confirmed reservation.
@@ -103,7 +104,11 @@ Use the vessel embarkation date for the April 15–June 20 window. For
 land-and-cruise packages, store the operator’s package start in `data-start`
 and spell out the cruise dates and any inference in the record. Keep a
 mandatory extension in the comparable price. An AUD fare with additional USD
-fees has no single USD sort key.
+fees has no operator-quoted USD sort key. For the filter, put the per-adult
+foreign base fare, currency code and mandatory USD fees on the price paragraph
+as `data-fare`, `data-fare-currency` and `data-fees-usd`. The filter converts
+the base using the linked ECB reference rates and adds the USD fees once.
+An incomplete subtotal goes in the unknown band.
 
 A dated stock signal is required for each main-list entry. Delfina June 11
 {706} lists cabins 301 and 302 in the operator’s November 25 selector. Its

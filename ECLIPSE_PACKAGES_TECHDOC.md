@@ -23,21 +23,24 @@ currencies and review ranks continue to describe evidence quality, not ratings.
 
 The four dropdown filters are added next to their existing sortable column
 buttons: **Country** (current country headings), **Price** (the first stated
-fare, grouped in below 5,000 / 5,000–10,000 / above 10,000 bands within each
-original currency), **4 people · 2 rooms** (operator-reported fit, four-person
+fare, converted to USD and grouped below $5,000, from $5,000 through $10,000,
+or above $10,000), **4 people · 2 rooms** (operator-reported fit, four-person
 selection, does not fit, or not confirmed), and **Rank** (High / Medium / Low
 review-evidence quality). The fare source may be per person or per cabin, so
-the price filter is not a normalized cost comparison. No cross-currency
-conversion is made, and unknown prices have their own option. None of the
+the band retains the quoted occupancy basis. The helper uses the dated ECB
+reference rates linked in the price menu. Missing fares and unsupported
+currencies have their own option. None of the
 room-evidence labels is a booking confirmation.
 
 The shared helper `shared/package_table_filters.js` derives dropdown choices
-from the current source records, combines selected columns using AND logic,
+from the current source records, matches any checked choice within a column
+and requires a match in every active column,
 and provides an accessible Clear filters control. Sorting remains independent
 and is retained across filter selections and reset. Visible counts update, and
 an empty-result row explains zero matches. Detailed source records are never
-hidden or reordered. Native selects work by keyboard and remain inside the
-horizontal table-scroll region.
+hidden or reordered. Each header button opens a native popover of labeled checkboxes. Tab and
+Space select choices, Escape dismisses the popover, and unchecking the last
+choice removes that column’s restriction.
 
 `assets/package-map.js` supplies orientation points to the shared StandardMap
 library. Add a source-backed location when a new package names a new stay or
