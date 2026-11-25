@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { renderMarkdown } from './initiatives.mjs';
 
-// Keep the existing build entry point; both comparisons use the same renderer.
+// All package comparisons share this build entry point and Markdown renderer.
 const documents = [
   {
     deck: 'eclipse-2027',
@@ -17,6 +17,14 @@ const documents = [
     filename: 'galapagos-research-notes',
     section: 'galapagos-packages',
     backLabel: 'Back to Galápagos packages',
+    holdingLabel: 'Rejected options and research holding',
+  },
+  {
+    deck: 'peru',
+    deckTitle: 'Peru',
+    filename: 'machu-picchu-research-notes',
+    section: 'machu-picchu-packages',
+    backLabel: 'Back to Machu Picchu packages',
     holdingLabel: 'Rejected options and research holding',
   },
 ];

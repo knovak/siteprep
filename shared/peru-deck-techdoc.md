@@ -9,3 +9,34 @@ so both the deck index and nested section pages work under deployment prefixes.
 The Machu Picchu section uses Leaflet 1.9.4 and the shared `StandardMap` library
 to render paired OpenStreetMap and OpenTopoMap displays. Location data remains
 inline in the page because it is specific to that section.
+
+## Machu Picchu packages
+
+The package comparison and the research holding page live in
+`decks/peru/sections/machu-picchu-packages/`. Their shared source is
+`packages.json`. During the site build, `scripts/render_machu_picchu_packages.mjs`
+renders the table, detailed entries, holding records and route locations in
+the copied HTML. The published comparison can be read without JavaScript.
+The notes renderer also converts `decks/peru/machu-picchu-research-notes.md`
+into a linked page in the build output.
+
+Each itinerary has one permanent three-digit ID, a travel style, locations,
+review evidence and an array of dated departures. Enter start and end dates
+in ISO format. A departure records its original currency, per-adult amount,
+fare basis, general stock, room evidence, check date and sources. Optional
+`departureDefaults` on the itinerary supplies repeated fields. A field on a
+specific departure overrides that default. Keep a group's exact checkout total
+in its evidence when it differs from four times the rounded per-adult rate.
+
+The table opens grouped by style and sorted by start date. Selecting the date
+heading orders departures across styles. The browser script in
+`decks/peru/assets/machu-picchu-packages.js` handles column sorting and uses
+`shared/package_table_filters.js` for dropdowns. Visible route markers come
+from the location keys of active itineraries and are shared by both StandardMap
+views. Addresses may identify a town centre, trail pass or site entrance
+where a street address is unavailable.
+
+Keep a rejected or unverified option under its original ID in `holding`.
+Retain its reason, dated sources and next check. Record changes of status in
+the research notes. The focused Playwright coverage is
+`tests/e2e/machu-picchu-packages.spec.js`.
