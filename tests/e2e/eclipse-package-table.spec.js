@@ -108,6 +108,12 @@ test('checkbox filters combine countries and USD bands while preserving sorting'
   await expect(matches.filter({ hasText: 'Joe Capobianco' })).toHaveCount(0);
   await box('Under US$5,000').check();
   await expect(matches.filter({ hasText: 'Joe Capobianco' })).toHaveCount(1);
+  const triggerBounds = await price.boundingBox();
+  const menuBounds = await page.getByRole('group', { name: 'Price', exact: true }).boundingBox();
+  expect(Math.abs(menuBounds.x - triggerBounds.x)).toBeLessThan(5);
+  const gapBelow = menuBounds.y - (triggerBounds.y + triggerBounds.height);
+  const gapAbove = triggerBounds.y - (menuBounds.y + menuBounds.height);
+  expect([gapAbove, gapBelow].some((gap) => gap >= 0 && gap < 6)).toBe(true);
   // Keep the open, multi-selected menu in the downloadable browser report.
   const screenshotDir = process.env.CI ? 'playwright-report/screenshots' : 'screenshots';
   await page.screenshot({ path: screenshotDir + '/package-price-checkboxes.png' });
