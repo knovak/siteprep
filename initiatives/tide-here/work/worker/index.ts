@@ -23,6 +23,7 @@ const API_PATHS = new Set([
   "/stations",
   "/resolve",
   "/forecast",
+  "/extremity",
 ]);
 
 const worker = {
@@ -32,7 +33,7 @@ const worker = {
     if (url.pathname === "/") {
       return env.ASSETS.fetch(new Request(new URL("/index.html", request.url), request));
     }
-    if (/^\/phase-[0-7]\//.test(url.pathname)) return env.ASSETS.fetch(request);
+    if (/^\/phase-(?:[0-7]|15)\//.test(url.pathname)) return env.ASSETS.fetch(request);
     return handler.fetch(request, env, ctx);
   },
 };

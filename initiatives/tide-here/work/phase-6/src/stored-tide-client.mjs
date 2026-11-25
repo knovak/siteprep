@@ -217,6 +217,29 @@ export class StoredTideClient {
     }
   }
 
+  // Background request for the station's year ranking (Phase 15). Failures
+  // propagate so the caller can show no marks.
+  async extremity({station, year, signal = null}) {
+    const options = {
+      method: 'POST',
+      headers: {'content-type': 'application/json'},
+      priority: 'low',
+      body: JSON.stringify({
+        provider: this.provider,
+        station: this.provider === FES_PROVIDER_ID
+          ? {id: station.id, latitude: station.latitude, longitude: station.longitude}
+          : {id: station.id},
+        year,
+      }),
+    };
+    if (!signal) return this.fetchJson('/extremity', options);
+    if (signal.aborted) throw new DOMException('Extremity request cancelled', 'AbortError');
+    return Promise.race([
+      this.fetchJson('/extremity', options),
+      new Promise((_, reject) => signal.addEventListener('abort', () => reject(new DOMException('Extremity request cancelled', 'AbortError')), {once: true})),
+    ]);
+  }
+
   async forecast({context, station, timeZone, rows}) {
     try {
       const value = await this.fetchJson('/forecast', {
