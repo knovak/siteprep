@@ -90,6 +90,13 @@ timing and tidal shape for exactly this reason.
    timing indicator, not a measured water level. A small moon icon precedes
    **Sun and moon**, showing the current phase today and the daily phase on
    later cards. Open that row for sunrise, sunset, moonrise, moonset and phase.
+   A blue underline marks a high tide among the highest 20% of that station's
+   predicted high tides for the year, and an amber underline a low tide among
+   the lowest 20% of its low tides; a thick underline and bold number mean the
+   highest or lowest 5%. Click or tap a marked height for the exact ranking. On
+   the first visit to a station in a year the marks appear a moment after the
+   tides, and immediately after that. They rank predicted tides only; weather
+   can make the water higher or lower.
 4. Open the coast name for the original entry, resolved place, station and time
    zone.
 5. Below the safety notice, open **Prediction source details** for the provider,

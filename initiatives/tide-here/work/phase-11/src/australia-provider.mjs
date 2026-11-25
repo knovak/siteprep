@@ -1,5 +1,6 @@
 import {placeInstantInRow} from '../../phase-1/src/day-model.mjs';
 import {loadVerifiedDatasetObject, verifyDatasetVersion} from '../../phase-10/src/json-dataset.mjs';
+import {buildExtremityRecord} from '../../phase-15/src/extremity.mjs';
 
 function emptyDays(rows) {
   return rows.map(row => ({
@@ -72,29 +73,15 @@ export async function australianStationCatalogue({store, descriptor}) {
   return dataset.stations.map(station => ({...station}));
 }
 
-export async function forecastAustralianStandardPort({store, request, descriptor}) {
-  validateRequest(request);
-  const loaded = await loadAustralianDataset(store, descriptor, request.station.id);
+async function loadPortEvents(store, descriptor, stationId) {
+  const loaded = await loadAustralianDataset(store, descriptor, stationId);
   const dataset = loaded.value;
-  if (request.rows.some(row => Number(row.date.slice(0, 4)) !== dataset.dataset.year)) {
-    const error = new Error(`Australian predictions are loaded only for ${dataset.dataset.year}`);
-    error.code = 'dataset-year-unavailable';
-    throw error;
-  }
-  if (request.rows.some(row => row.date < dataset.dataset.coverageStart || row.date > dataset.dataset.coverageEnd)) {
-    const error = new Error(`Australian prediction coverage is ${dataset.dataset.coverageStart} through ${dataset.dataset.coverageEnd}`);
-    error.code = 'dataset-date-unavailable';
-    throw error;
-  }
-  const station = dataset.stations.find(item => item.id === request.station.id);
+  const station = dataset.stations.find(item => item.id === stationId);
   if (!station) {
     const error = new Error('Australian standard port is not in the active dataset');
     error.code = 'coverage-unavailable';
     throw error;
   }
-  if (request.timeZone !== station.timeZone) throw new Error('Forecast time zone does not match the Australian port');
-
-  const days = emptyDays(request.rows);
   let events;
   if (dataset.schema === 'tide-here/australia-standard-ports/v2') {
     const port = await loadVerifiedDatasetObject(store, loaded, `predictions-${station.id}`);
@@ -113,6 +100,49 @@ export async function forecastAustralianStandardPort({store, request, descriptor
   } else {
     events = dataset.events.filter(event => event.stationId === station.id);
   }
+  return {dataset, station, events};
+}
+
+// Ranks heights against the port's stored annual predictions (Phase 15).
+export async function extremityAustralianStandardPort({store, request, descriptor, now = () => new Date()}) {
+  const stationId = request?.station?.id;
+  const year = request?.year;
+  if (!stationId || !Number.isInteger(year)) throw new Error('Australian extremity requires a station and a year');
+  const {dataset, station, events} = await loadPortEvents(store, descriptor, stationId);
+  if (dataset.dataset.year !== year) {
+    const error = new Error(`Australian predictions are loaded only for ${dataset.dataset.year}`);
+    error.code = 'dataset-year-unavailable';
+    throw error;
+  }
+  return buildExtremityRecord({
+    provider: descriptor.id,
+    stationId: station.id,
+    datum: station.datum,
+    unit: 'm',
+    year,
+    events: events
+      .filter(event => event.unit === 'm' && String(event.at).slice(0, 4) === String(year))
+      .map(event => ({type: event.type, height: event.height})),
+    computedAt: now(),
+  });
+}
+
+export async function forecastAustralianStandardPort({store, request, descriptor}) {
+  validateRequest(request);
+  const {dataset, station, events} = await loadPortEvents(store, descriptor, request.station.id);
+  if (request.rows.some(row => Number(row.date.slice(0, 4)) !== dataset.dataset.year)) {
+    const error = new Error(`Australian predictions are loaded only for ${dataset.dataset.year}`);
+    error.code = 'dataset-year-unavailable';
+    throw error;
+  }
+  if (request.rows.some(row => row.date < dataset.dataset.coverageStart || row.date > dataset.dataset.coverageEnd)) {
+    const error = new Error(`Australian prediction coverage is ${dataset.dataset.coverageStart} through ${dataset.dataset.coverageEnd}`);
+    error.code = 'dataset-date-unavailable';
+    throw error;
+  }
+  if (request.timeZone !== station.timeZone) throw new Error('Forecast time zone does not match the Australian port');
+
+  const days = emptyDays(request.rows);
   const start = Date.parse(request.rows[0].startUtc);
   let previousTide = null;
   for (const event of events) {

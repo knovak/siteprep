@@ -8,6 +8,9 @@ import { COAST_CHOICE_REQUIRED, TideHereService } from '../phase-5/src/resolve-f
 import { ForecastCache, LocalHistory } from '../phase-7/src/local-data.mjs';
 import { forecastViewModel, providerLabel, statePresentation } from './src/page-view.mjs';
 import { AUSTRALIAN_PROVIDER_ID, FES_PROVIDER_ID, loadAvailableStations, StoredTideClient } from './src/stored-tide-client.mjs';
+import { EXTREMITY_LEVELS } from '../phase-15/src/extremity.mjs';
+import { ExtremityCache, ExtremityLoader, extremityKey, extremityTarget } from '../phase-15/src/extremity-cache.mjs';
+import { fetchDirectExtremityRecord, isDirectExtremityProvider } from '../phase-15/src/extremity-sources.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const searchParams = new URLSearchParams(location.search);
@@ -213,6 +216,37 @@ const tideProvider = {
     return directTideProvider.forecast(request);
   }
 };
+// Recorded one-year predictions for the fixture stations (Phase 15).
+function fixtureYearFetch(url) {
+  const path = String(url).includes('tidesandcurrents.noaa.gov')
+    ? '../phase-15/fixtures/noaa-9447130-2026-hilo.fixture.json'
+    : '../phase-15/fixtures/chs-5cebf1df3d0f4a073c4bbcbb-2026-hilo.fixture.json';
+  return fetch(path);
+}
+
+const extremityCache = new ExtremityCache({ storage: runtimeStorage, now });
+const extremityLoader = new ExtremityLoader({
+  cache: extremityCache,
+  fetchRecord: ({ target, station, signal }) => {
+    if (isDirectExtremityProvider(target.provider)) {
+      return fetchDirectExtremityRecord({
+        station,
+        year: target.year,
+        config: providerConfig,
+        fetchImpl: fixtureMode ? fixtureYearFetch : fetch.bind(globalThis),
+        signal,
+        now
+      });
+    }
+    if (target.provider === AUSTRALIAN_PROVIDER_ID) return storedTideClient.extremity({ station, year: target.year, signal });
+    if (target.provider === FES_PROVIDER_ID) return fesTideClient.extremity({ station, year: target.year, signal });
+    return Promise.reject(new RangeError(`No extremity source for ${target.provider}`));
+  }
+});
+const failedExtremity = new Set();
+let extremityRequest = null;
+let openExtremity = null;
+
 const service = new TideHereService({
   geocoder,
   getStations: (place) => loadAvailableStations({
@@ -252,6 +286,9 @@ function setLoading(message) {
 
 function beginRequest(message) {
   cancelPendingLocation = null;
+  extremityRequest?.cancel();
+  extremityRequest = null;
+  openExtremity = null;
   requestSequence += 1;
   busy = true;
   displayedForecast = null;
@@ -470,17 +507,144 @@ function moonIcon(icon) {
   return svg;
 }
 
-function eventGroup(entries, progress) {
+function closeExtremity({ focus = false } = {}) {
+  const open = openExtremity && document.querySelector(`[data-extremity-key="${openExtremity}"]`);
+  openExtremity = null;
+  for (const button of document.querySelectorAll('.height.extreme[aria-expanded="true"]')) button.setAttribute('aria-expanded', 'false');
+  for (const box of document.querySelectorAll('.extreme-explain')) box.hidden = true;
+  if (focus && open) open.focus();
+}
+
+function showExtremity(button, { pinned = true } = {}) {
+  const box = document.getElementById(button.getAttribute('aria-controls'));
+  const item = button.closest('li');
+  if (!box || !item) return;
+  for (const other of document.querySelectorAll('.extreme-explain')) if (other !== box) other.hidden = true;
+  for (const other of document.querySelectorAll('.height.extreme[aria-expanded="true"]')) if (other !== button) other.setAttribute('aria-expanded', 'false');
+  box.style.top = `${item.offsetTop + item.offsetHeight + 4}px`;
+  box.hidden = false;
+  if (pinned) {
+    openExtremity = button.dataset.extremityKey;
+    button.setAttribute('aria-expanded', 'true');
+  }
+}
+
+const hoverPointer = window.matchMedia?.('(hover: hover) and (pointer: fine)');
+
+function heightNode(entry, card, key) {
+  if (!entry.extremity) return textNode('span', entry.height, 'height');
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'height extreme';
+  button.dataset.kind = entry.kind;
+  button.dataset.level = entry.extremity.level;
+  button.dataset.extremityKey = key;
+  button.textContent = entry.height;
+  const box = document.createElement('div');
+  box.className = 'extreme-explain';
+  box.id = `extreme-${key}`;
+  box.hidden = true;
+  box.append(textNode('strong', entry.extremity.headline), textNode('span', entry.extremity.sentence), textNode('small', entry.extremity.caveat));
+  button.setAttribute('aria-controls', box.id);
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-label', `${entry.height}. ${entry.extremity.sentence}`);
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (button.getAttribute('aria-expanded') === 'true') closeExtremity();
+    else showExtremity(button);
+  });
+  button.addEventListener('mouseenter', () => {
+    if (hoverPointer?.matches && !openExtremity) showExtremity(button, { pinned: false });
+  });
+  button.addEventListener('mouseleave', () => {
+    if (hoverPointer?.matches && !openExtremity) box.hidden = true;
+  });
+  card.append(box);
+  return button;
+}
+
+document.addEventListener('click', (event) => {
+  if (openExtremity && !event.target.closest?.('.extreme-explain, .height.extreme')) closeExtremity();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && openExtremity) closeExtremity({ focus: true });
+});
+
+function swatch(kind, level) {
+  const sample = textNode('span', '0.00 m', 'extreme-swatch');
+  sample.dataset.kind = kind;
+  sample.dataset.level = level;
+  sample.setAttribute('aria-hidden', 'true');
+  return sample;
+}
+
+function renderExtremityLegend(model, record) {
+  const legend = $('#extremity-legend');
+  const marked = model.days.some((day) => day.tides.some((tide) => tide.extremity));
+  legend.hidden = !marked;
+  if (!marked) return legend.replaceChildren();
+  const item = (...nodes) => { const span = document.createElement('span'); span.append(...nodes); return span; };
+  const { notable, exceptional } = EXTREMITY_LEVELS;
+  legend.replaceChildren(
+    item(swatch('high', 'notable'), document.createTextNode(`Highest ${notable}%`)),
+    item(swatch('high', 'exceptional'), document.createTextNode(`Highest ${exceptional}% of high tides`)),
+    item(swatch('low', 'notable'), document.createTextNode(`Lowest ${notable}%`)),
+    item(swatch('low', 'exceptional'), document.createTextNode(`Lowest ${exceptional}% of low tides`)),
+    textNode('span', `Ranked against every predicted tide ${model.stationKind === 'model-point' ? 'at this model point' : 'at this station'} in ${record.year}. Click or tap a marked height for details.`, 'extremity-legend-note')
+  );
+}
+
+function renderExtremitySource(forecast, record) {
+  const target = extremityTarget(forecast);
+  const paragraph = $('#extremity-source');
+  if (record) {
+    paragraph.textContent = `Underlined heights are ranked against the ${record.highCount} high and ${record.lowCount} low tides predicted by the same source for ${record.year}: a thin line marks the highest or lowest ${EXTREMITY_LEVELS.notable}%, a thick line the highest or lowest ${EXTREMITY_LEVELS.exceptional}%.`;
+  } else if (target && failedExtremity.has(extremityKey(target))) {
+    paragraph.textContent = 'Particularly high and low tide marks are unavailable for this station right now.';
+  } else {
+    paragraph.textContent = '';
+  }
+  paragraph.hidden = !paragraph.textContent;
+}
+
+function hasTides(forecast) {
+  return forecast.days.some((day) => day.tides.length);
+}
+
+// Marks are never on the path to the first forecast: a cached record is used
+// in the first render, and a missing one is loaded after the cards are painted.
+function startExtremity(forecast, station, request) {
+  extremityRequest?.cancel();
+  extremityRequest = null;
+  const target = extremityTarget(forecast);
+  if (!target || !hasTides(forecast) || extremityLoader.cached(target)) return;
+  const idle = window.requestIdleCallback
+    ? (callback) => window.requestIdleCallback(callback, { timeout: 1500 })
+    : (callback) => setTimeout(callback, 0);
+  idle(() => {
+    if (request !== requestSequence || displayedForecast !== forecast) return;
+    const handle = extremityLoader.load(target, station);
+    extremityRequest = handle;
+    handle.promise.then((record) => {
+      if (extremityRequest === handle) extremityRequest = null;
+      if (request !== requestSequence || displayedForecast !== forecast) return;
+      if (!record) failedExtremity.add(extremityKey(target));
+      showForecast(forecast, { scroll: false });
+    });
+  });
+}
+
+function eventGroup(entries, progress, card, date) {
   const section = document.createElement('section');
   section.className = 'event-group';
   const list = document.createElement('ul');
   if (!entries.length) list.append(textNode('li', 'No tide event in this recorded window', 'empty'));
-  for (const entry of entries) {
+  entries.forEach((entry, index) => {
     const item = document.createElement('li');
     item.className = entry.isPast ? 'past' : 'future';
-    item.append(textNode('span', `${entry.type} · ${entry.time}`, 'tide-label'), textNode('span', entry.height, 'height'));
+    item.append(textNode('span', `${entry.type} · ${entry.time}`, 'tide-label'), heightNode(entry, card, `${date}-${index}`));
     list.append(item);
-  }
+  });
   section.append(list);
   if (progress) section.append(tideIndicator(progress));
   return section;
@@ -513,7 +677,7 @@ function dayCard(day, index) {
   article.className = `day-card${day.isToday ? ' current' : ''}`;
   article.dataset.date = day.date;
   article.append(textNode('h2', `${day.isToday ? 'Today · ' : ''}${day.label}`));
-  article.append(eventGroup(day.tides, day.tideProgress), astronomyGroup(day));
+  article.append(eventGroup(day.tides, day.tideProgress, article, day.date), astronomyGroup(day));
   return article;
 }
 
@@ -529,7 +693,8 @@ function showForecast(forecast, { scroll = true } = {}) {
   displayedForecast = forecast;
   const focusedDate = document.activeElement?.closest('.day-card')?.dataset.date;
   const expandedDates = new Set([...document.querySelectorAll('.day-card:has(.astronomy-details[open])')].map((card) => card.dataset.date));
-  const model = forecastViewModel(forceNoEvent(forecast), now());
+  const extremityRecord = extremityCache.read(extremityTarget(forecast));
+  const model = forecastViewModel(forceNoEvent(forecast), now(), { extremity: extremityRecord });
   $('#entered-name').textContent = model.entered;
   $('#resolved-name').textContent = model.resolved;
   $('#coast-name').textContent = model.coast;
@@ -562,12 +727,18 @@ function showForecast(forecast, { scroll = true } = {}) {
     box.append(textNode('strong', warning.message), textNode('span', warning.action));
     return box;
   }));
+  const reopen = openExtremity;
+  openExtremity = null;
   $('#day-cards').replaceChildren(...model.days.map(dayCard));
+  renderExtremityLegend(model, extremityRecord);
+  renderExtremitySource(forecast, extremityRecord);
   for (const card of document.querySelectorAll('.day-card')) {
     if (expandedDates.has(card.dataset.date)) card.querySelector('.astronomy-details').open = true;
     if (!scroll && focusedDate === card.dataset.date) card.querySelector('.astronomy-details summary').focus({ preventScroll: true });
   }
   $('#result').hidden = false;
+  const reopened = reopen && document.querySelector(`[data-extremity-key="${reopen}"]`);
+  if (reopened) showExtremity(reopened);
   if (externalWarnings.length) showState(externalWarnings[0].code, {
     focus: false,
     actionable: true
@@ -602,6 +773,7 @@ async function loadForecast(resolution, station, request) {
   updateHistoryCount();
   showForecast(result);
   if (resolution.candidates.length) showAlternativeCoasts(resolution, detailedStation);
+  startExtremity(result, detailedStation, request);
 }
 
 async function selectCoast(resolution, station = null) {

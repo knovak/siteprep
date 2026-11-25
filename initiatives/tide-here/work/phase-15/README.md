@@ -1,8 +1,8 @@
-# Phase 15: particularly high and low tide indicators — specification
+# Phase 15: particularly high and low tide indicators
 
-Status: **specified, not built.** This document specifies the feature and records
-the measurements behind it. No application code has changed. The user chose the
-presentation, levels, thresholds and colours on 2026-11-24 (§8, and
+Status: **built, not deployed.** This document specifies the feature, records
+the measurements behind it, and describes how it was built (§11). The user chose
+the presentation, levels, thresholds and colours on 2026-11-24 (§8, and
 `../../decisions.md`): Option B, two levels at 20% and 5%, blue and amber.
 
 ## 1. What the user sees
@@ -138,15 +138,17 @@ Measured on 2026-11-24 from this container.
 | Source | How the year is obtained | Measured cost | Where the record is computed |
 |---|---|---|---|
 | **NOAA CO-OPS** (browser-direct) | The existing prediction request with `begin_date=YYYY0101&end_date=YYYY1231`, same station, datum, `interval=hilo`, `units=metric`, `time_zone=gmt` | 1 request; 70 KB JSON, **11.6 KB compressed**; 0.36–1.2 s; sorting and quantiles **8 ms** | Browser, in the background |
-| **CHS IWLS** (browser-direct) | The existing `wlp-hilo` request with `from=YYYY-01-01T00:00:00Z&to=(YYYY+1)-01-01T00:00:00Z`; one request returned the full year | 1 request; 179 KB JSON; 0.44 s; counts once against CHS's 3/s and 30/min limits | Browser, in the background, through the existing CHS throttle |
-| **Bureau of Meteorology** (stored, 76 ports) | Already stored as one annual object per port in R2 | No runtime request | Once per port at import/activation; record stored beside the annual object and returned inside the `/forecast` response |
-| **FES2022** (stored, 65,203 model points) | Generated from the point's 34 constituents with the same `@neaps/tide-predictor` engine the gateway already uses | **40–80 ms per point** for a full year (measured on the 7 validation points) | Precomputed per tile as a sidecar object at preparation time (~1 hour on one core for all points, parallelisable); returned inside the `/forecast` response |
+| **CHS IWLS** (browser-direct) | The existing `wlp-hilo` request with `from=YYYY-01-01T00:00:00Z&to=(YYYY+1)-01-01T00:00:00Z`; one request returned the full year | 1 request; 179 KB JSON; 0.44 s; counts once against CHS's 3/s and 30/min limits | Browser, in the background, after the forecast request has finished |
+| **Bureau of Meteorology** (stored, 76 ports) | Already stored as one annual object per port in R2 | No runtime request | Built: by the gateway's background `POST /extremity` route from the stored annual object (§11). Proposed: once per port at import |
+| **FES2022** (stored, 65,203 model points) | Generated from the point's 34 constituents with the same `@neaps/tide-predictor` engine the gateway already uses | **40–80 ms per point** for a full year (measured on the 7 validation points) | Built: by the gateway's background `POST /extremity` route, on demand (§11). Proposed: a sidecar per tile at preparation time (~1 hour on one core for all points) |
 
 Notes:
 
 - NOAA and CHS return the year using exactly the request shape the adapters
-  already build, so the existing parsers (including CHS's alternating high/low
-  typing) are reused unchanged. Only the date range differs.
+  already build; only the date range differs. CHS events carry no high/low label,
+  and the forecast adapter's strict alternation would flip every later label
+  after one missing event in a year, so the year parser types each event by
+  comparing it with its neighbours instead.
 - The NOAA one-year `hilo` range worked in practice. The documented range limit
   for `hilo` predictions must be confirmed during implementation; if a request is
   refused, the adapter splits the year into two half-year requests.
@@ -169,14 +171,14 @@ marks are added to that rendering when their data is available.
 
 1. The forecast is fetched and rendered with no change to timing.
 2. While building the day cards, the page looks up the threshold record
-   synchronously in local storage (stored providers: in the forecast response).
-   If found, the marks are part of the **first** render.
-3. If not found and the provider is NOAA or CHS, the page schedules one
-   background request for the year with `requestIdleCallback` (fallback
-   `setTimeout(…, 0)`) after the cards are painted, using `fetch(…, {priority:
-   'low'})`.
-4. When the record arrives it is stored and the marks are applied to the cards
-   already on screen. Nothing else is re-rendered.
+   synchronously in local storage. If found, the marks are part of the
+   **first** render.
+3. If not found, the page schedules one background request with
+   `requestIdleCallback` (fallback `setTimeout(…, 0)`) after the cards are
+   painted, using `fetch(…, {priority: 'low'})`: the year of predictions for
+   NOAA and CHS, or `POST /extremity` for a Bureau port or FES point.
+4. When the record arrives it is stored and the day cards are drawn again from
+   the same forecast with the marks; the forecast is not requested again.
 
 ### 5.2 Cache
 
@@ -202,8 +204,9 @@ no extra network request.
 - The request uses the page's existing request-generation check: if the user
   starts a new search or picks an alternative coast, the pending year request is
   aborted with an `AbortController` and its result is discarded.
-- CHS year requests go through the existing CHS rate limiter and are never
-  issued while a forecast request is waiting on it.
+- The year request starts only after the forecast request has finished and
+  the cards are painted, so for CHS it never competes with the forecast for the
+  service's 3-per-second and 30-per-minute limits.
 - No request is made at page load or for stations the user has not displayed,
   and there is no service-worker or periodic refresh.
 
@@ -225,9 +228,10 @@ move anything:
 
 | Situation | Added time to first forecast | Marks visible |
 |---|---|---|
-| Australian Bureau port or FES point | ≈0 (≈450 bytes added to `/forecast`) | With the forecast |
-| NOAA or CHS, record cached | 0 | With the forecast |
+| Any source, record cached | 0 | With the forecast |
 | NOAA or CHS, first view of the station this year | 0 | About 0.4–1.5 s after the forecast |
+| Bureau port, first view this year | 0 | One gateway read of the stored port object after the forecast |
+| FES point, first view this year | 0 | One gateway request after the forecast, including 40–80 ms of computation |
 | Year request fails or times out (10 s) | 0 | Never; source details say "Extremity marks unavailable for this station" |
 
 ## 6. Presentation
@@ -313,22 +317,84 @@ Settled by the user on 2026-11-24 and recorded in `../../decisions.md`:
 - Browser tests: first render unchanged and marks absent on a cold cache; marks
   present on first render on a warm cache; no layout shift when marks arrive
   (bounding boxes of every height before and after); a new search aborts the
-  pending year request; CHS throttle respected.
-- Bureau and FES: the `/forecast` response carries the record; FES sidecar
-  values match an on-the-fly computation for the 7 validation points.
+  pending year request.
+- Bureau and FES: `POST /extremity` returns a matching record, refuses an
+  unloaded year, an unknown model point and a browser-direct provider, and logs
+  only route, status, provider and timing.
 - Timing: the existing Phase 14 response-time comparison is rerun and shows no
   change to time-to-first-forecast for any provider.
 
-## 10. Increments, when building starts
+## 10. Increments
 
-1. Shared quantile and ranking module with tests; NOAA and CHS background record
-   and cache; chosen presentation, legend and explanation.
-2. Bureau records at import/activation, returned in `/forecast`.
-3. FES record: on demand in the gateway with an R2 cache, then sidecars at the
-   next FES preparation.
+1. *Built.* Shared quantile and ranking module with tests; NOAA and CHS
+   background record and cache; Option B, legend and explanation.
+2. *Built, differently from the proposal.* Bureau and FES records come from a
+   background `POST /extremity` route instead of the `/forecast` response (§11).
+3. *Not built.* FES sidecars at the next FES preparation, which would remove the
+   40–80 ms computation from the first FES view of a point each year.
+
+## 11. How it was built
+
+### Modules
+
+| File | Role |
+|---|---|
+| `src/extremity.mjs` | The record, the 20% / 5% ranking, *N*, and the explanation text. No DOM, network or storage, so the browser and the gateway share it. |
+| `src/extremity-sources.mjs` | One-year NOAA and CHS requests and parsers, and `fetchDirectExtremityRecord`. |
+| `src/extremity-cache.mjs` | `ExtremityCache` (storage, expiry, 50-record bound) and `ExtremityLoader` (one request per record key, cancellable). |
+| `../phase-6/src/page-view.mjs` | `tideExtremity` adds `kind` and `extremity` to each tide in the view model. |
+| `../phase-6/app.mjs` | Starts the background load after the cards are painted, draws Option B, the explanation box, the legend and the source-details sentence. |
+| `../phase-6/src/stored-tide-client.mjs` | `extremity()` posts to `/extremity`; `fetchJson` now honours a caller's abort signal. |
+| `../phase-10/src/gateway.mjs` | The `POST /extremity` route, served from `extremityAdapters`. |
+| `../phase-11/src/australia-provider.mjs` | `extremityAustralianStandardPort`; port-event loading moved into `loadPortEvents`, shared with the forecast. |
+| `../phase-12/src/fes-provider.mjs` | `extremityFesFallback`: one UTC year of extremes from the point's constituents, in metres. |
+| `../phase-13/src/stage-five.mjs`, `../worker/index.ts`, `../phase-13/scripts/stage-static.mjs` | Route `/extremity`, log its provider, and stage and serve `phase-15/src` and `phase-15/fixtures`. |
+
+### Why `/extremity` instead of the `/forecast` response
+
+The proposal put the Bureau and FES records inside `/forecast`. Built that way,
+the FES record would add 40–80 ms of computation to every first FES forecast, or
+need runtime R2 writes, which §6 of the main specification keeps to the
+protected import routes; and the Bureau record would need a re-import of the
+stored dataset. A separate background route keeps `/forecast` unchanged, needs
+no re-import or runtime write, and uses the same browser cache and loader as
+NOAA and CHS. The cost is one more small request on the first view of a station
+each year, made after the forecast is on screen.
+
+### Explanation box
+
+A marked height is a `<button>` with `aria-expanded` and `aria-controls`, and an
+accessible name made of the height and the explanation sentence. Clicking or
+tapping opens a box positioned under the tide inside its day card, so it never
+runs off a narrow screen; clicking it again, clicking elsewhere or pressing
+Escape closes it, and Escape returns focus to the height. On a device whose
+primary pointer can hover, hovering shows the box until the pointer leaves. An
+open box stays open when the page redraws itself each minute.
+
+### Rank sentence
+
+*N* is interpolated between the record's 13 quantiles, so it can differ from an
+exact count by about one percentage point (Seattle's 3.636 m high is in the
+highest 11% by count and is described as 12%). The levels use the quantile
+heights directly, and *N* is capped at the level's limit, so a mark and its
+sentence never disagree.
+
+### Not yet verified on a deployed Site
+
+The FES route runs a year of harmonic prediction (40–80 ms in Node) in the Sites
+worker. Whether that fits the worker's CPU limit has not been checked on a
+deployed Site. If it does not, the request fails, the page shows no FES marks
+and says so in source details, and increment 3 (sidecars) becomes necessary.
 
 ## Files
 
+- `src/`, `test/` — §11. `npm test` in `initiatives/tide-here/work` runs the
+  unit and gateway tests; the browser tests are in `../phase-6/test/page.spec.mjs`.
+- `fixtures/noaa-9447130-2026-hilo.fixture.json`,
+  `fixtures/chs-5cebf1df3d0f4a073c4bbcbb-2026-hilo.fixture.json` — the 2026
+  high/low predictions for Seattle (NOAA) and Halifax (CHS), retrieved
+  2026-11-24, reduced to time, height and (NOAA) type. Fixture mode on the page
+  reads them in place of the live year request.
 - `mockups/build-data.mjs` — builds `mockup-data.json` from a NOAA one-year
   response, using the live page's own day-model, astronomy and formatting code.
 - `mockups/mockup.html` — renders the six options with `../../phase-6/styles.css`.
@@ -337,5 +403,6 @@ Settled by the user on 2026-11-24 and recorded in `../../decisions.md`:
   not find its own browser.
 - `mockups/*.png` — the mockups listed in §6.
 
-This folder is not staged into the deployed Site (`phase-13/scripts/stage-static.mjs`
-copies named folders only).
+Only `src/` and `fixtures/` are staged into the deployed Site
+(`phase-13/scripts/stage-static.mjs` copies named folders only); the mockups,
+tests and this document are not.

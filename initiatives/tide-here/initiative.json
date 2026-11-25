@@ -31,11 +31,11 @@
   ],
   "todo": [
     {
-      "id": "extremity-indicators",
-      "title": "Build the particularly high and low tide indicators specified in work/phase-15/README.md",
+      "id": "verify-extremity-on-test-site",
+      "title": "Deploy to the test Site and check the extremity marks for NOAA, CHS, a Bureau port and an FES point, including whether the FES year computation fits the Sites worker CPU limit",
       "state": "actionable",
       "value": "medium",
-      "effort": "medium",
+      "effort": "small",
       "advances_stage": false
     }
   ]

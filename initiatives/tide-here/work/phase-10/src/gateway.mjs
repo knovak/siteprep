@@ -43,6 +43,7 @@ export function createProviderGatewayApp({
   importDataset = null,
   forecastAdapters = {},
   stationResolvers = {},
+  extremityAdapters = {},
   stationCatalogues = {},
   storeFactory = env => new R2ObjectStore(env.TIDE_DATA),
   now = () => new Date(),
@@ -141,6 +142,28 @@ export function createProviderGatewayApp({
             throw error;
           }
           return json(await adapter({store, request: body, descriptor, now}));
+        }
+
+        if (request.method === 'POST' && url.pathname === '/extremity') {
+          const body = await requestJson(request);
+          const descriptor = providerById(active.registry, body.provider);
+          if (!descriptor) {
+            const error = new Error('Unknown provider');
+            error.code = 'provider-not-found';
+            throw error;
+          }
+          const adapter = extremityAdapters[descriptor.id];
+          if (descriptor.execution === 'browser-direct' || !adapter) {
+            const error = new Error(`${descriptor.name} extremity records are not served here`);
+            error.code = 'provider-not-ready';
+            throw error;
+          }
+          return json(await adapter({
+            store,
+            descriptor,
+            now,
+            request: {station: body.station, year: body.year},
+          }));
         }
 
         return json({error: 'Not found'}, 404);

@@ -83,7 +83,7 @@ test('the Sites project declares only the Tide Here R2 binding', async () => {
   const worker = await readFile(new URL('../../worker/index.ts', import.meta.url), 'utf8');
   assert.match(worker, /TIDE_DATA: R2Bucket/);
   assert.match(worker, /INIT_TOKEN[?]: string/);
-  assert.match(worker, /\/phase-\[0-7\]/);
+  assert.match(worker, /\/phase-\(\?:\[0-7\]\|15\)/);
 });
 
 test('the static staging allowlist excludes tests and initiative records', async () => {

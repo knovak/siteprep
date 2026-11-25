@@ -130,15 +130,19 @@ export class StoredTideClient {
     this.stationExpiresAt = 0;
   }
 
-  async fetchJson(path, options = {}) {
+  async fetchJson(path, {signal: external = null, ...options} = {}) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    const abort = () => controller.abort();
+    if (external?.aborted) abort();
+    external?.addEventListener('abort', abort, {once: true});
+    const timeout = setTimeout(abort, this.timeoutMs);
     try {
       const response = await this.fetchImpl(path, {...options, signal: controller.signal});
       if (!response?.ok) throw new Error(`Stored tide service returned HTTP ${response?.status ?? 'error'}`);
-      return response.json();
+      return await response.json();
     } finally {
       clearTimeout(timeout);
+      external?.removeEventListener('abort', abort);
     }
   }
 
@@ -215,6 +219,24 @@ export class StoredTideClient {
     } catch {
       return null;
     }
+  }
+
+  // Background request for the station's year ranking (Phase 15). Failures
+  // propagate so the caller can show no marks.
+  async extremity({station, year, signal = null}) {
+    const options = {
+      method: 'POST',
+      headers: {'content-type': 'application/json'},
+      priority: 'low',
+      body: JSON.stringify({
+        provider: this.provider,
+        station: this.provider === FES_PROVIDER_ID
+          ? {id: station.id, latitude: station.latitude, longitude: station.longitude}
+          : {id: station.id},
+        year,
+      }),
+    };
+    return this.fetchJson('/extremity', {...options, signal});
   }
 
   async forecast({context, station, timeZone, rows}) {

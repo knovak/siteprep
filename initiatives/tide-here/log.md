@@ -377,3 +377,7 @@ The user chose Option B (two underline weights), two levels at 20% and 5%, and
 blue and amber. Recorded in `decisions.md`, updated `work/phase-15/README.md`
 and re-rendered the mockups at the chosen levels. `extremity-indicators` is now
 actionable.
+
+## 2026-11-25 — Build the particularly high and low tide indicators specified in work/phase-15/README.md
+
+Built in work/phase-15 and phase-6: Option B underlines at 20% and 5%, the click-or-tap explanation, the legend, NOAA/CHS year records in the browser and Bureau/FES records from a background /extremity gateway route. Not yet deployed.

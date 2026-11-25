@@ -9,11 +9,12 @@ const API_PATHS = new Set([
   '/stations',
   '/resolve',
   '/forecast',
+  '/extremity',
 ]);
 
 async function providerForLog(request, pathname) {
   if (pathname === '/stations') return new URL(request.url).searchParams.get('provider');
-  if (pathname !== '/resolve' && pathname !== '/forecast') return null;
+  if (!['/resolve', '/forecast', '/extremity'].includes(pathname)) return null;
   try {
     const value = await request.clone().json();
     return typeof value?.provider === 'string' ? value.provider : null;

@@ -27,6 +27,8 @@ const directories = [
   'phase-6/data',
   'phase-6/src',
   'phase-7/src',
+  'phase-15/fixtures',
+  'phase-15/src',
 ];
 
 for (const relative of files) {

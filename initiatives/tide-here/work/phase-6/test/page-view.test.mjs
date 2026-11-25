@@ -138,3 +138,23 @@ test('forecast progress includes the previous-day context and only attaches to t
   assert.equal(current.days[0].tideProgress.fill, .5);
   assert.equal(forecastViewModel(forecast, '2026-08-22T00:00:00Z').days[0].tideProgress, null);
 });
+
+test('a matching extremity record marks only particularly high highs and low lows', async () => {
+  const {buildExtremityRecord} = await import('../../phase-15/src/extremity.mjs');
+  const {noaaYearEvents} = await import('../../phase-15/src/extremity-sources.mjs');
+  const year = JSON.parse(await readFile(new URL('../../phase-15/fixtures/noaa-9447130-2026-hilo.fixture.json', import.meta.url), 'utf8'));
+  const record = buildExtremityRecord({provider: 'noaa', stationId: '9447130', datum: 'MLLW', year: 2026, events: noaaYearEvents(year, 2026)});
+  const marked = dayViewModel({
+    ...day,
+    tides: [
+      { type: 'high', at: '2026-08-20T15:30:00.000Z', height: 3.86, unit: 'm' },
+      { type: 'low', at: '2026-08-20T21:30:00.000Z', height: 2.6, unit: 'm' },
+      { type: 'high', at: '2026-08-21T02:30:00.000Z', height: 3.6, unit: 'm' }
+    ]
+  }, 'America/Los_Angeles', '2026-08-20T13:00:00Z', { extremity: record });
+  assert.deepEqual(marked.tides.map((tide) => tide.extremity?.level ?? null), ['exceptional', null, 'notable']);
+  assert.equal(marked.tides[0].extremity.headline, 'Particularly high · 3.86 m');
+  assert.match(marked.tides[0].extremity.sentence, /^Among the highest 2% of 2026's high tides here/);
+  assert.match(marked.tides[0].extremity.caveat, /storm surge/);
+  assert.equal(dayViewModel(day, 'America/Los_Angeles', '2026-08-20T13:00:00Z').tides[0].extremity, null);
+});

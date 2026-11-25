@@ -1,4 +1,7 @@
+import {createTidePredictor} from '@neaps/tide-predictor';
+
 import {DAY_MILLISECONDS, placeInstantInRow} from '../../phase-1/src/day-model.mjs';
+import {buildExtremityRecord} from '../../phase-15/src/extremity.mjs';
 import {closestPoint, forecastFromTile} from '../../phase-9/src/forecast.mjs';
 import {
   loadVerifiedDatasetObject,
@@ -212,4 +215,38 @@ export async function forecastFesFallback({store, request, descriptor}) {
     }],
     warnings,
   };
+}
+
+// Ranks heights against one calendar year generated from the model point's
+// constituents with the same engine and node corrections as the forecast
+// (Phase 15). About 40-80 ms per point-year; called in the background.
+export async function extremityFesFallback({store, request, descriptor, now = () => new Date()}) {
+  const year = request?.year;
+  const latitude = Number(request?.station?.latitude);
+  const longitude = Number(request?.station?.longitude);
+  if (!request?.station?.id || !Number.isInteger(year) || year < 1900 || year > 2200
+      || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    throw new Error('FES extremity requires a model point, its coordinates and a year');
+  }
+  const loaded = await loadCandidateTiles(store, descriptor, latitude, longitude);
+  const point = loaded.tiles.flatMap(tile => tile.tile.points).find(item => item.id === request.station.id);
+  if (!point) {
+    const error = new Error('The requested FES model point is not in the active dataset');
+    error.code = 'coverage-unavailable';
+    throw error;
+  }
+  const extremes = createTidePredictor(point.constituents, {nodeCorrections: 'schureman'})
+    .getExtremesPrediction({start: new Date(Date.UTC(year, 0, 1)), end: new Date(Date.UTC(year + 1, 0, 1))});
+  return buildExtremityRecord({
+    provider: descriptor.id,
+    stationId: point.id,
+    datum: point.datum,
+    unit: 'm',
+    year,
+    events: extremes.map(event => ({
+      type: event.high ? 'high' : 'low',
+      height: metres({height: event.level, unit: point.units}),
+    })),
+    computedAt: now(),
+  });
 }
