@@ -1,0 +1,66 @@
+button.comparison-filter {
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.35;
+  font-weight: normal;
+}
+button.comparison-filter::after {
+  content: '';
+  display: inline-block;
+  width: .4em;
+  height: .4em;
+  margin: 0 .15em .2em .55em;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+.comparison-filter-menu {
+  box-sizing: border-box;
+  width: max-content;
+  min-width: min(12rem, 90vw);
+  max-width: min(20rem, 90vw);
+  max-height: 45vh;
+  padding: .35rem;
+  overflow: auto;
+  border: 1px solid #aab6c3;
+  border-radius: .5rem;
+  box-shadow: 0 5px 18px #172b4530;
+  background: white;
+  color: #172536;
+  font: 400 .875rem/1.4 system-ui, sans-serif;
+  text-align: left;
+}
+/* The native popover stays above the table's horizontal scrolling region. */
+@supports (top: anchor(bottom)) {
+  .comparison-filter-menu {
+    inset: auto;
+    top: anchor(bottom);
+    left: anchor(left);
+    margin: .25rem 0;
+    position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
+  }
+}
+.comparison-filter-menu label {
+  display: flex;
+  align-items: baseline;
+  gap: .55rem;
+  padding: .45rem .55rem;
+  border-radius: .25rem;
+  cursor: pointer;
+}
+.comparison-filter-menu label:hover, .comparison-filter-menu label:focus-within {
+  background: #ecf2f8;
+}
+.comparison-filter-menu input {
+  flex: none;
+  margin: 0;
+  accent-color: var(--primary);
+}
+.comparison-filter-menu small {
+  display: block;
+  margin: .3rem .55rem .2rem;
+  padding-top: .45rem;
+  border-top: 1px solid #dbe1e7;
+  color: #46576b;
+}
+.comparison-filter-menu a { color: #245385; }
