@@ -381,3 +381,7 @@ actionable.
 ## 2026-11-25 — Build the particularly high and low tide indicators specified in work/phase-15/README.md
 
 Built in work/phase-15 and phase-6: Option B underlines at 20% and 5%, the click-or-tap explanation, the legend, NOAA/CHS year records in the browser and Bureau/FES records from a background /extremity gateway route. Not yet deployed.
+
+## 2026-11-09 — Release
+
+Released to production — ChatGPT Site, version 9, `77ed306`. 1 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
