@@ -14,7 +14,11 @@ button.comparison-filter::after {
   border-width: 0 1.5px 1.5px 0;
   transform: rotate(45deg);
 }
+/* The popover sits above the scrollable table, positioned from its trigger. */
 .comparison-filter-menu {
+  position: fixed;
+  inset: auto;
+  margin: 0;
   box-sizing: border-box;
   width: max-content;
   min-width: min(12rem, 90vw);
@@ -29,16 +33,6 @@ button.comparison-filter::after {
   color: #172536;
   font: 400 .875rem/1.4 system-ui, sans-serif;
   text-align: left;
-}
-/* The native popover stays above the table's horizontal scrolling region. */
-@supports (top: anchor(bottom)) {
-  .comparison-filter-menu {
-    inset: auto;
-    top: anchor(bottom);
-    left: anchor(left);
-    margin: .25rem 0;
-    position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
-  }
 }
 .comparison-filter-menu label {
   display: flex;

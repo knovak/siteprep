@@ -29,6 +29,18 @@
     };
   }
 
+  function positionMenu(trigger, menu) {
+    const gap = 4;
+    const anchor = trigger.getBoundingClientRect();
+    const viewport = document.documentElement;
+    const below = viewport.clientHeight - anchor.bottom - gap;
+    const above = anchor.top - gap;
+    const top = below >= menu.offsetHeight || below >= above
+      ? anchor.bottom + gap : anchor.top - menu.offsetHeight - gap;
+    menu.style.top = Math.max(gap, Math.min(top, viewport.clientHeight - menu.offsetHeight - gap)) + 'px';
+    menu.style.left = Math.max(gap, Math.min(anchor.left, viewport.clientWidth - menu.offsetWidth - gap)) + 'px';
+  }
+
   function mount({ table, items, configs, resetHost, onChange }) {
     const sortButtons = Array.from(table.querySelectorAll('thead button[data-sort]'));
     const controls = configs.map((config) => {
@@ -49,6 +61,18 @@
       trigger.setAttribute('popovertarget', menu.id);
       sortButton.closest('th').append(trigger, menu);
 
+      const reposition = () => positionMenu(trigger, menu);
+      menu.addEventListener('toggle', () => {
+        if (menu.matches(':popover-open')) {
+          reposition();
+          window.addEventListener('scroll', reposition, true);
+          window.addEventListener('resize', reposition);
+        } else {
+          window.removeEventListener('scroll', reposition, true);
+          window.removeEventListener('resize', reposition);
+        }
+      });
+
       const present = new Set(items.map((item) => String(config.value(item))));
       const choices = config.choices || Array.from(present).sort(collator.compare)
         .map((value) => ({ value, label: value }));
@@ -67,6 +91,7 @@
           else selected.delete(input.value);
           updateLabel();
           refresh();
+          reposition();
         });
       }
 
