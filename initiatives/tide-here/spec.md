@@ -381,7 +381,7 @@ comparisons, limitations, activation and rollback instructions.
 
 ## 2026-11-24 particularly high and low tides (built)
 
-Built on 2026-11-25, not yet deployed. A tide height that is among the highest 20% of the year's
+Built on 2026-11-25 and present in Test version 19. A tide height that is among the highest 20% of the year's
 predicted high tides at that station, or the lowest 20% of its low tides, gets a
 thin coloured underline (blue for high, amber for low); the highest or lowest 5%
 get a thick underline and a bold number. Clicking or tapping a marked height
@@ -400,3 +400,10 @@ As built, Bureau and FES records come from a separate background
 
 The full specification, measurements, alternatives considered, mockups and
 implementation notes are in `work/phase-15/README.md`.
+
+The [2026-11-25 hosted verification](notes/extremity-hosted-verification-2026-11-25.md)
+confirmed Bureau and FES marks, including full-year FES computation on the
+deployed worker. NOAA's direct annual browser request also passed. Full hosted
+acceptance remains open because CHS responses omit the required CORS header;
+the combined direct-provider catalogue load also causes NOAA searches to fall
+back to FES when CHS fails.

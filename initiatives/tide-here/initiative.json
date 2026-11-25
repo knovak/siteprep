@@ -13,19 +13,19 @@
         "slug": "tide-here-test",
         "url": "https://tide-here-test.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-11-09T06:17:34.736972Z",
-        "version": 18,
-        "commit": "98b8b30b44e124f9e5dd676d3501d2fae3d59f3a",
-        "tree": "29c4faf81916d56c19eb0fa7cddf755280e62b87"
+        "deployed_at": "2026-11-25T10:03:00.221437Z",
+        "version": 19,
+        "commit": "444d8272b742e83ad70349f2890f34056c4a46e0",
+        "tree": "9ec8fc539c8793788035cd6e632fe138f7f295ee"
       },
       "prod": {
         "slug": "tide-here-five-coast-local-days",
         "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-10-20T05:27:55Z",
-        "version": 8,
-        "commit": "7bc4ee840fa529c6c977e72b58aed692cdb33d1f",
-        "tree": "d3e8c681e8b7b295e6d62d93dc79131e83b5b31e"
+        "deployed_at": "2026-11-25T10:11:34.653818Z",
+        "version": 10,
+        "commit": "231641a5a5f0e341bf607ea8ba4178e9a606aa94",
+        "tree": "9ec8fc539c8793788035cd6e632fe138f7f295ee"
       }
     }
   ],
@@ -33,10 +33,11 @@
     {
       "id": "verify-extremity-on-test-site",
       "title": "Deploy to the test Site and check the extremity marks for NOAA, CHS, a Bureau port and an FES point, including whether the FES year computation fits the Sites worker CPU limit",
-      "state": "actionable",
+      "state": "blocked",
       "value": "medium",
       "effort": "small",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "external:CHS catalogue and annual-prediction responses omit Access-Control-Allow-Origin, preventing browser access; the combined NOAA/CHS catalogue load also masks NOAA. Restore browser access and verify both official providers; see notes/extremity-hosted-verification-2026-11-25.md."
     }
   ]
 }
