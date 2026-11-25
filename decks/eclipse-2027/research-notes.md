@@ -1,9 +1,10 @@
 # Eclipse 2027 package research and upkeep
 
-Availability refresh: 19 November 2026 (Australia/Brisbane; research performed
-on 18 November UTC). All 34 previously included offers were revisited; the
-comparison now includes 36. Existing reviews retain their October/12 November
-dates; the two new META records have a separate 19 November review assessment.
+Availability refresh: 25 November 2026 (America/Los_Angeles). All 36 previously
+included offers were revisited; 37 are now included after one closure and two
+additions. Earlier review assessments retain their dates. New SOAR/Gloria
+assessments and the Abela train refresh are separately dated 25 November.
+
 
 The deck compares packages that include viewing the 2 August 2027 total solar
 eclipse. The five topics are classified by the eclipse viewing country/region,
@@ -47,6 +48,168 @@ Every main-page description has `.package-availability` and
 The first records general stock; the second records the strongest evidence for
 the requested party. Unknown room stock is not sold out. See
 `../../ECLIPSE_PACKAGES_TECHDOC.md` for the extraction and validation contract.
+
+## 25 November 2026 refresh
+
+Checked 25 November, America/Los_Angeles, using current operator pages and live
+Chrome booking flows. PR #666 was verified merged before creating an isolated
+worktree from refreshed main. All 36 included departures were revisited; retained
+entries keep their IDs and order. The comparison now has **37 offers**: Spain 5,
+Morocco 2, Algeria 2, Tunisia 1 and Egypt 27. Descriptions remain the sole source
+for every table row, including both availability columns.
+
+Material changes:
+
+- **Dar Habu {603}** is now explicitly fully sold out on [InLuxor’s exact eclipse page](https://inluxor.com/eclipse).
+  Moved to holding with its whole prior entry, sources and older evidence retained.
+  **Villa Kamose {973}** still lists two Pool View Suites at US$10,000 each; bed
+  setup and simultaneous allocation require reconfirmation.
+- **Al Wadi {240}** still lists four two-person rooms but revised prices:
+  Double €6,800 + €7,000 = **€13,800** for two couples; Queen €7,200 and King
+  €8,000. The new room-only amounts exclude the experience package. Former
+  special/regular pairs are historical. See [direct room list and terms](https://alwadiluxor.com/eclipse-2027-event/).
+- **Encounters C {366}** now says **two GEM Plaza rooms plus one female share**,
+  down from five rooms. The live modal caps every traveler category at **three**;
+  entering four base Twin/Double travelers is reduced to three and **£17,985**.
+  The two-room statement and three-person cap conflict. The previous £23,980
+  four-person quote is historical; this run could not reproduce it. No private
+  room can be inferred from the female-share place. [Exact departure](https://www.encounterstravel.com/uk/tour/egypt-eclipse-adventure-c-2027-tour).
+- **Virgin {815}** now marks Insider, Sea View, Sea Terrace and standard RockStar
+  unavailable. The [exact two-sailor flow](https://www.virginvoyages.com/book/voyage-planner/pre-checkout?currencyCode=USD&fromDate=2027-07-28&packageCode=11NBSE&priceType=perCabin&sailors=2&selectedPackages=11NBSE&toDate=2027-08-08&voyageId=RS27072811NBSE)
+  exposes only **US$27,478 Mega RockStar Lock it in Rate**, taxes/fees included,
+  with no changes/modifications. The category panel’s ordinary named suites are
+  unavailable; this is a guarantee rate, not an assigned Gorgeous Suite. No
+  second suite was established. Four sailors in one suite does not meet the brief.
+- **Dragoman {462}** has **seven** places, up from five. Selected the actual
+  26 July departure and quantity four: **£15,180**. Two hotel rooms/private tents
+  remain unallocated. The flow labels a £1,100 pp installment dated 23 November
+  past due; request current payment timing before booking. [WeTravel selection](https://www.wetravel.com/checkout_embed?uuid=7642607753).
+- **Dabuka Luxury Desert {369}** fell from seven to **three** places on both
+  the product and calculator. It remains generally available for smaller parties,
+  but cannot take all four. **{575}** remains at two places.
+- **Zero {323}** now publishes **four places** on its [homepage](https://spainsolareclipse2027.com/),
+  and the exact double-sharing product remains In stock. Four full fares total
+  €19,196; simultaneous two-room allocation is still unconfirmed.
+- **Balmoral {559}** G increased from £2,619 to **£2,699 pp**, while E remains
+  £2,899; both retain explicit limited cabin status. Two cabins remain unconfirmed.
+
+Siwa Classic’s current programme now names Siwa consistently and no longer uses
+the earlier brief-edge wording. Its final observing coordinates remain unpublished;
+the 19 November source conflict below remains historical.
+
+New included records:
+
+- **SOAR / Glenholme Nile retreat {271}**, 1–3 August, was missed previously.
+  The [exact operator page](https://www.glenholme-luxor.com/eclipse-nile-retreat)
+  advertises an available early-bird tier. Its remaining cabin count is unstated;
+  two simultaneous cabins remain unconfirmed. Price, scope and terms are in the entry.
+- **META Eclipse Express IV {555}**, 31 July–6 August, is a newly listed rail
+  variant, separate from {214} and the historical grouped holding {509}.
+  [Exact itinerary](https://eclipse.travel/tours/eclipse-express-luxor-explore)
+  describes held rail/hotel allocation. Its [live checkout](https://eclipse.travel/book/eclipse-express-luxor-explore)
+  prices two double-occupancy packages/four guests at **US$13,960** base and
+  **US$4,314** initial card payment (US$4,188 deposit + US$126 fee). Final bedding,
+  hotel substitutions and assignments still need confirmation; no remaining count
+  or viewing coordinate is published. The terms are the same non-refundable
+  30/30/40 schedule as the other included META offers, with 3% on card payments.
+
+Other non-Dabuka findings (each entry retains exact source links):
+
+| ID | Current general evidence | Four adults / two private rooms |
+|---|---|---|
+| {691} | 4 own-flight, 2 double, 10 twin-share places; overlapping allocations | No private pair allocation; £11,596 is four fares, previous quote tested 12 November |
+| {519} | FAQ still offers four room categories | Book 2027 contact form inspected successfully; two-room stock unconfirmed |
+| {234} | Waited for CMS: 20 of 20 places | Shared gîte nights do not meet private rooms throughout |
+| {592} | Exact programme still says five places | Rooms/tents unconfirmed |
+| {750} | Exact 27 July row Available, 16 | Request does not assign rooms |
+| {972} | E pair calculator US$12,008 | Separate form per cabin; second cabin unconfirmed |
+| {891} | Superior pair calculator US$9,200 | Second cabin unconfirmed; headline/calculator conflict retained |
+| {880} | Classic pair calculator US$8,850 | Second cabin unconfirmed; fee/date conflicts retained |
+| {301} | Exact index Last few spaces remaining | No remaining-room quantity |
+| {284} | Exact index still available, €25,000 pp | No two-cabin quantity; earlier Junior Suite restriction retained |
+| {403} | Classic Double Main Deck permits quantity four | US$63,996 current calculation; assignments/beds unconfirmed |
+| {270} | Two double-occupancy packages still selectable | US$9,476 base / US$2,928 initial card amount; hotel assignments unconfirmed |
+| {214} | Two Nile Deck cabins still selectable | US$27,960 base / US$8,640 initial card amount; train/guesthouse assignments unconfirmed |
+
+Dabuka: expanded the live catalogue to **23/23** again (21 eclipse trips and two
+meteor trips outside eclipse day). Opened all 15 included dated calculators;
+13 still price four adults, while {369}/{575} have too few places. The calculators
+have no room/cabin/tent allocation control. All counts other than {369} and all
+reproduced four-adult totals remain unchanged from 19 November.
+
+| ID | Current places | Current four-adult calculator total |
+|---|---|---|
+| {683} | 15 | €6,280 |
+| {546} | 14 | €8,240 |
+| {798} | 18 | €13,400 |
+| {974} | 14 | €11,580 |
+| {938} | 14 | €13,720 |
+| {161} | 10 | €17,880 |
+| {920} | 7 | €15,024; whole-charter scope needs agreement |
+| {936} | 8 | €7,440 |
+| {789} | 9 | €14,260 |
+| {708} | 9 | €10,440 |
+| {369} | 3 | Four unavailable |
+| {575} | 2 | Four unavailable |
+| {413} | 10 | €19,620 |
+| {778} | 6 | €17,700 |
+| {127} | 9 | €18,440 |
+
+**New date conflict:** in this Chrome session, the catalogue and calculators
+render dates one day earlier than the ISO departure links/product itineraries.
+For example [Aqua Magic’s dated link](https://eclipse-2027.com/booking/eclipse-2027-aqua-magic-experience?availability=25&type=trip&date=2027-07-29)
+uses 29 July, but its calculator says 28 July–4 August, while the product lists
+29 July–5 August. Other calculators show the same pattern. A timezone-formatting
+issue is a possible explanation, not a verified cause. Retained product/ISO dates
+and flagged the conflict in all affected descriptions/table rows; obtain written
+confirmation before flights. Inclusive duration and the calculator’s date-difference
+“days” remain separate. No source conflict was silently resolved by choosing an
+earlier arrival date.
+
+Discovery covered all five countries, specialist/local tours, hotel stays,
+ocean/Nile boats and rail. Revisited the [National Eclipse directory](https://nationaleclipse.com/events/2027-total-solar-eclipse-tours.html),
+[META’s 18-journey catalogue](https://eclipse.travel/tours), full Dabuka catalogue,
+Mara variants and the new SOAR pages. Queries included `solar eclipse 2027 tour
+Spain Morocco Tunisia Algeria available rooms packages`, `2027 eclipse hotel
+package Spain available rooms`, and `2027 eclipse Egypt packages new available`.
+This is not a fresh audit of every reseller or every holding record.
+
+New holding leads: **Real Egypt SE-8 {602}** has a dated Available row, but its
+€5,000 fare excludes three hotel nights and has stale validity notes; exact viewing
+mooring, full cost and four-person room allocations remain unresolved. **SOAR’s
+longer programmes {570}** explicitly remain waitlist only. The domain
+`tunisiasolareclipse2027.com` redirects to the already included Zero Spain tour;
+it is not a new Tunisian departure.
+
+Selected holding rechecks: Dabuka {291}/{775}/{376}/{388}/{197} are still Fully
+booked; META {909}/{574}/{675}/{531}/{196} remain sold out/waitlisted in its
+catalogue. InLuxor {918} remains a duplicate, now with Dar Habu’s closure noted.
+Mara {422} retains no verified allocation for its other variants. Unvisited holding
+records keep their original check dates; no user-rejected item was restored.
+
+New review work: exact SOAR searches did not establish an independent expedition
+sample. Associated land-property reviews are separated from the unnamed boat in
+{271}; syndicated copies count once. [Gloria’s exact Tripadvisor profile](https://www.tripadvisor.com/Hotel_Review-g23710106-d27489789-Reviews-Gloria_Aqua_Park_Hotel-Al_Kobaneyah_Aswan_Aswan_Governorate_Nile_River_Valley.html)
+has 11 reports, including 2026 stays, with cleanliness/staff praise and location,
+breakfast and booking-confirmation complaints; its response to the February
+prepaid-check-in report is included. The [Abela sample](https://www.tripadvisor.co.uk/Attraction_Review-g294201-d33321358-Reviews-Abela_Trains-Cairo_Cairo_Governorate.html)
+is now 4.2/5 from 56 reviews, with November Elite praise alongside older-car,
+cleanliness, sleep and refund complaints. Different interiors and weak META/
+guesthouse evidence remain caveats. Other October/November reviews were not re-dated.
+
+Map: removed Dar Habu from the shared West Bank label; other included properties
+still use that broad point. Added an indicative Gloria/New Aswan pin from its
+[GPS reference](https://www.cybevasion.fr/gloria-aqua-park-hotel-assouan-h5069106.html),
+24.18409, 32.85121, cross-checked with the [official plus-code address](https://gloria-hotels.com/hotels/gloria-aqua-park-hotel-aswan/).
+SOAR uses the existing broad Luxor West Bank point; the exact boat berth is unknown.
+No guessed hotel/festival/monastery coordinate was added.
+
+Next priorities: reconcile Encounters’ two-room/three-traveler conflict; obtain
+simultaneous Al Wadi/Villa Kamose/SOAR allocations; confirm META rooms, bedding and
+viewing site; resolve Dabuka dates, Insight fees/dates and Real Egypt’s full cost.
+No providers were contacted, personal information entered, agreement accepted,
+reservation/hold requested or payment submitted. Public price selections stopped
+before traveler details and final booking/payment controls.
 
 ## 19 November 2026 refresh
 
