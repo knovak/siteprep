@@ -15,13 +15,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, cpSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, cpSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SCRIPT = join(ROOT, 'scripts', 'initiatives.mjs');
 const FIXTURES = join(ROOT, 'tests', 'fixtures', 'initiatives');
 const SITE = 'tests/fixtures/site';
 const APP = 'tests/fixtures/site-app';
@@ -32,24 +31,92 @@ const DEMO_SOURCE = 'tests/fixtures/demo-source';
 const BETA_BUILD = 'tests/fixtures/demo-beta/build.mjs';
 const NESTED_SOURCE = 'tests/fixtures/demo-source-nested-beta';
 // Release history is read from git, so the tests that exercise it need a source
-// with more than one commit behind it. The fixture directories were added in a
-// single commit; this one has real history and is not going away.
-//
-// These tests therefore need the repository's real history: in a shallow clone
-// (`git clone --depth 1`, or an `actions/checkout` without `fetch-depth: 0`)
-// `git log` reports one commit for every path and they fail. That is the
-// checkout's problem, not the test's - the build workflow fetches full history
-// for the same reason.
-const HISTORIED_SOURCE = 'initiatives/repo-guide/work/guide/out';
+// with more than one commit behind it. They do not read this repository's own
+// history, which a shallow clone (`git clone --depth 1`, an `actions/checkout`
+// without `fetch-depth: 0`, a cloud session) cuts short. They run the script
+// inside a throwaway repository built by `historyRepo()`, whose commits are
+// known in advance. HISTORIED_SOURCE is a path in that repository.
+const HISTORIED_SOURCE = 'history/source';
 
 const staticSite = (extra = {}) => ({ kind: 'chatgpt-site', build: 'static', source: SITE, ...extra });
 
-function run(args, initiativesDir) {
-  return execFileSync('node', [SCRIPT, ...args], {
-    cwd: ROOT,
+/**
+ * Run the initiatives script. `root` is the repository it runs in: this one by
+ * default, or the throwaway repository from `historyRepo()`, which carries its
+ * own copy of the script.
+ */
+function run(args, initiativesDir, root = ROOT) {
+  return execFileSync('node', [join(root, 'scripts', 'initiatives.mjs'), ...args], {
+    cwd: root,
     encoding: 'utf8',
     env: { ...process.env, INITIATIVES_DIR: initiativesDir }
   });
+}
+
+/** `git` in `root`, with output trimmed. */
+function gitIn(root, args) {
+  return execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
+}
+
+let historyRoot = null;
+
+/**
+ * A throwaway git repository with a known history, built once per run:
+ *
+ *   1. everything: the script, the fixtures, HISTORIED_SOURCE, a deck, a demo
+ *   2. a change to HISTORIED_SOURCE
+ *   3. a change to the deck only
+ *   4. a change to HISTORIED_SOURCE
+ *   5. a change to the demo only
+ *
+ * So HISTORIED_SOURCE has a first commit with two later ones on top, and the
+ * range after it holds commits that touched other areas and must not be
+ * reported as changes to the source.
+ */
+function historyRepo() {
+  if (historyRoot) return historyRoot;
+  const root = mkdtempSync(join(tmpdir(), 'initiative-history-'));
+  for (const file of ['initiatives.mjs', 'channel_stamp.mjs']) {
+    cpSync(join(ROOT, 'scripts', file), join(root, 'scripts', file));
+  }
+  cpSync(join(ROOT, 'tests', 'fixtures'), join(root, 'tests', 'fixtures'), { recursive: true });
+
+  const write = (path, text) => {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    writeFileSync(join(root, path), text);
+  };
+  // Fixed identity and dates, and no signing, whatever the user's git config says.
+  const env = {
+    ...process.env,
+    GIT_AUTHOR_NAME: 'Fixture', GIT_AUTHOR_EMAIL: 'fixture@example.invalid',
+    GIT_COMMITTER_NAME: 'Fixture', GIT_COMMITTER_EMAIL: 'fixture@example.invalid'
+  };
+  let day = 0;
+  const commit = (subject) => {
+    day += 1;
+    const date = `2026-01-0${day}T12:00:00Z`;
+    execFileSync('git', ['add', '-A'], { cwd: root });
+    execFileSync('git', ['-c', 'commit.gpgsign=false', 'commit', '-q', '-m', subject], {
+      cwd: root, env: { ...env, GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date }
+    });
+  };
+
+  execFileSync('git', ['init', '-q', '-b', 'main'], { cwd: root });
+  write(`${HISTORIED_SOURCE}/description.html`, '<p>first</p>\n');
+  write('decks/fixture/index.html', '<p>deck</p>\n');
+  write('demos/world_migration_atlas/index.html', '<p>atlas</p>\n');
+  commit('Add the fixture repository');
+  write(`${HISTORIED_SOURCE}/second.html`, '<p>second</p>\n');
+  commit('Add a second page to the source');
+  write('decks/fixture/index.html', '<p>deck, edited</p>\n');
+  commit('Edit the fixture deck');
+  write(`${HISTORIED_SOURCE}/description.html`, '<p>first, reworded</p>\n');
+  commit('Reword the source description');
+  write('demos/world_migration_atlas/index.html', '<p>atlas, edited</p>\n');
+  commit('Edit the fixture demo');
+
+  historyRoot = root;
+  return root;
 }
 
 /** Run a command expected to fail; return its exit status and output. */
@@ -395,18 +462,19 @@ test('channels lists the beta for the build, and the release once there is one',
   assert.equal(unreleased[0].build, BETA_BUILD);
   assert.equal(unreleased[0].root_html, 'main.html');
 
-  // Released: both copies are listed, so both get labeled.
+  // Released: both copies are listed, so both get labeled. The history
+  // repository holds a released copy at demos/world_migration_atlas.
   const released = JSON.parse(run(['channels', '--json'], scratch([{
     kind: 'demo', source: SITE, destination: 'world_migration_atlas',
     beta: { build: BETA_BUILD, stamp: '#credit' }, prod: {}
-  }]))).filter((row) => row.slug === 'healthy');
+  }]), historyRepo())).filter((row) => row.slug === 'healthy');
   assert.deepEqual(released.map((row) => row.channel), ['released', 'beta']);
   assert.equal(released[0].path, 'demos/world_migration_atlas');
   assert.equal(released[0].build, null);
   assert.equal(released[1].path, 'demos/world_migration_atlas/beta');
   assert.equal(released[0].stamp, '#credit');
   // The date is git's, never typed: the released copy has history to read.
-  assert.match(released[0].changed, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(released[0].changed, '2026-01-05');
 });
 
 test('the tab-separated channels output never has an empty field', () => {
@@ -475,24 +543,25 @@ test('--since reports what a branch changed under the source', () => {
   const dir = scratch([{
     kind: 'demo', source: HISTORIED_SOURCE, destination: 'Historied', root_html: 'description.html'
   }]);
+  const root = historyRepo();
 
   // Against HEAD nothing can have changed, which is the "skip this deploy"
   // answer the sweep needs, and it is not the same as being unable to tell.
   const quiet = JSON.parse(run(
-    ['deployments', 'healthy', 'plan', '--env', 'test', '--since', 'HEAD', '--json'], dir));
+    ['deployments', 'healthy', 'plan', '--env', 'test', '--since', 'HEAD', '--json'], dir, root));
   assert.equal(quiet.since.known, true);
   assert.equal(quiet.since.changed, false);
   assert.deepEqual(quiet.since.commits, []);
 
   // An unknown ref is "cannot tell", reported as such rather than as "nothing".
   const unknown = JSON.parse(run(
-    ['deployments', 'healthy', 'plan', '--env', 'test', '--since', 'no-such-ref-xyz', '--json'], dir));
+    ['deployments', 'healthy', 'plan', '--env', 'test', '--since', 'no-such-ref-xyz', '--json'], dir, root));
   assert.equal(unknown.since.known, false);
   assert.equal(unknown.since.changed, false);
 
   // Asking nothing still answers nothing - the block is absent without --since.
   const plain = JSON.parse(run(
-    ['deployments', 'healthy', 'plan', '--env', 'test', '--json'], dir));
+    ['deployments', 'healthy', 'plan', '--env', 'test', '--json'], dir, root));
   assert.equal(plain.since, undefined);
 });
 
@@ -686,11 +755,12 @@ test('an environment with nothing deployed still gets a row', () => {
 
 // --------------------------------------------------- release state and history
 
-/** The oldest commit touching a path - a release far enough behind to have changes. */
-function firstCommitFor(path) {
-  const out = execFileSync('git', ['log', '--format=%H', '--', path], {
-    cwd: ROOT, encoding: 'utf8'
-  }).trim().split('\n').filter(Boolean);
+/**
+ * The oldest commit touching a path - a release far enough behind to have
+ * changes. `root` is the repository to look in.
+ */
+function firstCommitFor(path, root = ROOT) {
+  const out = gitIn(root, ['log', '--format=%H', '--', path]).split('\n').filter(Boolean);
   return out[out.length - 1];
 }
 
@@ -732,13 +802,14 @@ test('production released at the current source commit reads as current', () => 
 });
 
 test('an older release reports how much is unreleased, and what it is', () => {
-  const old = firstCommitFor(HISTORIED_SOURCE);
+  const root = historyRepo();
+  const old = firstCommitFor(HISTORIED_SOURCE, root);
   const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
-    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })])));
+    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]), root));
 
   assert.equal(plan.release.released, true);
   assert.equal(plan.release.known, true);
-  assert.ok(plan.release.unreleased >= 1, 'commits have landed since that release');
+  assert.equal(plan.release.unreleased, 2, 'two commits have touched the source since that release');
   assert.equal(plan.release.changes.length, plan.release.unreleased);
   assert.match(plan.release.summary, /commit\(s\) unreleased/);
 });
@@ -754,10 +825,9 @@ test('a release whose commit is unknown degrades to a statement rather than a wr
 });
 
 test('test being ahead of production is reported', () => {
-  const old = firstCommitFor(HISTORIED_SOURCE);
-  const head = execFileSync('git', ['log', '-1', '--format=%H', '--', HISTORIED_SOURCE], {
-    cwd: ROOT, encoding: 'utf8'
-  }).trim();
+  const root = historyRepo();
+  const old = firstCommitFor(HISTORIED_SOURCE, root);
+  const head = gitIn(root, ['log', '-1', '--format=%H', '--', HISTORIED_SOURCE]);
 
   const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
     scratch([{
@@ -766,7 +836,7 @@ test('test being ahead of production is reported', () => {
       source: SITE,
       test: { slug: 'healthy-test', url: 'https://healthy-test.example.chatgpt.site/', commit: head },
       prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', commit: old }
-    }])));
+    }]), root));
 
   assert.equal(plan.release.test_ahead, true);
 });
@@ -794,13 +864,14 @@ test('a release writes a history entry; a test deploy writes none', () => {
 });
 
 test('a release summarizes what changed since the previous one', () => {
-  const old = firstCommitFor(HISTORIED_SOURCE);
+  const root = historyRepo();
+  const old = firstCommitFor(HISTORIED_SOURCE, root);
   const dir = scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]);
 
   const result = JSON.parse(run(
-    ['deployments', 'healthy', 'record', '--env', 'prod', '--json'], dir));
+    ['deployments', 'healthy', 'record', '--env', 'prod', '--json'], dir, root));
 
-  assert.ok(result.changes.length >= 1);
+  assert.deepEqual(result.changes, ['Reword the source description', 'Add a second page to the source']);
   const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
   assert.match(history, /Changes since the previous release, in `/);
   assert.match(history, /commit\(s\) since the previous release/);
@@ -845,13 +916,13 @@ test('a release appends to an existing log rather than replacing it', () => {
 });
 
 test('the change list covers only the deployment source, not the whole repository', () => {
-  const old = firstCommitFor(HISTORIED_SOURCE);
+  const root = historyRepo();
+  const old = firstCommitFor(HISTORIED_SOURCE, root);
   const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
-    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })])));
+    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]), root));
 
-  const inRange = (args) => execFileSync('git', ['log', '--format=%s', `${old}..HEAD`, ...args], {
-    cwd: ROOT, encoding: 'utf8'
-  }).trim().split('\n').filter(Boolean);
+  const inRange = (args) => gitIn(root, ['log', '--format=%s', `${old}..HEAD`, ...args])
+    .split('\n').filter(Boolean);
 
   const everything = inRange([]);
   const scoped = inRange(['--', HISTORIED_SOURCE]);
@@ -862,7 +933,7 @@ test('the change list covers only the deployment source, not the whole repositor
 
   // The concrete worry: a deck edit, a demo edit, or another initiative's work
   // has no business in this initiative's release notes.
-  const elsewhere = inRange(['--', 'decks', 'demos', 'initiatives/bookmark-sorter'])
+  const elsewhere = inRange(['--', 'decks', 'demos'])
     .filter((subject) => !scoped.includes(subject));
   assert.ok(elsewhere.length, 'the range must contain commits touching other areas');
   for (const subject of elsewhere) {
@@ -872,10 +943,11 @@ test('the change list covers only the deployment source, not the whole repositor
 });
 
 test('the release entry names the source it summarizes', () => {
+  const root = historyRepo();
   const dir = scratch([historiedDemo({
-    deployed_at: '2026-01-01T00:00:00Z', commit: firstCommitFor(HISTORIED_SOURCE)
+    deployed_at: '2026-01-01T00:00:00Z', commit: firstCommitFor(HISTORIED_SOURCE, root)
   })]);
-  run(['deployments', 'healthy', 'record', '--env', 'prod'], dir);
+  run(['deployments', 'healthy', 'record', '--env', 'prod'], dir, root);
 
   const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
   assert.ok(history.includes(`in \`${HISTORIED_SOURCE}\``),
@@ -903,17 +975,19 @@ test('a second release keeps the first, newest first', () => {
 });
 
 test('the digest reports unreleased work without treating it as work to pick up', () => {
-  const old = firstCommitFor(HISTORIED_SOURCE);
+  const root = historyRepo();
+  const old = firstCommitFor(HISTORIED_SOURCE, root);
   const digest = JSON.parse(run(['digest', '--json'],
-    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })])));
+    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]), root));
 
   const entry = digest.unreleased.find((u) => u.slug === 'healthy');
   assert.ok(entry, 'the initiative appears under unreleased work');
   assert.equal(entry.kind, 'demo');
-  assert.ok(entry.commits >= 1);
+  assert.equal(entry.commits, 2);
   assert.ok(entry.latest, 'names the most recent unreleased change');
 
-  const text = run(['digest'], scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]));
+  const text = run(['digest'],
+    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]), root);
   assert.match(text, /## Unreleased work/);
 });
 
@@ -924,10 +998,11 @@ test('the overview page states whether production is current', () => {
   })]));
   assert.match(current, /class="deployment-status">[^<]*production is current</);
 
+  const root = historyRepo();
   const behind = run(['page', 'healthy'], scratch([
-    historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: firstCommitFor(HISTORIED_SOURCE) })
-  ]));
-  assert.match(behind, /class="deployment-status">[^<]*\d+ commit\(s\) unreleased</);
+    historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: firstCommitFor(HISTORIED_SOURCE, root) })
+  ]), root);
+  assert.match(behind, /class="deployment-status">[^<]*2 commit\(s\) unreleased</);
 });
 
 test('the overview page places each environment against main', () => {
