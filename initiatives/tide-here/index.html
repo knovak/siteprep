@@ -57,7 +57,7 @@
         <dd><p>Nothing.</p></dd>
         <dt>Scheduled</dt>
         <dd><ul>
-          <li>Deploy to the test Site and check the extremity marks for NOAA, CHS, a Bureau port and an FES point, including whether the FES year computation fits the Sites worker CPU limit</li>
+          <li>Deploy to the test Site and check the extremity marks for NOAA, CHS, a Bureau port and an FES point, including whether the FES year computation fits the Sites worker CPU limit — <code>external:CHS catalogue and annual-prediction responses omit Access-Control-Allow-Origin, preventing browser access; the combined NOAA/CHS catalogue load also masks NOAA. Restore browser access and verify both official providers; see notes/extremity-hosted-verification-2026-11-25.md.</code> <em>(clears on its own)</em></li>
         </ul></dd>
       </dl>
 
@@ -70,14 +70,14 @@
     <div class="card-content">
       <p><strong>ChatGPT Site</strong></p>
       <ul>
-        <li>Test — <a href="https://tide-here-test.ken-novak.chatgpt.site">https://tide-here-test.ken-novak.chatgpt.site</a> <em>(public, version 18, deployed 2026-11-09)</em></li>
-        <li>Production — <a href="https://tide-here-five-coast-local-days.ken-novak.chatgpt.site">https://tide-here-five-coast-local-days.ken-novak.chatgpt.site</a> <em>(public, version 8, deployed 2026-10-20)</em></li>
+        <li>Test — <a href="https://tide-here-test.ken-novak.chatgpt.site">https://tide-here-test.ken-novak.chatgpt.site</a> <em>(public, version 19, deployed 2026-11-25)</em></li>
+        <li>Production — <a href="https://tide-here-five-coast-local-days.ken-novak.chatgpt.site">https://tide-here-five-coast-local-days.ken-novak.chatgpt.site</a> <em>(public, version 10, deployed 2026-11-25)</em></li>
       </ul>
       <ul class="currency">
-        <li><strong>Test</strong> <span class="verdict verdict-differs">differs from main</span> — content is not main&#39;s, and the recorded commit cannot place it</li>
-        <li><strong>Production</strong> <span class="verdict verdict-behind">behind main</span> — 3 commits behind main</li>
+        <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
+        <li><strong>Production</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
       </ul>
-      <p class="deployment-status">3 commit(s) unreleased</p>
+      <p class="deployment-status">main is on both test and production · production is current</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-documents">
