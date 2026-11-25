@@ -33,7 +33,9 @@ heading orders departures across styles. The browser script in
 `decks/peru/assets/machu-picchu-packages.js` handles column sorting and uses
 `shared/package_table_filters.js` for checkbox dropdowns. They match any
 selected value within a column and combine columns. Fare bands use the per-adult
-amount converted to USD at the ECB rates linked in the menu. Visible route markers come
+amount converted to USD at the ECB rates linked in the menu. When adding a new
+room-evidence label, add its definition to the party filter’s `explanations` map
+for hover, screen readers and the **Show explanations** button. Visible route markers come
 from the location keys of active itineraries and are shared by both StandardMap
 views. Addresses may identify a town centre, trail pass or site entrance
 where a street address is unavailable.

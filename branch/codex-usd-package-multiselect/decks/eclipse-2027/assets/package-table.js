@@ -155,7 +155,13 @@
       SiteprepPackageTableFilters.priceFilter('price', 'Price', (item) =>
         SiteprepPackageTableFilters.toUsd(item.fare.amount, item.fare.currency)),
       { key: 'party', label: '4 people · 2 rooms', allLabel: 'All room evidence',
-        value: (item) => item.roomStatus },
+        value: (item) => item.roomStatus,
+        explanations: {
+          'Cannot meet two private rooms': 'Too few places are available for four adults, or the itinerary requires shared accommodation on some nights.',
+          'Four-person selection (not held)': 'The booking form priced four adults on a two-room or two-cabin basis. The rooms have not been reserved.',
+          'Operator-reported fit (not held)': 'The operator lists enough suitable rooms for both couples. The operator still needs to confirm both rooms together.',
+          'Two rooms not confirmed': 'The evidence leaves open whether both couples can have a private room on the same departure.',
+        } },
       { key: 'rank', label: 'Review evidence rank', allLabel: 'All review ranks',
         value: (item) => item.rank },
     ],

@@ -76,6 +76,21 @@
       const present = new Set(items.map((item) => String(config.value(item))));
       const choices = config.choices || Array.from(present).sort(collator.compare)
         .map((value) => ({ value, label: value }));
+      if (config.explanations) {
+        const help = document.createElement('button');
+        help.type = 'button';
+        help.className = 'comparison-filter-help';
+        help.textContent = 'Show explanations';
+        help.setAttribute('aria-expanded', 'false');
+        help.addEventListener('click', () => {
+          const expanded = menu.toggleAttribute('data-explain');
+          help.setAttribute('aria-expanded', String(expanded));
+          help.textContent = expanded ? 'Hide explanations' : 'Show explanations';
+          reposition();
+        });
+        menu.appendChild(help);
+      }
+
       const selected = new Set();
       const checkboxes = [];
       for (const choice of choices.filter((option) => present.has(option.value))) {
@@ -85,6 +100,16 @@
         input.value = choice.value;
         label.append(input, choice.label);
         menu.appendChild(label);
+        const explanation = config.explanations?.[choice.value];
+        if (explanation) {
+          label.title = explanation;
+          const meaning = document.createElement('div');
+          meaning.className = 'comparison-choice-meaning';
+          meaning.id = menu.id + '-meaning-' + checkboxes.length;
+          meaning.textContent = explanation;
+          input.setAttribute('aria-describedby', meaning.id);
+          menu.appendChild(meaning);
+        }
         checkboxes.push(input);
         input.addEventListener('change', () => {
           if (input.checked) selected.add(input.value);
