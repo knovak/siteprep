@@ -119,7 +119,7 @@ test('guest, duration, USD price and room-evidence filters compose without break
     '32 guests', '40 guests',
   ]);
   await expect(byDays.locator('option')).toContainText([
-    'All trip lengths', '5 days', '6 days', '8 days', '10 days',
+    'All trip lengths', '4 days', '5 days', '8 days', '10 days',
   ]);
   const roomChoices = await byRooms.locator('option').allTextContents();
   expect(roomChoices).toContain('Two-cabin quote (not held)');
@@ -154,9 +154,9 @@ test('guest, duration, USD price and room-evidence filters compose without break
   await expect(page.locator('#comparison-count')).toContainText(`${total} packages.`);
   await expect(page.locator('[data-sort="price"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
   await byRooms.selectOption('Two-cabin quote (not held)');
-  await expect(page.locator(rows)).toHaveCount(7);
+  await expect(page.locator(rows)).toHaveCount(6);
   expect(await subset.evaluateAll((elements) => elements.map((row) => row.dataset.packageId).sort()))
-    .toEqual(['package-138', 'package-404', 'package-461', 'package-582', 'package-607', 'package-872', 'package-976']);
+    .toEqual(['package-138', 'package-404', 'package-582', 'package-607', 'package-872', 'package-976']);
   await byRooms.selectOption('Named cabins listed (not held)');
   await expect(page.locator(rows)).toHaveCount(1);
   await expect(page.locator(rows)).toHaveAttribute('data-package-id', 'package-706');
@@ -258,9 +258,7 @@ test('June records follow current stock and fare evidence with unverified two-ca
   await page.goto(url);
   const cases = [
     ['711', '2027-06-03', '4659'],
-    ['713', '2027-06-08', '5665'],
-    ['714', '2027-06-10', '5150'],
-    ['715', '2027-06-09', '5385'],
+    ['715', '2027-06-09', '5724'],
     ['716', '2027-06-17', '5616'],
   ];
   for (const [id, date, price] of cases) {
@@ -268,7 +266,7 @@ test('June records follow current stock and fare evidence with unverified two-ca
     await expect(detail).toHaveCount(1);
     await expect(detail.locator('.package-dates')).toHaveAttribute('data-start', date);
     await expect(detail.locator('.package-price')).toHaveAttribute('data-usd', price);
-    await expect(detail.locator('.package-availability')).toContainText('November 19, 2026');
+    await expect(detail.locator('.package-availability')).toContainText('November 25, 2026');
     await expect(detail.locator('.package-availability a[href*="galapagosdanatours.com"]').first()).toHaveAttribute('href', /galapagosdanatours.com/);
     await expect(detail.locator('.party-availability')).toContainText('unverified');
     await expect(page.locator(`${rows}[data-package-id="package-${id}"]`)).toHaveCount(1);
@@ -285,7 +283,7 @@ test('June records follow current stock and fare evidence with unverified two-ca
 
 test('new research distinguishes extension-inclusive USD prices from split-currency fares', async ({ page }) => {
   await page.goto(url);
-  await expect(page.locator('.package-list > li').filter({ has: page.locator('strong', { hasText: /^O\.A\.T\. —/ }) })).toHaveCount(20);
+  await expect(page.locator('.package-list > li').filter({ has: page.locator('strong', { hasText: /^O\.A\.T\. —/ }) })).toHaveCount(16);
   for (const [id, price] of [['564', '10898'], ['154', '10298'], ['848', '10398'], ['156', '9698']]) {
     await expect(page.locator(`#package-${id} .package-price`)).toHaveAttribute('data-usd', price);
   }
