@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tide Here extremity mockups</title>
+  <!-- The live page's own stylesheet, so the cards match production. -->
+  <link rel="stylesheet" href="../../phase-6/styles.css">
+  <style>
+    :root {
+      --x-high: #1f6fb2;       /* deep water blue: particularly high */
+      --x-high-soft: #8fc0e6;
+      --x-high-tint: #dcecf9;
+      --x-low: #c27c0e;        /* sand amber: particularly low */
+      --x-low-soft: #e9c27a;
+      --x-low-tint: #fbeccd;
+    }
+    body { min-height: 0; }
+    main { padding-top: 1.25rem; padding-bottom: 1.5rem; }
+    .mock-label { display: flex; align-items: baseline; gap: .8rem; margin: 0 0 1rem; }
+    .mock-label strong { font-size: 1.35rem; letter-spacing: -.02em; }
+    .mock-label span { color: var(--muted); font-size: .9rem; }
+    .identity-card { margin-top: 0; }
+    .legend { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1.3rem; margin: 1rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+    .legend .swatch { display: inline-block; margin-right: .35rem; vertical-align: middle; }
+    .legend b { color: var(--ink); font-weight: 750; }
+    .height { display: inline-block; justify-self: start; }
+    .height.flagged { color: var(--ink); }
+
+    /* A: one tier, solid underline */
+    [data-option="A"] .height.flagged { text-decoration: underline 2.5px; text-underline-offset: 3px; }
+    [data-option="A"] .height.flagged[data-kind="high"] { text-decoration-color: var(--x-high); }
+    [data-option="A"] .height.flagged[data-kind="low"] { text-decoration-color: var(--x-low); }
+
+    /* B: two tiers by weight */
+    [data-option="B"] .height.flagged { text-decoration: underline 2px; text-underline-offset: 3px; }
+    [data-option="B"] .height.flagged[data-tier="exceptional"] { text-decoration-thickness: 4.5px; font-weight: 800; }
+    [data-option="B"] .height.flagged[data-kind="high"] { text-decoration-color: var(--x-high); }
+    [data-option="B"] .height.flagged[data-kind="low"] { text-decoration-color: var(--x-low); }
+
+    /* C: wavy, two tiers by colour strength */
+    /* Space is reserved under every height so a late-arriving wave never moves the layout. */
+    [data-option="C"] .height { padding-bottom: 5px; }
+    [data-option="C"] .height.flagged { text-decoration: underline wavy 1.6px; text-underline-offset: 2px; }
+    [data-option="C"] .height.flagged[data-kind="high"] { text-decoration-color: var(--x-high-soft); }
+    [data-option="C"] .height.flagged[data-kind="low"] { text-decoration-color: var(--x-low-soft); }
+    [data-option="C"] .height.flagged[data-tier="exceptional"][data-kind="high"] { text-decoration-color: var(--x-high); font-weight: 800; }
+    [data-option="C"] .height.flagged[data-tier="exceptional"][data-kind="low"] { text-decoration-color: var(--x-low); font-weight: 800; }
+
+    /* D: underline plus a short word */
+    [data-option="D"] .height.flagged .num { text-decoration: underline 2.5px; text-underline-offset: 3px; }
+    [data-option="D"] .height.flagged[data-kind="high"] .num { text-decoration-color: var(--x-high); }
+    [data-option="D"] .height.flagged[data-kind="low"] .num { text-decoration-color: var(--x-low); }
+    .tag { margin-left: .4rem; padding: .05rem .35rem; border-radius: .4rem; font-size: .6rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; vertical-align: .05rem; }
+    .tag[data-kind="high"] { color: var(--x-high); background: var(--x-high-tint); }
+    .tag[data-kind="low"] { color: #8a5605; background: var(--x-low-tint); }
+
+    /* E: annual range bar under every height */
+    .range { position: relative; display: block; width: 5.6rem; height: 5px; margin-top: 4px; border-radius: 3px; background: #e3ecee; overflow: visible; }
+    .range .zone { position: absolute; top: 0; height: 5px; }
+    .range .zone.low { left: 0; border-radius: 3px 0 0 3px; background: var(--x-low-soft); }
+    .range .zone.high { right: 0; border-radius: 0 3px 3px 0; background: var(--x-high-soft); }
+    .range .dot { position: absolute; top: -2.5px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #9fb1bd; border: 2px solid white; box-shadow: 0 0 0 1px #9fb1bd; }
+    .range .dot.high { background: var(--x-high); box-shadow: 0 0 0 1px var(--x-high); }
+    .range .dot.low { background: var(--x-low); box-shadow: 0 0 0 1px var(--x-low); }
+
+    /* F: highlighter behind the number */
+    [data-option="F"] .height.flagged { padding: 0 .3rem; border-radius: .3rem; margin-left: -.3rem; font-weight: 700; }
+    [data-option="F"] .height.flagged[data-kind="high"] { background: var(--x-high-tint); }
+    [data-option="F"] .height.flagged[data-kind="low"] { background: var(--x-low-tint); }
+    [data-option="F"] .height.flagged[data-tier="exceptional"][data-kind="high"] { background: var(--x-high-soft); }
+    [data-option="F"] .height.flagged[data-tier="exceptional"][data-kind="low"] { background: var(--x-low-soft); }
+
+    /* Explanation shown on tap/hover (rendered open in one mockup). */
+    .explain { position: absolute; z-index: 5; width: 17.5rem; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: .8rem; background: white; box-shadow: 0 14px 40px rgba(23, 48, 66, .18); color: var(--ink); font-size: .78rem; line-height: 1.45; }
+    .explain strong { display: block; margin-bottom: .25rem; font-size: .84rem; }
+    .explain span { color: var(--muted); }
+    .day-card { position: relative; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top"><span aria-hidden="true">≈</span> Tide Here</a>
+    <p>Five coast-local days · U.S., Canada, and major Australian coasts</p>
+  </header>
+  <main id="top">
+    <p class="mock-label"><strong id="mock-title"></strong><span id="mock-sub"></span></p>
+    <section id="result">
+      <details class="identity-card"><summary><strong>Seattle, Puget Sound</strong></summary></details>
+      <div id="day-cards" class="day-cards"></div>
+      <p id="legend" class="legend"></p>
+      <p class="safety-line">Predictions are informational and are not for navigation or safety decisions.</p>
+    </section>
+  </main>
+  <script>
+    const OPTIONS = {
+      A: ['Option A · Solid underline', 'One level: highest or lowest 20% of the year'],
+      B: ['Option B · Two underline weights', 'Thin: top/bottom 20% · Thick and bold: top/bottom 5%'],
+      C: ['Option C · Wavy underline', 'Pale wave: top/bottom 20% · Strong wave: top/bottom 5%'],
+      D: ['Option D · Underline with a word', 'Underline plus a short label saying how rare it is'],
+      E: ['Option E · Year-range bar', 'Every height gets a small bar; the ends light up when extreme'],
+      F: ['Option F · Highlighter', 'Tinted background instead of an underline; deeper tint for top/bottom 5%']
+    };
+    const data = window.MOCKUP_DATA;
+    const params = new URLSearchParams(location.search);
+    const option = params.get('option') || 'A';
+    const explainAt = params.get('explain');
+    document.body.dataset.option = option;
+    document.getElementById('mock-title').textContent = OPTIONS[option][0];
+    document.getElementById('mock-sub').textContent = OPTIONS[option][1];
+
+    const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+    const svg = (tag, attrs) => { const n = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v); return n; };
+    const singleTier = option === 'A';
+    const describe = (t) => t.kind === 'high'
+      ? `Among the highest ${t.top}% of ${data.year}'s high tides here`
+      : `Among the lowest ${t.top}% of ${data.year}'s low tides here`;
+
+    // Year range for option E: lowest low to highest high, from the quantile table ends.
+    const lo = data.thresholds.low[0] - 0.15, hi = data.thresholds.high[12] + 0.1;
+    const pos = (v) => Math.max(0, Math.min(100, 100 * (v - lo) / (hi - lo)));
+
+    function heightNode(t) {
+      const flagged = t.tier && (!singleTier || true);
+      const node = el('span', 'height');
+      node.dataset.kind = t.kind;
+      if (flagged) { node.classList.add('flagged'); node.dataset.tier = t.tier; node.title = describe(t); }
+      if (option === 'D') {
+        node.append(el('span', 'num', t.height));
+        if (flagged) {
+          const word = t.kind === 'high' ? (t.tier === 'exceptional' ? 'Top 5%' : 'Very high') : (t.tier === 'exceptional' ? 'Lowest 5%' : 'Very low');
+          const tag = el('span', 'tag', word); tag.dataset.kind = t.kind; node.append(tag);
+        }
+      } else if (option === 'E') {
+        node.append(el('span', 'num', t.height));
+        const bar = el('span', 'range');
+        const lowZone = el('span', 'zone low'); lowZone.style.width = `${pos(data.thresholds.low[4])}%`;
+        const highZone = el('span', 'zone high'); highZone.style.width = `${100 - pos(data.thresholds.high[8])}%`;
+        const dot = el('span', `dot${flagged ? ` ${t.kind}` : ''}`); dot.style.left = `${pos(t.value)}%`;
+        bar.append(lowZone, highZone, dot); node.append(bar);
+      } else {
+        node.textContent = t.height;
+      }
+      return node;
+    }
+
+    function arrow(progress) {
+      const wrap = el('div', 'tide-indicator');
+      const s = svg('svg', { viewBox: '0 0 44 70' });
+      const d = 'M22 3 L41 29 H30 V67 H14 V29 H3 Z';
+      const rot = progress.direction === 'down' ? { transform: 'rotate(180 22 35)' } : {};
+      const defs = svg('defs', {}); const clip = svg('clipPath', { id: 'c1' }); clip.append(svg('path', { d, ...rot })); defs.append(clip);
+      s.append(defs, svg('path', { d, ...rot, class: 'tide-arrow-base' }));
+      s.append(svg('rect', { x: 0, y: 3 + 64 * (1 - progress.fill), width: 44, height: 64 * progress.fill, 'clip-path': 'url(#c1)', class: 'tide-arrow-fill' }));
+      s.append(svg('path', { d, ...rot, class: 'tide-arrow-outline' }));
+      wrap.append(s, el('span', null, progress.label));
+      return wrap;
+    }
+
+    function moon(phase, southern = false) {
+      const s = svg('svg', { viewBox: '0 0 24 24', class: 'moon-phase-icon' });
+      const g = svg('g', southern ? { transform: 'rotate(180 12 12)' } : {});
+      g.append(svg('circle', { cx: 12, cy: 12, r: 10, class: 'moon-dark' }));
+      const p = ((phase % 1) + 1) % 1, waxing = p < .5, curve = Math.cos(2 * Math.PI * p), term = Math.abs(curve) * 10;
+      const sweep = waxing ? 1 : 0, ret = curve >= 0 ? 1 - sweep : sweep;
+      g.append(svg('path', { d: `M12 2 A10 10 0 0 ${sweep} 12 22 A${term} 10 0 0 ${ret} 12 2 Z`, class: 'moon-lit' }));
+      g.append(svg('circle', { cx: 12, cy: 12, r: 10, class: 'moon-outline' }));
+      s.append(g); return s;
+    }
+
+    const cards = document.getElementById('day-cards');
+    data.days.forEach((day, index) => {
+      const card = el('article', `day-card${day.isToday ? ' current' : ''}`);
+      card.append(el('h2', null, day.label));
+      const section = el('section', 'event-group');
+      const list = el('ul');
+      day.tides.forEach((t, i) => {
+        const li = el('li', t.isPast ? 'past' : 'future');
+        li.append(el('span', 'tide-label', `${t.type} · ${t.time}`), heightNode(t));
+        list.append(li);
+        if (explainAt === `${index}-${i}`) {
+          const pop = el('div', 'explain');
+          pop.append(el('strong', null, `${t.kind === 'high' ? 'Particularly high' : 'Particularly low'} · ${t.height}`));
+          pop.append(el('div', null, `${describe(t)} (${t.kind === 'high' ? data.thresholds.highCount : data.thresholds.lowCount} predicted ${t.kind} tides in ${data.year}).`));
+          pop.append(el('span', null, 'Astronomical prediction only: wind, pressure and storm surge can make the water higher or lower.'));
+          pop.style.left = '.6rem'; pop.style.top = `${4.1 + i * 2.55}rem`;
+          card.append(pop);
+        }
+      });
+      section.append(list);
+      if (day.isToday) section.append(arrow(data.progress));
+      const astro = el('details', 'astronomy-details');
+      const summary = el('summary');
+      summary.append(moon(day.moonPhase.phase), document.createTextNode(`Sun and moon · Moonrise ${day.moonrise}`));
+      astro.append(summary);
+      card.append(section, astro);
+      cards.append(card);
+    });
+
+    const legend = document.getElementById('legend');
+    const sw = (kind, tier) => {
+      const s = el('span', 'height flagged swatch', '0.00 m');
+      s.dataset.kind = kind; s.dataset.tier = tier;
+      if (option === 'D') { s.textContent = ''; s.append(el('span', 'num', '0.00 m')); }
+      if (option === 'E') { s.textContent = ''; const b = el('span', 'range'); b.style.width = '2.2rem'; b.style.marginTop = '0'; b.append(Object.assign(el('span', `zone ${kind}`), { style: 'width:100%;border-radius:3px' })); s.append(b); }
+      return s;
+    };
+    const item = (...nodes) => { const span = el('span'); span.append(...nodes); return span; };
+    const txt = (s) => document.createTextNode(s);
+    if (singleTier || option === 'D' || option === 'E') {
+      legend.append(
+        item(sw('high', 'notable'), txt('Among the highest 20% of '), el('b', null, `${data.year}'s high tides`), txt(' here')),
+        item(sw('low', 'notable'), txt('Among the lowest 20% of '), el('b', null, `${data.year}'s low tides`), txt(' here')));
+    } else {
+      legend.append(
+        item(sw('high', 'notable'), txt('Highest 20%')), item(sw('high', 'exceptional'), txt('Highest 5% of high tides')),
+        item(sw('low', 'notable'), txt('Lowest 20%')), item(sw('low', 'exceptional'), txt('Lowest 5% of low tides')));
+    }
+    legend.append(el('span', null, `Ranked against every predicted tide at this station in ${data.year}. Tap a height for details.`));
+  </script>
+</body>
+</html>
