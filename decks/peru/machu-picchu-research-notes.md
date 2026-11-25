@@ -8,7 +8,7 @@ The [comparison](./sections/machu-picchu-packages/overview.html) has one row per
 
 ## Where to start
 
-For two bedrooms, [the Backroads Salkantay trek](./sections/machu-picchu-packages/overview.html#package-637) had the strongest public room evidence. For a lower-priced hotel-and-train itinerary, [G Adventures Classic](./sections/machu-picchu-packages/overview.html#package-329) offered a full week from Cusco. Both routes reach Machu Picchu, but the first involves several days walking between mountain lodges. The second uses trains and includes two nights in Ollantaytambo.
+[April 15 on G Adventures Classic](./sections/machu-picchu-packages/overview.html#departure-329-2027-04-15) had the lowest four-person total among the room quotes. TourRadar places travel partners together in two-person rooms. For an explicit two-room selection, see [May 1](./sections/machu-picchu-packages/overview.html#departure-413-2027-05-01) and [June 12](./sections/machu-picchu-packages/overview.html#departure-413-2027-06-12) on the ten-day Insight Vacations small group. The [Backroads lodge trek](./sections/machu-picchu-packages/overview.html#package-637) remains a walking alternative where two rooms could be selected before login.
 
 ## How to read the availability checks
 
@@ -35,6 +35,34 @@ Availability and reviews were checked November 23, 2026, Pacific time. The recor
 - Beyond Adventures’ June 13 Lares trip appears in a flyer and an older listing. The current departure grid retains June 4 and omits June 13. The trek’s overnight accommodation is unresolved. [Current grid](https://beyondadventures.co/machu-picchu-2027).
 
 No traveler details were submitted, and no seats, tickets or rooms were held.
+
+## November 25, 2026 availability and audience review
+
+Checked public booking screens in Pacific time for four adults traveling as two couples. Publish the fare from the seller that exposed the rooms. Preserve a cheaper direct price separately when it priced travelers alone. No travelers were named and no quote was sent, held or booked.
+
+| Start | Itinerary | What one order showed for all four | Other direct price |
+| --- | --- | --- | --- |
+| April 15 | G Adventures Classic, seven days {329} | TourRadar US$2,937.20 in its double/twin category | G Adventures US$2,937 |
+| May 1 | Insight Vacations small group, ten days {413} | Trafalgar US$17,704 for two twin rooms | Same checkout |
+| May 9 | G Adventures Classic, seven days {329} | TourRadar US$3,884.40 in its double/twin category | G Adventures US$3,669 |
+| May 9 | G Adventures Machu Picchu Adventure, eight days {784} | TourRadar US$6,656.40 in its double/twin category | G Adventures US$6,287 |
+| June 12 | Insight Vacations small group, ten days {413} | Trafalgar US$16,044 for two twin rooms, including its sale | Same checkout |
+
+- For {413}, changing two adults to four selected two twin rooms, each for two adults. Both totals carried through to Passenger Details. Moved the itinerary out of holding under its original ID. April 17 said to call, and May 15 was sold out. The extra-night Serious Travels group {573} has a separate allocation. [Trafalgar calendar](https://www.trafalgar.com/en-us/tours/peru-with-machu-picchu)
+- On TourRadar all three G Adventures quotes above showed four travelers in Standard Double/Twin with a maximum of two people per room. The seller says travel partners booking together are paired and advertised instant confirmation on booking. Neither names of room partners nor a specific bed arrangement appeared. Direct checkout stopped at traveler names before a room choice. Exact seller and operator links are attached to each departure.
+- Rechecked the full four-adult Classic {329} calendar. Forty-five starts remained. April 28, previously US$755 per adult for four, was disabled. April 17 still quoted US$3,021 for four. May 2–15 calendar fares fell from US$971 to US$917 per adult and May 16–June 15 from US$944 to US$892. June 15 now totaled US$3,567. The May 9 comparison row uses the higher paired-room quote. [G Adventures Classic](https://www.gadventures.com/checkout/26380/overview/)
+- Added {784}, the eight-day Classic Lima round trip, with 14 dates priced for four. May 2 showed two seats and disappeared from the four-person search. May 4, 6, 9, 13, 16, 20, 23 and 30 showed at least seven general places. April 20 and 22 each priced four at US$5,177. June 13 priced four at US$5,947. [Machu Picchu Adventure](https://www.gadventures.com/trips/machu-picchu-adventure/10390/)
+- Geluxe {482} quoted US$14,787 for four on both May 8 and May 15, down from US$15,656. Rooms remain unconfirmed. The longer Geluxe {684} remains in holding. Its April 22 and May 20 checkouts were disabled for four, even though May 20 had a price for one.
+- Exodus {856} returned April 24 and May 15 after applying its four-passenger filter. May 1 had only one place and dropped out. The Amantani homestay still needs a two-bedroom check. Road Scholar {267} priced one outside double cabin at US$14,398 for two on April 22 and May 20. May 20 still advertised four outside places. April 22 no longer displayed a remaining count. [Exodus departures](https://www.exodustravels.com/us/trips/peru-holidays/culture/essential-peru/apd) · [Road Scholar cabin calendar](https://www.roadscholar.org/find-an-adventure/24828/Two-Worlds-of-Peru-The-Inca-Highlands-the-Amazon/dates/)
+- Backroads {637} continued to show April 24 and May 29 available. April 20 now showed sold out and June 5 still had three spaces. The November 23 two-room selection remains the latest room test. The 57hours {816} calendar still offered May 8, May 22 and June 5 at US$1,200 before fees. Adios still requires six confirmed participants for its published groups. Other untested room evidence and review dates retain their earlier dates.
+
+### Standing audience exclusions
+
+Screen both the specific itinerary and the departure. Exclude trips marketed to families with children, younger travelers, or singles and solo travelers. A mixed-audience tour can welcome children or solo guests and still qualify for two couples. Do not restore an excluded option on the strength of new availability alone.
+
+- Moved Much Better Adventures {248} and {924}, covering three departures, to the reject page with their previous itineraries and evidence. Its Peru trip materials emphasize a social format designed to attract solo travelers, and the operator says 75% join solo. This is an audience decision, independent of the availability of twin rooms. [Peru trip audience](https://www.muchbetteradventures.com/products/11170-adventures-sacred-valley-machu-picchu-peru/) · [Operator audience breakdown](https://help.muchbetteradventures.com/who-goes-on-much-better-adventures)
+- Excluded G Adventures Family, National Geographic Family Journeys, 18-to-Thirtysomethings and Solo-ish variants during discovery. Its regular Classic and Geluxe trips remain eligible. [Family Journey](https://www.gadventures.com/trips/peru-family-amazon-machu-picchu-tour/SPPNF/) · [Solo-ish Peru](https://www.gadventures.com/trips/peru-solo-travel/SPMS/) · [Peru travel styles](https://www.gadventures.com/destinations/south-america/peru-tours/)
+- Checked the existing operators’ product descriptions for an intended audience. Kept the general Backroads trek for couples, friends and solo guests. Excluded its separate family variants. The Melissa Renzi retreat is organized around sensory needs and a slower pace, and explicitly welcomes partners. [Backroads family variant](https://www.backroads.com/trips/WPEI-9B/peru-lodge-lodge-trekking-tour) · [Retreat audience and rooms](https://www.melissanoelrenzi.com/retreats-and-workshops/2027-peru-machu-picchu-retreat/)
 
 ## Next refresh
 

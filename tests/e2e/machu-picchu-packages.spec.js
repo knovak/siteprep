@@ -60,3 +60,21 @@ test('the research and holding pages link back and keep rejected IDs separate', 
   await expect(page.locator('a[href*="machu-picchu-packages/overview.html"]').first()).toBeVisible();
   await expect(page.locator('footer.site-footer')).toHaveCount(1);
 });
+
+test('room quotes link to a dated party allocation and excluded itineraries keep their evidence', async ({ page }) => {
+  await page.goto(section + '/overview.html');
+  const quotes = active.flatMap(item => item.departures.filter(departure => departure.roomQuote)
+    .map(departure => ({ id: item.id, departure })));
+  await expect(page.locator('.room-quotes li')).toHaveCount(quotes.length);
+  for (const { id, departure } of quotes) {
+    const link = page.locator(`.room-quotes a[href="#departure-${id}-${departure.start}"]`);
+    await expect(link.locator('..')).toContainText(departure.roomQuote.seller);
+    await link.click();
+    await expect(page.locator(`#departure-${id}-${departure.start}`)).toBeVisible();
+  }
+  await page.goto(section + '/overview-reject.html');
+  for (const item of inventory.holding.filter(item => item.departures)) {
+    await expect(page.locator(`#package-${item.id}`)).toContainText(item.reason);
+    await expect(page.locator(`#package-${item.id} .departure-evidence > li`)).toHaveCount(item.departures.length);
+  }
+});

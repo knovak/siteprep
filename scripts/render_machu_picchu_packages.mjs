@@ -44,7 +44,7 @@ function recordsByStyle(a, b) {
     || a.p.name.localeCompare(b.p.name);
 }
 
-for (const p of packages) {
+for (const p of [...packages, ...holding.filter(item => item.departures)]) {
   if (!p.departures?.length) throw new Error('Missing departures for ' + p.id);
   p.departures = p.departures.map(d => ({ ...p.departureDefaults, ...d }))
     .sort((a, b) => a.start.localeCompare(b.start));
@@ -54,6 +54,9 @@ for (const p of packages) {
       || !Number.isInteger(days(d)) || days(d) < 1 || starts.has(d.start)
       || !d.generalEvidence || !d.partyEvidence || !d.checked || !d.sources?.length) {
       throw new Error('Incomplete or duplicate departure for package ' + p.id + ' on ' + d.start);
+    }
+    if (d.roomQuote && (!d.roomQuote.seller || !Number.isFinite(d.roomQuote.total) || d.roomQuote.total <= 0)) {
+      throw new Error('Invalid four-adult room quote for package ' + p.id + ' on ' + d.start);
     }
     starts.add(d.start);
   }
@@ -79,6 +82,13 @@ function row({ p, d }) {
 const pointers = [[637, 'Two rooms selected on a lodge trek'], [329, 'Seven-day rail departures'], [364, 'Two-day private rail trip']]
   .filter(([id]) => packages.some(p => p.id === id && (id !== 637 || p.departures.some(d => d.party.startsWith('Two rooms selected')))))
   .map(([id,label]) => `<a href="#package-${id}">${label}</a>`).join(' · ');
+const pricedRooms = records.filter(({ d }) => d.roomQuote)
+  .sort((a, b) => a.d.start.localeCompare(b.d.start));
+const roomQuotes = pricedRooms.map(({ p, d }) => {
+  const total = new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency }).format(d.roomQuote.total);
+  return `<li><a href="#departure-${p.id}-${d.start}">${escape(displayDate(d.start))} · ${escape(p.name)}</a>
+    · <strong>${escape(total)} ${escape(d.currency)}</strong> for four via ${escape(d.roomQuote.seller)}. ${escape(d.party)}.</li>`;
+}).join('\n');
 const checked = records.map(r => r.d.checked).sort().at(-1);
 const header = cols.map(([key,label]) => `<th scope="col"><button type="button" data-sort="${key}">${escape(label)}</button></th>`).join('');
 const comparison = `<p class="package-shortcuts">${pointers}</p>
@@ -97,6 +107,7 @@ ${line('Two couples', d.party + '. ' + d.partyEvidence)}
 }
 function detail(p) {
   return `<li id="package-${p.id}"><strong>${entryLabel(p)}:</strong> ${escape(p.operator)}
+${p.status ? line(p.status, p.reason) + line('Decision date', displayDate(p.checked)) + line('Next check', p.next) : ''}
 ${line('Route', p.itinerary)}${line('Accommodation', p.accommodation)}
 ${line('Costs for two couples', p.costs)}${line('Deposit and cancellation', p.terms)}
 ${line('Operator reviews', p.operatorReview)}${line('Accommodation reviews', p.accommodationReview)}
@@ -125,6 +136,7 @@ const map = `<details><summary>Location references (${markers.length})</summary>
 <script type="application/json" id="package-map-data">${JSON.stringify(mapData).replaceAll('<','\\u003c')}</script>`;
 
 function holdingEntry(p) {
+  if (p.departures?.length) return detail(p);
   return `<li id="package-${p.id}"><strong>${entryLabel(p)}:</strong> ${escape(p.style)} · ${escape(p.status)}
   ${line('Finding', p.reason)}${line('Next check',p.next)}<p>Checked ${escape(displayDate(p.checked))}. ${sourceLinks(p.sources)}</p></li>`;
 }
@@ -146,5 +158,12 @@ function fillPage(name, blocks) {
   }
   writeFileSync(url, html);
 }
-fillPage('overview.html', {'departure-comparison':comparison,'package-details':details,'package-locations':map});
+fillPage('overview.html', {
+  'room-quotes': roomQuotes ? `<h2>Departures with room quotes</h2>
+    <p>Each total covers all four adults. Open a date for the booking evidence and bed arrangement.</p>
+    <ul class="room-quotes">${roomQuotes}</ul>` : '',
+  'departure-comparison': comparison,
+  'package-details': details,
+  'package-locations': map,
+});
 fillPage('overview-reject.html', {'holding-records':holdingMarkup});
