@@ -22,10 +22,10 @@
         "slug": "tide-here-five-coast-local-days",
         "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-11-09T07:03:38.395932Z",
-        "version": 9,
-        "commit": "77ed3063e9a2a40c78094fa5d5a515d4d4537deb",
-        "tree": "29c4faf81916d56c19eb0fa7cddf755280e62b87"
+        "deployed_at": "2026-11-25T10:11:34.653818Z",
+        "version": 10,
+        "commit": "231641a5a5f0e341bf607ea8ba4178e9a606aa94",
+        "tree": "9ec8fc539c8793788035cd6e632fe138f7f295ee"
       }
     }
   ],
