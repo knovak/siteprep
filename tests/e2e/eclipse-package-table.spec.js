@@ -145,6 +145,36 @@ test('checkbox filters combine countries and USD bands while preserving sorting'
   await expect(clear).toBeDisabled();
 });
 
+test('room-evidence definitions are available by hover, keyboard and touch on all package tables', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of [url, '/decks/ecuador/sections/galapagos-packages/overview.html',
+    '/decks/peru/sections/machu-picchu-packages/overview.html']) {
+    await page.goto(path);
+    const trigger = page.locator('[data-filter="party"]');
+    await trigger.click();
+    const menu = page.locator('.comparison-filter-menu:popover-open');
+    const options = menu.getByRole('checkbox');
+    expect(await options.count()).toBeGreaterThan(1);
+    for (const option of await options.all()) {
+      const hoverText = await option.locator('..').getAttribute('title');
+      expect(hoverText).toBeTruthy();
+      await expect(option).toHaveAccessibleDescription(hoverText);
+    }
+    const help = menu.getByRole('button', { name: 'Show explanations' });
+    await help.press('Enter');
+    await expect(menu.locator('.comparison-choice-meaning:visible')).toHaveCount(await options.count());
+    await expect(page.getByRole('button', { name: 'Clear all column filters' })).toBeDisabled();
+    const bounds = await menu.boundingBox();
+    const button = await trigger.boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(390);
+    expect(bounds.x).toBeLessThan(button.x + button.width);
+    expect(bounds.x + bounds.width).toBeGreaterThan(button.x);
+    await menu.getByRole('button', { name: 'Hide explanations' }).click();
+    await expect(menu.locator('.comparison-choice-meaning:visible')).toHaveCount(0);
+  }
+});
+
 test('a future source refresh updates prices, review phrases, ranks and removed packages automatically', async ({ page }) => {
   let expectedCount;
   await page.route(`**${url}`, async (route) => {

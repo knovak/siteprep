@@ -188,7 +188,12 @@
         value: (item) => item.filterDuration },
       SiteprepPackageTableFilters.priceFilter('price', 'Known USD / person', (item) => item.filterPrice),
       { key: 'party', label: 'Two private cabins', allLabel: 'All cabin evidence',
-        value: (item) => item.filterParty },
+        value: (item) => item.filterParty,
+        explanations: {
+          'Named cabins listed (not held)': 'The operator listed two specific cabins for the four adults. A joint price and reservation are still outstanding.',
+          'Two-cabin quote (not held)': 'One booking selection priced two private cabins together for four adults. Neither cabin was reserved.',
+          'Two cabins not verified': 'The available evidence does not establish that two private cabins are available together on this sailing.',
+        } },
     ],
   });
 

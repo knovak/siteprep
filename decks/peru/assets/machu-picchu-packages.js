@@ -50,7 +50,16 @@
         shared.priceFilter('amount', 'fare per adult', (row) =>
           shared.toUsd(numeric(row.dataset.amount), row.dataset.currency)),
         { key: 'general', label: 'departure availability', allLabel: 'All availability', value: (row) => row.dataset.general },
-        { key: 'party', label: 'room evidence for two couples', allLabel: 'All room evidence', value: (row) => row.dataset.party },
+        { key: 'party', label: 'room evidence for two couples', allLabel: 'All room evidence',
+          value: (row) => row.dataset.party,
+          explanations: {
+            'Four priced · rooms unconfirmed': 'The booking form quoted a total for four travelers. The two private bedrooms still need confirmation.',
+            'Four on calendar · rooms unconfirmed': 'The calendar showed this date and per-person fare for four adults. Room assignments and a group quote are still open.',
+            'Four selected · rooms unconfirmed': 'The form accepted four adults on this departure. It did not show a combined price or bedroom assignments.',
+            'One king room listed': 'One private king room was listed. A second private bedroom for the other couple still needs confirmation.',
+            'Rooms unconfirmed': 'The evidence leaves open whether each couple can have a private bedroom throughout the itinerary.',
+            'Two rooms selected · unconfirmed': 'The form accepted two rooms for two adults each. The operator still needs to confirm the price and room allocation.',
+          } },
       ],
     });
 

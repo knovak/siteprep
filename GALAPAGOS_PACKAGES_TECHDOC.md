@@ -70,7 +70,8 @@ unchanged. Filtering applies only to the comparison, never the source entries.
   Use `data-room-evidence="listed"` when two named rooms are displayed for
   that party and a joint quote is still outstanding. Older queen, king and
   private-twin quotations retain their existing text-based classification.
-  All other records use the unverified filter.
+  All other records use the unverified filter. Hover over a cabin choice or
+  select **Show explanations** to read its definition.
 
 A row may match any checked choice within a column and must match every
 active column. Unchecking the last choice removes the column restriction.

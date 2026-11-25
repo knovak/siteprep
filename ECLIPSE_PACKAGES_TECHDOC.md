@@ -40,7 +40,9 @@ and is retained across filter selections and reset. Visible counts update, and
 an empty-result row explains zero matches. Detailed source records are never
 hidden or reordered. Each header button opens a native popover of labeled checkboxes. Tab and
 Space select choices, Escape dismisses the popover, and unchecking the last
-choice removes that column’s restriction.
+choice removes that column’s restriction. Each room-evidence checkbox has a
+hover description and an accessible description. **Show explanations** displays
+the definitions alongside the choices for touch and keyboard users.
 
 `assets/package-map.js` supplies orientation points to the shared StandardMap
 library. Add a source-backed location when a new package names a new stay or
