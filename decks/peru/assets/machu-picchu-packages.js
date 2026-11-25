@@ -35,10 +35,6 @@
       return Number.isFinite(number) ? number : null;
     }
 
-    function fare(row) {
-      return { currency: row.dataset.currency || '', amount: numeric(row.dataset.amount) };
-    }
-
     const month = (row) => row.dataset.start?.slice(0, 7) || '';
     const months = Array.from(new Set(items.map(month))).filter(Boolean).sort();
     const shared = window.SiteprepPackageTableFilters;
@@ -51,10 +47,19 @@
             value, label: monthFormat.format(new Date(value + '-01T00:00:00Z')),
           })) },
         { key: 'days', label: 'duration', allLabel: 'All lengths', value: (row) => row.dataset.days + ' days' },
-        { key: 'amount', label: 'fare per adult', allLabel: 'All fares',
-          value: (row) => shared.priceBucket(fare(row)), choices: shared.priceChoices(items, fare) },
+        shared.priceFilter('amount', 'fare per adult', (row) =>
+          shared.toUsd(numeric(row.dataset.amount), row.dataset.currency)),
         { key: 'general', label: 'departure availability', allLabel: 'All availability', value: (row) => row.dataset.general },
-        { key: 'party', label: 'room evidence for two couples', allLabel: 'All room evidence', value: (row) => row.dataset.party },
+        { key: 'party', label: 'room evidence for two couples', allLabel: 'All room evidence',
+          value: (row) => row.dataset.party,
+          explanations: {
+            'Four priced · rooms unconfirmed': 'The booking form quoted a total for four travelers. The two private bedrooms still need confirmation.',
+            'Four on calendar · rooms unconfirmed': 'The calendar showed this date and per-person fare for four adults. Room assignments and a group quote are still open.',
+            'Four selected · rooms unconfirmed': 'The form accepted four adults on this departure. It did not show a combined price or bedroom assignments.',
+            'One king room listed': 'One private king room was listed. A second private bedroom for the other couple still needs confirmation.',
+            'Rooms unconfirmed': 'The evidence leaves open whether each couple can have a private bedroom throughout the itinerary.',
+            'Two rooms selected · unconfirmed': 'The form accepted two rooms for two adults each. The operator still needs to confirm the price and room allocation.',
+          } },
       ],
     });
 

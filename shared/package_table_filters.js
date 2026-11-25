@@ -1,68 +1,150 @@
-/* Column filters are a second, independent view over source-derived package records. */
+/* Shared checkbox filters for the package comparison tables. */
 (() => {
   'use strict';
 
   const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+  // ECB reference rates, 24 November 2026, quoted in units per euro.
+  const unitsPerEuro = { EUR: 1, USD: 1.0963, GBP: 0.83700, AUD: 1.6507 };
+  const rateSource = 'https://data-api.ecb.europa.eu/service/data/EXR/D.USD+GBP+AUD.EUR.SP00.A?startPeriod=2026-11-24&endPeriod=2026-11-24';
   const bands = [
-    { value: 'under', label: '< 5,000' },
-    { value: 'middle', label: '5,000–10,000' },
-    { value: 'over', label: '> 10,000' },
+    { value: 'under', label: 'Under US$5,000' },
+    { value: 'middle', label: 'US$5,000–US$10,000' },
+    { value: 'over', label: 'Over US$10,000' },
+    { value: 'unknown', label: 'Unknown / no comparable fare' },
   ];
-  const currencyLabels = { USD: 'US$', EUR: '€', GBP: '£' };
 
-  function priceBand(amount) {
-    if (typeof amount !== 'number' || !Number.isFinite(amount)) return 'unknown';
-    return amount < 5000 ? 'under' : amount <= 10000 ? 'middle' : 'over';
+  function toUsd(amount, currency) {
+    if (!Number.isFinite(amount) || !Object.hasOwn(unitsPerEuro, currency)) return null;
+    return currency === 'USD' ? amount : amount * unitsPerEuro.USD / unitsPerEuro[currency];
   }
 
-  function priceBucket(fare) {
-    const band = priceBand(fare && fare.amount);
-    return fare && fare.currency && band !== 'unknown' ? fare.currency + ':' + band : 'unknown';
+  function priceFilter(key, label, getUsd) {
+    return {
+      key, label, allLabel: 'All USD prices', choices: bands, showRates: true,
+      value(item) {
+        const usd = getUsd(item);
+        if (!Number.isFinite(usd)) return 'unknown';
+        return usd < 5000 ? 'under' : usd <= 10000 ? 'middle' : 'over';
+      },
+    };
   }
 
-  // A price option never combines currencies or makes an unstated FX conversion.
-  function priceChoices(items, getFare) {
-    const seen = new Set(items.map((item) => priceBucket(getFare(item))));
-    const currencies = Array.from(new Set(items.map((item) => getFare(item).currency).filter(Boolean)))
-      .sort(collator.compare);
-    const choices = [];
-    currencies.forEach((currency) => bands.forEach((band) => {
-      const value = currency + ':' + band.value;
-      if (seen.has(value)) {
-        choices.push({ value, label: (currencyLabels[currency] || currency) + ' ' + band.label });
-      }
-    }));
-    if (seen.has('unknown')) choices.push({ value: 'unknown', label: 'Unknown / no comparable fare' });
-    return choices;
+  function positionMenu(trigger, menu) {
+    const gap = 4;
+    const anchor = trigger.getBoundingClientRect();
+    const viewport = document.documentElement;
+    const below = viewport.clientHeight - anchor.bottom - gap;
+    const above = anchor.top - gap;
+    const top = below >= menu.offsetHeight || below >= above
+      ? anchor.bottom + gap : anchor.top - menu.offsetHeight - gap;
+    menu.style.top = Math.max(gap, Math.min(top, viewport.clientHeight - menu.offsetHeight - gap)) + 'px';
+    menu.style.left = Math.max(gap, Math.min(anchor.left, viewport.clientWidth - menu.offsetWidth - gap)) + 'px';
   }
 
   function mount({ table, items, configs, resetHost, onChange }) {
-    const controls = [];
     const sortButtons = Array.from(table.querySelectorAll('thead button[data-sort]'));
+    const controls = configs.map((config) => {
+      const sortButton = sortButtons.find((button) => button.dataset.sort === config.key);
+      if (!sortButton) throw new Error('No table column for filter ' + config.key);
 
-    configs.forEach((config) => {
-      const button = sortButtons.find((candidate) => candidate.dataset.sort === config.key);
-      if (!button) throw new Error('No table column for filter ' + config.key);
-      const select = document.createElement('select');
-      select.className = 'comparison-filter';
-      select.dataset.filter = config.key;
-      select.setAttribute('aria-label', 'Filter ' + config.label);
-      const all = document.createElement('option');
-      all.value = '';
-      all.textContent = config.allLabel || 'All values';
-      select.appendChild(all);
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'comparison-filter';
+      trigger.dataset.filter = config.key;
+
+      const menu = document.createElement('div');
+      menu.id = 'package-filter-' + (table.id || table.tBodies[0].id) + '-' + config.key;
+      menu.className = 'comparison-filter-menu';
+      menu.popover = 'auto';
+      menu.setAttribute('role', 'group');
+      menu.setAttribute('aria-label', config.label);
+      trigger.setAttribute('popovertarget', menu.id);
+      sortButton.closest('th').append(trigger, menu);
+
+      const reposition = () => positionMenu(trigger, menu);
+      menu.addEventListener('toggle', () => {
+        if (menu.matches(':popover-open')) {
+          reposition();
+          window.addEventListener('scroll', reposition, true);
+          window.addEventListener('resize', reposition);
+        } else {
+          window.removeEventListener('scroll', reposition, true);
+          window.removeEventListener('resize', reposition);
+        }
+      });
 
       const present = new Set(items.map((item) => String(config.value(item))));
       const choices = config.choices || Array.from(present).sort(collator.compare)
         .map((value) => ({ value, label: value }));
-      choices.filter((choice) => present.has(choice.value)).forEach((choice) => {
-        const option = document.createElement('option');
-        option.value = choice.value;
-        option.textContent = choice.label;
-        select.appendChild(option);
-      });
-      button.closest('th').appendChild(select);
-      controls.push({ select, value: config.value });
+      if (config.explanations) {
+        const help = document.createElement('button');
+        help.type = 'button';
+        help.className = 'comparison-filter-help';
+        help.textContent = 'Show explanations';
+        help.setAttribute('aria-expanded', 'false');
+        help.addEventListener('click', () => {
+          const expanded = menu.toggleAttribute('data-explain');
+          help.setAttribute('aria-expanded', String(expanded));
+          help.textContent = expanded ? 'Hide explanations' : 'Show explanations';
+          reposition();
+        });
+        menu.appendChild(help);
+      }
+
+      const selected = new Set();
+      const checkboxes = [];
+      for (const choice of choices.filter((option) => present.has(option.value))) {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = choice.value;
+        label.append(input, choice.label);
+        menu.appendChild(label);
+        const explanation = config.explanations?.[choice.value];
+        if (explanation) {
+          label.title = explanation;
+          const meaning = document.createElement('div');
+          meaning.className = 'comparison-choice-meaning';
+          meaning.id = menu.id + '-meaning-' + checkboxes.length;
+          meaning.textContent = explanation;
+          input.setAttribute('aria-describedby', meaning.id);
+          menu.appendChild(meaning);
+        }
+        checkboxes.push(input);
+        input.addEventListener('change', () => {
+          if (input.checked) selected.add(input.value);
+          else selected.delete(input.value);
+          updateLabel();
+          refresh();
+          reposition();
+        });
+      }
+
+      if (config.showRates) {
+        const note = document.createElement('small');
+        const link = document.createElement('a');
+        link.href = rateSource;
+        link.textContent = 'ECB rates, Nov 24, 2026';
+        note.append('Foreign fares use ', link, '.');
+        menu.appendChild(note);
+      }
+
+      function updateLabel() {
+        const first = checkboxes.find((input) => input.checked);
+        const summary = selected.size > 1 ? selected.size + ' selected'
+          : first ? first.parentElement.textContent : config.allLabel || 'All values';
+        trigger.textContent = summary;
+        trigger.setAttribute('aria-label', 'Filter ' + config.label + ', ' + summary);
+      }
+      updateLabel();
+      return {
+        selected, value: config.value,
+        reset() {
+          selected.clear();
+          checkboxes.forEach((input) => { input.checked = false; });
+          updateLabel();
+        },
+      };
     });
 
     const clear = document.createElement('button');
@@ -71,30 +153,27 @@
     clear.dataset.clearFilters = '';
     clear.textContent = 'Clear filters';
     clear.setAttribute('aria-label', 'Clear all column filters');
+    clear.disabled = true;
     resetHost.appendChild(clear);
 
-    const activeCount = () => controls.filter(({ select }) => select.value !== '').length;
-    const sync = () => { clear.disabled = activeCount() === 0; };
-    controls.forEach(({ select }) => select.addEventListener('change', () => {
-      sync();
+    const activeCount = () => controls.filter(({ selected }) => selected.size).length;
+    function refresh() {
+      clear.disabled = activeCount() === 0;
       onChange();
-    }));
+    }
     clear.addEventListener('click', () => {
-      controls.forEach(({ select }) => { select.value = ''; });
-      sync();
-      onChange();
+      controls.forEach((control) => control.reset());
+      refresh();
     });
-    sync();
 
     return {
       activeCount,
       apply(rows) {
-        const active = controls.filter(({ select }) => select.value !== '');
-        return rows.filter((item) => active.every(({ select, value }) =>
-          String(value(item)) === select.value));
+        return rows.filter((item) => controls.every(({ selected, value }) =>
+          selected.size === 0 || selected.has(String(value(item)))));
       },
     };
   }
 
-  window.SiteprepPackageTableFilters = { mount, priceBand, priceBucket, priceChoices };
+  window.SiteprepPackageTableFilters = { mount, priceFilter, toUsd };
 })();

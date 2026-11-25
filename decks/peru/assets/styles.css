@@ -339,7 +339,7 @@ a.tag:focus {
   border-bottom-color: #c2a995;
 }
 
-#package-comparison thead button {
+#package-comparison thead button[data-sort] {
   display: inline-flex;
   align-items: baseline;
   gap: .25em;
