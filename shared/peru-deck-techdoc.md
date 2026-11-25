@@ -28,6 +28,13 @@ fare basis, general stock, room evidence, check date and sources. Optional
 specific departure overrides that default. Keep a group's exact checkout total
 in its evidence when it differs from four times the rounded per-adult rate.
 
+A departure with a public room quote can set `roomQuote` to an object with
+`seller` and the exact four-person `total` in the departure currency. The
+renderer lists these dates before the comparison. Use the fare from the same
+seller in that row and record any alternative direct quote in the evidence.
+Distinguish an explicit two-room selection from four people in a category
+whose terms pair travel partners. A price for one pair does not qualify.
+
 The table opens grouped by style and sorted by start date. Selecting the date
 heading orders departures across styles. The browser script in
 `decks/peru/assets/machu-picchu-packages.js` handles column sorting and uses
@@ -41,6 +48,6 @@ views. Addresses may identify a town centre, trail pass or site entrance
 where a street address is unavailable.
 
 Keep a rejected or unverified option under its original ID in `holding`.
-Retain its reason, dated sources and next check. Record changes of status in
+Retain its reason, dated sources and next check. When excluding a previously active itinerary, keep its complete record and departures in holding so the build can display the earlier evidence. Record changes of status in
 the research notes. The focused Playwright coverage is
 `tests/e2e/machu-picchu-packages.spec.js`.
