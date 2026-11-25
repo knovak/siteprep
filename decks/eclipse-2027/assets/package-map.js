@@ -193,7 +193,7 @@
     "description": "Approximate mooring-neighbourhood orientation"
   },
   {
-    "name": "Luxor West Bank / Al Wadi / Villa Kamose / Villa Nile House / Dar Habu",
+    "name": "Luxor West Bank / Al Wadi / Villa Kamose / Villa Nile House",
     "country": "Egypt",
     "lat": 25.73,
     "lng": 32.61,
@@ -275,6 +275,13 @@
     "lat": 24.09,
     "lng": 32.9,
     "description": "Route hub; a Nile stay is not itself proof of eclipse viewing"
+  },
+  {
+    "name": "Gloria Aqua Park / New Aswan",
+    "country": "Egypt",
+    "lat": 24.18409,
+    "lng": 32.85121,
+    "description": "Indicative hotel orientation; substitution possible, not the Luxor eclipse site"
   },
   {
     "name": "Lake Nasser / Nubia",
