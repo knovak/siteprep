@@ -101,10 +101,10 @@ test('country, currency-aware price, room evidence and review rank dropdowns fil
   await expect(page.locator(rows)).toHaveCount(1);
   await rank.selectOption('High');
   await expect(page.locator('.comparison-empty')).toBeVisible();
-  await expect(page.locator('#comparison-count')).toHaveText('0 of 36 packages');
+  await expect(page.locator('#comparison-count')).toHaveText('0 of 37 packages');
   await clear.click();
-  await expect(page.locator(rows)).toHaveCount(36);
-  await expect(page.locator('#comparison-count')).toHaveText('36 packages');
+  await expect(page.locator(rows)).toHaveCount(37);
+  await expect(page.locator('#comparison-count')).toHaveText('37 packages');
   await expect(page.locator('[data-sort="name"]').locator('..')).toHaveAttribute('aria-sort', 'ascending');
 
   await party.selectOption('Operator-reported fit (not held)');

@@ -90,3 +90,20 @@ and Villa Kamose remain the two operator-reported room-fit records. Priced
 four-person selections retain their assignment/fee limitations and are not
 reservations. New entries use the existing `Priced selection for four` wording
 so the room-evidence dropdown recognizes the same evidence as the description.
+
+## 25 November 2026 inventory refresh
+
+The current inventory contains 37 offers. Dar Habu {603} moved to holding with
+its complete previous markup retained; SOAR {271} and Eclipse Express IV {555}
+were added. `package-map.js` removes Dar Habu from the broad West Bank label and
+adds a sourced, indicative Gloria/New Aswan point; exact boat/festival sites
+remain unknown. Research notes preserve the coordinate sources.
+
+Current availability and party paragraphs continue to supply the table and
+filters. Encounters {366} is now unconfirmed because its two-room claim conflicts
+with a three-traveler form cap. Dabuka {369} starts its party paragraph with No
+so the existing cannot-fit filter recognizes its three-place limit. Every Dabuka
+availability paragraph includes the observed date-display conflict. Historical
+prices and availability stay in dated details and research notes; review dates
+remain independent. The existing focused browser suite checks the 37-row count,
+sorts, filters, source extraction and narrow-screen containment.
