@@ -24,7 +24,7 @@
 
 <main>
   <aside aria-label="Simulation controls">
-    <!-- Each group shows one to three of its controls and keeps the rest under
+    <!-- Each group shows up to three of its controls and keeps the rest under
          "Details". Every control is a .unit named by data-control; the build's
          settings.js (SETTINGS_PANEL) lists them, and a settings file's panel
          section says which are shown. The markup below is the default
@@ -79,12 +79,7 @@
             <div class="hint" id="sun-events">sunset —</div>
           </div>
         </div>
-        <div class="unit" data-control="time">
-          <div class="ctl">
-            <label for="time">Solar time <output id="time-label">20:11</output></label>
-            <input id="time" type="range" min="0" max="1439" step="1" value="1211">
-            <div class="hint" id="hint-solar">local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more</div>
-          </div>
+        <div class="unit" data-control="time_jumps">
           <div class="row">
             <button id="jump-sunset">Sunset</button>
             <button id="jump-dusk30">+30 min</button>
@@ -98,6 +93,13 @@
       <details class="more">
         <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
         <div class="more-body">
+          <div class="unit" data-control="time">
+            <div class="ctl">
+              <label for="time">Solar time <output id="time-label">20:11</output></label>
+              <input id="time" type="range" min="0" max="1439" step="1" value="1211">
+              <div class="hint" id="hint-solar">local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more</div>
+            </div>
+          </div>
           <div class="unit" data-control="hold_time_to_twilight">
             <div class="check"><input id="timelock" type="checkbox"><label for="timelock">Hold time relative to sunset/dawn as latitude changes</label></div>
           </div>
@@ -126,6 +128,20 @@
             <label for="brightness">SBDC brightness <output id="bright-label">+0.5 — unmitigated</output></label>
             <input id="brightness" type="range" min="-70" max="70" step="1" value="5">
             <div class="hint" id="hint-bright"></div>
+          </div>
+        </div>
+        <div class="unit" data-control="clustering">
+          <div class="check"><input id="clusteron" type="checkbox"><label for="clusteron">Cluster into data-center groups</label></div>
+          <div id="cluster-ctls" style="display:none">
+            <div class="ctl">
+              <label for="cpc">Satellites per cluster <output id="cpc-label">100</output></label>
+              <input id="cpc" type="range" min="0" max="100" step="1" value="50">
+            </div>
+            <div class="ctl">
+              <label for="cdia">Cluster diameter <output id="cdia-label">1.0 km</output></label>
+              <input id="cdia" type="range" min="0" max="100" step="1" value="41">
+            </div>
+            <div class="hint" id="cluster-derived">≈ 3,000 clusters</div>
           </div>
         </div>
       </div>
@@ -194,20 +210,6 @@
               <input id="trains" type="range" min="0" max="10" step="1" value="1">
             </div>
           </div>
-          <div class="unit" data-control="clustering">
-            <div class="check"><input id="clusteron" type="checkbox"><label for="clusteron">Cluster into data-center groups</label></div>
-            <div id="cluster-ctls" style="display:none">
-              <div class="ctl">
-                <label for="cpc">Satellites per cluster <output id="cpc-label">100</output></label>
-                <input id="cpc" type="range" min="0" max="100" step="1" value="50">
-              </div>
-              <div class="ctl">
-                <label for="cdia">Cluster diameter <output id="cdia-label">1.0 km</output></label>
-                <input id="cdia" type="range" min="0" max="100" step="1" value="41">
-              </div>
-              <div class="hint" id="cluster-derived">≈ 3,000 clusters</div>
-            </div>
-          </div>
         </div>
       </details>
     </section>
@@ -228,35 +230,6 @@
             </div>
           </div>
         </div>
-        <div class="unit" data-control="ambient_light">
-          <div class="ctl">
-            <label for="ambient">Ambient light <output id="ambient-label">Bortle 1 — no artificial light</output></label>
-            <input id="ambient" type="range" min="1" max="9" step="1" value="1">
-            <div class="hint" id="hint-ambient">artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars</div>
-          </div>
-        </div>
-        <div class="unit" data-control="moon">
-          <div class="ctl">
-            <label for="moon">Moon <output id="moon-label"></output></label>
-            <select id="moon">
-              <option value="off" selected>Off (no Moon)</option>
-              <option value="date">As on this date</option>
-              <option value="phase">Set the phase</option>
-            </select>
-            <div id="moon-date" style="display:none; margin-top:6px">
-              <div class="numrow">
-                <label for="year">Year</label>
-                <input id="year" type="number" min="1900" max="2100" step="1" value="2026">
-              </div>
-              <div class="hint" id="hint-year">Approximate Moon position. The model uses solar time as universal time; it does not use your longitude.</div>
-            </div>
-            <div id="moon-phase" style="display:none; margin-top:6px">
-              <label for="moonage">Days since new Moon <output id="moonage-label">14.8 — full</output></label>
-              <input id="moonage" type="range" min="0" max="295" step="1" value="148">
-            </div>
-            <div class="hint" id="hint-moon">moonlight brightens the sky, which hides faint satellites and stars</div>
-          </div>
-        </div>
       </div>
       <details class="more">
         <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
@@ -266,6 +239,35 @@
               <label for="starlim">Eye limit <output id="starlim-label">mag 6.0</output></label>
               <input id="starlim" type="range" min="40" max="65" step="1" value="60">
               <div class="hint" id="hint-starlim">the faintest magnitude this observer sees under a dark sky · twilight and ambient light lower it further</div>
+            </div>
+          </div>
+          <div class="unit" data-control="ambient_light">
+            <div class="ctl">
+              <label for="ambient">Ambient light <output id="ambient-label">Bortle 1 — no artificial light</output></label>
+              <input id="ambient" type="range" min="1" max="9" step="1" value="1">
+              <div class="hint" id="hint-ambient">artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars</div>
+            </div>
+          </div>
+          <div class="unit" data-control="moon">
+            <div class="ctl">
+              <label for="moon">Moon <output id="moon-label"></output></label>
+              <select id="moon">
+                <option value="off">Off (no Moon)</option>
+                <option value="date" selected>As on this date</option>
+                <option value="phase">Set the phase</option>
+              </select>
+              <div id="moon-date" style="margin-top:6px">
+                <div class="numrow">
+                  <label for="year">Year</label>
+                  <input id="year" type="number" min="1900" max="2100" step="1" value="2026">
+                </div>
+                <div class="hint" id="hint-year">Approximate Moon position. The model uses solar time as universal time; it does not use your longitude.</div>
+              </div>
+              <div id="moon-phase" style="display:none; margin-top:6px">
+                <label for="moonage">Days since new Moon <output id="moonage-label">14.8 — full</output></label>
+                <input id="moonage" type="range" min="0" max="295" step="1" value="148">
+              </div>
+              <div class="hint" id="hint-moon">moonlight brightens the sky, which hides faint satellites and stars</div>
             </div>
           </div>
           <div class="unit" data-control="show_stars">
@@ -285,29 +287,29 @@
     <section class="grp" id="night-grp" data-group="night" aria-labelledby="night-title">
       <h2 class="grp-title" id="night-title">Night &amp; year</h2>
       <div class="shown">
-        <div class="unit" data-control="compute">
-          <div class="row">
-            <button id="night-run">Compute this night</button>
-            <button id="year-run">Compute the year</button>
-            <button id="analysis-stop" hidden>Cancel</button>
-          </div>
-          <div class="hint" id="night-status" role="status" aria-live="polite"></div>
-        </div>
-        <div class="unit" data-control="hours">
-          <table id="night-table">
-            <thead><tr><th></th><th id="night-col">this night</th><th id="year-col">a year</th></tr></thead>
-            <tbody>
-              <tr data-key="night"><td id="night-row-night">night (Sun below the horizon)</td><td>—</td><td>—</td></tr>
-              <tr data-key="atLeast100"><td id="night-row-atLeast100">at least 100 SBDCs visible to the naked eye</td><td>—</td><td>—</td></tr>
-              <tr data-key="outnumberStars"><td id="night-row-outnumberStars">visible SBDCs outnumber visible stars</td><td>—</td><td>—</td></tr>
-              <tr data-key="exceedsSky"><td id="night-row-exceedsSky">SBDC light exceeds the sky’s own light</td><td>—</td><td>—</td></tr>
-            </tbody>
-          </table>
-        </div>
       </div>
       <details class="more">
         <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
         <div class="more-body">
+          <div class="unit" data-control="compute">
+            <div class="row">
+              <button id="night-run">Compute this night</button>
+              <button id="year-run">Compute the year</button>
+              <button id="analysis-stop" hidden>Cancel</button>
+            </div>
+            <div class="hint" id="night-status" role="status" aria-live="polite"></div>
+          </div>
+          <div class="unit" data-control="hours">
+            <table id="night-table">
+              <thead><tr><th></th><th id="night-col">this night</th><th id="year-col">a year</th></tr></thead>
+              <tbody>
+                <tr data-key="night"><td id="night-row-night">night (Sun below the horizon)</td><td>—</td><td>—</td></tr>
+                <tr data-key="atLeast100"><td id="night-row-atLeast100">at least 100 SBDCs visible to the naked eye</td><td>—</td><td>—</td></tr>
+                <tr data-key="outnumberStars"><td id="night-row-outnumberStars">visible SBDCs outnumber visible stars</td><td>—</td><td>—</td></tr>
+                <tr data-key="exceedsSky"><td id="night-row-exceedsSky">SBDC light exceeds the sky’s own light</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
           <div class="unit" data-control="chart">
             <canvas id="night-chart" width="540" height="240" aria-label="Visible SBDCs and stars through the night"></canvas>
             <div class="hint" id="night-legend"></div>
@@ -325,16 +327,6 @@
     <section class="grp" id="advanced-grp" data-group="advanced" aria-labelledby="advanced-title">
       <h2 class="grp-title" id="advanced-title">Advanced</h2>
       <div class="shown">
-        <div class="unit" data-control="naked_eye_threshold">
-          <div class="ctl">
-            <label for="eyemodel">Naked-eye threshold</label>
-            <select id="eyemodel">
-              <option value="table" selected>Table (stars as they appear in twilight)</option>
-              <option value="schaefer">Schaefer formula (stricter under a bright sky)</option>
-            </select>
-            <div class="hint" id="hint-eyemodel">how the sky's brightness sets the faintest magnitude seen</div>
-          </div>
-        </div>
       </div>
       <details class="more">
         <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
@@ -346,6 +338,16 @@
                 <input id="seed" type="number" value="12345">
                 <button id="reseed">Randomize</button>
               </div>
+            </div>
+          </div>
+          <div class="unit" data-control="naked_eye_threshold">
+            <div class="ctl">
+              <label for="eyemodel">Naked-eye threshold</label>
+              <select id="eyemodel">
+                <option value="table" selected>Table (stars as they appear in twilight)</option>
+                <option value="schaefer">Schaefer formula (stricter under a bright sky)</option>
+              </select>
+              <div class="hint" id="hint-eyemodel">how the sky's brightness sets the faintest magnitude seen</div>
             </div>
           </div>
           <div class="unit" data-control="tint_by_orbit_family">

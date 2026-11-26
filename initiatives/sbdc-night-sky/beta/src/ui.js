@@ -22,7 +22,7 @@ const App = {
     latDeg: 40, doy: 172, solarTimeHours: 20.7,
     brightnessRefMag: 0.5, phaseLaw: "lambert", userLimitingMag: 6.0, propagationSec: 0,
     ambientBortle: 1, nakedEyeThreshold: "table",
-    moon: "off", year: 2026, moonAgeDays: 14.8,
+    moon: "date", year: 2026, moonAgeDays: 14.8,
   },
   cfg: {
     totalSats: 300000, ssoFraction: 0.7, shellPreset: "spread",
@@ -244,6 +244,7 @@ const TR = {
   // are the control names of SETTINGS_PANEL
   controlNames: {
     latitude: ["Latitude", "Latitude"], date: ["Date", "Date"], time: ["Solar time", "Heure solaire"],
+    time_jumps: ["Time jumps", "Raccourcis horaires"],
     hold_time_to_twilight: ["Hold time to twilight", "Heure liée au crépuscule"],
     playback: ["Playback", "Lecture"],
     satellites: ["Satellites", "Satellites"], sso_percent: ["Orbit families", "Familles d\u2019orbites"],
@@ -1242,7 +1243,7 @@ function bindControls() {
 
 /* ------------------------- the control panel (beta) ------------------------- */
 
-/* Each group shows one to three of its controls and keeps the rest under a
+/* Each group shows up to three of its controls and keeps the rest under a
    "Details" section, which starts closed and lists their names while it is
    closed. SETTINGS_PANEL in settings.js names the groups and controls, and a
    settings file's panel section, read and written here, says which controls

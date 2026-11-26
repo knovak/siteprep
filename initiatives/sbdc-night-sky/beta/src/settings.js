@@ -102,34 +102,35 @@ export function settingsParseTime(text) {
  * The groups of controls on the page, and the controls in each, in the order
  * they appear under "Details". A control is named by the key of its setting
  * where it has one; the names that are not settings keys are time (the solar
- * time slider and its jump buttons), playback, view (with "Aim at densest
- * sky"), clustering (with its two sliders), moon (with the year and the
- * phase), and the three parts of the Night & year group.
+ * time slider), time_jumps (the Sunset, +30 min ... buttons), playback, view
+ * (with "Aim at densest sky"), clustering (with its two sliders), moon (with
+ * the year and the phase), and the three parts of the Night & year group.
  *
- * Each group shows one to three of its controls, `show` by default, and keeps
- * the rest under a "Details" section that starts closed. The `panel` section
+ * Each group shows up to three of its controls, `show` by default, and keeps
+ * the rest under a "Details" section that starts closed. A group may show
+ * none, so that it is only its title and its Details. The `panel` section
  * of a settings file chooses both, so a preset can show the controls it is
  * about. The Presets & settings group is not listed: it is the same for every
  * preset.
  */
 export const SETTINGS_PANEL = [
   { group: "observer",
-    controls: ["latitude", "date", "time", "hold_time_to_twilight", "playback"],
-    show: ["latitude", "date", "time"] },
+    controls: ["latitude", "date", "time", "time_jumps", "hold_time_to_twilight", "playback"],
+    show: ["latitude", "date", "time_jumps"] },
   { group: "constellation",
     controls: ["satellites", "sso_percent", "shells", "plane_layout", "plane_spread_deg", "brightness_mag",
                "brightness_scatter_mag", "phase_law", "launch_trains", "clustering"],
-    show: ["satellites", "brightness_mag"] },
+    show: ["satellites", "brightness_mag", "clustering"] },
   { group: "display",
     controls: ["view", "sky_limit_mag", "ambient_light", "moon", "show_stars", "long_exposure"],
-    show: ["view", "ambient_light", "moon"] },
+    show: ["view"] },
   { group: "night",
     controls: ["compute", "hours", "chart"],
-    show: ["compute", "hours"] },
+    show: [] },
   { group: "advanced",
     controls: ["seed", "naked_eye_threshold", "tint_by_orbit_family", "mark_celestial_pole",
                "satellites_move_in_fast_forward", "cluster_membership_variation", "cluster_diameter_variation"],
-    show: ["naked_eye_threshold"] },
+    show: [] },
 ];
 /** The most controls a group shows outside its Details section. */
 export const SETTINGS_PANEL_MAX = 3;
@@ -147,7 +148,8 @@ export const SETTINGS_PANEL_MAX = 3;
  *   text    free text
  *   date    month and day, held as a day of year
  *   time    clock time or a twilight-relative time (see settingsParseTime)
- *   controls  names from `options`, written separated by commas, held as a list
+ *   controls  names from `options`, written separated by commas, or "none";
+ *           held as a list
  * Ranges are the ranges of the page's controls. Where a slider has coarser
  * steps than the file allows, the page moves to the nearest step on import.
  */
@@ -203,7 +205,7 @@ export const SETTINGS_FIELDS = [
     note: "faintest magnitude this observer sees under a dark sky, 4.0 to 6.5" },
   { section: "display", key: "ambient_light", type: "int", min: 1, max: 9, def: 1,
     note: "Bortle class, 1 (no artificial light) to 9 (inner city); brightens the sky" },
-  { section: "display", key: "moon", type: "choice", options: ["off", "date", "phase"], def: "off",
+  { section: "display", key: "moon", type: "choice", options: ["off", "date", "phase"], def: "date",
     note: "off; date: the Moon of observer.year on this date; phase: the Moon at moon_age_days" },
   { section: "display", key: "moon_age_days", type: "number", min: 0, max: 29.5, digits: 1, def: 14.8,
     note: "used when moon is phase: days since new Moon, 0 to 29.5; 7.4 first quarter, 14.8 full" },
@@ -227,7 +229,7 @@ export const SETTINGS_FIELDS = [
   // Details section, and whether that section starts open
   ...SETTINGS_PANEL.flatMap((g) => [
     { section: "panel", key: g.group, type: "controls", options: g.controls, def: g.show,
-      note: `1 to ${SETTINGS_PANEL_MAX} of ${g.controls.join(", ")}` },
+      note: `none, or up to ${SETTINGS_PANEL_MAX} of ${g.controls.join(", ")}` },
     { section: "panel", key: `${g.group}_details`, type: "choice", options: ["closed", "open"], def: "closed",
       note: "closed or open" },
   ]),
@@ -283,7 +285,7 @@ export function settingsFormatValue(field, value) {
     case "date": return settingsFormatDate(value);
     case "time": return value.ref ? settingsFormatTime(value) : `"${settingsFormatTime(value)}"`;
     case "text": return settingsQuote(value);
-    case "controls": return value.join(", ");
+    case "controls": return value.length ? value.join(", ") : "none";
     default: return String(value);
   }
 }
@@ -458,12 +460,14 @@ function settingsCoerce(field, raw) {
         : { value: t };
     }
     case "controls": {
-      const expected = `expected 1 to ${SETTINGS_PANEL_MAX} of ${field.options.join(", ")}, separated by commas`;
+      const expected = `expected none, or up to ${SETTINGS_PANEL_MAX} of ${field.options.join(", ")} ` +
+        "separated by commas";
       if (typeof raw !== "string") return { error: expected };
+      if (raw.trim().toLowerCase() === "none") return { value: [] };   // the group shows only its Details
       const names = raw.split(",").map((n) => n.trim().toLowerCase()).filter(Boolean);
       const unknown = [...new Set(names.filter((n) => !field.options.includes(n)))];
       const value = [...new Set(names.filter((n) => field.options.includes(n)))];
-      if (value.length < 1 || value.length > SETTINGS_PANEL_MAX) return { error: expected };
+      if (names.length === 0 || value.length > SETTINGS_PANEL_MAX) return { error: expected };
       const listed = unknown.map((n) => `"${n}"`).join(", ");
       return {
         value,

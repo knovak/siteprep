@@ -50,7 +50,7 @@ On the day it was created, the beta built a page byte-identical to the released
 | 2026-11-15 | The twilight sky corrected to measured values; ambient light by Bortle class; a choice of naked-eye threshold; the sky brightness and limit in the readout | The November 2026 upgrade, Unit 3 |
 | 2026-11-15 | The Moon, with its phase and place; moonlight in the sky; SBDC light compared with the Moon and with a natural night sky; the readout below the sky | The November 2026 upgrade, Unit 4 |
 | 2026-11-15 | Hours of significant SBDC light for a night and for a year; a perspective view; aiming at the densest sky | The November 2026 upgrade, Unit 5 |
-| 2026-11-26 | Each group shows one to three controls and keeps the rest under a Details section; presets have a description and a category, choose which controls each group shows, and are chosen in a preset browser | The control panel; Presets |
+| 2026-11-26 | Each group shows up to three controls and keeps the rest under a Details section; presets have a description and a category, choose which controls each group shows, and are chosen in a preset browser; the Moon is as on the date by default | The control panel; Presets; Unit 4 |
 
 `PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
 units. All five are described below, after a short guide to what they added.
@@ -151,8 +151,8 @@ description: Morning twilight at Taos's latitude, 36.4° N, ... still sunlit and
   their first preset.
 
 A preset may also have a `panel` section, which chooses the controls each group
-shows; see The control panel. The sdross0 presets show the Satellites, SBDC
-brightness and Phase law controls, since those are what differ between them.
+shows; see The control panel. None of the six presets has one, so all of them
+show the default arrangement.
 
 To work with presets:
 
@@ -198,21 +198,22 @@ opens, so the keyboard does not cover the list.
 
 ## The control panel
 
-Each group of controls shows one to three of its controls and keeps the rest
+Each group of controls shows up to three of its controls and keeps the rest
 under a "Details" section. Details sections start closed. While one is closed,
 the names of the controls inside it are written under the word "Details" in
-small type, and in its tooltip. A click opens it.
+small type, and in its tooltip. A click opens it. A group may show none: by
+default "Night & year" and "Advanced" are only their title and their Details.
 
 The groups, their controls in the order they appear, and the ones shown by
 default (in bold) are in `SETTINGS_PANEL` in `src/settings.js`:
 
 | Group | Controls |
 | --- | --- |
-| Observer | **latitude**, **date**, **time** (with the jump buttons), hold_time_to_twilight, playback |
-| Constellation | **satellites**, sso_percent, shells, plane_layout, plane_spread_deg, **brightness_mag**, brightness_scatter_mag, phase_law, launch_trains, clustering (with its two sliders) |
-| Sky & display | **view** (with "Aim at densest sky"), sky_limit_mag, **ambient_light**, **moon** (with the year and the phase), show_stars, long_exposure |
-| Night & year | **compute** (the buttons and the status line), **hours** (the table), chart |
-| Advanced | seed, **naked_eye_threshold**, tint_by_orbit_family, mark_celestial_pole, satellites_move_in_fast_forward, cluster_membership_variation, cluster_diameter_variation |
+| Observer | **latitude**, **date**, time (the Solar time slider), **time_jumps** (the Sunset, +30 min … buttons), hold_time_to_twilight, playback |
+| Constellation | **satellites**, sso_percent, shells, plane_layout, plane_spread_deg, **brightness_mag**, brightness_scatter_mag, phase_law, launch_trains, **clustering** (with its two sliders) |
+| Sky & display | **view** (with "Aim at densest sky"), sky_limit_mag, ambient_light, moon (with the year and the phase), show_stars, long_exposure |
+| Night & year | compute (the buttons and the status line), hours (the table), chart |
+| Advanced | seed, naked_eye_threshold, tint_by_orbit_family, mark_celestial_pole, satellites_move_in_fast_forward, cluster_membership_variation, cluster_diameter_variation |
 
 A control is named by the key of its setting where it has one. "Presets &
 settings" is not in the list: it is the same for every preset.
@@ -223,12 +224,14 @@ The `panel` section of a settings file holds two lines for each group:
 panel:
   constellation: satellites, brightness_mag, phase_law   # shown, in this order
   constellation_details: closed                          # closed or open
+  night: none                                            # only Details
 ```
 
-- The first line names the controls the group shows, one to three of its own,
-  in the order they are shown. The rest stay under Details in the group's own
-  order. More than three, or none, is a mistake, and the file is not loaded. A
-  name that is not one of the group's controls is ignored and reported.
+- The first line names the controls the group shows, up to three of its own,
+  in the order they are shown, or `none` for a group that shows only its
+  Details. The rest stay under Details in the group's own order. More than
+  three, or an empty value, is a mistake, and the file is not loaded. A name
+  that is not one of the group's controls is ignored and reported.
 - The second line says whether the Details section is open when the file or
   preset is loaded.
 - A group left out shows its default controls with Details closed, as any key
@@ -304,7 +307,7 @@ lists the names of the controls inside it.
 | See the constellation as distinct rings | "Constellation": Orbital planes, "As filed", with Shell altitudes "Filed SSO levels" |
 | Compare mitigated and unmitigated satellites | "Constellation": SBDC brightness, with Phase law "Measured Starlink Gen2 Mini" for the mitigated case |
 | See the sky from a town or a city | "Sky & display": Ambient light, Bortle 5 to 9 |
-| Add the Moon | "Sky & display": Moon, "As on this date" or "Set the phase" |
+| Change the Moon | "Sky & display", under Details: Moon. It is "As on this date" unless a file or preset turns it off |
 | Compare SBDC light with the Moon's | The second line under the sky, in a warmer color |
 | See what a camera would see | "Sky & display": View, "Perspective" |
 | Find where the satellites are | "Aim at densest sky", under View |
@@ -415,7 +418,8 @@ they appear in "Assumptions & data".
 
 Three presets set the constellation of `sdross0/orbital-datacenter-brightness`:
 500,000 satellites, all Sun-synchronous, the 54 filed levels, planes as filed,
-spread ±10°, no scatter, no launch trains, 37.2° N, facing northwest.
+spread ±10°, no scatter, no launch trains, no Moon, 37.2° N, facing
+northwest.
 
 | Preset | Brightness | Date and time |
 | --- | --- | --- |
@@ -580,16 +584,24 @@ zenith sky 18.1 mag/arcsec² (Bortle 7), naked-eye limit 4.1
 
 "Moon" in "Sky & display" has three settings (`display.moon` in a file):
 
-- **Off** (the default): no Moon. Everything is as it was.
-- **As on this date** (`date`): the Moon where it is on the chosen date and
-  solar time in the year given in the "Year" box (`observer.year`, default
-  2026). The simulator has no longitude, so the solar time is taken as
-  universal time. The Moon moves about half a degree an hour, so its place is
-  within about 7° of the truth for any longitude, and its phase within a few
-  percent.
+- **Off** (`off`): no Moon. This was the default until 2026-11-26. The three
+  sdross0 presets set it, because that project has no Moon.
+- **As on this date** (`date`, the default since 2026-11-26): the Moon where it
+  is on the chosen date and solar time in the year given in the "Year" box
+  (`observer.year`, default 2026). The simulator has no longitude, so the
+  solar time is taken as universal time. The Moon moves about half a degree
+  an hour, so its place is within about 7° of the truth for any longitude, and
+  its phase within a few percent.
 - **Set the phase** (`phase`): a Moon a chosen number of days after new
   (`display.moon_age_days`, 0 to 29.5), on the ecliptic. 7.4 is first quarter,
   14.8 is full. This needs no date.
+
+Because the default changed, a link made before 2026-11-26 that does not
+mention `display.moon` now opens with the Moon of its date; add
+`&display.moon=off` to it to see the sky as it was then. An exported file is
+not affected, since an export lists every setting. In the opening view, half
+an hour after sunset with the sky still bright, the Moon of June 21, 2026, half
+lit and 38° up, changes none of the counts.
 
 The Moon's place comes from the low-precision series of the Astronomical
 Almanac, good to about 0.3°. `test/model.test.js` checks it against the solar

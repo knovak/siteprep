@@ -404,7 +404,8 @@ test("the sdross0 presets: that project's constellation, with its two brightness
         brightness_mag: null, phase_law: null },
       p.file);
     assert.deepEqual(p.settings.display,
-      { ...defaultSettings().display, facing: 315, look_altitude: 25, field_of_view: 90, sky_limit_mag: 6.5 }, p.file);
+      { ...defaultSettings().display, facing: 315, look_altitude: 25, field_of_view: 90, sky_limit_mag: 6.5,
+        moon: "off" }, p.file);
     // that project's threshold formula, and no artificial light
     assert.deepEqual(p.settings.advanced, { ...defaultSettings().advanced, naked_eye_threshold: "schaefer" }, p.file);
     assert.equal(p.settings.display.ambient_light, 1, p.file);
@@ -435,10 +436,16 @@ test("the panel: every group in the page has the controls SETTINGS_PANEL names, 
     const shown = block.slice(0, block.indexOf('<details class="more">'));
     assert.deepEqual([...shown.matchAll(/data-control="([a-z_]+)"/g)].map((m) => m[1]), g.show,
       `the ${g.group} group shows its default controls, in order`);
-    assert.ok(g.show.length >= 1 && g.show.length <= SETTINGS_PANEL_MAX, `${g.group} shows 1 to ${SETTINGS_PANEL_MAX}`);
+    assert.ok(g.show.length <= SETTINGS_PANEL_MAX, `${g.group} shows at most ${SETTINGS_PANEL_MAX}`);
   }
-  // every group's Details start closed
+  // every group's Details start closed; Night & year and Advanced show
+  // nothing else
   assert.doesNotMatch(html, /<details class="more"[^>]* open/);
+  const shownOf = (group) => SETTINGS_PANEL.find((g) => g.group === group).show;
+  assert.deepEqual(shownOf("observer"), ["latitude", "date", "time_jumps"]);
+  assert.deepEqual(shownOf("constellation"), ["satellites", "brightness_mag", "clustering"]);
+  assert.deepEqual(shownOf("display"), ["view"]);
+  assert.deepEqual([shownOf("night"), shownOf("advanced")], [[], []]);
   const d = defaultSettings();
   for (const g of SETTINGS_PANEL) {
     assert.deepEqual(d.panel[g.group], g.show);
@@ -464,15 +471,23 @@ test("the panel: a file chooses the controls each group shows and whether its De
   assert.deepEqual(settingsFromQuery(query).settings, s);
   assert.equal(settingsToQuery(s, { panel: false }), "", "a link without the panel is the opening view's");
   assert.doesNotMatch(settingsToYaml(s, { panel: false }), /^panel:/m);
-  assert.match(settingsToYaml(s), /^  constellation: phase_law, brightness_mag +# 1 to 3 of satellites, /m);
+  assert.match(settingsToYaml(s), /^  constellation: phase_law, brightness_mag +# none, or up to 3 of satellites, /m);
+  assert.match(settingsToYaml(s), /^  night: none +# none, or up to 3 of compute, hours, chart$/m);
 });
 
-test("the panel: one to three controls of the group, and names it does not have are reported", () => {
+test("the panel: none, or up to three controls of the group, and names it does not have are reported", () => {
   const many = settingsFromYaml("panel:\n  observer: latitude, date, time, playback\n");
   assert.equal(many.settings, null);
-  assert.match(many.errors[0], /^line 2: panel\.observer: expected 1 to 3 of latitude, date, time, /);
-  const none = settingsFromYaml("panel:\n  observer: ,\n");
-  assert.equal(none.settings, null);
+  assert.match(many.errors[0], /^line 2: panel\.observer: expected none, or up to 3 of latitude, date, time, /);
+  assert.equal(settingsFromYaml("panel:\n  observer: ,\n").settings, null, "an empty list is written none");
+  // "none": the group shows only its Details, and it round-trips
+  const bare = settingsFromYaml("panel:\n  observer: none\n  constellation: NONE\n");
+  assert.deepEqual(bare.errors, []);
+  assert.deepEqual([bare.settings.panel.observer, bare.settings.panel.constellation], [[], []]);
+  assert.deepEqual(settingsFromYaml(settingsToYaml(bare.settings)).settings, bare.settings);
+  assert.deepEqual(settingsFromQuery(settingsToQuery(bare.settings)).settings, bare.settings);
+  // a group that shows something by default can be given to show nothing, and back
+  assert.deepEqual(settingsFromYaml("panel:\n  night: compute\n").settings.panel.night, ["compute"]);
   // a name from another group, or a misspelling, is ignored and reported
   const odd = settingsFromYaml("panel:\n  observer: date, satellites, tiem\n");
   assert.deepEqual(odd.errors, []);
@@ -481,6 +496,10 @@ test("the panel: one to three controls of the group, and names it does not have 
     ['line 2: panel.observer lists "satellites", "tiem", which are not controls of this group and were ignored']);
   // a name given twice is shown once; case does not matter
   assert.deepEqual(settingsFromYaml("panel:\n  display: Moon, moon\n").settings.panel.display, ["moon"]);
+  // a list of names the group does not have shows nothing, and says so
+  const typo = settingsFromYaml("panel:\n  display: mon\n");
+  assert.deepEqual(typo.settings.panel.display, []);
+  assert.equal(typo.notes.length, 1);
   assert.match(settingsFromYaml("panel:\n  display_details: half\n").errors[0], /expected one of closed, open/);
 });
 
@@ -498,16 +517,14 @@ test("a preset's name, category and description are read and written", () => {
   assert.equal(settingsFromYaml("observer:\n  latitude: 3\n").category, null);
 });
 
-test("the presets: each shows controls of its own groups, and the sdross0 presets show the brightness model", () => {
+test("the presets: each arranges the panel as the defaults do, and the sdross0 presets have no Moon", () => {
   for (const p of presets) {
-    for (const g of SETTINGS_PANEL) {
-      const shown = p.settings.panel[g.group];
-      assert.ok(shown.length >= 1 && shown.length <= SETTINGS_PANEL_MAX, `${p.file}: ${g.group}`);
-      assert.ok(shown.every((name) => g.controls.includes(name)), `${p.file}: ${g.group}`);
-    }
+    assert.deepEqual(p.settings.panel, defaultSettings().panel, p.file);
+    // the place presets show the Moon of their date, the default
+    if (p.category === "Places") assert.equal(p.settings.display.moon, "date", p.file);
   }
   for (const p of presets.filter((x) => /^sdross0 /.test(x.name))) {
-    assert.deepEqual(p.settings.panel.constellation, ["satellites", "brightness_mag", "phase_law"], p.file);
+    assert.equal(p.settings.display.moon, "off", `${p.file}: that project has no Moon`);
     assert.equal(p.category, "Compared with sdross0", p.file);
   }
   assert.deepEqual([...new Set(presets.map((p) => p.category))], ["Places", "Compared with sdross0"]);

@@ -419,12 +419,15 @@ test.describe('SBDC beta', () => {
     await page.locator('#jump-dusk60').click();
     await expect(page.locator('#readout-sub')).toContainText('60 min after sunset');
     const line = page.locator('#readout-light');
+    // the Moon of the date is the default, and the line compares with it
+    await expect(page.locator('#moon')).toHaveValue('date');
+    await expect(line).toContainText(/Moon \d+% lit, \d+° up: .* of this Moon’s light/);
+    await page.locator('#moon').selectOption('off');
     await expect(line).toContainText('SBDC light');
     await expect(line).toContainText('a full Moon');
     await expect(line).toContainText('a moonless natural night sky');
     // no Moon is set, so the line does not mention one
     await expect(line).not.toContainText('lit');
-    await expect(page.locator('#moon')).toHaveValue('off');
     const text = await line.textContent();
     // a few hundred thousand unmitigated satellites: a fraction of a full Moon, written 1/n
     expect(text).toMatch(/1\/[\d,.]+ of a full Moon/);
@@ -747,9 +750,11 @@ test.describe('SBDC beta', () => {
 
   test('the picture and chart count compact groups once in both languages', async ({ page }) => {
     const problems = await openBeta(page);
-    const content = 'observer:\n  time: "20:15"\nconstellation:\n  satellites: 10000\n  launch_trains: 0\n  clustering: true\n  satellites_per_cluster: 100\n  cluster_diameter_km: 0.2\nadvanced:\n  cluster_membership_variation: 0\n  cluster_diameter_variation: 0\n';
+    // no Moon, so that the star count below does not depend on its light
+    const content = 'observer:\n  time: "20:15"\nconstellation:\n  satellites: 10000\n  launch_trains: 0\n  clustering: true\n  satellites_per_cluster: 100\n  cluster_diameter_km: 0.2\ndisplay:\n  moon: off\nadvanced:\n  cluster_membership_variation: 0\n  cluster_diameter_variation: 0\n';
     await page.locator('#settings-file').setInputFiles({ name: 'compact.yaml', mimeType: 'text/plain', buffer: Buffer.from(content) });
     await expect(page.locator('#readout')).toContainText('VISIBLE objects 3 (300 satellites within)');
+    await openAllDetails(page);              // the file put the panel back to its defaults
     await page.locator('#night-run').click();
     await expect(page.locator('#night-time')).toBeEnabled();
     await setValue(page, '#night-time', 495);
@@ -809,18 +814,32 @@ test.describe('SBDC beta', () => {
 
   test('each group shows a few controls and lists the rest under a closed Details section', async ({ page }) => {
     const problems = await openBeta(page, '', { details: 'closed' });
-    const groups = { observer: 3, constellation: 2, display: 3, night: 2, advanced: 1 };
+    const groups = {
+      observer: ['latitude', 'date', 'time_jumps'],
+      constellation: ['satellites', 'brightness_mag', 'clustering'],
+      display: ['view'],
+      night: [],
+      advanced: [],
+    };
     for (const [group, shown] of Object.entries(groups)) {
-      expect(await shownControls(page, group), group).toHaveLength(shown);
+      expect(await shownControls(page, group), group).toEqual(shown);
       await expect(page.locator(`.grp[data-group="${group}"] details.more`)).not.toHaveAttribute('open', '');
     }
-    await expect(page.locator('#lat')).toBeVisible();
-    await expect(page.locator('#timelock')).toBeHidden();
-    await expect(page.locator('#shells')).toBeHidden();
+    for (const id of ['#lat', '#date', '#jump-sunset', '#jump-dawn30', '#nsats', '#brightness', '#clusteron', '#viewmode']) {
+      await expect(page.locator(id), id).toBeVisible();
+    }
+    for (const id of ['#time', '#timelock', '#shells', '#ambient', '#moon', '#night-run', '#night-table', '#eyemodel', '#seed']) {
+      await expect(page.locator(id), id).toBeHidden();
+    }
+    // the Moon is as on this date unless a file or preset says otherwise
+    await expect(page.locator('#moon')).toHaveValue('date');
+    await expect(page.locator('#advanced-grp .more-list')).toContainText('Seed · Naked-eye threshold');
+    await expect(page.locator('#night-grp .more-list')).toHaveText('Compute · Table of hours · Chart');
     // "Details" names what it holds, in small type and in its tooltip
     const observer = page.locator('#observer-grp details.more');
-    await expect(observer.locator('.more-list')).toHaveText('Hold time to twilight · Playback');
-    await expect(observer.locator('summary')).toHaveAttribute('title', 'Under Details: Hold time to twilight, Playback');
+    await expect(observer.locator('.more-list')).toHaveText('Solar time · Hold time to twilight · Playback');
+    await expect(observer.locator('summary')).toHaveAttribute('title',
+      'Under Details: Solar time, Hold time to twilight, Playback');
     await expect(page.locator('#constellation-grp .more-list')).toContainText('Shell altitudes · Orbital planes');
     await expect(page.locator('#settings-more .more-list')).toHaveText('Copy link · Export settings · Import settings');
 
@@ -833,7 +852,7 @@ test.describe('SBDC beta', () => {
 
     await page.locator('#lang-toggle').click();
     await expect(observer.locator('.more-word')).toHaveText('Détails');
-    await expect(observer.locator('.more-list')).toHaveText('Heure liée au crépuscule · Lecture');
+    await expect(observer.locator('.more-list')).toHaveText('Heure solaire · Heure liée au crépuscule · Lecture');
     await expect(page.locator('#observer-title')).toHaveText('Observateur');
     expect(problems.errors).toEqual([]);
   });
@@ -844,9 +863,9 @@ test.describe('SBDC beta', () => {
     await expect(page.locator('#preset-browse')).toHaveText('Browse presets (6)');
 
     const value = await choosePreset(page, 'sdross0 default, no mitigation', { details: 'closed' });
-    expect(await shownControls(page, 'constellation')).toEqual(['satellites', 'brightness_mag', 'phase_law']);
-    await expect(page.locator('#phaselaw')).toBeVisible();
-    await expect(page.locator('#constellation-grp .more-list')).not.toContainText('Phase law');
+    expect(await shownControls(page, 'constellation')).toEqual(['satellites', 'brightness_mag', 'clustering']);
+    // that project has no Moon, so its presets turn the Moon off
+    await expect(page.locator('#moon')).toHaveValue('off');
     await expect(page.locator('#preset-category')).toHaveText('Compared with sdross0');
     await expect(page.locator('#preset-name')).toHaveText(/^sdross0 default, no mitigation/);
     await expect(page.locator('#preset-desc')).toContainText('sdross0/orbital-datacenter-brightness');
@@ -861,10 +880,11 @@ test.describe('SBDC beta', () => {
     await page.locator('#constellation-grp details.more summary').click();
     await expect(page.locator('#preset-card')).toHaveAttribute('data-preset', value);
 
-    // a preset that does not say shows the defaults, with Details closed
+    // loading a preset puts the panel back as the preset has it: here, the defaults
     await choosePreset(page, 'New York City', { details: 'closed' });
-    expect(await shownControls(page, 'constellation')).toEqual(['satellites', 'brightness_mag']);
+    expect(await shownControls(page, 'constellation')).toEqual(['satellites', 'brightness_mag', 'clustering']);
     await expect(page.locator('#constellation-grp details.more')).not.toHaveAttribute('open', '');
+    await expect(page.locator('#moon')).toHaveValue('date');
 
     // a change to a control: the card says which preset it started from
     await setValue(page, '#ambient', 8);
@@ -878,6 +898,25 @@ test.describe('SBDC beta', () => {
     await settled(page);
     await expect(page.locator('#preset-name')).toHaveText(/^New York City/);
     await expect(page.locator('#ambient')).toHaveValue('1');
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('a file or link chooses the controls each group shows, in its order, and which Details are open', async ({ page }) => {
+    const problems = await openBeta(page,
+      '#panel.constellation=phase_law%2C%20satellites&panel.night=compute&panel.display_details=open&panel.observer=none',
+      { details: 'closed' });
+    expect(await shownControls(page, 'constellation')).toEqual(['phase_law', 'satellites']);
+    await expect(page.locator('#phaselaw')).toBeVisible();
+    await expect(page.locator('#brightness')).toBeHidden();
+    await expect(page.locator('#constellation-grp .more-list')).toContainText('SBDC brightness');
+    await expect(page.locator('#constellation-grp .more-list')).not.toContainText('Phase law');
+    expect(await shownControls(page, 'night')).toEqual(['compute']);
+    await expect(page.locator('#night-run')).toBeVisible();
+    await expect(page.locator('#display-grp details.more')).toHaveAttribute('open', '');
+    await expect(page.locator('#moon')).toBeVisible();
+    // a group can show only its Details
+    expect(await shownControls(page, 'observer')).toEqual([]);
+    await expect(page.locator('#observer-grp .more-list')).toHaveText(/^Latitude · Date · Solar time · Time jumps/);
     expect(problems.errors).toEqual([]);
   });
 
@@ -947,7 +986,8 @@ test.describe('SBDC beta', () => {
     };
     await page.locator('#settings-more summary').click();
     const before = await exported();
-    expect(before.text).toMatch(/^  observer: latitude, date, time +# 1 to 3 of /m);
+    expect(before.text).toMatch(/^  observer: latitude, date, time_jumps +# none, or up to 3 of /m);
+    expect(before.text).toMatch(/^  night: none +# /m);
     expect(before.text).toMatch(/^  night_details: closed/m);
     await page.locator('#night-grp details.more summary').click();
     const after = await exported();
