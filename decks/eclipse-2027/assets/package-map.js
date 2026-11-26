@@ -175,7 +175,7 @@
     "country": "Egypt",
     "lat": 25.69,
     "lng": 32.64,
-    "description": "Approximate city / regional viewing hub",
+    "description": "Approximate city / viewing hub and Orient Grand Sun boarding region; final berth unpublished",
     "countryMarker": true
   },
   {
@@ -378,6 +378,27 @@
     "lat": 37.98,
     "lng": 23.73,
     "description": "Oosterdam embarkation / disembarkation"
+  },
+  {
+    "name": "Mövenpick Cairo Media City / موفنبيك مدينة الإنتاج الإعلامي",
+    "country": "Egypt",
+    "lat": 29.965727,
+    "lng": 31.021363,
+    "description": "Temple World indicative hotel; substitution possible, not an eclipse site"
+  },
+  {
+    "name": "El Gouna / Steigenberger Golf Resort / الجونة",
+    "country": "Egypt",
+    "lat": 27.390947,
+    "lng": 33.677822,
+    "description": "Temple World overnight region; exact hotel match to reconfirm, not totality"
+  },
+  {
+    "name": "Helwan Observatory / مرصد حلوان",
+    "country": "Egypt",
+    "lat": 29.859,
+    "lng": 31.3427,
+    "description": "Temple World astronomy excursion; outside totality"
   }
 ];
   const colors = { Spain:'#db7c19', Morocco:'#b63f66', Algeria:'#168268', Tunisia:'#774fc4', Egypt:'#2467bc', Transit:'#607080' };
