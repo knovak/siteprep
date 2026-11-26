@@ -6,12 +6,13 @@
 // <directory>/index.html instead, which is how publish.mjs hands the beta to
 // the site build. See README.md in this folder.
 //
-// Beta line: every presets/*.yaml file is embedded as a preset, in file-name
-// order. A preset that does not read cleanly fails the build.
+// Beta line: every presets/*.yaml file is embedded as a preset, in the order
+// of the numbers that start their file names. A preset that does not read cleanly, or has no name or description,
+// fails the build.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { createHash } from "node:crypto";
-import { settingsFromYaml } from "./src/settings.js";
+import { settingsFromYaml, SETTINGS_DESCRIPTION_MAX } from "./src/settings.js";
 
 const read = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
 
@@ -37,16 +38,22 @@ const data = JSON.stringify(JSON.parse(read("data/sbdc-data.json")));
 const catalog = JSON.stringify(JSON.parse(read("data/bsc-reduced.json")));
 
 // ---- presets: one YAML settings file each, carried as text ----
+// in the order of the number a file name starts with, so 100- follows 60-
 const presetFiles = readdirSync(new URL("presets/", import.meta.url))
   .filter((name) => /\.ya?ml$/.test(name))
-  .sort();
+  .sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
 const presetNames = new Set();
 const presetList = presetFiles.map((file) => {
   const text = read(`presets/${file}`);
   const got = settingsFromYaml(text);
   const problems = [...got.errors, ...got.notes];
-  if (!got.name) problems.push("it needs a name: line, which is its title in the Preset list");
+  if (!got.name) problems.push("it needs a name: line, which is its title in the preset list");
   else if (presetNames.has(got.name)) problems.push(`another preset is already named "${got.name}"`);
+  if (!got.description) problems.push("it needs a description: line, one or two sentences shown under its name");
+  else if (got.description.length > SETTINGS_DESCRIPTION_MAX) {
+    problems.push(`its description is ${got.description.length} characters; keep it to one or two sentences, ` +
+      `at most ${SETTINGS_DESCRIPTION_MAX}`);
+  }
   if (problems.length) throw new Error(`presets/${file}: ${problems.join("; ")}`);
   presetNames.add(got.name);
   return { file, text };

@@ -2,6 +2,8 @@
 # Keys that are left out take the simulator's defaults.
 
 name: Taos, New Mexico, 30 minutes before sunrise, March 15
+category: Places
+description: Morning twilight at Taos's latitude, 36.4° N, five days before the March equinox, with the default constellation. Half an hour before sunrise the sky is already bright: few stars remain, but thousands of SBDCs are still sunlit and visible.
 
 observer:
   latitude: 36.4

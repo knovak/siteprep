@@ -7,9 +7,10 @@
  *   SETTINGS_FIELDS       the schema: one row per setting
  *   defaultSettings()     the simulator's defaults as a settings object
  *   settingsToYaml(s)     settings object -> commented YAML text
- *   settingsFromYaml(t)   YAML text -> { name, settings, notes, errors }
+ *   settingsFromYaml(t)   YAML text -> { name, category, description, settings, notes, errors }
  *   settingsToQuery(s)    settings object -> the part of a page address after "#"
  *   settingsFromQuery(t)  that text -> { name, settings, notes, errors }
+ *   SETTINGS_PANEL        the groups of controls, and which each shows by default
  *
  * The same format serves an exported file, an imported file, and a preset
  * (presets/*.yaml, embedded by the build). A key left out of a file takes its
@@ -95,11 +96,51 @@ export function settingsParseTime(text) {
   return null;
 }
 
+/* ------------------------- the control panel ------------------------- */
+
+/**
+ * The groups of controls on the page, and the controls in each, in the order
+ * they appear under "Details". A control is named by the key of its setting
+ * where it has one; the names that are not settings keys are time (the solar
+ * time slider), time_jumps (the Sunset, +30 min ... buttons), playback, view
+ * (with "Aim at densest sky"), clustering (with its two sliders), moon (with
+ * the year and the phase), and the three parts of the Night & year group.
+ *
+ * Each group shows up to three of its controls, `show` by default, and keeps
+ * the rest under a "Details" section that starts closed. A group may show
+ * none, so that it is only its title and its Details. The `panel` section
+ * of a settings file chooses both, so a preset can show the controls it is
+ * about. The Presets & settings group is not listed: it is the same for every
+ * preset.
+ */
+export const SETTINGS_PANEL = [
+  { group: "observer",
+    controls: ["latitude", "date", "time", "time_jumps", "hold_time_to_twilight", "playback"],
+    show: ["latitude", "date", "time_jumps"] },
+  { group: "constellation",
+    controls: ["satellites", "sso_percent", "shells", "plane_layout", "plane_spread_deg", "brightness_mag",
+               "brightness_scatter_mag", "phase_law", "launch_trains", "clustering"],
+    show: ["satellites", "brightness_mag", "clustering"] },
+  { group: "display",
+    controls: ["view", "sky_limit_mag", "ambient_light", "moon", "show_stars", "long_exposure"],
+    show: ["view"] },
+  { group: "night",
+    controls: ["compute", "hours", "chart"],
+    show: [] },
+  { group: "advanced",
+    controls: ["seed", "naked_eye_threshold", "tint_by_orbit_family", "mark_celestial_pole",
+               "satellites_move_in_fast_forward", "cluster_membership_variation", "cluster_diameter_variation"],
+    show: [] },
+];
+/** The most controls a group shows outside its Details section. */
+export const SETTINGS_PANEL_MAX = 3;
+
 /* ------------------------- the schema ------------------------- */
 
 /**
  * One row per setting, in the order the file is written. Sections follow the
- * four groups of controls on the page. Types:
+ * four groups of controls on the page, then `panel`, which arranges the
+ * controls and changes nothing in the sky. Types:
  *   number  a number within [min, max]; `digits` decimals when written
  *   int     a whole number within [min, max]
  *   bool    true or false
@@ -107,6 +148,8 @@ export function settingsParseTime(text) {
  *   text    free text
  *   date    month and day, held as a day of year
  *   time    clock time or a twilight-relative time (see settingsParseTime)
+ *   controls  names from `options`, written separated by commas, or "none";
+ *           held as a list
  * Ranges are the ranges of the page's controls. Where a slider has coarser
  * steps than the file allows, the page moves to the nearest step on import.
  */
@@ -162,7 +205,7 @@ export const SETTINGS_FIELDS = [
     note: "faintest magnitude this observer sees under a dark sky, 4.0 to 6.5" },
   { section: "display", key: "ambient_light", type: "int", min: 1, max: 9, def: 1,
     note: "Bortle class, 1 (no artificial light) to 9 (inner city); brightens the sky" },
-  { section: "display", key: "moon", type: "choice", options: ["off", "date", "phase"], def: "off",
+  { section: "display", key: "moon", type: "choice", options: ["off", "date", "phase"], def: "date",
     note: "off; date: the Moon of observer.year on this date; phase: the Moon at moon_age_days" },
   { section: "display", key: "moon_age_days", type: "number", min: 0, max: 29.5, digits: 1, def: 14.8,
     note: "used when moon is phase: days since new Moon, 0 to 29.5; 7.4 first quarter, 14.8 full" },
@@ -181,6 +224,15 @@ export const SETTINGS_FIELDS = [
     note: "0 to 1" },
   { section: "advanced", key: "cluster_diameter_variation", type: "number", min: 0, max: 1, digits: 2, def: 0.35,
     note: "0 to 1" },
+
+  // the control panel: for each group, the controls shown outside its
+  // Details section, and whether that section starts open
+  ...SETTINGS_PANEL.flatMap((g) => [
+    { section: "panel", key: g.group, type: "controls", options: g.controls, def: g.show,
+      note: `none, or up to ${SETTINGS_PANEL_MAX} of ${g.controls.join(", ")}` },
+    { section: "panel", key: `${g.group}_details`, type: "choice", options: ["closed", "open"], def: "closed",
+      note: "closed or open" },
+  ]),
 ];
 
 export const SETTINGS_SECTIONS = [...new Set(SETTINGS_FIELDS.map((f) => f.section))];
@@ -191,10 +243,27 @@ export function defaultSettings() {
   const out = {};
   for (const f of SETTINGS_FIELDS) {
     if (!out[f.section]) out[f.section] = {};
-    out[f.section][f.key] = f.type === "time" ? { ...f.def } : f.def;
+    out[f.section][f.key] = f.type === "time" ? { ...f.def } : f.type === "controls" ? [...f.def] : f.def;
   }
   return out;
 }
+
+/** A copy of a settings object without its `panel` section: the settings
+ *  that decide the picture. Two settings objects that differ only in how the
+ *  controls are arranged give the same sky. */
+export function settingsWithoutPanel(settings) {
+  const { panel, ...rest } = settings;
+  return rest;
+}
+
+/**
+ * A preset's text fields, which describe it and set nothing: its `name`, the
+ * title in the preset list; a one- or two-sentence `description`; and an
+ * optional `category`, the heading it is listed under.
+ */
+export const SETTINGS_PRESET_TEXT = ["name", "category", "description"];
+/** The longest description a preset may have, in characters. */
+export const SETTINGS_DESCRIPTION_MAX = 320;
 
 /* ------------------------- writing ------------------------- */
 
@@ -216,13 +285,17 @@ export function settingsFormatValue(field, value) {
     case "date": return settingsFormatDate(value);
     case "time": return value.ref ? settingsFormatTime(value) : `"${settingsFormatTime(value)}"`;
     case "text": return settingsQuote(value);
+    case "controls": return value.length ? value.join(", ") : "none";
     default: return String(value);
   }
 }
 
 /**
- * Settings object -> YAML text. `options.name` adds the title line a preset
- * needs; `options.date` (YYYY-MM-DD) is noted in the header.
+ * Settings object -> YAML text. `options.name`, `options.category` and
+ * `options.description` add the lines that describe a preset; `options.date`
+ * (YYYY-MM-DD) is noted in the header. `options.panel: false` leaves out the
+ * panel section, which is how the settings reference of a picture is made:
+ * opening a Details section does not change the sky.
  */
 export function settingsToYaml(settings, options = {}) {
   const lines = [
@@ -233,8 +306,11 @@ export function settingsToYaml(settings, options = {}) {
     "# Text after a # is a comment. A key that is left out takes its default.",
     "",
   ].filter((l) => l !== null);
-  if (options.name) lines.push(`name: ${settingsQuote(options.name)}`, "");
+  const described = SETTINGS_PRESET_TEXT.filter((key) => options[key]);
+  for (const key of described) lines.push(`${key}: ${settingsQuote(options[key])}`);
+  if (described.length) lines.push("");
   for (const section of SETTINGS_SECTIONS) {
+    if (section === "panel" && options.panel === false) continue;
     lines.push(`${section}:`);
     const rows = SETTINGS_FIELDS.filter((f) => f.section === section).map((f) => {
       const value = settings[section] && f.key in settings[section] ? settings[section][f.key] : f.def;
@@ -383,14 +459,32 @@ function settingsCoerce(field, raw) {
         ? { error: "expected a time such as \"21:30\", sunset +30, or sunrise -30" }
         : { value: t };
     }
+    case "controls": {
+      const expected = `expected none, or up to ${SETTINGS_PANEL_MAX} of ${field.options.join(", ")} ` +
+        "separated by commas";
+      if (typeof raw !== "string") return { error: expected };
+      if (raw.trim().toLowerCase() === "none") return { value: [] };   // the group shows only its Details
+      const names = raw.split(",").map((n) => n.trim().toLowerCase()).filter(Boolean);
+      const unknown = [...new Set(names.filter((n) => !field.options.includes(n)))];
+      const value = [...new Set(names.filter((n) => field.options.includes(n)))];
+      if (names.length === 0 || value.length > SETTINGS_PANEL_MAX) return { error: expected };
+      const listed = unknown.map((n) => `"${n}"`).join(", ");
+      return {
+        value,
+        note: unknown.length === 0 ? null : unknown.length === 1
+          ? `lists ${listed}, which is not a control of this group and was ignored`
+          : `lists ${listed}, which are not controls of this group and were ignored`,
+      };
+    }
     default:
       return { error: "unknown setting type" };
   }
 }
 
 /**
- * YAML text -> { name, settings, notes, errors }.
+ * YAML text -> { name, category, description, settings, notes, errors }.
  *
+ * `name`, `category` and `description` are a preset's text, or null.
  * `settings` is complete: every key the file leaves out has its default.
  * `errors` (strings) mean the file cannot be used and `settings` is null.
  * `notes` (strings) report what was read but changed or ignored: a value
@@ -410,11 +504,11 @@ export function settingsFromYaml(text) {
 function settingsFromValues(values, problems, where, emptyMessage) {
   const notes = [];
   const settings = defaultSettings();
-  let name = null;
+  const text = { name: null, category: null, description: null };
 
   for (const [path, { value, line }] of values) {
-    if (path === "name") {
-      if (value != null) name = String(value).trim() || null;
+    if (SETTINGS_PRESET_TEXT.includes(path)) {
+      if (value != null) text[path] = String(value).trim() || null;
       continue;
     }
     const field = SETTINGS_BY_PATH.get(path);
@@ -439,9 +533,7 @@ function settingsFromValues(values, problems, where, emptyMessage) {
       "altitude:share pairs such as \"550:0.5, 1200:0.5\"");
   }
   if (!errors.length && values.size === 0) errors.push(emptyMessage);
-  return errors.length
-    ? { name, settings: null, notes, errors }
-    : { name, settings, notes, errors };
+  return { ...text, settings: errors.length ? null : settings, notes, errors };
 }
 
 /* ------------------------- links ------------------------- */
@@ -451,11 +543,13 @@ function settingsFromValues(values, problems, where, emptyMessage) {
  * that differ from the defaults are written, as section.key=value pairs
  * joined by "&", so the link to the opening view is empty and most links are
  * short. `options.name` adds a name, which the page shows when it loads.
+ * `options.panel: false` leaves out the panel section.
  */
 export function settingsToQuery(settings, options = {}) {
   const parts = [];
   if (options.name) parts.push(`name=${encodeURIComponent(options.name)}`);
   for (const f of SETTINGS_FIELDS) {
+    if (f.section === "panel" && options.panel === false) continue;
     const value = settings[f.section][f.key];
     if (settingsFormatValue(f, value) === settingsFormatValue(f, f.def)) continue;
     // a link needs no YAML quoting: a time or a text is written as it is
@@ -498,7 +592,7 @@ export function settingsFromQuery(text) {
     // dates, times, names and free text are taken as written; everything
     // else is read as a number or true/false, as in a file
     const field = SETTINGS_BY_PATH.get(path);
-    const asWritten = path === "name" || (field && ["text", "date", "time"].includes(field.type));
+    const asWritten = path === "name" || (field && ["text", "date", "time", "controls"].includes(field.type));
     values.set(path, { value: asWritten ? raw : settingsScalar(raw), line: item });
   });
   return settingsFromValues(values, problems, "item", "the link has no settings in it");

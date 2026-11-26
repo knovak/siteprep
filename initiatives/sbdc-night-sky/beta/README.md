@@ -50,19 +50,22 @@ On the day it was created, the beta built a page byte-identical to the released
 | 2026-11-15 | The twilight sky corrected to measured values; ambient light by Bortle class; a choice of naked-eye threshold; the sky brightness and limit in the readout | The November 2026 upgrade, Unit 3 |
 | 2026-11-15 | The Moon, with its phase and place; moonlight in the sky; SBDC light compared with the Moon and with a natural night sky; the readout below the sky | The November 2026 upgrade, Unit 4 |
 | 2026-11-15 | Hours of significant SBDC light for a night and for a year; a perspective view; aiming at the densest sky | The November 2026 upgrade, Unit 5 |
+| 2026-11-26 | Each group shows up to three controls and keeps the rest under a Details section; presets have a description and a category, choose which controls each group shows, and are chosen in a preset browser; the Moon is as on the date by default | The control panel; Presets; Unit 4 |
 
 `PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
 units. All five are described below, after a short guide to what they added.
 
 ## Settings files
 
-The first group in the sidebar, "Presets & settings", has a Preset list, an
-"Export settings" button and an "Import settings…" button.
+The first group in the sidebar, "Presets & settings", shows the preset in use
+and a "Browse presets" button. Its Details section has "Copy link", "Export
+settings" and "Import settings…".
 
 - **Export settings** downloads every setting as a YAML text file named like
-  `sbdc-settings_lat41_Oct20_1757.yaml`.
+  `sbdc-settings_lat41_Oct20_1757_<reference>.yaml`.
 - **Import settings…** reads such a file and sets every control from it.
-- **Preset** sets every control from a settings file stored in the simulator.
+- **Browse presets** lists the settings files stored in the simulator; choosing
+  one sets every control from it. See Presets below.
 
 All three use one data object and one file format. A file looks like this
 (shortened here; an export lists every setting, each with a comment):
@@ -81,9 +84,11 @@ constellation:
   shells: spread                # low, mid, spread, or custom
 ```
 
-The sections are the four groups of controls: `observer`, `constellation`,
-`display`, `advanced`. `SETTINGS_FIELDS` in `src/settings.js` is the full list,
-with each setting's type, range, default and comment.
+The first four sections are the four groups of settings: `observer`,
+`constellation`, `display`, `advanced`. The fifth, `panel`, arranges the
+controls on the page and changes nothing in the sky; see The control panel
+below. `SETTINGS_FIELDS` in `src/settings.js` is the full list, with each
+setting's type, range, default and comment.
 
 Rules of the format:
 
@@ -102,13 +107,14 @@ Rules of the format:
   the file is used.
 - **A value between two slider steps moves to the nearest step**, and the panel
   says which values moved. The plane spread is in quarter degrees, for example.
-- `name` is optional. A preset needs one. An export writes it only while the
-  Preset list still shows a preset.
+- `name`, `category` and `description` are optional. A preset needs a name and
+  a description. An export writes all three only while a preset is loaded and
+  no setting has changed since.
 
-What a settings file does not hold: the language (EN/FR), which groups are
-open, and whether playback is running. Loading a file or a preset stops
-playback and rebuilds the constellation, so the same file always gives the
-same picture.
+What a settings file does not hold: the language (EN/FR), whether playback is
+running, and whether the Details section of "Presets & settings" is open.
+Loading a file or a preset stops playback and rebuilds the constellation, so
+the same file always gives the same picture.
 
 If `time` is relative to a sunset or sunrise that does not happen at that
 latitude and date (polar day or night), the time stays where it was and the
@@ -123,19 +129,127 @@ about a file's contents are in English in both languages, like the file.
 ## Presets
 
 Each file in `presets/` is one preset. The build embeds every `*.yaml` file in
-that folder, in file-name order, and the Preset list shows each file's `name`.
+that folder, in the order of the number each file name starts with, so
+`100-…` follows `60-…`.
+
+A preset has three lines of text before its settings:
+
+```yaml
+name: Taos, New Mexico, 30 minutes before sunrise, March 15
+category: Places
+description: Morning twilight at Taos's latitude, 36.4° N, ... still sunlit and visible.
+```
+
+- **`name`** is its title in the preset browser and on the card in the
+  sidebar. It is required, and no two presets may share one.
+- **`description`** is one or two sentences saying what the preset shows and
+  what to look for. It is required, and at most 320 characters
+  (`SETTINGS_DESCRIPTION_MAX`). It is on one line; a colon inside it is part of
+  the text, but ` #` starts a comment, so quote a description that needs one.
+- **`category`** is the heading it is listed under. It is optional; presets
+  without one are listed under "Other". Categories appear in the order of
+  their first preset.
+
+A preset may also have a `panel` section, which chooses the controls each group
+shows; see The control panel. None of the six presets has one, so all of them
+show the default arrangement.
+
+To work with presets:
 
 - **Add a preset:** add a file to `presets/`. Start from an existing one, or
-  export the settings wanted from the simulator and add a `name:` line. The
-  number at the start of the file name sets its place in the list.
+  load a preset, change the controls and export the settings, then edit the
+  `name`, `category` and `description` lines. The number at the start of the
+  file name sets its place in the list; leave gaps (10, 20, 30) so a preset can
+  go between two others.
 - **Remove a preset:** delete its file.
 - **Rename or change a preset:** edit its file.
 
 Nothing else needs to change. `build.js` stops with an error if a preset file
-has a mistake, an unknown key, an out-of-range value, no `name`, or a `name`
-another preset already uses, so a broken preset fails the pull request's check
-and is not published. `test/settings.test.js` also names the presets of the
-current revision; update its list when presets are added or removed.
+has a mistake, an unknown key, an out-of-range value, no `name`, a `name`
+another preset already uses, no `description`, or a description over the
+limit, so a broken preset fails the pull request's check and is not
+published. `test/settings.test.js` also names the presets of the current
+revision; update its list when presets are added or removed.
+
+### The preset browser
+
+"Browse presets" opens a list of every preset with its description, under its
+category. With many presets:
+
+- **Filter** by typing in the box at the top. Every word typed has to appear in
+  the name, the description or the category, in any order: "december
+  optimistic" finds one preset.
+- **Category** buttons under the box show one category at a time. They appear
+  when there is more than one category.
+- **Keyboard:** the down arrow moves from the box into the list, the arrows
+  move through it, and Enter loads the preset. Enter in the box loads the first
+  match. Escape closes the list without loading anything.
+- The preset in use is marked "loaded".
+
+Choosing a preset loads it and closes the list. The card in the sidebar then
+shows its category, name and the first three lines of its description; "more"
+shows the rest. The ‹ and › buttons beside "Browse presets" load the previous
+and next preset in the list without opening it, for stepping through a series.
+Once a control is changed, the card says which preset the settings started
+from.
+
+On a phone the list fills the screen, and the filter box is not focused when it
+opens, so the keyboard does not cover the list.
+
+## The control panel
+
+Each group of controls shows up to three of its controls and keeps the rest
+under a "Details" section. Details sections start closed. While one is closed,
+the names of the controls inside it are written under the word "Details" in
+small type, and in its tooltip. A click opens it. A group may show none: by
+default "Night & year" and "Advanced" are only their title and their Details.
+
+The groups, their controls in the order they appear, and the ones shown by
+default (in bold) are in `SETTINGS_PANEL` in `src/settings.js`:
+
+| Group | Controls |
+| --- | --- |
+| Observer | **latitude**, **date**, time (the Solar time slider), **time_jumps** (the Sunset, +30 min … buttons), hold_time_to_twilight, playback |
+| Constellation | **satellites**, sso_percent, shells, plane_layout, plane_spread_deg, **brightness_mag**, brightness_scatter_mag, phase_law, launch_trains, **clustering** (with its two sliders) |
+| Sky & display | **view** (with "Aim at densest sky"), sky_limit_mag, ambient_light, moon (with the year and the phase), show_stars, long_exposure |
+| Night & year | compute (the buttons and the status line), hours (the table), chart |
+| Advanced | seed, naked_eye_threshold, tint_by_orbit_family, mark_celestial_pole, satellites_move_in_fast_forward, cluster_membership_variation, cluster_diameter_variation |
+
+A control is named by the key of its setting where it has one. "Presets &
+settings" is not in the list: it is the same for every preset.
+
+The `panel` section of a settings file holds two lines for each group:
+
+```yaml
+panel:
+  constellation: satellites, brightness_mag, phase_law   # shown, in this order
+  constellation_details: closed                          # closed or open
+  night: none                                            # only Details
+```
+
+- The first line names the controls the group shows, up to three of its own,
+  in the order they are shown, or `none` for a group that shows only its
+  Details. The rest stay under Details in the group's own order. More than
+  three, or an empty value, is a mistake, and the file is not loaded. A name
+  that is not one of the group's controls is ignored and reported.
+- The second line says whether the Details section is open when the file or
+  preset is loaded.
+- A group left out shows its default controls with Details closed, as any key
+  left out takes its default. A preset that does not mention the panel
+  therefore shows the defaults.
+
+An export and a link record the panel as it is: the controls shown, and which
+Details sections are open. Opening or closing a Details section is not a
+change to the settings, so the preset on the card stays loaded. The settings
+reference in an export's file name and in a saved PNG leaves out the panel
+section, so two pictures of the same sky have the same reference whichever
+sections were open.
+
+The page's markup in `src/index.html` is the default arrangement, so nothing
+moves when it loads. `ui.js` moves each control's element, with its handlers,
+between the group's shown area and its Details section when a file, a preset
+or a link gives another arrangement. `test/settings.test.js` checks that the
+markup and `SETTINGS_PANEL` name the same controls and the same defaults.
 
 The simulator has a latitude and no longitude, and its time is local solar
 time, so a place is its latitude: New York City is 40.7, Taos 36.4, Alice
@@ -181,17 +295,19 @@ differences between the two simulators, and the five units.
 
 ### A short guide to what was added
 
-Where each thing is on the page, and what to try first.
+Where each thing is on the page, and what to try first. Since 2026-11-26 most
+controls are under their group's Details section; a closed Details section
+lists the names of the controls inside it.
 
 | To do this | Use |
 | --- | --- |
-| See the other simulator's setups | "Presets & settings": the three presets whose names start with "sdross0" |
-| Send someone exactly what you see | "Copy link", in the same group |
+| See the other simulator's setups | "Browse presets": the category "Compared with sdross0" |
+| Send someone exactly what you see | "Copy link", under Details in the same group |
 | Set a latitude such as 37.2 | The box beside the Latitude slider |
 | See the constellation as distinct rings | "Constellation": Orbital planes, "As filed", with Shell altitudes "Filed SSO levels" |
 | Compare mitigated and unmitigated satellites | "Constellation": SBDC brightness, with Phase law "Measured Starlink Gen2 Mini" for the mitigated case |
 | See the sky from a town or a city | "Sky & display": Ambient light, Bortle 5 to 9 |
-| Add the Moon | "Sky & display": Moon, "As on this date" or "Set the phase" |
+| Change the Moon | "Sky & display", under Details: Moon. It is "As on this date" unless a file or preset turns it off |
 | Compare SBDC light with the Moon's | The second line under the sky, in a warmer color |
 | See what a camera would see | "Sky & display": View, "Perspective" |
 | Find where the satellites are | "Aim at densest sky", under View |
@@ -302,7 +418,8 @@ they appear in "Assumptions & data".
 
 Three presets set the constellation of `sdross0/orbital-datacenter-brightness`:
 500,000 satellites, all Sun-synchronous, the 54 filed levels, planes as filed,
-spread ±10°, no scatter, no launch trains, 37.2° N, facing northwest.
+spread ±10°, no scatter, no launch trains, no Moon, 37.2° N, facing
+northwest.
 
 | Preset | Brightness | Date and time |
 | --- | --- | --- |
@@ -467,16 +584,24 @@ zenith sky 18.1 mag/arcsec² (Bortle 7), naked-eye limit 4.1
 
 "Moon" in "Sky & display" has three settings (`display.moon` in a file):
 
-- **Off** (the default): no Moon. Everything is as it was.
-- **As on this date** (`date`): the Moon where it is on the chosen date and
-  solar time in the year given in the "Year" box (`observer.year`, default
-  2026). The simulator has no longitude, so the solar time is taken as
-  universal time. The Moon moves about half a degree an hour, so its place is
-  within about 7° of the truth for any longitude, and its phase within a few
-  percent.
+- **Off** (`off`): no Moon. This was the default until 2026-11-26. The three
+  sdross0 presets set it, because that project has no Moon.
+- **As on this date** (`date`, the default since 2026-11-26): the Moon where it
+  is on the chosen date and solar time in the year given in the "Year" box
+  (`observer.year`, default 2026). The simulator has no longitude, so the
+  solar time is taken as universal time. The Moon moves about half a degree
+  an hour, so its place is within about 7° of the truth for any longitude, and
+  its phase within a few percent.
 - **Set the phase** (`phase`): a Moon a chosen number of days after new
   (`display.moon_age_days`, 0 to 29.5), on the ecliptic. 7.4 is first quarter,
   14.8 is full. This needs no date.
+
+Because the default changed, a link made before 2026-11-26 that does not
+mention `display.moon` now opens with the Moon of its date; add
+`&display.moon=off` to it to see the sky as it was then. An exported file is
+not affected, since an export lists every setting. In the opening view, half
+an hour after sunset with the sky still bright, the Moon of June 21, 2026, half
+lit and 38° up, changes none of the counts.
 
 The Moon's place comes from the low-precision series of the Astronomical
 Almanac, good to about 0.3°. `test/model.test.js` checks it against the solar
@@ -696,9 +821,10 @@ link to the opening view has nothing after the page name:
 The keys are the same `section.key` names as in a settings file, and the same
 rules apply: a key left out takes its default, a value outside its range moves
 to the nearest end, an unknown key is ignored and reported, and a link with a
-mistake changes nothing and says why in the panel. When the Preset list shows a
-preset, the link carries its name, and the page that opens shows that preset
-again. Nothing is sent anywhere: the text after `#` stays in the browser.
+mistake changes nothing and says why in the panel. When a preset is loaded, the
+link carries its name, and the page that opens shows that preset again. The
+panel is part of a link: see The control panel. Nothing is sent anywhere: the
+text after `#` stays in the browser.
 
 ### What Unit 2 changed in the code
 
@@ -743,7 +869,9 @@ its own tests is not published.
 
 The site workflow then runs `tests/e2e/sbdc-beta.spec.js`, at the repository
 root, which drives the published beta page in Chromium. Add the checks for a
-new control there. To run it locally, from the repository root, after
+new control there. Its `openBeta` and `choosePreset` helpers open every Details
+section, so a test can reach any control; pass `{ details: 'closed' }` to test
+the page as it opens. To run it locally, from the repository root, after
 `npm ci` and `npm run build`:
 
 ```sh

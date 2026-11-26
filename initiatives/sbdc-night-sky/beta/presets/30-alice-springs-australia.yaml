@@ -2,6 +2,8 @@
 # Keys that are left out take the simulator's defaults.
 
 name: Alice Springs Australia, 60 minutes after sunset, June 20
+category: Places
+description: A southern winter evening at Alice Springs's latitude, 23.7° S, an hour after sunset, with the default constellation. The sky is nearly dark and the stars are out, and visible SBDCs outnumber them many times over.
 
 observer:
   latitude: -23.7

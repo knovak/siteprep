@@ -2,6 +2,8 @@
 # Keys that are left out take the simulator's defaults.
 
 name: New York City, 30 minutes after sunset, October 20
+category: Places
+description: Evening twilight at New York's latitude, 40.7° N, with the default constellation. The sky is still bright, so only a few stars show while thousands of SBDCs are visible; the city's own skyglow is not included, and setting Ambient light to 8 or 9 adds it.
 
 observer:
   latitude: 40.7

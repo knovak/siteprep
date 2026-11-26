@@ -7,6 +7,7 @@ import {
   SETTINGS_FIELDS, defaultSettings, settingsToYaml, settingsFromYaml,
   settingsParseYaml, settingsParseDate, settingsFormatDate,
   settingsParseTime, settingsFormatTime, settingsToQuery, settingsFromQuery,
+  SETTINGS_PANEL, SETTINGS_PANEL_MAX, SETTINGS_DESCRIPTION_MAX, settingsWithoutPanel,
 } from "../src/settings.js";
 import { DEFAULT_VIEW } from "../src/render.js";
 
@@ -350,7 +351,7 @@ test("a link with a mistake is refused, with the item of each mistake", () => {
 /* ------------------------- the preset files ------------------------- */
 
 const presetFiles = readdirSync(new URL("../presets/", import.meta.url))
-  .filter((name) => /\.ya?ml$/.test(name)).sort();
+  .filter((name) => /\.ya?ml$/.test(name)).sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
 const presets = presetFiles.map((file) => ({ file, ...settingsFromYaml(read(`../presets/${file}`)) }));
 
 test("every preset file reads cleanly and has a name of its own", () => {
@@ -359,6 +360,8 @@ test("every preset file reads cleanly and has a name of its own", () => {
     assert.deepEqual(p.errors, [], `${p.file} has no errors`);
     assert.deepEqual(p.notes, [], `${p.file} has nothing ignored or moved into range`);
     assert.ok(p.name, `${p.file} has a name`);
+    assert.ok(p.description, `${p.file} has a description`);
+    assert.ok(p.description.length <= SETTINGS_DESCRIPTION_MAX, `${p.file}: the description is one or two sentences`);
   }
   assert.equal(new Set(presets.map((p) => p.name)).size, presets.length, "preset names are unique");
 });
@@ -401,7 +404,8 @@ test("the sdross0 presets: that project's constellation, with its two brightness
         brightness_mag: null, phase_law: null },
       p.file);
     assert.deepEqual(p.settings.display,
-      { ...defaultSettings().display, facing: 315, look_altitude: 25, field_of_view: 90, sky_limit_mag: 6.5 }, p.file);
+      { ...defaultSettings().display, facing: 315, look_altitude: 25, field_of_view: 90, sky_limit_mag: 6.5,
+        moon: "off" }, p.file);
     // that project's threshold formula, and no artificial light
     assert.deepEqual(p.settings.advanced, { ...defaultSettings().advanced, naked_eye_threshold: "schaefer" }, p.file);
     assert.equal(p.settings.display.ambient_light, 1, p.file);
@@ -413,4 +417,115 @@ test("the sdross0 presets: that project's constellation, with its two brightness
     ["Sep 22", { ref: "sunset", offsetMin: 80 }],
     ["Dec 21", { ref: "sunset", offsetMin: 92 }],
   ]);
+});
+
+/* ------------------------- the control panel ------------------------- */
+
+test("the panel: every group in the page has the controls SETTINGS_PANEL names, shown as it says", () => {
+  // The page's markup is the default arrangement, so that nothing moves when
+  // it loads. It has to match the list here, which is what a file or a
+  // preset is checked against.
+  const html = read("../src/index.html");
+  for (const g of SETTINGS_PANEL) {
+    const start = html.indexOf(`data-group="${g.group}"`);
+    assert.ok(start > 0, `the ${g.group} group is in index.html`);
+    const end = html.indexOf("</section>", start);
+    const block = html.slice(start, end);
+    const units = [...block.matchAll(/class="unit" data-control="([a-z_]+)"/g)].map((m) => m[1]);
+    assert.deepEqual([...units].sort(), [...g.controls].sort(), `the ${g.group} group's controls`);
+    const shown = block.slice(0, block.indexOf('<details class="more">'));
+    assert.deepEqual([...shown.matchAll(/data-control="([a-z_]+)"/g)].map((m) => m[1]), g.show,
+      `the ${g.group} group shows its default controls, in order`);
+    assert.ok(g.show.length <= SETTINGS_PANEL_MAX, `${g.group} shows at most ${SETTINGS_PANEL_MAX}`);
+  }
+  // every group's Details start closed; Night & year and Advanced show
+  // nothing else
+  assert.doesNotMatch(html, /<details class="more"[^>]* open/);
+  const shownOf = (group) => SETTINGS_PANEL.find((g) => g.group === group).show;
+  assert.deepEqual(shownOf("observer"), ["latitude", "date", "time_jumps"]);
+  assert.deepEqual(shownOf("constellation"), ["satellites", "brightness_mag", "clustering"]);
+  assert.deepEqual(shownOf("display"), ["view"]);
+  assert.deepEqual([shownOf("night"), shownOf("advanced")], [[], []]);
+  const d = defaultSettings();
+  for (const g of SETTINGS_PANEL) {
+    assert.deepEqual(d.panel[g.group], g.show);
+    assert.equal(d.panel[`${g.group}_details`], "closed");
+  }
+});
+
+test("the panel: a file chooses the controls each group shows and whether its Details are open", () => {
+  const got = settingsFromYaml("panel:\n  constellation: phase_law, brightness_mag\n  night_details: open\n");
+  assert.deepEqual(got.errors, []);
+  assert.deepEqual(got.notes, []);
+  assert.deepEqual(got.settings.panel.constellation, ["phase_law", "brightness_mag"], "in the order given");
+  assert.equal(got.settings.panel.night_details, "open");
+  assert.deepEqual(got.settings.panel.observer, defaultSettings().panel.observer, "a group left out keeps its default");
+  // the panel changes nothing else
+  assert.deepEqual(settingsWithoutPanel(got.settings), settingsWithoutPanel(defaultSettings()));
+
+  // it round-trips through a file and a link
+  const s = got.settings;
+  assert.deepEqual(settingsFromYaml(settingsToYaml(s)).settings, s);
+  const query = settingsToQuery(s);
+  assert.equal(query, "panel.constellation=phase_law%2C%20brightness_mag&panel.night_details=open");
+  assert.deepEqual(settingsFromQuery(query).settings, s);
+  assert.equal(settingsToQuery(s, { panel: false }), "", "a link without the panel is the opening view's");
+  assert.doesNotMatch(settingsToYaml(s, { panel: false }), /^panel:/m);
+  assert.match(settingsToYaml(s), /^  constellation: phase_law, brightness_mag +# none, or up to 3 of satellites, /m);
+  assert.match(settingsToYaml(s), /^  night: none +# none, or up to 3 of compute, hours, chart$/m);
+});
+
+test("the panel: none, or up to three controls of the group, and names it does not have are reported", () => {
+  const many = settingsFromYaml("panel:\n  observer: latitude, date, time, playback\n");
+  assert.equal(many.settings, null);
+  assert.match(many.errors[0], /^line 2: panel\.observer: expected none, or up to 3 of latitude, date, time, /);
+  assert.equal(settingsFromYaml("panel:\n  observer: ,\n").settings, null, "an empty list is written none");
+  // "none": the group shows only its Details, and it round-trips
+  const bare = settingsFromYaml("panel:\n  observer: none\n  constellation: NONE\n");
+  assert.deepEqual(bare.errors, []);
+  assert.deepEqual([bare.settings.panel.observer, bare.settings.panel.constellation], [[], []]);
+  assert.deepEqual(settingsFromYaml(settingsToYaml(bare.settings)).settings, bare.settings);
+  assert.deepEqual(settingsFromQuery(settingsToQuery(bare.settings)).settings, bare.settings);
+  // a group that shows something by default can be given to show nothing, and back
+  assert.deepEqual(settingsFromYaml("panel:\n  night: compute\n").settings.panel.night, ["compute"]);
+  // a name from another group, or a misspelling, is ignored and reported
+  const odd = settingsFromYaml("panel:\n  observer: date, satellites, tiem\n");
+  assert.deepEqual(odd.errors, []);
+  assert.deepEqual(odd.settings.panel.observer, ["date"]);
+  assert.deepEqual(odd.notes,
+    ['line 2: panel.observer lists "satellites", "tiem", which are not controls of this group and were ignored']);
+  // a name given twice is shown once; case does not matter
+  assert.deepEqual(settingsFromYaml("panel:\n  display: Moon, moon\n").settings.panel.display, ["moon"]);
+  // a list of names the group does not have shows nothing, and says so
+  const typo = settingsFromYaml("panel:\n  display: mon\n");
+  assert.deepEqual(typo.settings.panel.display, []);
+  assert.equal(typo.notes.length, 1);
+  assert.match(settingsFromYaml("panel:\n  display_details: half\n").errors[0], /expected one of closed, open/);
+});
+
+test("a preset's name, category and description are read and written", () => {
+  const text = settingsToYaml(defaultSettings(), {
+    name: "A place", category: "Places", description: "One sentence: with a colon. And a second one.",
+  });
+  assert.match(text, /^name: A place\ncategory: Places\ndescription: "One sentence: with a colon\. And a second one\."$/m);
+  const back = settingsFromYaml(text);
+  assert.deepEqual([back.name, back.category, back.description],
+    ["A place", "Places", "One sentence: with a colon. And a second one."]);
+  // a colon in an unquoted description, as a person writes one, is part of it
+  assert.equal(settingsFromYaml("description: The setup: 500,000 satellites.\n").description,
+    "The setup: 500,000 satellites.");
+  assert.equal(settingsFromYaml("observer:\n  latitude: 3\n").category, null);
+});
+
+test("the presets: each arranges the panel as the defaults do, and the sdross0 presets have no Moon", () => {
+  for (const p of presets) {
+    assert.deepEqual(p.settings.panel, defaultSettings().panel, p.file);
+    // the place presets show the Moon of their date, the default
+    if (p.category === "Places") assert.equal(p.settings.display.moon, "date", p.file);
+  }
+  for (const p of presets.filter((x) => /^sdross0 /.test(x.name))) {
+    assert.equal(p.settings.display.moon, "off", `${p.file}: that project has no Moon`);
+    assert.equal(p.category, "Compared with sdross0", p.file);
+  }
+  assert.deepEqual([...new Set(presets.map((p) => p.category))], ["Places", "Compared with sdross0"]);
 });

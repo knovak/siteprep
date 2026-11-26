@@ -52,8 +52,11 @@ async function setValue(page, selector, value) {
 }
 
 /** Open the beta and wait for its first picture. Collects errors and requests.
- *  `hash` is the part of the address after the page, starting with "#". */
-async function openBeta(page, hash = '') {
+ *  `hash` is the part of the address after the page, starting with "#".
+ *  Each group keeps most of its controls under a Details section that starts
+ *  closed; most tests here are about what the controls do, so every Details
+ *  section is opened unless `details: 'closed'` is asked for. */
+async function openBeta(page, hash = '', { details = 'open' } = {}) {
   const problems = { errors: [], requests: [] };
   page.on('pageerror', (error) => problems.errors.push(String(error)));
   page.on('request', (request) => {
@@ -61,18 +64,36 @@ async function openBeta(page, hash = '') {
   });
   await page.goto(BETA + hash);
   await settled(page);
+  if (details === 'open') await openAllDetails(page);
   return problems;
 }
 
-/** Choose a preset by part of its name and wait for the picture. */
-async function choosePreset(page, namePart) {
-  const value = await page.locator('#preset option').evaluateAll(
-    (list, part) => (list.find((o) => o.textContent.includes(part)) || {}).value, namePart);
+/** Open every group's Details section, so that a test can reach any control. */
+async function openAllDetails(page) {
+  await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; }));
+}
+
+/** Choose a preset in the preset browser by part of its name, and wait for
+ *  the picture. A preset arranges the panel, so the Details sections are
+ *  opened again afterwards unless `details: 'closed'` is asked for. Returns
+ *  the preset's place in the list. */
+async function choosePreset(page, namePart, { details = 'open' } = {}) {
+  await page.locator('#preset-browse').click();
+  await expect(page.locator('#presets')).toBeVisible();
+  await page.locator('#preset-search').fill(namePart);
+  const item = page.locator('#preset-list .preset-item', { hasText: namePart }).first();
+  const value = await item.getAttribute('data-index');
   expect(value, `a preset named like "${namePart}"`).toBeTruthy();
-  await page.locator('#preset').selectOption(value);
+  await item.click();
+  await expect(page.locator('#presets')).toBeHidden();
   await settled(page);
+  if (details === 'open') await openAllDetails(page);
   return value;
 }
+
+/** The controls a group shows outside its Details section, in order. */
+const shownControls = (page, group) => page.locator(`.grp[data-group="${group}"] .shown > .unit`)
+  .evaluateAll((units) => units.map((u) => u.dataset.control));
 
 /** Wait until the simulator has finished computing and drawn a readout. */
 async function settled(page) {
@@ -268,7 +289,7 @@ test.describe('SBDC beta', () => {
     await expect.poll(async () => (await readout(page)).visible).not.toBe(december.visible);
     await page.locator('#planes').selectOption('spread');
     await settled(page);
-    await expect(page.locator('#preset')).toHaveValue('');
+    await expect(page.locator('#preset-card')).toHaveAttribute('data-preset', '');
     expect(problems.errors).toEqual([]);
     expect(problems.requests).toEqual([]);
   });
@@ -289,7 +310,8 @@ test.describe('SBDC beta', () => {
     await second.goto(link);
     await settled(second);
     await expect(second.locator('#readout')).toHaveText(first);
-    await expect(second.locator('#preset')).toHaveValue(value);
+    await expect(second.locator('#preset-card')).toHaveAttribute('data-preset', value);
+    await expect(second.locator('#preset-name')).toHaveText(/^sdross0 default, optimistic mitigation/);
     await expect(second.locator('#settings-status')).toContainText('Loaded from the link');
     await expect(second.locator('#compass')).toHaveText('facing 315°');
     expect(secondErrors).toEqual([]);
@@ -378,7 +400,6 @@ test.describe('SBDC beta', () => {
     await expect(page.locator('#readout-sub')).toContainText('60 min after sunset');
     const table = { counts: await readout(page), sky: await sky(page) };
 
-    await page.locator('aside details.grp summary', { hasText: 'Advanced' }).click();
     await page.locator('#eyemodel').selectOption('schaefer');
     await expect.poll(async () => (await sky(page)).limit).toBeLessThan(table.sky.limit - 0.3);
     const strict = { counts: await readout(page), sky: await sky(page) };
@@ -398,12 +419,15 @@ test.describe('SBDC beta', () => {
     await page.locator('#jump-dusk60').click();
     await expect(page.locator('#readout-sub')).toContainText('60 min after sunset');
     const line = page.locator('#readout-light');
+    // the Moon of the date is the default, and the line compares with it
+    await expect(page.locator('#moon')).toHaveValue('date');
+    await expect(line).toContainText(/Moon \d+% lit, \d+° up: .* of this Moon’s light/);
+    await page.locator('#moon').selectOption('off');
     await expect(line).toContainText('SBDC light');
     await expect(line).toContainText('a full Moon');
     await expect(line).toContainText('a moonless natural night sky');
     // no Moon is set, so the line does not mention one
     await expect(line).not.toContainText('lit');
-    await expect(page.locator('#moon')).toHaveValue('off');
     const text = await line.textContent();
     // a few hundred thousand unmitigated satellites: a fraction of a full Moon, written 1/n
     expect(text).toMatch(/1\/[\d,.]+ of a full Moon/);
@@ -573,7 +597,6 @@ test.describe('SBDC beta', () => {
 
   test('the Night and year panel reports hours for a night, and a click on its chart sets the time', async ({ page }) => {
     const problems = await openBeta(page);
-    await page.locator('aside details.grp summary', { hasText: 'Night & year' }).click();
     const cell = (key, column) => page.locator(`#night-table tr[data-key="${key}"] td`).nth(column);
     await expect(cell('night', 1)).toHaveText('—');
 
@@ -601,7 +624,7 @@ test.describe('SBDC beta', () => {
     await expect(page.locator('#night-grp')).not.toHaveClass(/stale/);
 
     // the latitude is: the result is kept, dimmed, and says why
-    await page.locator('aside details.grp summary', { hasText: 'Observer' }).scrollIntoViewIfNeeded();
+    await page.locator('#observer-title').scrollIntoViewIfNeeded();
     await setValue(page, '#lat-num', 55);
     await expect(page.locator('#night-grp')).toHaveClass(/stale/);
     await expect(page.locator('#night-status')).toContainText('settings have changed');
@@ -617,7 +640,6 @@ test.describe('SBDC beta', () => {
     // the smallest constellation, so that the year is quick to compute
     await setValue(page, '#nsats', 0);
     await settled(page);
-    await page.locator('aside details.grp summary', { hasText: 'Night & year' }).click();
     await page.locator('#year-run').click();
     await expect(page.locator('#night-status')).toContainText('a year: computed for 40°N', { timeout: 60000 });
     const cell = (key) => page.locator(`#night-table tr[data-key="${key}"] td`).nth(2);
@@ -677,7 +699,6 @@ test.describe('SBDC beta', () => {
     const problems = await openBeta(page);
     await setValue(page, '#nsats', 0);
     await settled(page);
-    await page.locator('#night-grp summary').click();
     await page.evaluate(() => new Promise(resolve => {
       const status = document.querySelector('#night-status');
       const observer = new MutationObserver(() => {
@@ -729,10 +750,11 @@ test.describe('SBDC beta', () => {
 
   test('the picture and chart count compact groups once in both languages', async ({ page }) => {
     const problems = await openBeta(page);
-    const content = 'observer:\n  time: "20:15"\nconstellation:\n  satellites: 10000\n  launch_trains: 0\n  clustering: true\n  satellites_per_cluster: 100\n  cluster_diameter_km: 0.2\nadvanced:\n  cluster_membership_variation: 0\n  cluster_diameter_variation: 0\n';
+    // no Moon, so that the star count below does not depend on its light
+    const content = 'observer:\n  time: "20:15"\nconstellation:\n  satellites: 10000\n  launch_trains: 0\n  clustering: true\n  satellites_per_cluster: 100\n  cluster_diameter_km: 0.2\ndisplay:\n  moon: off\nadvanced:\n  cluster_membership_variation: 0\n  cluster_diameter_variation: 0\n';
     await page.locator('#settings-file').setInputFiles({ name: 'compact.yaml', mimeType: 'text/plain', buffer: Buffer.from(content) });
     await expect(page.locator('#readout')).toContainText('VISIBLE objects 3 (300 satellites within)');
-    await page.locator('#night-grp summary').click();
+    await openAllDetails(page);              // the file put the panel back to its defaults
     await page.locator('#night-run').click();
     await expect(page.locator('#night-time')).toBeEnabled();
     await setValue(page, '#night-time', 495);
@@ -769,17 +791,231 @@ test.describe('SBDC beta', () => {
 
   test('every preset loads and draws', async ({ page }) => {
     const problems = await openBeta(page);
-    const options = await page.locator('#preset option').evaluateAll((list) =>
-      list.filter((o) => o.value !== '').map((o) => ({ value: o.value, name: o.textContent })));
-    expect(options.length).toBeGreaterThanOrEqual(6);
-    for (const option of options) {
-      await page.locator('#preset').selectOption(option.value);
+    const items = page.locator('#preset-list .preset-item');
+    const count = await items.count();
+    expect(count).toBeGreaterThanOrEqual(6);
+    for (let i = 0; i < count; i++) {
+      await page.locator('#preset-browse').click();
+      const item = items.nth(i);
+      const value = await item.getAttribute('data-index');
+      const name = await item.locator('.preset-item-name').textContent();
+      await item.click();
       await settled(page);
       const now = await readout(page);
-      expect(now.above, option.name).toBeGreaterThan(0);
-      await expect(page.locator('#preset')).toHaveValue(option.value);
+      expect(now.above, name).toBeGreaterThan(0);
+      await expect(page.locator('#preset-card')).toHaveAttribute('data-preset', value);
+      await expect(page.locator('#preset-desc')).not.toBeEmpty();
     }
     expect(problems.errors).toEqual([]);
     expect(problems.requests).toEqual([]);
+  });
+
+  // ---- the control panel and the preset browser ----
+
+  test('each group shows a few controls and lists the rest under a closed Details section', async ({ page }) => {
+    const problems = await openBeta(page, '', { details: 'closed' });
+    const groups = {
+      observer: ['latitude', 'date', 'time_jumps'],
+      constellation: ['satellites', 'brightness_mag', 'clustering'],
+      display: ['view'],
+      night: [],
+      advanced: [],
+    };
+    for (const [group, shown] of Object.entries(groups)) {
+      expect(await shownControls(page, group), group).toEqual(shown);
+      await expect(page.locator(`.grp[data-group="${group}"] details.more`)).not.toHaveAttribute('open', '');
+    }
+    for (const id of ['#lat', '#date', '#jump-sunset', '#jump-dawn30', '#nsats', '#brightness', '#clusteron', '#viewmode']) {
+      await expect(page.locator(id), id).toBeVisible();
+    }
+    for (const id of ['#time', '#timelock', '#shells', '#ambient', '#moon', '#night-run', '#night-table', '#eyemodel', '#seed']) {
+      await expect(page.locator(id), id).toBeHidden();
+    }
+    // the Moon is as on this date unless a file or preset says otherwise
+    await expect(page.locator('#moon')).toHaveValue('date');
+    await expect(page.locator('#advanced-grp .more-list')).toContainText('Seed · Naked-eye threshold');
+    await expect(page.locator('#night-grp .more-list')).toHaveText('Compute · Table of hours · Chart');
+    // "Details" names what it holds, in small type and in its tooltip
+    const observer = page.locator('#observer-grp details.more');
+    await expect(observer.locator('.more-list')).toHaveText('Solar time · Hold time to twilight · Playback');
+    await expect(observer.locator('summary')).toHaveAttribute('title',
+      'Under Details: Solar time, Hold time to twilight, Playback');
+    await expect(page.locator('#constellation-grp .more-list')).toContainText('Shell altitudes · Orbital planes');
+    await expect(page.locator('#settings-more .more-list')).toHaveText('Copy link · Export settings · Import settings');
+
+    // a click opens it; the list of names gives way to the controls
+    await observer.locator('summary').click();
+    await expect(page.locator('#timelock')).toBeVisible();
+    await expect(observer.locator('.more-list')).toBeHidden();
+    await observer.locator('summary').click();
+    await expect(page.locator('#timelock')).toBeHidden();
+
+    await page.locator('#lang-toggle').click();
+    await expect(observer.locator('.more-word')).toHaveText('Détails');
+    await expect(observer.locator('.more-list')).toHaveText('Heure solaire · Heure liée au crépuscule · Lecture');
+    await expect(page.locator('#observer-title')).toHaveText('Observateur');
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('a preset chooses the controls each group shows, and its card describes it', async ({ page }) => {
+    const problems = await openBeta(page, '', { details: 'closed' });
+    await expect(page.locator('#preset-name')).toHaveText('No preset');
+    await expect(page.locator('#preset-browse')).toHaveText('Browse presets (6)');
+
+    const value = await choosePreset(page, 'sdross0 default, no mitigation', { details: 'closed' });
+    expect(await shownControls(page, 'constellation')).toEqual(['satellites', 'brightness_mag', 'clustering']);
+    // that project has no Moon, so its presets turn the Moon off
+    await expect(page.locator('#moon')).toHaveValue('off');
+    await expect(page.locator('#preset-category')).toHaveText('Compared with sdross0');
+    await expect(page.locator('#preset-name')).toHaveText(/^sdross0 default, no mitigation/);
+    await expect(page.locator('#preset-desc')).toContainText('sdross0/orbital-datacenter-brightness');
+    // a long description shows three lines until "more" is pressed
+    const desc = page.locator('#preset-desc');
+    const clipped = (await desc.boundingBox()).height;
+    await page.locator('#preset-more').click();
+    expect((await desc.boundingBox()).height).toBeGreaterThan(clipped);
+    await expect(page.locator('#preset-more')).toHaveText('less');
+
+    // opening a Details section is not a change to the settings
+    await page.locator('#constellation-grp details.more summary').click();
+    await expect(page.locator('#preset-card')).toHaveAttribute('data-preset', value);
+
+    // loading a preset puts the panel back as the preset has it: here, the defaults
+    await choosePreset(page, 'New York City', { details: 'closed' });
+    expect(await shownControls(page, 'constellation')).toEqual(['satellites', 'brightness_mag', 'clustering']);
+    await expect(page.locator('#constellation-grp details.more')).not.toHaveAttribute('open', '');
+    await expect(page.locator('#moon')).toHaveValue('date');
+
+    // a change to a control: the card says which preset it started from
+    await setValue(page, '#ambient', 8);
+    await expect(page.locator('#preset-card')).toHaveAttribute('data-preset', '');
+    await expect(page.locator('#preset-desc')).toHaveText(/^Settings changed since this preset was loaded: New York City/);
+    // and the arrows step through the list from there
+    await page.locator('#preset-next').click();
+    await settled(page);
+    await expect(page.locator('#preset-name')).toHaveText(/^Taos/);
+    await page.locator('#preset-prev').click();
+    await settled(page);
+    await expect(page.locator('#preset-name')).toHaveText(/^New York City/);
+    await expect(page.locator('#ambient')).toHaveValue('1');
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('a file or link chooses the controls each group shows, in its order, and which Details are open', async ({ page }) => {
+    const problems = await openBeta(page,
+      '#panel.constellation=phase_law%2C%20satellites&panel.night=compute&panel.display_details=open&panel.observer=none',
+      { details: 'closed' });
+    expect(await shownControls(page, 'constellation')).toEqual(['phase_law', 'satellites']);
+    await expect(page.locator('#phaselaw')).toBeVisible();
+    await expect(page.locator('#brightness')).toBeHidden();
+    await expect(page.locator('#constellation-grp .more-list')).toContainText('SBDC brightness');
+    await expect(page.locator('#constellation-grp .more-list')).not.toContainText('Phase law');
+    expect(await shownControls(page, 'night')).toEqual(['compute']);
+    await expect(page.locator('#night-run')).toBeVisible();
+    await expect(page.locator('#display-grp details.more')).toHaveAttribute('open', '');
+    await expect(page.locator('#moon')).toBeVisible();
+    // a group can show only its Details
+    expect(await shownControls(page, 'observer')).toEqual([]);
+    await expect(page.locator('#observer-grp .more-list')).toHaveText(/^Latitude · Date · Solar time · Time jumps/);
+    expect(problems.errors).toEqual([]);
+  });
+
+  test('the preset browser filters by words and by category, and works from the keyboard', async ({ page }) => {
+    const problems = await openBeta(page, '', { details: 'closed' });
+    await page.locator('#preset-browse').click();
+    const dialog = page.locator('#presets');
+    await expect(dialog).toBeVisible();
+    const items = dialog.locator('.preset-item');
+    await expect(items).toHaveCount(6);
+    await expect(dialog.locator('#preset-count')).toHaveText('6 presets');
+    await expect(dialog.locator('.preset-cat')).toHaveText(['Places', 'Compared with sdross0']);
+    // every preset shows its description in the list
+    for (let i = 0; i < 6; i++) await expect(items.nth(i).locator('.preset-item-desc')).not.toBeEmpty();
+
+    // words match the name, the description and the category, in any order
+    await page.locator('#preset-search').fill('december optimistic');
+    await expect(items).toHaveCount(1);
+    await expect(dialog.locator('#preset-count')).toHaveText('1 of 6 presets match');
+    await page.locator('#preset-search').fill('twilight');
+    await expect(items).toHaveCount(2);
+    await page.locator('#preset-search').fill('zzz');
+    await expect(dialog.locator('.preset-empty')).toBeVisible();
+    await page.locator('#preset-search').fill('');
+
+    await dialog.locator('#preset-cats button', { hasText: 'Places' }).click();
+    await expect(items).toHaveCount(3);
+    await expect(dialog.locator('#preset-cats button', { hasText: 'Places' })).toHaveAttribute('aria-pressed', 'true');
+    await dialog.locator('#preset-cats button', { hasText: 'All' }).click();
+    await expect(items).toHaveCount(6);
+
+    // arrows move from the filter into the list, and Enter loads
+    await page.locator('#preset-search').focus();
+    await page.keyboard.press('ArrowDown');
+    await expect(items.nth(0)).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(items.nth(1)).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(dialog).toBeHidden();
+    await settled(page);
+    await expect(page.locator('#preset-card')).toHaveAttribute('data-preset', '1');
+    await expect(page.locator('#preset-browse')).toBeFocused();
+
+    // the preset in use is marked; Escape closes without loading anything
+    await page.locator('#preset-browse').click();
+    await expect(items.nth(1)).toHaveAttribute('aria-current', 'true');
+    await expect(items.nth(1).locator('.preset-item-current')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(page.locator('#preset-card')).toHaveAttribute('data-preset', '1');
+    // the filter is typed in the search box and loads the first match
+    await page.locator('#preset-browse').click();
+    await page.locator('#preset-search').fill('alice');
+    await page.keyboard.press('Enter');
+    await settled(page);
+    await expect(page.locator('#preset-name')).toHaveText(/^Alice Springs/);
+    expect(problems.errors).toEqual([]);
+    expect(problems.requests).toEqual([]);
+  });
+
+  test('a settings file carries the panel; the picture\'s settings reference does not', async ({ page }) => {
+    const fs = require('node:fs/promises');
+    await openBeta(page, '', { details: 'closed' });
+    const exported = async () => {
+      const [file] = await Promise.all([page.waitForEvent('download'), page.locator('#settings-export').click()]);
+      return { name: file.suggestedFilename(), text: await fs.readFile(await file.path(), 'utf8') };
+    };
+    await page.locator('#settings-more summary').click();
+    const before = await exported();
+    expect(before.text).toMatch(/^  observer: latitude, date, time_jumps +# none, or up to 3 of /m);
+    expect(before.text).toMatch(/^  night: none +# /m);
+    expect(before.text).toMatch(/^  night_details: closed/m);
+    await page.locator('#night-grp details.more summary').click();
+    const after = await exported();
+    expect(after.text).toMatch(/^  night_details: open/m);
+    // the same sky, so the same reference
+    expect(after.name).toBe(before.name);
+
+    // with a preset loaded, the file has its name, category and description
+    // (presets leave this group's own Details as they are)
+    await choosePreset(page, 'Taos', { details: 'closed' });
+    await expect(page.locator('#settings-export')).toBeVisible();
+    const preset = await exported();
+    expect(preset.text).toMatch(/^name: Taos, New Mexico, 30 minutes before sunrise, March 15$/m);
+    expect(preset.text).toMatch(/^category: Places$/m);
+    expect(preset.text).toMatch(/^description: "?Morning twilight at Taos/m);
+  });
+
+  test('on a phone the preset browser fills the screen', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const problems = await openBeta(page, '', { details: 'closed' });
+    await page.locator('#preset-browse').click();
+    const box = await page.locator('#presets').boundingBox();
+    expect(box.width).toBeGreaterThanOrEqual(389);
+    expect(box.width).toBeLessThanOrEqual(390);
+    const overflow = await page.locator('#preset-list').evaluate((el) => el.scrollWidth - el.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+    await page.locator('#close-presets').click();
+    await expect(page.locator('#presets')).toBeHidden();
+    expect(problems.errors).toEqual([]);
   });
 });

@@ -24,237 +24,356 @@
 
 <main>
   <aside aria-label="Simulation controls">
-    <details class="grp" id="settings-grp" open>
-      <summary>Presets &amp; settings</summary>
-      <div class="ctl">
-        <label for="preset">Preset</label>
-        <select id="preset">
-          <option value="" selected>Choose a preset…</option>
-        </select>
+    <!-- Each group shows up to three of its controls and keeps the rest under
+         "Details". Every control is a .unit named by data-control; the build's
+         settings.js (SETTINGS_PANEL) lists them, and a settings file's panel
+         section says which are shown. The markup below is the default
+         arrangement, and ui.js moves the units when a file or preset gives
+         another. -->
+    <section class="grp" id="settings-grp" aria-labelledby="settings-title">
+      <h2 class="grp-title" id="settings-title">Presets &amp; settings</h2>
+      <div id="preset-card" data-preset="">
+        <div id="preset-category"></div>
+        <div id="preset-name">No preset</div>
+        <p id="preset-desc"></p>
+        <button id="preset-more" type="button" aria-controls="preset-desc" aria-expanded="false" hidden>more</button>
       </div>
-      <div class="row">
-        <button id="settings-export">Export settings</button>
-        <button id="settings-import">Import settings…</button>
-        <button id="settings-link">Copy link</button>
-        <input id="settings-file" type="file" hidden
-               accept=".yaml,.yml,.txt,text/yaml,application/yaml,application/x-yaml,text/plain">
+      <div class="row preset-row">
+        <button id="preset-browse" class="primary" aria-haspopup="dialog">Browse presets</button>
+        <button id="preset-prev" aria-label="Previous preset" title="Previous preset">‹</button>
+        <button id="preset-next" aria-label="Next preset" title="Next preset">›</button>
       </div>
-      <div class="hint" id="hint-settings">Export saves every setting as a text file that can be edited and imported again. Copy link puts the settings in the page address</div>
       <div class="hint" id="settings-status" role="status" aria-live="polite"></div>
-    </details>
-
-    <details class="grp" open>
-      <summary>Observer</summary>
-      <div class="ctl">
-        <label for="lat">Latitude <output id="lat-label">40°N</output></label>
-        <div class="numrow">
-          <input id="lat" type="range" min="-90" max="90" step="1" value="40">
-          <input id="lat-num" type="number" min="-90" max="90" step="0.1" value="40"
-                 aria-label="Latitude in degrees to a tenth, negative for south">
-        </div>
-      </div>
-      <div class="ctl">
-        <label for="date">Date <output id="date-label">Jun 21</output></label>
-        <input id="date" type="range" min="1" max="365" step="1" value="172">
-        <div class="hint" id="sun-events">sunset —</div>
-      </div>
-      <div class="ctl">
-        <label for="time">Solar time <output id="time-label">20:11</output></label>
-        <input id="time" type="range" min="0" max="1439" step="1" value="1211">
-        <div class="hint" id="hint-solar">local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more</div>
-      </div>
-      <div class="row">
-        <button id="jump-sunset">Sunset</button>
-        <button id="jump-dusk30">+30 min</button>
-        <button id="jump-dusk60">+60 min</button>
-        <button id="jump-midnight">Midnight</button>
-        <button id="jump-dawn60">Dawn −60</button>
-        <button id="jump-dawn30">Dawn −30</button>
-      </div>
-      <div class="check"><input id="timelock" type="checkbox"><label for="timelock">Hold time relative to sunset/dawn as latitude changes</label></div>
-      <div class="row">
-        <button id="play-rt">▶ Real time</button>
-        <button id="play-ff">▶▶ Fast forward</button>
-      </div>
-    </details>
-
-    <details class="grp" open>
-      <summary>Constellation</summary>
-      <div class="ctl">
-        <label for="nsats">Satellites <output id="nsats-label">300,000</output></label>
-        <input id="nsats" type="range" min="0" max="100" step="1" value="74">
-        <div class="hint" id="hint-fcc">FCC filing envelope: up to 1,000,000</div>
-      </div>
-      <div class="ctl">
-        <label for="sso">Orbit families <output id="sso-label">70% SSO / 30% 30°</output></label>
-        <input id="sso" type="range" min="0" max="100" step="5" value="70">
-      </div>
-      <div class="ctl">
-        <label for="shells">Shell altitudes</label>
-        <select id="shells">
-          <option value="low">Low (550–650 km)</option>
-          <option value="mid">Mid (750–1,150 km)</option>
-          <option value="spread" selected>Spread (550–1,800 km)</option>
-          <option value="filed-sso">Filed SSO levels (565–1,002 km, 54 levels)</option>
-          <option value="custom">Custom…</option>
-        </select>
-        <div id="shells-custom" style="display:none; margin-top:6px">
-          <input id="shells-custom-input" type="text" inputmode="text" spellcheck="false"
-                 placeholder="550:0.5, 1200:0.5" aria-label="Custom shells: altitude:share pairs">
-          <div class="hint" id="shells-custom-hint">format: altitude:share, e.g. 550:0.5, 1200:0.5</div>
-        </div>
-      </div>
-      <div class="ctl">
-        <label for="planes">Orbital planes</label>
-        <select id="planes">
-          <option value="spread" selected>Spread (72 per shell, satellites at random)</option>
-          <option value="filed">As filed (2 per shell level, evenly spaced)</option>
-        </select>
-      </div>
-      <div class="ctl">
-        <label for="planespread">Plane spread <output id="planespread-label">±11.25°</output></label>
-        <input id="planespread" type="range" min="0" max="120" step="1" value="45">
-        <div class="hint" id="hint-planespread">how far the Sun-synchronous planes spread to each side of the dawn-dusk line · the filing allows ±30°</div>
-      </div>
-      <div class="ctl">
-        <label for="brightness">SBDC brightness <output id="bright-label">+0.5 — unmitigated</output></label>
-        <input id="brightness" type="range" min="-70" max="70" step="1" value="5">
-        <div class="hint" id="hint-bright"></div>
-      </div>
-      <div class="ctl">
-        <label for="scatter">Brightness scatter <output id="scatter-label">1.3 mag</output></label>
-        <input id="scatter" type="range" min="0" max="20" step="1" value="13">
-        <div class="hint" id="hint-scatter">how much satellites differ from each other · 0 = identical</div>
-      </div>
-      <div class="ctl">
-        <label for="phaselaw">Phase law</label>
-        <select id="phaselaw">
-          <option value="lambert" selected>Lambertian sphere</option>
-          <option value="mini">Measured Starlink Gen2 Mini (mitigated)</option>
-        </select>
-        <div class="hint" id="hint-phase">how brightness changes with the Sun–satellite–observer angle</div>
-      </div>
-      <div class="ctl">
-        <label for="trains">Recent launch trains <output id="trains-label">1</output></label>
-        <input id="trains" type="range" min="0" max="10" step="1" value="1">
-      </div>
-      <div class="check"><input id="clusteron" type="checkbox"><label for="clusteron">Cluster into data-center groups</label></div>
-      <div id="cluster-ctls" style="display:none">
-        <div class="ctl">
-          <label for="cpc">Satellites per cluster <output id="cpc-label">100</output></label>
-          <input id="cpc" type="range" min="0" max="100" step="1" value="50">
-        </div>
-        <div class="ctl">
-          <label for="cdia">Cluster diameter <output id="cdia-label">1.0 km</output></label>
-          <input id="cdia" type="range" min="0" max="100" step="1" value="41">
-        </div>
-        <div class="hint" id="cluster-derived">≈ 3,000 clusters</div>
-      </div>
-    </details>
-
-    <details class="grp" open>
-      <summary>Sky &amp; display</summary>
-      <div class="ctl">
-        <label for="viewmode">View</label>
-        <select id="viewmode">
-          <option value="horizon" selected>Horizon (drag to look around)</option>
-          <option value="perspective">Perspective (as a camera sees it)</option>
-          <option value="fisheye">All-sky fisheye (zenith at center)</option>
-        </select>
-        <div class="row" style="margin-top:6px">
-          <button id="aim">Aim at densest sky</button>
-        </div>
-      </div>
-      <div class="ctl">
-        <label for="starlim">Eye limit <output id="starlim-label">mag 6.0</output></label>
-        <input id="starlim" type="range" min="40" max="65" step="1" value="60">
-        <div class="hint" id="hint-starlim">the faintest magnitude this observer sees under a dark sky · twilight and ambient light lower it further</div>
-      </div>
-      <div class="ctl">
-        <label for="ambient">Ambient light <output id="ambient-label">Bortle 1 — no artificial light</output></label>
-        <input id="ambient" type="range" min="1" max="9" step="1" value="1">
-        <div class="hint" id="hint-ambient">artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars</div>
-      </div>
-      <div class="ctl">
-        <label for="moon">Moon <output id="moon-label"></output></label>
-        <select id="moon">
-          <option value="off" selected>Off (no Moon)</option>
-          <option value="date">As on this date</option>
-          <option value="phase">Set the phase</option>
-        </select>
-        <div id="moon-date" style="display:none; margin-top:6px">
-          <div class="numrow">
-            <label for="year">Year</label>
-            <input id="year" type="number" min="1900" max="2100" step="1" value="2026">
+      <details class="more" id="settings-more">
+        <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
+        <div class="more-body">
+          <div class="row">
+            <button id="settings-link">Copy link</button>
+            <button id="settings-export">Export settings</button>
+            <button id="settings-import">Import settings…</button>
+            <input id="settings-file" type="file" hidden
+                   accept=".yaml,.yml,.txt,text/yaml,application/yaml,application/x-yaml,text/plain">
           </div>
-          <div class="hint" id="hint-year">Approximate Moon position. The model uses solar time as universal time; it does not use your longitude.</div>
+          <div class="hint" id="hint-settings">Export saves every setting as a text file that can be edited and imported again. Copy link puts the settings in the page address</div>
         </div>
-        <div id="moon-phase" style="display:none; margin-top:6px">
-          <label for="moonage">Days since new Moon <output id="moonage-label">14.8 — full</output></label>
-          <input id="moonage" type="range" min="0" max="295" step="1" value="148">
-        </div>
-        <div class="hint" id="hint-moon">moonlight brightens the sky, which hides faint satellites and stars</div>
-      </div>
-      <div class="check"><input id="show-stars" type="checkbox" checked><label for="show-stars">Show stars (Yale Bright Star Catalog)</label></div>
-      <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
-      <div class="hint" id="hint-longexp"></div>
-      <div class="hint" id="hint-drag">Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details</div>
-    </details>
+      </details>
+    </section>
 
-    <details class="grp" id="night-grp">
-      <summary>Night &amp; year</summary>
-      <div class="hint" id="hint-night">the hours in which SBDC light is significant at this latitude, with these settings · three definitions, side by side</div>
-      <div class="row">
-        <button id="night-run">Compute this night</button>
-        <button id="year-run">Compute the year</button>
-        <button id="analysis-stop" hidden>Cancel</button>
-      </div>
-      <div class="hint" id="night-status" role="status" aria-live="polite"></div>
-      <canvas id="night-chart" width="540" height="240" aria-label="Visible SBDCs and stars through the night"></canvas>
-      <div class="hint" id="night-legend"></div>
-      <label for="night-time" id="night-picker">Chart time</label>
-      <input id="night-time" type="range" min="0" max="1435" step="5" value="720" disabled>
-      <output for="night-time" id="night-selection"></output>
-      <table id="night-table">
-        <thead><tr><th></th><th id="night-col">this night</th><th id="year-col">a year</th></tr></thead>
-        <tbody>
-          <tr data-key="night"><td id="night-row-night">night (Sun below the horizon)</td><td>—</td><td>—</td></tr>
-          <tr data-key="atLeast100"><td id="night-row-atLeast100">at least 100 SBDCs visible to the naked eye</td><td>—</td><td>—</td></tr>
-          <tr data-key="outnumberStars"><td id="night-row-outnumberStars">visible SBDCs outnumber visible stars</td><td>—</td><td>—</td></tr>
-          <tr data-key="exceedsSky"><td id="night-row-exceedsSky">SBDC light exceeds the sky’s own light</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table>
-    </details>
-
-    <details class="grp">
-      <summary>Advanced</summary>
-      <div class="ctl">
-        <label for="seed">Seed (reproducibility)</label>
-        <div class="seedrow">
-          <input id="seed" type="number" value="12345">
-          <button id="reseed">Randomize</button>
+    <section class="grp" id="observer-grp" data-group="observer" aria-labelledby="observer-title">
+      <h2 class="grp-title" id="observer-title">Observer</h2>
+      <div class="shown">
+        <div class="unit" data-control="latitude">
+          <div class="ctl">
+            <label for="lat">Latitude <output id="lat-label">40°N</output></label>
+            <div class="numrow">
+              <input id="lat" type="range" min="-90" max="90" step="1" value="40">
+              <input id="lat-num" type="number" min="-90" max="90" step="0.1" value="40"
+                     aria-label="Latitude in degrees to a tenth, negative for south">
+            </div>
+          </div>
+        </div>
+        <div class="unit" data-control="date">
+          <div class="ctl">
+            <label for="date">Date <output id="date-label">Jun 21</output></label>
+            <input id="date" type="range" min="1" max="365" step="1" value="172">
+            <div class="hint" id="sun-events">sunset —</div>
+          </div>
+        </div>
+        <div class="unit" data-control="time_jumps">
+          <div class="row">
+            <button id="jump-sunset">Sunset</button>
+            <button id="jump-dusk30">+30 min</button>
+            <button id="jump-dusk60">+60 min</button>
+            <button id="jump-midnight">Midnight</button>
+            <button id="jump-dawn60">Dawn −60</button>
+            <button id="jump-dawn30">Dawn −30</button>
+          </div>
         </div>
       </div>
-      <div class="check"><input id="tint" type="checkbox"><label for="tint">Tint by orbit family (analysis aid)</label></div>
-      <div class="check"><input id="markpole" type="checkbox" checked><label for="markpole">Mark celestial pole (sky’s rotation center)</label></div>
-      <div class="check"><input id="shimmer" type="checkbox" checked><label for="shimmer">Satellites move in fast forward (shimmer)</label></div>
-      <div class="ctl">
-        <label for="eyemodel">Naked-eye threshold</label>
-        <select id="eyemodel">
-          <option value="table" selected>Table (stars as they appear in twilight)</option>
-          <option value="schaefer">Schaefer formula (stricter under a bright sky)</option>
-        </select>
-        <div class="hint" id="hint-eyemodel">how the sky's brightness sets the faintest magnitude seen</div>
+      <details class="more">
+        <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
+        <div class="more-body">
+          <div class="unit" data-control="time">
+            <div class="ctl">
+              <label for="time">Solar time <output id="time-label">20:11</output></label>
+              <input id="time" type="range" min="0" max="1439" step="1" value="1211">
+              <div class="hint" id="hint-solar">local solar time: the Sun is highest at 12:00, and a clock can differ by an hour or more</div>
+            </div>
+          </div>
+          <div class="unit" data-control="hold_time_to_twilight">
+            <div class="check"><input id="timelock" type="checkbox"><label for="timelock">Hold time relative to sunset/dawn as latitude changes</label></div>
+          </div>
+          <div class="unit" data-control="playback">
+            <div class="row">
+              <button id="play-rt">▶ Real time</button>
+              <button id="play-ff">▶▶ Fast forward</button>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="grp" id="constellation-grp" data-group="constellation" aria-labelledby="constellation-title">
+      <h2 class="grp-title" id="constellation-title">Constellation</h2>
+      <div class="shown">
+        <div class="unit" data-control="satellites">
+          <div class="ctl">
+            <label for="nsats">Satellites <output id="nsats-label">300,000</output></label>
+            <input id="nsats" type="range" min="0" max="100" step="1" value="74">
+            <div class="hint" id="hint-fcc">FCC filing envelope: up to 1,000,000</div>
+          </div>
+        </div>
+        <div class="unit" data-control="brightness_mag">
+          <div class="ctl">
+            <label for="brightness">SBDC brightness <output id="bright-label">+0.5 — unmitigated</output></label>
+            <input id="brightness" type="range" min="-70" max="70" step="1" value="5">
+            <div class="hint" id="hint-bright"></div>
+          </div>
+        </div>
+        <div class="unit" data-control="clustering">
+          <div class="check"><input id="clusteron" type="checkbox"><label for="clusteron">Cluster into data-center groups</label></div>
+          <div id="cluster-ctls" style="display:none">
+            <div class="ctl">
+              <label for="cpc">Satellites per cluster <output id="cpc-label">100</output></label>
+              <input id="cpc" type="range" min="0" max="100" step="1" value="50">
+            </div>
+            <div class="ctl">
+              <label for="cdia">Cluster diameter <output id="cdia-label">1.0 km</output></label>
+              <input id="cdia" type="range" min="0" max="100" step="1" value="41">
+            </div>
+            <div class="hint" id="cluster-derived">≈ 3,000 clusters</div>
+          </div>
+        </div>
       </div>
-      <div class="ctl">
-        <label for="cvar">Cluster membership variation <output id="cvar-label">0.35</output></label>
-        <input id="cvar" type="range" min="0" max="100" step="5" value="35">
+      <details class="more">
+        <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
+        <div class="more-body">
+          <div class="unit" data-control="sso_percent">
+            <div class="ctl">
+              <label for="sso">Orbit families <output id="sso-label">70% SSO / 30% 30°</output></label>
+              <input id="sso" type="range" min="0" max="100" step="5" value="70">
+            </div>
+          </div>
+          <div class="unit" data-control="shells">
+            <div class="ctl">
+              <label for="shells">Shell altitudes</label>
+              <select id="shells">
+                <option value="low">Low (550–650 km)</option>
+                <option value="mid">Mid (750–1,150 km)</option>
+                <option value="spread" selected>Spread (550–1,800 km)</option>
+                <option value="filed-sso">Filed SSO levels (565–1,002 km, 54 levels)</option>
+                <option value="custom">Custom…</option>
+              </select>
+              <div id="shells-custom" style="display:none; margin-top:6px">
+                <input id="shells-custom-input" type="text" inputmode="text" spellcheck="false"
+                       placeholder="550:0.5, 1200:0.5" aria-label="Custom shells: altitude:share pairs">
+                <div class="hint" id="shells-custom-hint">format: altitude:share, e.g. 550:0.5, 1200:0.5</div>
+              </div>
+            </div>
+          </div>
+          <div class="unit" data-control="plane_layout">
+            <div class="ctl">
+              <label for="planes">Orbital planes</label>
+              <select id="planes">
+                <option value="spread" selected>Spread (72 per shell, satellites at random)</option>
+                <option value="filed">As filed (2 per shell level, evenly spaced)</option>
+              </select>
+            </div>
+          </div>
+          <div class="unit" data-control="plane_spread_deg">
+            <div class="ctl">
+              <label for="planespread">Plane spread <output id="planespread-label">±11.25°</output></label>
+              <input id="planespread" type="range" min="0" max="120" step="1" value="45">
+              <div class="hint" id="hint-planespread">how far the Sun-synchronous planes spread to each side of the dawn-dusk line · the filing allows ±30°</div>
+            </div>
+          </div>
+          <div class="unit" data-control="brightness_scatter_mag">
+            <div class="ctl">
+              <label for="scatter">Brightness scatter <output id="scatter-label">1.3 mag</output></label>
+              <input id="scatter" type="range" min="0" max="20" step="1" value="13">
+              <div class="hint" id="hint-scatter">how much satellites differ from each other · 0 = identical</div>
+            </div>
+          </div>
+          <div class="unit" data-control="phase_law">
+            <div class="ctl">
+              <label for="phaselaw">Phase law</label>
+              <select id="phaselaw">
+                <option value="lambert" selected>Lambertian sphere</option>
+                <option value="mini">Measured Starlink Gen2 Mini (mitigated)</option>
+              </select>
+              <div class="hint" id="hint-phase">how brightness changes with the Sun–satellite–observer angle</div>
+            </div>
+          </div>
+          <div class="unit" data-control="launch_trains">
+            <div class="ctl">
+              <label for="trains">Recent launch trains <output id="trains-label">1</output></label>
+              <input id="trains" type="range" min="0" max="10" step="1" value="1">
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="grp" id="display-grp" data-group="display" aria-labelledby="display-title">
+      <h2 class="grp-title" id="display-title">Sky &amp; display</h2>
+      <div class="shown">
+        <div class="unit" data-control="view">
+          <div class="ctl">
+            <label for="viewmode">View</label>
+            <select id="viewmode">
+              <option value="horizon" selected>Horizon (drag to look around)</option>
+              <option value="perspective">Perspective (as a camera sees it)</option>
+              <option value="fisheye">All-sky fisheye (zenith at center)</option>
+            </select>
+            <div class="row" style="margin-top:6px">
+              <button id="aim">Aim at densest sky</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="ctl">
-        <label for="cdvar">Cluster diameter variation <output id="cdvar-label">0.35</output></label>
-        <input id="cdvar" type="range" min="0" max="100" step="5" value="35">
+      <details class="more">
+        <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
+        <div class="more-body">
+          <div class="unit" data-control="sky_limit_mag">
+            <div class="ctl">
+              <label for="starlim">Eye limit <output id="starlim-label">mag 6.0</output></label>
+              <input id="starlim" type="range" min="40" max="65" step="1" value="60">
+              <div class="hint" id="hint-starlim">the faintest magnitude this observer sees under a dark sky · twilight and ambient light lower it further</div>
+            </div>
+          </div>
+          <div class="unit" data-control="ambient_light">
+            <div class="ctl">
+              <label for="ambient">Ambient light <output id="ambient-label">Bortle 1 — no artificial light</output></label>
+              <input id="ambient" type="range" min="1" max="9" step="1" value="1">
+              <div class="hint" id="hint-ambient">artificial skyglow by Bortle class · it brightens the sky, which hides faint satellites and stars</div>
+            </div>
+          </div>
+          <div class="unit" data-control="moon">
+            <div class="ctl">
+              <label for="moon">Moon <output id="moon-label"></output></label>
+              <select id="moon">
+                <option value="off">Off (no Moon)</option>
+                <option value="date" selected>As on this date</option>
+                <option value="phase">Set the phase</option>
+              </select>
+              <div id="moon-date" style="margin-top:6px">
+                <div class="numrow">
+                  <label for="year">Year</label>
+                  <input id="year" type="number" min="1900" max="2100" step="1" value="2026">
+                </div>
+                <div class="hint" id="hint-year">Approximate Moon position. The model uses solar time as universal time; it does not use your longitude.</div>
+              </div>
+              <div id="moon-phase" style="display:none; margin-top:6px">
+                <label for="moonage">Days since new Moon <output id="moonage-label">14.8 — full</output></label>
+                <input id="moonage" type="range" min="0" max="295" step="1" value="148">
+              </div>
+              <div class="hint" id="hint-moon">moonlight brightens the sky, which hides faint satellites and stars</div>
+            </div>
+          </div>
+          <div class="unit" data-control="show_stars">
+            <div class="check"><input id="show-stars" type="checkbox" checked><label for="show-stars">Show stars (Yale Bright Star Catalog)</label></div>
+          </div>
+          <div class="unit" data-control="long_exposure">
+            <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
+            <div class="hint" id="hint-longexp"></div>
+          </div>
+          <div class="more-notes">
+            <div class="hint" id="hint-drag">Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details</div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="grp" id="night-grp" data-group="night" aria-labelledby="night-title">
+      <h2 class="grp-title" id="night-title">Night &amp; year</h2>
+      <div class="shown">
       </div>
-    </details>
+      <details class="more">
+        <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
+        <div class="more-body">
+          <div class="unit" data-control="compute">
+            <div class="row">
+              <button id="night-run">Compute this night</button>
+              <button id="year-run">Compute the year</button>
+              <button id="analysis-stop" hidden>Cancel</button>
+            </div>
+            <div class="hint" id="night-status" role="status" aria-live="polite"></div>
+          </div>
+          <div class="unit" data-control="hours">
+            <table id="night-table">
+              <thead><tr><th></th><th id="night-col">this night</th><th id="year-col">a year</th></tr></thead>
+              <tbody>
+                <tr data-key="night"><td id="night-row-night">night (Sun below the horizon)</td><td>—</td><td>—</td></tr>
+                <tr data-key="atLeast100"><td id="night-row-atLeast100">at least 100 SBDCs visible to the naked eye</td><td>—</td><td>—</td></tr>
+                <tr data-key="outnumberStars"><td id="night-row-outnumberStars">visible SBDCs outnumber visible stars</td><td>—</td><td>—</td></tr>
+                <tr data-key="exceedsSky"><td id="night-row-exceedsSky">SBDC light exceeds the sky’s own light</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="unit" data-control="chart">
+            <canvas id="night-chart" width="540" height="240" aria-label="Visible SBDCs and stars through the night"></canvas>
+            <div class="hint" id="night-legend"></div>
+            <label for="night-time" id="night-picker">Chart time</label>
+            <input id="night-time" type="range" min="0" max="1435" step="5" value="720" disabled>
+            <output for="night-time" id="night-selection"></output>
+          </div>
+          <div class="more-notes">
+            <div class="hint" id="hint-night">the hours in which SBDC light is significant at this latitude, with these settings · three definitions, side by side</div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="grp" id="advanced-grp" data-group="advanced" aria-labelledby="advanced-title">
+      <h2 class="grp-title" id="advanced-title">Advanced</h2>
+      <div class="shown">
+      </div>
+      <details class="more">
+        <summary><span class="more-word">Details</span><span class="more-list"></span></summary>
+        <div class="more-body">
+          <div class="unit" data-control="seed">
+            <div class="ctl">
+              <label for="seed">Seed (reproducibility)</label>
+              <div class="seedrow">
+                <input id="seed" type="number" value="12345">
+                <button id="reseed">Randomize</button>
+              </div>
+            </div>
+          </div>
+          <div class="unit" data-control="naked_eye_threshold">
+            <div class="ctl">
+              <label for="eyemodel">Naked-eye threshold</label>
+              <select id="eyemodel">
+                <option value="table" selected>Table (stars as they appear in twilight)</option>
+                <option value="schaefer">Schaefer formula (stricter under a bright sky)</option>
+              </select>
+              <div class="hint" id="hint-eyemodel">how the sky's brightness sets the faintest magnitude seen</div>
+            </div>
+          </div>
+          <div class="unit" data-control="tint_by_orbit_family">
+            <div class="check"><input id="tint" type="checkbox"><label for="tint">Tint by orbit family (analysis aid)</label></div>
+          </div>
+          <div class="unit" data-control="mark_celestial_pole">
+            <div class="check"><input id="markpole" type="checkbox" checked><label for="markpole">Mark celestial pole (sky’s rotation center)</label></div>
+          </div>
+          <div class="unit" data-control="satellites_move_in_fast_forward">
+            <div class="check"><input id="shimmer" type="checkbox" checked><label for="shimmer">Satellites move in fast forward (shimmer)</label></div>
+          </div>
+          <div class="unit" data-control="cluster_membership_variation">
+            <div class="ctl">
+              <label for="cvar">Cluster membership variation <output id="cvar-label">0.35</output></label>
+              <input id="cvar" type="range" min="0" max="100" step="5" value="35">
+            </div>
+          </div>
+          <div class="unit" data-control="cluster_diameter_variation">
+            <div class="ctl">
+              <label for="cdvar">Cluster diameter variation <output id="cdvar-label">0.35</output></label>
+              <input id="cdvar" type="range" min="0" max="100" step="5" value="35">
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
   </aside>
 
   <div id="canvas-wrap">
@@ -283,6 +402,22 @@
     <p class="lede">Everything the simulation believes, in one auditable table. Rendered live from the embedded <span style="font-family:var(--mono)">sbdc-data.json</span> block — replace that block to change the physics without touching code. Confidence: <span class="chip chip-measured">measured</span> <span class="chip chip-published">published</span> <span class="chip chip-modeled">modeled</span> <span class="chip chip-assumed">assumed</span>. The photometry section is the least certain — the FCC filing gives no satellite sizes or albedos; the renders are illustrative, not photometric predictions.</p>
     <div id="assump-body"></div>
   </div>
+</dialog>
+
+<dialog id="presets" aria-labelledby="presets-title" aria-describedby="presets-lede">
+  <div class="presets-head">
+    <h2 id="presets-title">Presets</h2>
+    <button class="closer" id="close-presets">Close</button>
+  </div>
+  <p class="lede" id="presets-lede">Each preset sets every control and chooses which controls each group shows. Choose one to load it; the list closes and the sky redraws.</p>
+  <div class="presets-tools">
+    <input id="preset-search" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Filter by name or description" aria-label="Filter presets by name or description"
+           aria-controls="preset-list">
+    <div id="preset-cats" role="group" aria-label="Category"></div>
+    <div class="hint" id="preset-count" aria-live="polite"></div>
+  </div>
+  <div id="preset-list"></div>
 </dialog>
 
 <script type="text/plain" id="analysis-code">/*INJECT:WORKER*/</script>
