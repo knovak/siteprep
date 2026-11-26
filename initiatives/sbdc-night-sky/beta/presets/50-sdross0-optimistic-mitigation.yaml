@@ -7,6 +7,8 @@
 # See 40-sdross0-no-mitigation.yaml for the note on "sunset +80".
 
 name: sdross0 default, optimistic mitigation - 37.2 N, 80 minutes after sunset, September 22
+category: Compared with sdross0
+description: The sdross0 setup with that project's optimistic-mitigation brightness: the measured Starlink Gen2 Mini curve scaled to the larger spacecraft (+6.2). Far fewer satellites are visible than without mitigation, and most of those are close to the naked-eye limit.
 
 observer:
   latitude: 37.2
@@ -32,3 +34,6 @@ display:
 
 advanced:
   naked_eye_threshold: schaefer # the threshold formula that project uses
+
+panel:                          # the controls shown outside Details
+  constellation: satellites, brightness_mag, phase_law

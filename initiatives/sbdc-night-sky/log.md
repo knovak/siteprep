@@ -270,3 +270,11 @@ Recommended beta work, in order: **A** distinguish visible objects from members 
 
 The beta now distinguishes visible objects from satellites, runs cancellable analyses using captured inputs, exposes readable counts and keyboard controls, and records export provenance. The [verification record](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-implementation-2026-11-20.md) includes sampling comparisons, a measured dark-sky reference, response timings and outstanding real-device checks. No change to the released simulator.
 
+
+## 2026-11-26 — Beta: a shorter control panel, and presets with descriptions
+
+The sidebar had every control showing, about fifty of them across six groups. Each group now shows one to three controls and keeps the rest under a "Details" section that starts closed; a closed section lists the names of the controls inside it, in small type and in its tooltip. The page opens with 11 controls showing and 20 under Details.
+
+Presets now carry a one- or two-sentence `description` and an optional `category`, and the build refuses a preset without a description. A preset's `panel` section chooses which controls each group shows and whether each Details section is open; the sdross0 presets show the brightness model. The Preset drop-down is replaced by a preset browser, planned for 30 to 40 presets: each preset is listed with its description under its category, with a filter by words, category buttons and keyboard use, and the sidebar card shows the loaded preset's description with ‹ › buttons to step through the list. A scratch build with 40 presets was checked at desktop and phone widths.
+
+Exports and links record the panel; the settings reference in file names and PNGs leaves it out, so it still names the sky. `beta/README.md` has "The control panel" and "The preset browser". The simulator, the model and its fixtures are unchanged, as are `lib/`, `work/` and `demos/SBDC Night Sky/`.

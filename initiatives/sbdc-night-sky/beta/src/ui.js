@@ -217,10 +217,54 @@ const TR = {
   ttSunlit: ["sunlit", "éclairé"], ttShadow: ["in Earth's shadow", "dans l'ombre de la Terre"],
   ttStar: ["star", "étoile"],
   // settings panel (beta). Messages about the contents of a settings file stay
-  // in English, like the file itself.
+  // in English, like the file itself, and so do the presets' names and
+  // descriptions.
   grpSettings: ["Presets & settings", "Préréglages et réglages"],
-  presetLbl: ["Preset", "Préréglage"],
-  presetNone: ["Choose a preset…", "Choisir un préréglage…"],
+  presetNoneName: ["No preset", "Aucun préréglage"],
+  presetNoneDesc: ["Browse the presets for prepared views, each with a short description of what it shows.",
+                   "Parcourez les préréglages pour des vues préparées, chacune avec une courte description de ce qu\u2019elle montre."],
+  presetMore: ["more", "plus"], presetLess: ["less", "moins"],
+  presetChanged: ["Settings changed since this preset was loaded:", "Réglages modifiés depuis le chargement de ce préréglage :"],
+  presetBrowse: ["Browse presets", "Parcourir les préréglages"],
+  presetPrev: ["Previous preset", "Préréglage précédent"], presetNext: ["Next preset", "Préréglage suivant"],
+  presetsTitle: ["Presets", "Préréglages"],
+  presetsLede: ["Each preset sets every control and chooses which controls each group shows. Choose one to load it; the list closes and the sky redraws.",
+                "Chaque préréglage fixe toutes les commandes et choisit celles que chaque groupe affiche. Choisissez-en un pour le charger ; la liste se ferme et le ciel est redessiné."],
+  presetsSearch: ["Filter by name or description", "Filtrer par nom ou description"],
+  presetsAll: ["All", "Tous"],
+  presetsOther: ["Other", "Autres"],
+  presetsCount: ["presets", "préréglages"], presetsOne: ["preset", "préréglage"],
+  presetsOf: ["of", "sur"], presetsMatch: ["match", "correspondent"],
+  presetsNone: ["No preset matches. Clear the filter to see them all.", "Aucun préréglage ne correspond. Effacez le filtre pour les voir tous."],
+  presetsCurrent: ["loaded", "chargé"],
+  close: ["Close", "Fermer"],
+  detailsWord: ["Details", "Détails"],
+  detailsHidden: ["Under Details:", "Sous Détails :"],
+  // the short name of each control, listed under a group's Details; the keys
+  // are the control names of SETTINGS_PANEL
+  controlNames: {
+    latitude: ["Latitude", "Latitude"], date: ["Date", "Date"], time: ["Solar time", "Heure solaire"],
+    hold_time_to_twilight: ["Hold time to twilight", "Heure liée au crépuscule"],
+    playback: ["Playback", "Lecture"],
+    satellites: ["Satellites", "Satellites"], sso_percent: ["Orbit families", "Familles d\u2019orbites"],
+    shells: ["Shell altitudes", "Altitudes des coquilles"], plane_layout: ["Orbital planes", "Plans orbitaux"],
+    plane_spread_deg: ["Plane spread", "Étalement des plans"], brightness_mag: ["SBDC brightness", "Luminosité des SBDC"],
+    brightness_scatter_mag: ["Brightness scatter", "Dispersion de luminosité"], phase_law: ["Phase law", "Loi de phase"],
+    launch_trains: ["Launch trains", "Trains de lancement"], clustering: ["Clusters", "Grappes"],
+    view: ["View", "Vue"], sky_limit_mag: ["Eye limit", "Limite de l\u2019œil"],
+    ambient_light: ["Ambient light", "Lumière ambiante"], moon: ["Moon", "Lune"],
+    show_stars: ["Stars", "Étoiles"], long_exposure: ["Long exposure", "Pose longue"],
+    compute: ["Compute", "Calcul"], hours: ["Table of hours", "Tableau des heures"], chart: ["Chart", "Graphique"],
+    seed: ["Seed", "Graine"], naked_eye_threshold: ["Naked-eye threshold", "Seuil à l\u2019œil nu"],
+    tint_by_orbit_family: ["Orbit-family tint", "Couleur par famille"],
+    mark_celestial_pole: ["Celestial pole", "Pôle céleste"],
+    satellites_move_in_fast_forward: ["Shimmer", "Scintillement"],
+    cluster_membership_variation: ["Cluster membership variation", "Variation d\u2019effectif des grappes"],
+    cluster_diameter_variation: ["Cluster diameter variation", "Variation du diamètre des grappes"],
+    // the Presets & settings group
+    link: ["Copy link", "Copier le lien"], export: ["Export settings", "Exporter les réglages"],
+    import: ["Import settings", "Importer des réglages"],
+  },
   exportBtn: ["Export settings", "Exporter les réglages"],
   importBtn: ["Import settings…", "Importer des réglages…"],
   linkBtn: ["Copy link", "Copier le lien"],
@@ -255,14 +299,15 @@ function applyLang(lang) {
   };
   txt("header .sub", "tagline");
   txt("#open-assumptions", "assumBtn"); txt("#snapshot", "saveBtn");
-  txt("#assump-title", "assumBtn"); $("close-assumptions").textContent = LANG.cur === "fr" ? "Fermer" : "Close";
+  txt("#assump-title", "assumBtn"); txt("#close-assumptions", "close");
   txt("#headline-aim", "aim"); txt("#detail-label", "details"); txt("#light-note", "lightNote");
   txt("#analysis-stop", "cancel"); txt("#night-picker", "chartTime");
   $("night-chart").setAttribute("aria-label", T("nightLegend"));
-  const sums = document.querySelectorAll("aside details.grp > summary");
-  ["grpSettings", "grpObserver", "grpConstellation", "grpSky", "grpNight", "grpAdvanced"].forEach((k, i) => {
-    if (sums[i]) sums[i].textContent = T(k);
-  });
+  for (const [id, k] of [["settings-title", "grpSettings"], ["observer-title", "grpObserver"],
+    ["constellation-title", "grpConstellation"], ["display-title", "grpSky"], ["night-title", "grpNight"],
+    ["advanced-title", "grpAdvanced"]]) txt("#" + id, k);
+  document.querySelectorAll("details.more .more-word").forEach((el) => { el.textContent = T("detailsWord"); });
+  updatePanelLists();
   lbl('label[for="lat"]', "lat"); lbl('label[for="date"]', "date");
   lbl('label[for="time"]', "time"); lbl('label[for="nsats"]', "sats");
   lbl('label[for="sso"]', "fams"); lbl('label[for="brightness"]', "bright");
@@ -315,7 +360,13 @@ function applyLang(lang) {
   txt('#moon option[value="phase"]', "moPhase"); txt("#hint-year", "hintYear"); txt("#hint-moon", "hintMoon");
   if ($("moonage-label") && App.state) $("moonage-label").textContent = moonAgeLabel(App.state.moonAgeDays);
   txt("#hint-longexp", "hintLongexp"); txt("#busy", "busy");
-  txt('label[for="preset"]', "presetLbl"); txt('#preset option[value=""]', "presetNone");
+  for (const [id, k] of [["preset-prev", "presetPrev"], ["preset-next", "presetNext"]]) {
+    $(id).setAttribute("aria-label", T(k)); $(id).title = T(k);
+  }
+  txt("#presets-title", "presetsTitle"); txt("#presets-lede", "presetsLede"); txt("#close-presets", "close");
+  $("preset-search").placeholder = T("presetsSearch");
+  $("preset-search").setAttribute("aria-label", T("presetsSearch"));
+  renderPresetList(); showPresetCard();
   txt("#settings-export", "exportBtn"); txt("#settings-import", "importBtn");
   txt("#settings-link", "linkBtn");
   txt("#hint-settings", "hintSettings");
@@ -840,8 +891,9 @@ function snapshot() {
   if (evalPending || rebuildTimer !== null) { requestAnimationFrame(snapshot); return; }
   const src = App.renderer.canvas;
   const CAP = 144;
-  const yaml = SETTINGS.settingsToYaml(readSettings());
-  const reference = PROVENANCE.settingsReference(yaml);
+  const settings = readSettings();
+  const yaml = SETTINGS.settingsToYaml(settings);
+  const reference = settingsReferenceOf(settings);
   const build = document.querySelector('meta[name="sbdc-build"]').content;
   const channel = $("siteprep-channel-stamp")?.textContent.replace(/^[\s·]+/, "").trim() || "standalone";
   const provenance = `${channel} · build ${build} · settings ${reference}`;
@@ -1188,6 +1240,78 @@ function bindControls() {
   });
 }
 
+/* ------------------------- the control panel (beta) ------------------------- */
+
+/* Each group shows one to three of its controls and keeps the rest under a
+   "Details" section, which starts closed and lists their names while it is
+   closed. SETTINGS_PANEL in settings.js names the groups and controls, and a
+   settings file's panel section, read and written here, says which controls
+   each group shows and whether its Details are open. A control is a .unit
+   element named by data-control: arranging a group moves those elements,
+   with the handlers bound to them, between its shown area and its Details.
+   Nothing here changes the sky. */
+
+const Panel = { groups: [] };
+
+const controlName = (name) => TR.controlNames[name][LANG.cur === "fr" ? 1 : 0];
+
+function bindPanel() {
+  for (const g of SETTINGS.SETTINGS_PANEL) {
+    const el = document.querySelector(`.grp[data-group="${g.group}"]`);
+    const units = new Map(g.controls.map((name) => [name, el && el.querySelector(`.unit[data-control="${name}"]`)]));
+    const missing = g.controls.filter((name) => !units.get(name));
+    if (!el || missing.length) throw new Error(`the ${g.group} group has no control ${missing.join(", ")}`);
+    const details = el.querySelector("details.more");
+    Panel.groups.push({
+      group: g.group, controls: g.controls, el, units, details,
+      shown: el.querySelector(".shown"),
+      body: details.querySelector(".more-body"),
+      notes: details.querySelector(".more-notes"),
+    });
+  }
+  applyPanel(SETTINGS.defaultSettings().panel);
+}
+
+/** The panel as a settings section: the controls each group shows, in
+ *  order, and whether its Details section is open. */
+function readPanel() {
+  const out = {};
+  for (const g of Panel.groups) {
+    out[g.group] = [...g.shown.querySelectorAll(":scope > .unit")].map((u) => u.dataset.control);
+    out[`${g.group}_details`] = g.details.open ? "open" : "closed";
+  }
+  return out;
+}
+
+/** Arrange the panel from a settings section. The shown controls appear in
+ *  the order given; the rest keep the group's own order under Details. */
+function applyPanel(panel) {
+  for (const g of Panel.groups) {
+    const shown = panel[g.group];
+    for (const name of shown) g.shown.appendChild(g.units.get(name));
+    for (const name of g.controls) {
+      if (!shown.includes(name)) g.body.insertBefore(g.units.get(name), g.notes);
+    }
+    g.details.open = panel[`${g.group}_details`] === "open";
+  }
+  updatePanelLists();
+}
+
+/** Write, beside each "Details", the names of the controls it holds; the
+ *  full list is also the summary's tooltip. */
+function updatePanelLists() {
+  const write = (details, names) => {
+    details.querySelector(".more-list").textContent = names.join(" · ");
+    details.querySelector("summary").title = names.length ? `${T("detailsHidden")} ${names.join(", ")}` : "";
+  };
+  for (const g of Panel.groups) {
+    const names = [...g.body.querySelectorAll(":scope > .unit")].map((u) => controlName(u.dataset.control));
+    write(g.details, names);
+    g.details.hidden = names.length === 0 && !g.notes;
+  }
+  write($("settings-more"), ["link", "export", "import"].map(controlName));
+}
+
 /* ------------------------- settings: export, import, presets (beta) ------------------------- */
 
 /* Every user setting travels as one settings object (see settings.js for its
@@ -1197,7 +1321,10 @@ function bindControls() {
    events, so the handlers above do the work exactly as they do for a person. */
 
 const Settings = {
-  presets: [],        // [{ name, settings }] from the embedded presets/*.yaml
+  presets: [],        // [{ name, category, description, settings }] from the embedded presets/*.yaml
+  current: -1,        // the preset the settings are, or -1 once they have changed
+  last: -1,           // the preset loaded last, which the card names after a change
+  filter: { text: "", category: null },  // the preset browser's filter
   applying: false,    // true while applySettings is driving the controls
   ownHash: null,      // the "#..." this page wrote itself, which it need not load
 };
@@ -1263,6 +1390,7 @@ function readSettings() {
     cluster_membership_variation: cl.memberSigma,
     cluster_diameter_variation: cl.diameterSigma,
   });
+  Object.assign(s.panel, readPanel());
   return s;
 }
 
@@ -1345,6 +1473,7 @@ function applySettings(s) {
     setControl("tint", a.tint_by_orbit_family, "change");
     setControl("markpole", a.mark_celestial_pole, "change");
     setControl("shimmer", a.satellites_move_in_fast_forward, "change");
+    applyPanel(s.panel);
   } finally {
     Settings.applying = false;
   }
@@ -1367,27 +1496,163 @@ function setSettingsStatus(kind, text) {
 /** The settings no longer match the preset shown, so stop showing it. */
 function settingsTouched() {
   if (Settings.applying) return;
-  $("preset").value = "";
   setSettingsStatus("", "");
+  if (Settings.current < 0) return;
+  Settings.current = -1;
+  showPresetCard();
+}
+
+/** Load a preset by its place in the list. */
+function loadPreset(index) {
+  const preset = Settings.presets[index];
+  if (!preset) return;
+  const changed = applySettings(preset.settings);
+  Settings.current = Settings.last = index;
+  showPresetCard();
+  setSettingsStatus(changed.length ? "ok" : "", changed.length ? `${T("stAdjusted")} ${changed.join(", ")}` : "");
+}
+
+/** The previous or next preset in the list, from the one loaded last. */
+function stepPreset(step) {
+  const n = Settings.presets.length, from = Settings.current >= 0 ? Settings.current : Settings.last;
+  if (!n) return;
+  loadPreset(from < 0 ? (step > 0 ? 0 : n - 1) : (from + step + n) % n);
+}
+
+/** The card above the preset buttons: the preset in use and its description. */
+function showPresetCard() {
+  const preset = Settings.presets[Settings.current], last = Settings.presets[Settings.last];
+  $("preset-card").dataset.preset = preset ? String(Settings.current) : "";
+  $("preset-category").textContent = preset && preset.category ? preset.category : "";
+  $("preset-name").textContent = preset ? preset.name : T("presetNoneName");
+  $("preset-desc").textContent = preset ? preset.description
+    : last ? `${T("presetChanged")} ${last.name}` : T("presetNoneDesc");
+  $("preset-browse").textContent = `${T("presetBrowse")} (${Settings.presets.length})`;
+  // a long description shows three lines, and "more" shows the rest
+  $("preset-card").classList.remove("expanded");
+  const more = $("preset-more");
+  more.hidden = $("preset-desc").scrollHeight <= $("preset-desc").clientHeight + 1;
+  more.textContent = T("presetMore");
+  more.setAttribute("aria-expanded", "false");
+  for (const item of $("preset-list").querySelectorAll(".preset-item")) {
+    const current = +item.dataset.index === Settings.current;
+    if (current) item.setAttribute("aria-current", "true"); else item.removeAttribute("aria-current");
+    const tag = item.querySelector(".preset-item-current");
+    if (tag) tag.hidden = !current;
+  }
+}
+
+/* ---- the preset browser: every preset with its description, under its
+   category, with a filter by words and by category ---- */
+
+/** The categories in the order their first preset appears; "" for none. */
+function presetCategories() {
+  return [...new Set(Settings.presets.map((p) => p.category || ""))];
+}
+
+function presetMatches(preset) {
+  const { text, category } = Settings.filter;
+  if (category != null && (preset.category || "") !== category) return false;
+  const hay = `${preset.name} ${preset.description} ${preset.category || ""}`.toLowerCase();
+  return text.toLowerCase().split(/\s+/).filter(Boolean).every((word) => hay.includes(word));
+}
+
+function renderPresetList() {
+  const list = $("preset-list"), chips = $("preset-cats");
+  const categories = presetCategories(), total = Settings.presets.length;
+  const make = (tag, cls, text) => {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (text != null) el.textContent = text;
+    return el;
+  };
+  const focusedChip = document.activeElement && document.activeElement.parentNode === chips
+    ? document.activeElement.dataset.category : undefined;
+  chips.textContent = "";
+  if (categories.length > 1) {
+    for (const category of [null, ...categories]) {
+      const chip = make("button", "", category == null ? T("presetsAll") : category || T("presetsOther"));
+      chip.type = "button";
+      chip.dataset.category = category == null ? "*" : category;
+      chip.setAttribute("aria-pressed", String(Settings.filter.category === category));
+      chip.addEventListener("click", () => { Settings.filter.category = category; renderPresetList(); });
+      chips.appendChild(chip);
+      if (focusedChip === chip.dataset.category) chip.focus();
+    }
+  }
+  list.textContent = "";
+  let shown = 0;
+  for (const category of categories) {
+    const items = Settings.presets.map((p, index) => ({ p, index }))
+      .filter(({ p }) => (p.category || "") === category && presetMatches(p));
+    if (!items.length) continue;
+    if (categories.length > 1 || category) list.appendChild(make("h3", "preset-cat", category || T("presetsOther")));
+    for (const { p, index } of items) {
+      const item = make("button", "preset-item");
+      item.type = "button";
+      item.dataset.index = String(index);
+      const name = make("span", "preset-item-name", p.name);
+      const tag = make("span", "preset-item-current", T("presetsCurrent"));
+      tag.hidden = index !== Settings.current;
+      name.appendChild(tag);
+      item.append(name, make("span", "preset-item-desc", p.description));
+      if (index === Settings.current) item.setAttribute("aria-current", "true");
+      item.addEventListener("click", () => choosePreset(index));
+      list.appendChild(item);
+    }
+    shown += items.length;
+  }
+  if (!shown) list.appendChild(make("p", "preset-empty", T("presetsNone")));
+  const word = total === 1 ? T("presetsOne") : T("presetsCount");
+  $("preset-count").textContent = shown === total ? `${total} ${word}`
+    : `${shown} ${T("presetsOf")} ${total} ${word} ${T("presetsMatch")}`;
+}
+
+function openPresetBrowser() {
+  renderPresetList();
+  const dialog = $("presets");
+  dialog.showModal();
+  const items = [...$("preset-list").querySelectorAll(".preset-item")];
+  const current = items.find((item) => +item.dataset.index === Settings.current);
+  // With a mouse, typing filters at once; on a touch screen the keyboard
+  // would cover the list, so the preset in use takes the focus instead.
+  const fine = typeof window.matchMedia === "function" && window.matchMedia("(pointer: fine)").matches;
+  if (fine || !items.length) $("preset-search").focus();
+  else (current || items[0]).focus();
+  if (current) current.scrollIntoView({ block: "nearest" });
+}
+
+function choosePreset(index) {
+  $("presets").close();
+  loadPreset(index);
 }
 
 function exportSettings() {
   const s = readSettings();
-  const preset = Settings.presets[$("preset").value === "" ? -1 : +$("preset").value];
+  const preset = Settings.presets[Settings.current];
   const d = new Date(), two = (n) => String(n).padStart(2, "0");
   const text = SETTINGS.settingsToYaml(s, {
     name: preset ? preset.name : null,
+    category: preset ? preset.category : null,
+    description: preset ? preset.description : null,
     date: `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`,
   });
   const file = `sbdc-settings_lat${s.observer.latitude}_` +
     `${SETTINGS.settingsFormatDate(s.observer.date).replace(" ", "")}_` +
-    `${fmtTime(App.state.solarTimeHours).replace(":", "")}_${PROVENANCE.settingsReference(SETTINGS.settingsToYaml(s))}.yaml`;
+    `${fmtTime(App.state.solarTimeHours).replace(":", "")}_${settingsReferenceOf(s)}.yaml`;
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([text], { type: "text/yaml;charset=utf-8" }));
   a.download = file;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   setSettingsStatus("ok", `${T("stSaved")} ${file}`);
+}
+
+/** The reference that names a picture's settings in a file name and a PNG.
+ *  It leaves out the panel section: opening a Details section, or a preset
+ *  that shows other controls, does not change the sky. */
+function settingsReferenceOf(s) {
+  return PROVENANCE.settingsReference(SETTINGS.settingsToYaml(s, { panel: false }));
 }
 
 function importSettings(file) {
@@ -1403,7 +1668,8 @@ function importSettings(file) {
       return;                                          // nothing is changed by a file with an error
     }
     const changed = applySettings(got.settings);
-    $("preset").value = "";
+    Settings.current = Settings.last = -1;
+    showPresetCard();
     const lines = [`${T("stLoaded")} ${got.name ? `${got.name} (${file.name})` : file.name}`, ...got.notes];
     if (changed.length) lines.push(`${T("stAdjusted")} ${changed.join(", ")}`);
     setSettingsStatus("ok", lines.join("\n"));
@@ -1413,7 +1679,7 @@ function importSettings(file) {
 
 /** The address of this page with the current settings after "#". */
 function settingsLink() {
-  const preset = Settings.presets[$("preset").value === "" ? -1 : +$("preset").value];
+  const preset = Settings.presets[Settings.current];
   const query = SETTINGS.settingsToQuery(readSettings(), { name: preset ? preset.name : null });
   return location.href.replace(/#.*$/, "") + (query ? "#" + query : "");
 }
@@ -1441,11 +1707,13 @@ function loadSettingsLink() {
     return false;
   }
   const changed = applySettings(got.settings);
-  // show the preset the link names, when this page has it
+  // show the preset the link names, when this page has it and the link has
+  // its settings; how the link arranges the panel does not matter
   const named = Settings.presets.findIndex((preset) => preset.name === got.name);
-  const same = named >= 0 && SETTINGS.settingsToQuery(Settings.presets[named].settings) ===
-    SETTINGS.settingsToQuery(got.settings);
-  $("preset").value = same ? String(named) : "";
+  const same = named >= 0 && SETTINGS.settingsToQuery(Settings.presets[named].settings, { panel: false }) ===
+    SETTINGS.settingsToQuery(got.settings, { panel: false });
+  Settings.current = Settings.last = same ? named : -1;
+  showPresetCard();
   const lines = [got.name ? `${T("stLinkLoaded")}: ${got.name}` : T("stLinkLoaded"), ...got.notes];
   if (changed.length) lines.push(`${T("stAdjusted")} ${changed.join(", ")}`);
   setSettingsStatus("ok", lines.join("\n"));
@@ -1454,22 +1722,45 @@ function loadSettingsLink() {
 
 function bindSettings() {
   // presets: the build embeds each presets/*.yaml file as text
-  const select = $("preset");
-  for (const { file, text } of JSON.parse($("sbdc-presets").textContent)) {
+  for (const { text } of JSON.parse($("sbdc-presets").textContent)) {
     const got = SETTINGS.settingsFromYaml(text);
     if (got.errors.length || !got.name) continue;      // the build refuses these; never show a broken one
-    const opt = document.createElement("option");
-    opt.value = String(Settings.presets.length);
-    opt.textContent = got.name;
-    opt.dataset.file = file;
-    select.appendChild(opt);
-    Settings.presets.push({ name: got.name, settings: got.settings });
+    Settings.presets.push({
+      name: got.name, category: got.category, description: got.description || "", settings: got.settings,
+    });
   }
-  select.addEventListener("change", () => {
-    const preset = Settings.presets[select.value === "" ? -1 : +select.value];
-    if (!preset) return;
-    const changed = applySettings(preset.settings);
-    setSettingsStatus(changed.length ? "ok" : "", changed.length ? `${T("stAdjusted")} ${changed.join(", ")}` : "");
+  $("preset-browse").addEventListener("click", openPresetBrowser);
+  $("preset-more").addEventListener("click", () => {
+    const open = $("preset-card").classList.toggle("expanded");
+    $("preset-more").textContent = T(open ? "presetLess" : "presetMore");
+    $("preset-more").setAttribute("aria-expanded", String(open));
+  });
+  $("preset-prev").addEventListener("click", () => stepPreset(-1));
+  $("preset-next").addEventListener("click", () => stepPreset(1));
+  $("close-presets").addEventListener("click", () => $("presets").close());
+  // a click on the dimmed page around the list closes it
+  $("presets").addEventListener("click", (e) => {
+    if (e.target !== $("presets")) return;
+    const r = $("presets").getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) $("presets").close();
+  });
+  const search = $("preset-search");
+  search.addEventListener("input", () => { Settings.filter.text = search.value.trim(); renderPresetList(); });
+  search.addEventListener("keydown", (e) => {
+    const first = $("preset-list").querySelector(".preset-item");
+    if (!first) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); first.focus(); }
+    else if (e.key === "Enter") { e.preventDefault(); choosePreset(+first.dataset.index); }
+  });
+  // arrow keys move through the list; Enter and Space choose, as on any button
+  $("preset-list").addEventListener("keydown", (e) => {
+    const items = [...$("preset-list").querySelectorAll(".preset-item")];
+    const at = items.indexOf(document.activeElement);
+    if (at < 0) return;
+    const to = { ArrowDown: Math.min(items.length - 1, at + 1), ArrowUp: at - 1, Home: 0, End: items.length - 1 }[e.key];
+    if (to === undefined) return;
+    e.preventDefault();
+    (to < 0 ? search : items[to]).focus();
   });
 
   $("settings-export").addEventListener("click", exportSettings);
@@ -1482,8 +1773,9 @@ function bindSettings() {
     if (file) importSettings(file);
   });
 
-  // Any change a person makes outside this panel means the preset shown no
-  // longer describes the settings.
+  // Any change a person makes outside this group means the preset shown no
+  // longer describes the settings. Opening or closing a Details section is
+  // not such a change.
   const aside = document.querySelector("aside");
   const outside = (e) => { if (!e.target.closest("#settings-grp")) settingsTouched(); };
   aside.addEventListener("input", outside);
@@ -1547,6 +1839,7 @@ function boot() {
   buildAssumptions();
   bindControls();
   bindCanvas();
+  bindPanel();
   bindSettings();
   $("lang-toggle").addEventListener("click", () =>
     applyLang(LANG.cur === "en" ? "fr" : "en"));
@@ -1554,11 +1847,6 @@ function boot() {
     window.matchMedia("(max-width: 900px)").matches;
   $("readout-details").open = !narrow;
   applyLang("en");
-  if (narrow) {
-    document.querySelectorAll("aside details.grp").forEach((d, i) => {
-      if (i > 1) d.open = false;
-    });
-  }
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 250));
   // The readout strip below the sky changes height when its lines wrap, and

@@ -8,6 +8,8 @@
 # upper edge has gone. "sunset +80" here is therefore near its 84 minutes.
 
 name: sdross0 default, no mitigation - 37.2 N, 80 minutes after sunset, September 22
+category: Compared with sdross0
+description: The default setup of the sdross0/orbital-datacenter-brightness simulator: 500,000 Sun-synchronous satellites in the 54 filed levels, as bright as an unmitigated Lambertian sphere (+0.8), at 37.2° N on the September equinox. Use it to set the two simulators side by side.
 
 observer:
   latitude: 37.2                # Blacksburg, Virginia
@@ -33,3 +35,6 @@ display:
 
 advanced:
   naked_eye_threshold: schaefer # the threshold formula that project uses
+
+panel:                          # the controls shown outside Details
+  constellation: satellites, brightness_mag, phase_law

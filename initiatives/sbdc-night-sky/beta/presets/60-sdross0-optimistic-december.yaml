@@ -7,6 +7,8 @@
 # 12 October 2026 comparison document.
 
 name: sdross0 optimistic mitigation - 37.2 N, 92 minutes after sunset, December 21
+category: Compared with sdross0
+description: The optimistic-mitigation sdross0 setup near the December solstice, 92 minutes after sunset, where that project reports its largest count for this brightness model. Several times as many satellites are visible as in the September preset.
 
 observer:
   latitude: 37.2
@@ -32,3 +34,6 @@ display:
 
 advanced:
   naked_eye_threshold: schaefer # the threshold formula that project uses
+
+panel:                          # the controls shown outside Details
+  constellation: satellites, brightness_mag, phase_law
