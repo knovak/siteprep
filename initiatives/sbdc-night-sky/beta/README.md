@@ -51,6 +51,7 @@ On the day it was created, the beta built a page byte-identical to the released
 | 2026-11-15 | The Moon, with its phase and place; moonlight in the sky; SBDC light compared with the Moon and with a natural night sky; the readout below the sky | The November 2026 upgrade, Unit 4 |
 | 2026-11-15 | Hours of significant SBDC light for a night and for a year; a perspective view; aiming at the densest sky | The November 2026 upgrade, Unit 5 |
 | 2026-11-26 | Each group shows up to three controls and keeps the rest under a Details section; presets have a description and a category, choose which controls each group shows, and are chosen in a preset browser; the Moon is as on the date by default | The control panel; Presets; Unit 4 |
+| 2026-11-26 | Documents for readers: README, tutorial, specification and report, with screenshots | Documents for readers |
 
 `PLAN.md` in this folder is the plan for the November 2026 upgrade, in five
 units. All five are described below, after a short guide to what they added.
@@ -852,9 +853,37 @@ text after `#` stays in the browser.
 - `src/ui.js`: `redraw()` writes the compass label and the readout, so both
   follow every pan and zoom.
 
+## Documents for readers
+
+`docs/` holds the beta's own versions of the released documents, written for
+people who use the simulator rather than change it:
+
+| File | Counterpart in the release |
+| --- | --- |
+| `docs/README.md` | `../lib/README.md` |
+| `docs/TUTORIAL.md` | `../lib/TUTORIAL.md` |
+| `docs/SPECIFICATION.md` | `../lib/SPECIFICATION.md` |
+| `docs/BETA_REPORT.md` | `../lib/FINAL_REPORT.md` |
+
+`docs/images/` holds the screenshots they use and the slide deck uses, taken
+from the published beta page; the deck takes them from this folder's address
+on GitHub. The numbers in the documents are what the beta shows with its
+defaults and the settings each passage names.
+
+The documents are copied, as Google Docs, to the
+[beta folder](https://drive.google.com/drive/folders/1x0nnagEYqlsBVhjR4IMs3tkTjnjSChgU)
+of the simulator's Drive folder, beside the beta page, its data file, its
+source, this folder's `PLAN.md`, the two audit notes in `../notes/`, and the
+[beta slide tutorial](https://docs.google.com/presentation/d/1aKs2W20J9ixJlvAotCNw85hKo_v_U1MPxK2g_xvOCt4/edit).
+The files here are the source; the Drive copies are refreshed from them. The
+released documents in the parent Drive folder and in `../lib/` are not
+changed.
+
 ## Changing the beta
 
-Edit files in this folder only. Then, from this folder:
+Edit files in this folder only. A change that alters what a reader sees or
+the numbers the documents quote updates `docs/` in the same pull request, and
+the Drive copies afterwards. Then, from this folder:
 
 ```sh
 node --test test/*.test.js

@@ -6,28 +6,31 @@
 
 ## Done
 
-Adopted byte-identical from the supplied `sbdc.zip`: the 11 outer files, all
-29 nested source-package files, and the two existing demo snapshot files,
-every entry's SHA-256 recorded and verified in `adoption-manifest.json`. All
-nine original documents (`README`, `TUTORIAL`, `SPECIFICATION`,
-`IMPLEMENTATION_PLAN`, the three phase reports, `FINAL_REPORT`,
-`UPGRADE_PLAN`) are preserved unchanged under `lib/` and readable through this
-initiative's pages.
+The released simulator is the July 2026 package adopted byte-identical on
+2026-09-08 (11 outer files, 29 source files and 2 demo snapshot files, each
+SHA-256 in `adoption-manifest.json`), unchanged since; user testing of its
+preview had a satisfactory outcome on 2026-09-11.
 
-The inherited 59 model/scenario/golden/renderer tests pass, the original
-builder reproduces `work/index.html` byte-for-byte from `lib/`, and an
-offline Chromium smoke check exercised the full control set (views, playback
-modes, clustering, camera mode, both languages, custom shells, PNG export,
-phone layout) with zero page errors and zero network requests (`log.md`).
-`demos/SBDC Night Sky/` is unchanged; `work/` holds the same two files plus
-the supplied `sbdc-data.json` sidecar. The redundant
-`sbdc-sim-final-source.zip` was removed after verifying all 29 of its files
-byte-for-byte against `lib/`; its checksum and file inventory remain in
-`adoption-manifest.json`.
+The beta line in `beta/`, published at `demos/SBDC Night Sky/beta/` on every
+merge since 2026-11-11, has settings files and links, six presets with
+descriptions and a preset browser, the five units of `beta/PLAN.md` (corrected
+twilight sky, ambient light, the Moon, light ratios, hours of significant
+light, perspective view), all four fix packages of the 2026-11-20 review, and
+a control panel with Details sections. It has 158 Node tests and 36 browser
+tests (`beta/docs/BETA_REPORT.md`).
 
-## Optional later
+The beta has its own README, tutorial, specification and report in
+`beta/docs/`, with 35 screenshots and 5 animations; copies and a beta slide
+tutorial are in the Drive folder's `beta` folder (`log.md`, 2026-11-26).
 
-Deferred, not hidden obligations: correcting the inherited mobile CSS rule
-that overrides the tutorial's described sticky sky (`notes.md`), and any
-other application or document corrections real-device testing turns up.
-Both need a separately agreed scope beyond this file-only adoption.
+## Waiting on others
+
+The review's implementation record leaves two acceptance items open: a
+screen-reader session on a physical phone, and a domain review of the
+brightness assumptions before any hours are cited externally
+(`notes/beta-audit-implementation-2026-11-20.md`).
+
+## Remaining work
+
+None scheduled: the initiative is dormant and the five units of
+`beta/PLAN.md` are complete.
