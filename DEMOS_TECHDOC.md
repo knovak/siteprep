@@ -79,7 +79,7 @@ cut its link to the initiative that produced it. Set either field by editing
   associated initiative when `initiative` is present)
 - a "Beta version" link, with the date each copy last changed, for a demo that
   has a beta; the entry's title still opens the released copy
-- curated descriptions for special demos that need stable tutorial and documentation links (`world_migration_atlas` and `SBDC Night Sky`); SBDC shows "Slideshow tutorial" and "Documentation and code folder", with its main title linking to the current demo
+- curated descriptions for special demos that need stable tutorial and documentation links (`world_migration_atlas` and `SBDC Night Sky`); SBDC shows "Slideshow tutorial" and "Documentation and code folder" for the released simulator, then "Beta slideshow tutorial" and "Beta documentation folder" for the beta, with its main title linking to the current demo
 - an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file; when a formatted `prompts.html` is also present, the main link opens that page and a parenthetical "text" link opens the original text file
 
 
