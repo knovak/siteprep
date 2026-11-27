@@ -39,9 +39,9 @@
           "currency": "USD",
           "fare": "per adult incl. booking fee",
           "general": "Places advertised",
-          "generalEvidence": "The dated checkout allowed four participants at the published fare. The operator requests named entrance permits after booking and states it will confirm within 48 hours.",
+          "generalEvidence": "The dated booking form offered this departure. The guide applies for named Machu Picchu permits after booking and promises a status update within 48 hours.",
           "party": "Four priced · rooms unconfirmed",
-          "partyEvidence": "With four travelers selected in Chrome, the checkout returned US$5,016 including the booking fee. Hotel room and bed assignments were unavailable.",
+          "partyEvidence": "Selecting four travelers returned US$5,016, including US$216 in booking fees. The public form then asked for participant names. There was no room selector.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -57,9 +57,9 @@
           "currency": "USD",
           "fare": "per adult incl. booking fee",
           "general": "Places advertised",
-          "generalEvidence": "The dated checkout allowed four participants at the published fare. The operator requests named entrance permits after booking and states it will confirm within 48 hours.",
+          "generalEvidence": "The dated booking form offered this departure. The guide applies for named Machu Picchu permits after booking and promises a status update within 48 hours.",
           "party": "Four priced · rooms unconfirmed",
-          "partyEvidence": "With four travelers selected in Chrome, the checkout returned US$5,016 including the booking fee. Hotel room and bed assignments were unavailable.",
+          "partyEvidence": "Selecting four travelers returned US$5,016, including US$216 in booking fees. The public form then asked for participant names. There was no room selector.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -75,9 +75,9 @@
           "currency": "USD",
           "fare": "per adult incl. booking fee",
           "general": "Places advertised",
-          "generalEvidence": "The dated checkout allowed four participants at the published fare. The operator requests named entrance permits after booking and states it will confirm within 48 hours.",
+          "generalEvidence": "The dated booking form offered this departure. The guide applies for named Machu Picchu permits after booking and promises a status update within 48 hours.",
           "party": "Four priced · rooms unconfirmed",
-          "partyEvidence": "With four travelers selected in Chrome, the checkout returned US$5,016 including the booking fee. Hotel room and bed assignments were unavailable.",
+          "partyEvidence": "Selecting four travelers returned US$5,016, including US$216 in booking fees. The public form then asked for participant names. There was no room selector.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -95,7 +95,7 @@
       "style": "Escorted rail tours",
       "itinerary": "Nine days, Cusco round trip. Visit Pisac and Ollantaytambo, the Maras salt pans and Moray terraces. Choose a waterfall walk or via ferrata in the Sacred Valley. Go by train to Aguas Calientes on day seven, then visit the citadel with a guide and have lunch at Sanctuary Lodge on day eight.",
       "accommodation": "Eight hotel nights, including three at Casa Andina Premium Sacred Valley in Yanahuara. The night before the guided visit is in Aguas Calientes.",
-      "costs": "The May 8 and 15 checkouts each quoted US$14,787 including taxes for four adults. The calendar rounds the per-adult fare to US$3,697. Included are eight breakfasts, seven lunches, six dinners, arrival transfer, local transport and a guided entry. Flights, insurance, lead-guide and porterage tips and optional activities are extra. The requested citadel circuit depends on ticket availability. June 5 was US$3,909 per adult in the four-traveler calendar.",
+      "costs": "June 5 quoted A$22,437 for four, including taxes, on November 26. The May 8 and 15 checkouts each quoted on November 25 US$14,787 including taxes for four adults. The calendar rounds the per-adult fare to US$3,697. Included are eight breakfasts, seven lunches, six dinners, arrival transfer, local transport and a guided entry. Flights, insurance, lead-guide and porterage tips and optional activities are extra. The requested citadel circuit depends on ticket availability. The June 5 US calendar listed US$3,909 per adult.",
       "terms": "Standard Geluxe deposit US$350 per traveler. Cancellation at least 60 days ahead generally returns payments less the deposit, retained as credit. At 30–59 days half the remaining payments are refunded. Inside 30 days there is no cash refund.",
       "operatorReview": "On TourRadar, G Adventures scores 4.7/5 from about 12,800 reviews, including November 2026. Guides score 5/5, and accommodation 4/5 across the operator's trips.",
       "accommodationReview": "Booking.com scored Casa Andina Premium Valle Sagrado 9.3/10 from 275 reviews in a November snapshot. Staff and comfort both scored 9.6. This covers the three-night Sacred Valley stop only.",
@@ -141,9 +141,9 @@
           "currency": "USD",
           "fare": "Sale fare per person",
           "general": "Offered in checkout",
-          "generalEvidence": "The operator's dated checkout offered a selectable sale fare.",
+          "generalEvidence": "The November 26 four-adult calendar offered this date at A$5,312 per adult. The US calendar also showed US$3,697 per adult on November 26. The exact US-dollar checkout total is from November 25.",
           "party": "Four priced · rooms unconfirmed",
-          "partyEvidence": "November 25 checkout. The operator quoted US$14,787 including taxes for four adults and requested traveler names. The two bedrooms and bed types remain unconfirmed.",
+          "partyEvidence": "November 25 USD check. The operator quoted US$14,787 including taxes for four adults and requested traveler names. The two bedrooms and bed types remain unconfirmed.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -159,9 +159,9 @@
           "currency": "USD",
           "fare": "Sale fare per person",
           "general": "Offered in checkout",
-          "generalEvidence": "The operator's dated checkout offered a selectable sale fare.",
+          "generalEvidence": "The November 26 four-adult calendar offered this date at A$5,312 per adult. The US calendar also showed US$3,697 per adult on November 26. The exact US-dollar checkout total is from November 25.",
           "party": "Four priced · rooms unconfirmed",
-          "partyEvidence": "November 25 checkout. The operator quoted US$14,787 including taxes for four adults and requested traveler names. The two bedrooms and bed types remain unconfirmed.",
+          "partyEvidence": "November 25 USD check. The operator quoted US$14,787 including taxes for four adults and requested traveler names. The two bedrooms and bed types remain unconfirmed.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -173,15 +173,19 @@
         {
           "start": "2027-06-05",
           "end": "2027-06-13",
-          "amount": 3909,
-          "currency": "USD",
-          "fare": "Per adult, four-traveler calendar",
+          "amount": 5609,
+          "currency": "AUD",
+          "fare": "Rounded calendar fare per adult",
           "general": "Offered in checkout",
-          "generalEvidence": "June 5–13 was selectable at US$3,909 per adult.",
-          "party": "Four on calendar · rooms unconfirmed",
-          "partyEvidence": "Four adults returned a rounded calendar estimate of US$15,636 in total. The operator did not show an allocation of two bedrooms.",
+          "generalEvidence": "G Adventures offered this start in its Australian-dollar calendar for four adults. The US calendar showed US$3,909 per adult, an estimated US$15,636 for four.",
+          "party": "Four priced · rooms unconfirmed",
+          "partyEvidence": "Selecting June 5 for four adults returned A$22,437 including taxes. The form requested names before a room choice. The rounded calendar fare differs from the exact total.",
           "checked": "2026-11-26",
           "sources": [
+            {
+              "label": "Operator’s dated checkout",
+              "url": "https://www.gadventures.com/checkout/26374/overview#date/2027-06-05"
+            },
             {
               "label": "Dated four-adult calendar",
               "url": "https://www.gadventures.com/checkout/26374/overview/#date/2027-06-05"
@@ -252,7 +256,7 @@
           "general": "Guaranteed · 5 places",
           "generalEvidence": "Exodus lists five places and guarantees the departure.",
           "party": "Four on calendar · rooms unconfirmed",
-          "partyEvidence": "The four-passenger filter last returned this date November 25. The departure remained after filtering for four passengers. No joint quote for two bedrooms appeared, and the Amantani homestay room layout remains unspecified.",
+          "partyEvidence": "November 25 party check. The departure remained after filtering for four passengers. No joint quote for two bedrooms appeared, and the Amantani homestay room layout remains unspecified.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -270,7 +274,7 @@
           "general": "Available",
           "generalEvidence": "Exodus lists this date as open, subject to reaching its minimum group size.",
           "party": "Four on calendar · rooms unconfirmed",
-          "partyEvidence": "The four-passenger filter last returned this date November 25. The departure remained after filtering for four passengers. No joint quote for two bedrooms appeared, and the Amantani homestay room layout remains unspecified.",
+          "partyEvidence": "November 25 party check. The departure remained after filtering for four passengers. No joint quote for two bedrooms appeared, and the Amantani homestay room layout remains unspecified.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -332,7 +336,7 @@
           "general": "Open group",
           "generalEvidence": "Adios lists this among its groups with space. Six travelers must be confirmed and site tickets must be available.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The previous date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
+          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The November 23 date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -354,7 +358,7 @@
           "general": "Open group",
           "generalEvidence": "Adios lists this among its groups with space. Six travelers must be confirmed and site tickets must be available.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The previous date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
+          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The November 23 date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -421,7 +425,7 @@
           "currency": "USD",
           "fare": "Per adult, double occupancy",
           "general": "Available",
-          "generalEvidence": "Backroads again listed this start as Available in its public calendar. The two-room selection was last tested November 23.",
+          "generalEvidence": "The November 26 lodge-trek calendar listed this departure as available. The last two-room selection and fare check was November 23.",
           "party": "Two rooms selected · unconfirmed",
           "partyEvidence": "November 23 room check: Cloud Chromium accepted room 1 and room 2 together, each set to two adults and one bed. Continuing opened the Backroads account site before a final price or room allocation appeared. The four-person cost is calculated from the published double-occupancy fare.",
           "checked": "2026-11-26",
@@ -443,7 +447,7 @@
           "currency": "USD",
           "fare": "Per adult, double occupancy",
           "general": "Available",
-          "generalEvidence": "Backroads again listed this start as Available in its public calendar. The two-room selection was last tested November 23.",
+          "generalEvidence": "The November 26 lodge-trek calendar listed this departure as available. The last two-room selection and fare check was November 23.",
           "party": "Two rooms selected · unconfirmed",
           "partyEvidence": "November 23 room check: Cloud Chromium accepted room 1 and room 2 together, each set to two adults and one bed. Continuing opened the Backroads account site before a final price or room allocation appeared. The four-person cost is calculated from the published double-occupancy fare.",
           "checked": "2026-11-26",
@@ -512,7 +516,7 @@
           "general": "23 seats advertised",
           "generalEvidence": "The host advertises 23 seats on this custom departure. The quoted group size is up to 24.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "Public booking instructions require contacting the host. The site gives no room stock or simultaneous two-bedroom quote.",
+          "partyEvidence": "November 23 party check. Public booking instructions require contacting the host. The site gives no room stock or simultaneous two-bedroom quote.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -533,7 +537,7 @@
       "operator": "Melissa Renzi / MNR Retreats",
       "style": "Wellness retreat",
       "itinerary": "Eight nights based in Arín, with daily yoga, a guided Machu Picchu rail day trip, outings to Pisac, Moray and Maras, weaving and a traditional farm lunch. A group of 8–12, designed for travelers who prefer a quiet pace. Scheduled shuttles connect with Cusco airport.",
-      "accommodation": "Nine ensuite bedrooms across five houses. One private king bedroom remains. The shared category has a king and a double bed and accepts solo travelers seeking roommates. Private casitas are sold out.",
+      "accommodation": "Nine ensuite bedrooms across five houses. The host lists one private king bedroom and asks couples to enquire about sharing it. The shared category has a king and a double bed and accepts solo travelers seeking roommates. Private casitas are sold out.",
       "costs": "US$10,400 for four sharing at the published rates, subject to a suitable allocation. Scheduled shuttles, admissions, train excursion, guiding, most meals and lodging are included. Add flights, required insurance, two or three lunches and estimated tips of US$80–120 per person. Card fees may apply.",
       "terms": "US$550 nonrefundable deposit; half of the balance is due 120 days before arrival and the remainder 60 days before. At 60–119 days, paid amounts above the deposit can transfer to another retreat within 12 months. Within 59 days, no refund or transfer. Passport copies for tickets are due December 15, 2026.",
       "operatorReview": "115 organizer reviews on WeTravel. September 2026 participants on another retreat described a flexible pace and supportive leadership. Overall score was not visible.",
@@ -745,7 +749,7 @@
           "general": "Guaranteed departure",
           "generalEvidence": "Andino marks May 12 available. The card shows eight spots left alongside three departures, so that count cannot be assigned to May 12 alone.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The public enquiry offers an adult count and a yes/no hotel option. It asks for contact details and displays no two-room quote.",
+          "partyEvidence": "November 23 party check. The public enquiry offers an adult count and a yes/no hotel option. It asks for contact details and displays no two-room quote.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -813,7 +817,7 @@
           "general": "Open group",
           "generalEvidence": "The operator lists the exact date under Open Departures and on its calendar of groups with space. The operator requires six confirmed travelers to run a published departure.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The previous date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
+          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The November 23 date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -835,7 +839,7 @@
           "general": "Open group",
           "generalEvidence": "The operator lists the exact date under Open Departures and on its calendar of groups with space. The operator requires six confirmed travelers to run a published departure.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The previous date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
+          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The November 23 date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -900,7 +904,7 @@
           "general": "Open group",
           "generalEvidence": "The operator lists the exact date under Open Departures and on its calendar of groups with space. The operator requires six confirmed travelers to run a published departure.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The previous date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
+          "partyEvidence": "The November 26 open-group calendar published a sharing fare and an enquiry route. The November 23 date-specific enquiry offered no room stock. The minimum to operate is six confirmed travelers.",
           "checked": "2026-11-26",
           "sources": [
             {
@@ -977,7 +981,7 @@
           "end": "2027-04-21",
           "amount": 734.3,
           "party": "Pairs priced in two-person rooms",
-          "partyEvidence": "TourRadar priced four guests in its Standard Double/Twin category at US$2,937.20 on its Black Friday offer. Two people share each room and the seller pairs companions booking together. Bed types and named pairings were unspecified. The page showed US$587.44 due at booking and the balance due March 1, 2027. No traveler details were entered. The November 25 direct G Adventures quote was US$2,937 for four without a room selection.",
+          "partyEvidence": "TourRadar priced four guests in its Standard Double/Twin category at US$2,937.20 on its Black Friday offer. Two people share each room and the seller pairs companions booking together. Bed types and named pairings were unspecified. The page showed US$587.44 due at booking and the balance due March 1, 2027. No traveler details were entered. The November 25 direct G Adventures quote was US$2,937 for four without a room selection. The remaining balance was US$2,349.76.",
           "fare": "Per adult, paired-room quote via TourRadar",
           "roomQuote": {
             "seller": "TourRadar",
@@ -993,6 +997,7 @@
               "url": "https://www.tourradar.com/book-now/306093?date=15.04.2027&type=book&travellers%5B1%5D=4"
             }
           ],
+          "generalEvidence": "TourRadar advertised at least ten spaces. The operator also offered the date for four adults.",
           "checked": "2026-11-26"
         },
         {
@@ -1254,7 +1259,7 @@
         "currency": "USD",
         "fare": "Per adult, four-traveler search",
         "general": "Available",
-        "generalEvidence": "The operator displayed a price on this date with the search set to four adults.",
+        "generalEvidence": "On November 26 the operator’s USD and AUD calendars both offered this departure for four adults. Exact direct checkout totals cited from November 25 retain that date.",
         "party": "Four on calendar · rooms unconfirmed",
         "partyEvidence": "This date and per-person fare appeared together in the four-adult calendar. It gave neither a final group total nor a room allocation.",
         "checked": "2026-11-26",
@@ -1394,7 +1399,7 @@
         "currency": "USD",
         "fare": "Per adult, four-traveler search",
         "general": "Offered in checkout",
-        "generalEvidence": "The operator’s departure calendar offered this date with four adults selected.",
+        "generalEvidence": "On November 26 the operator’s USD and AUD calendars both offered this departure for four adults. Exact direct checkout totals cited from November 25 retain that date.",
         "party": "Four on calendar · rooms unconfirmed",
         "partyEvidence": "The dated fare appeared for four adults. No room allocation was shown.",
         "checked": "2026-11-26"
@@ -1630,7 +1635,7 @@
           "general": "Definite departure",
           "generalEvidence": "The dated Trafalgar checkout returned a four-adult trip summary with two twin rooms in the recommended configuration.",
           "party": "Two twin rooms priced together",
-          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$17,704 on the room screen, which offered continuation to Passenger Details. No traveler details were entered and no rooms were held.",
+          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$17,704 and carried through to Passenger Details. No traveler details were entered and no rooms were held. On November 26 the trip summary again priced four in two twin rooms, including US$904 in intra-trip air and a US$200 surcharge across the party.",
           "roomQuote": {
             "seller": "Trafalgar",
             "total": 17704
@@ -1656,7 +1661,7 @@
           "general": "Offered in checkout",
           "generalEvidence": "The dated Trafalgar checkout returned a four-adult trip summary with two twin rooms in the recommended configuration.",
           "party": "Two twin rooms priced together",
-          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$16,044 on the room screen, which offered continuation to Passenger Details. No traveler details were entered and no rooms were held.",
+          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$16,044 and carried through to Passenger Details. No traveler details were entered and no rooms were held. On November 26 the trip summary again priced four in two twin rooms, including US$904 in intra-trip air and a US$200 surcharge across the party.",
           "roomQuote": {
             "seller": "Trafalgar",
             "total": 16044
@@ -1676,19 +1681,135 @@
       ]
     },
     {
-      "id": 472,
-      "name": "Essential Peru · Pacific Coast & Sacred Andes",
+      "id": 648,
+      "name": "Peru’s Machu Picchu and Beyond · Small Group",
+      "operator": "Costsaver, booked through Trafalgar",
+      "style": "Escorted rail tours",
+      "itinerary": "Seven days from the Cusco arrival area through the Sacred Valley and back to Cusco. Visit Tambococha, take the Expedition train from Ollantaytambo and visit Machu Picchu on day three. Return by rail for a valley walk and Cusco sightseeing.",
+      "accommodation": "Two nights at San Agustín Urubamba, one at Taypikala Machu Picchu and three at Nodo Cusco Garcilaso, or similar hotels. Each dated order offered two twin rooms for four.",
+      "costs": "US$4,950 for four after a US$550 discount on the US$5,500 land fare. Includes rail, the Machu Picchu visit, six breakfasts and one lunch. Allow for flights, the departure transfer, other meals and optional excursions. The selected entry circuit was unspecified.",
+      "terms": "US$350 deposit per person. The sale requires full payment by the date listed with each departure. Trafalgar applies tour-specific cancellation charges. The precise penalty tier for this tour was unverified.",
+      "operatorReview": "TourRadar scored Costsaver 4.3/5 across about 1,147 reviews. November 2026 travelers praised guides and drivers on other routes. This is operator-wide evidence.",
+      "accommodationReview": "Booking.com’s 2026 snapshot for Taypikala Machupicchu scored 8.3/10 from 525 reviews. Staff scored 9.0 and value 8.0. This covers the Aguas Calientes night only. The other properties and any substitutions need separate assessment.",
+      "operatorReviewShort": "4.3/5 · Costsaver",
+      "accommodationReviewShort": "8.3/10 · Taypikala",
+      "reviewChecked": "2026-11-26",
+      "locations": [
+        "cusco",
+        "urubamba",
+        "ollantaytambo",
+        "pueblo",
+        "machupicchu"
+      ],
+      "sources": [
+        {
+          "label": "Trafalgar itinerary and calendar",
+          "url": "https://www.trafalgar.com/en-us/tours/perus-machu-picchu-and-beyond-small-group"
+        },
+        {
+          "label": "Costsaver itinerary",
+          "url": "https://www.costsavertour.com/en-us/tours/perus-machu-picchu-and-beyond-small-group"
+        },
+        {
+          "label": "Hotel sequence",
+          "url": "https://www.globaljourneys.com/trip/costsaver-yvper"
+        },
+        {
+          "label": "Trafalgar booking terms",
+          "url": "https://www.trafalgar.com/en-us/resources/conditions"
+        },
+        {
+          "label": "Costsaver reviews",
+          "url": "https://www.tourradar.com/o/costsaver"
+        },
+        {
+          "label": "Taypikala guest reviews",
+          "url": "https://www.booking.com/hotel/pe/taypikala-machupicchu.html"
+        }
+      ],
+      "departures": [
+        {
+          "start": "2027-05-07",
+          "end": "2027-05-13",
+          "amount": 1237.5,
+          "currency": "USD",
+          "fare": "Per adult in two quoted twin rooms",
+          "general": "Offered in checkout",
+          "generalEvidence": "Trafalgar opened the dated Costsaver checkout.",
+          "party": "Two twin rooms priced together",
+          "partyEvidence": "Four adults selected together returned two twin rooms and a US$4,950 total. Sale balance due January 7, 2027.",
+          "roomQuote": {
+            "seller": "Trafalgar",
+            "total": 4950
+          },
+          "checked": "2026-11-26",
+          "sources": [
+            {
+              "label": "Four adults in two twin rooms",
+              "url": "https://bookings.trafalgar.com/TTUSAS/4YVPERN27/07E27a?rooms=2xTWN&adults=4&epd=true&discountCode=BF2610CS&lmdRemoved=false"
+            }
+          ]
+        },
+        {
+          "start": "2027-06-04",
+          "end": "2027-06-10",
+          "amount": 1237.5,
+          "currency": "USD",
+          "fare": "Per adult in two quoted twin rooms",
+          "general": "Offered in checkout",
+          "generalEvidence": "Trafalgar opened the dated Costsaver checkout. The calendar showed US$1,375 per adult. The four-person checkout applied the sale.",
+          "party": "Two twin rooms priced together",
+          "partyEvidence": "Four adults selected together returned two twin rooms and a US$4,950 total. Sale balance due February 4, 2027.",
+          "roomQuote": {
+            "seller": "Trafalgar",
+            "total": 4950
+          },
+          "checked": "2026-11-26",
+          "sources": [
+            {
+              "label": "Four adults in two twin rooms",
+              "url": "https://bookings.trafalgar.com/TTUSAS/4YVPERN27/04F27a?rooms=2xTWN&adults=4&epd=true&discountCode=BF2610CS&lmdRemoved=false"
+            }
+          ]
+        },
+        {
+          "start": "2027-06-11",
+          "end": "2027-06-17",
+          "amount": 1237.5,
+          "currency": "USD",
+          "fare": "Per adult in two quoted twin rooms",
+          "general": "Offered in checkout",
+          "generalEvidence": "Trafalgar opened the dated Costsaver checkout.",
+          "party": "Two twin rooms priced together",
+          "partyEvidence": "Four adults selected together returned two twin rooms and a US$4,950 total. Sale balance due February 11, 2027.",
+          "roomQuote": {
+            "seller": "Trafalgar",
+            "total": 4950
+          },
+          "checked": "2026-11-26",
+          "sources": [
+            {
+              "label": "Four adults in two twin rooms",
+              "url": "https://bookings.trafalgar.com/TTUSAS/4YVPERN27/11F27a?rooms=2xTWN&adults=4&epd=true&discountCode=BF2610CS&lmdRemoved=false"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 220,
+      "name": "Essential Peru · Pacific Coast and Sacred Andes",
       "operator": "Andino Peru Tours",
       "style": "Escorted rail tours",
-      "itinerary": "Start in Lima, visit the coast, then fly to Cusco for the Sacred Valley, Machu Picchu by train, Humantay Lake and Rainbow Mountain. Finish at Cusco airport.",
-      "accommodation": "Basic, two-star or three-star hotels in double or matrimonial rooms. The itemized hotel list accounts for six of the seven nights. Properties and room stock are unspecified.",
-      "costs": "The basic rate is US$779 per adult sharing, an estimated US$3,116 for four before applicable extras. Other per-person rates are US$849 (two-star) or US$939 (three-star). Includes the Machu Picchu entry, train, shuttle, guiding and listed transfers and meals. Domestic and international flights, insurance and unlisted meals cost extra. The date grid advertises US$759, while the product rate sheet starts at US$779.",
+      "itinerary": "8 days from Lima. Visit Paracas, the Ballestas Islands and Huacachina, then fly to Cusco. Hike to Humantay Lake, explore the Sacred Valley, take the train to Aguas Calientes and visit Machu Picchu on day six. Rainbow Mountain follows. Finish in Cusco.",
+      "accommodation": "7 hotel nights, including Aguas Calientes. The quoted basic tier uses double or matrimonial rooms. Property names and the two couples’ assignments remain open. The operator itemizes only six of the seven nights on its rate sheet.",
+      "costs": "The product lists US$779 per adult for the basic hotels, US$3,116 for four before flights and other extras. The two- and three-star tiers cost US$849 and US$939 per adult. Train, shuttle and citadel entry are included. Allow for the required Lima–Cusco flight, international flights, unlisted meals and insurance. The fixed-departure card advertises US$759. The detailed basic-hotel rate is US$20 higher per adult.",
       "terms": "40% deposit. The operator lists multi-day cancellation charges from 10% at 60–90 days to 50% at 0–7 days and also asks for five days’ notice. Card payment links add US$7 per US$100 or fraction.",
-      "operatorReview": "Tripadvisor’s Andino Peru Tours listing showed 5/5 from 406 reviews. August and September 2026 travelers praised airport and station pickups, clear next-day briefings and the guides at Humantay and Machu Picchu. This November 23 assessment covers the operator across tours.",
-      "accommodationReview": "No hotel names are assigned on the rate sheet. Reviews cannot establish the properties or bedroom arrangements for this departure.",
-      "operatorReviewShort": "5/5, 406 Tripadvisor reviews",
-      "accommodationReviewShort": "Hotels unnamed",
-      "reviewChecked": "2026-11-23",
+      "operatorReview": "Travelers on the Cusco operator’s Tripadvisor listing describe punctual pickups and knowledgeable local guides on the coast and in the Andes. The operator’s site linked to 410 reviews on November 26. The November 23 independent snapshot scored 5/5 from 406.",
+      "accommodationReview": "The operator publishes hotel tiers. Specific property reviews depend on the names it assigns to the departure.",
+      "operatorReviewShort": "5/5 · 406 in Nov 23 snapshot",
+      "accommodationReviewShort": "Basic hotels unnamed",
+      "reviewChecked": "2026-11-26",
       "locations": [
         "lima",
         "paracas",
@@ -1699,11 +1820,13 @@
         "ollantaytambo",
         "pueblo",
         "machupicchu",
-        "vinicunca"
+        "vinicunca",
+        "moray",
+        "maras"
       ],
       "sources": [
         {
-          "label": "Itinerary, inclusions and hotel rates",
+          "label": "8-day itinerary and lodging rates",
           "url": "https://www.andinoperutours.com/en/peru-vacation-packages/essential-peru-tour-8-days/"
         },
         {
@@ -1725,39 +1848,39 @@
           "end": "2027-05-19",
           "amount": 779,
           "currency": "USD",
-          "fare": "Per adult sharing, basic hotel",
+          "fare": "Basic double hotel tier per adult",
           "general": "Guaranteed departure",
-          "generalEvidence": "The 2027 fixed-departure calendar marks May 12 available. Its remaining-place count is printed for a group of dates.",
+          "generalEvidence": "Andino lists May 12 as available in its confirmed-group calendar. The card’s 6 remaining places span three listed dates.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The operator asks for dates, number of adults, contact details and whether hotels are needed. It publishes no combined room quote.",
+          "partyEvidence": "Selected May, 8 days, four adults and hotel included. The enquiry offered no exact day, two-room allocation or priced order.",
           "checked": "2026-11-26",
           "sources": [
             {
-              "label": "Itinerary, inclusions and hotel rates",
-              "url": "https://www.andinoperutours.com/en/peru-vacation-packages/essential-peru-tour-8-days/"
-            },
-            {
               "label": "Operator’s fixed departures",
               "url": "https://www.andinoperutours.com/en/fixed-departures-in-peru/"
+            },
+            {
+              "label": "8-day itinerary and lodging rates",
+              "url": "https://www.andinoperutours.com/en/peru-vacation-packages/essential-peru-tour-8-days/"
             }
           ]
         }
       ]
     },
     {
-      "id": 423,
-      "name": "Wonders of Peru · Coast, Machu Picchu & Lake Titicaca",
+      "id": 235,
+      "name": "Wonders of Peru · Coast, Andes and Lake Titicaca",
       "operator": "Andino Peru Tours",
       "style": "Escorted rail tours",
-      "itinerary": "Start in Lima, visit the coast and Cusco region, travel by train to Machu Picchu and continue to Puno and Lake Titicaca. The last transfer is to Juliaca airport.",
-      "accommodation": "Basic, two-star or three-star hotels in double or matrimonial rooms. The itemized hotel list accounts for eight of the nine nights. Properties and room stock are unspecified.",
-      "costs": "The basic rate is US$999 per adult sharing, an estimated US$3,996 for four before applicable extras. Other per-person rates are US$1,069 (two-star) or US$1,159 (three-star). Includes the Machu Picchu entry, train, shuttle, guiding and listed transfers and meals. Domestic and international flights, insurance and unlisted meals cost extra. The exclusions mention S/77 in Nazca taxes per person. The published route does not specify a Nazca flight, so the applicability of that charge needs checking.",
+      "itinerary": "10 days from Lima. Visit Paracas, the Ballestas Islands and Huacachina, then fly to Cusco. Hike to Humantay Lake, explore the Sacred Valley, take the train to Aguas Calientes and visit Machu Picchu on day six. Rainbow Mountain follows. Continue by bus to Puno for Lake Titicaca and depart via Juliaca.",
+      "accommodation": "9 hotel nights, including Aguas Calientes. The quoted basic tier uses double or matrimonial rooms. Property names and the two couples’ assignments remain open. The operator itemizes only eight of the nine nights on its rate sheet.",
+      "costs": "The product lists US$999 per adult for the basic hotels, US$3,996 for four before flights and other extras. The two- and three-star tiers cost US$1,069 and US$1,159 per adult. Train, shuttle and citadel entry are included. Allow for the required Lima–Cusco flight, international flights, unlisted meals and insurance. The exclusions also list a PEN 77 Nazca tax despite no Nazca stop in the ten-day itinerary. Its applicability needs clarification.",
       "terms": "40% deposit. The operator lists multi-day cancellation charges from 10% at 60–90 days to 50% at 0–7 days and also asks for five days’ notice. Card payment links add US$7 per US$100 or fraction.",
-      "operatorReview": "Tripadvisor’s Andino Peru Tours listing showed 5/5 from 406 reviews. August and September 2026 travelers praised airport and station pickups, clear next-day briefings and the guides at Humantay and Machu Picchu. This November 23 assessment covers the operator across tours.",
-      "accommodationReview": "No hotel names are assigned on the rate sheet. Reviews cannot establish the properties or bedroom arrangements for this departure.",
-      "operatorReviewShort": "5/5, 406 Tripadvisor reviews",
-      "accommodationReviewShort": "Hotels unnamed",
-      "reviewChecked": "2026-11-23",
+      "operatorReview": "Travelers on the Cusco operator’s Tripadvisor listing describe punctual pickups and knowledgeable local guides on the coast and in the Andes. The operator’s site linked to 410 reviews on November 26. The November 23 independent snapshot scored 5/5 from 406.",
+      "accommodationReview": "The operator publishes hotel tiers. Specific property reviews depend on the names it assigns to the departure.",
+      "operatorReviewShort": "5/5 · 406 in Nov 23 snapshot",
+      "accommodationReviewShort": "Basic hotels unnamed",
+      "reviewChecked": "2026-11-26",
       "locations": [
         "lima",
         "paracas",
@@ -1769,11 +1892,14 @@
         "pueblo",
         "machupicchu",
         "vinicunca",
-        "puno"
+        "moray",
+        "maras",
+        "puno",
+        "juliaca"
       ],
       "sources": [
         {
-          "label": "Itinerary, inclusions and hotel rates",
+          "label": "10-day itinerary and lodging rates",
           "url": "https://www.andinoperutours.com/en/peru-vacation-packages/wonders-of-peru-tour-10-days/"
         },
         {
@@ -1795,20 +1921,168 @@
           "end": "2027-05-21",
           "amount": 999,
           "currency": "USD",
-          "fare": "Per adult sharing, basic hotel",
+          "fare": "Basic double hotel tier per adult",
           "general": "Guaranteed departure",
-          "generalEvidence": "The 2027 fixed-departure calendar marks May 12 available. Its remaining-place count is printed for a group of dates.",
+          "generalEvidence": "Andino lists May 12 as available in its confirmed-group calendar. The card’s 10 remaining places span three listed dates.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The operator asks for dates, number of adults, contact details and whether hotels are needed. It publishes no combined room quote.",
+          "partyEvidence": "Selected May, 10 days, four adults and hotel included. The enquiry offered no exact day, two-room allocation or priced order.",
           "checked": "2026-11-26",
           "sources": [
             {
-              "label": "Itinerary, inclusions and hotel rates",
-              "url": "https://www.andinoperutours.com/en/peru-vacation-packages/wonders-of-peru-tour-10-days/"
-            },
-            {
               "label": "Operator’s fixed departures",
               "url": "https://www.andinoperutours.com/en/fixed-departures-in-peru/"
+            },
+            {
+              "label": "10-day itinerary and lodging rates",
+              "url": "https://www.andinoperutours.com/en/peru-vacation-packages/wonders-of-peru-tour-10-days/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 765,
+      "name": "Lima to Cusco",
+      "operator": "On The Go Tours",
+      "style": "Short rail trips",
+      "itinerary": "Seven days with local guides on sightseeing days. Visit Lima, fly to Cusco, visit Moray and the Sacred Valley, and ride the train from Ollantaytambo to Aguas Calientes. Visit the citadel on day five and return to Cusco.",
+      "accommodation": "Six nights in standard three-star hotels. Examples include Centro by Casa Andina in Lima, Andean Wings Valley in Urubamba and Hacienda Cusco Plaza Regocijo. The checkout lists two double rooms. Final properties and bedding are subject to confirmation.",
+      "costs": "Four adults in two double rooms cost US$3,258 at the sale rate. An optional extra Lima night adds US$180 per party on the April 17, May 22 and June 5 departures. The required Lima–Cusco flight is extra. Includes airport transfers, return train, guided sightseeing, six breakfasts and two lunches. International flights, insurance, optional outings and unspecified entry fees cost extra. Confirm the ticket circuit and any admission charge before comparing the trip total.",
+      "terms": "US$400 deposit per adult. Dated checkout balances of US$1,658 were due February 16, March 2, March 23 and April 6 respectively. The invoice controls the deadline. The deposit and nonrefundable supplier charges remain payable on cancellation. The operator confirms the booking separately.",
+      "operatorReview": "TourRadar scored the operator 4.6/5 across about 2,680 reviews, including November 2026. Across its tours the guide score was 5/5 and meals 4/5. The ratings cover multiple countries and local guides.",
+      "operatorReviewShort": "4.6/5 · operator",
+      "accommodationReview": "Booking.com’s 2026 snapshot gave Centro by Casa Andina Miraflores 8.8/10 from 732 reviews. Guests liked the location for walking and transport. This rating covers the Lima example only, and does not establish the hotels assigned to this departure.",
+      "accommodationReviewShort": "8.8/10 · Lima example",
+      "reviewChecked": "2026-11-26",
+      "locations": [
+        "lima",
+        "cusco",
+        "moray",
+        "urubamba",
+        "ollantaytambo",
+        "pueblo",
+        "machupicchu"
+      ],
+      "sources": [
+        {
+          "label": "Itinerary and date picker",
+          "url": "https://www.onthegotours.com/us/Peru/Lima-to-Cusco-7-days"
+        },
+        {
+          "label": "US booking conditions",
+          "url": "https://www.onthegotours.com/us/Booking-conditions"
+        },
+        {
+          "label": "Operator reviews",
+          "url": "https://www.tourradar.com/o/on-the-go-tours"
+        },
+        {
+          "label": "Lima hotel reviews",
+          "url": "https://www.booking.com/hotel/pe/casa-andina-classic-miraflores-centro.en-gb.html"
+        }
+      ],
+      "departures": [
+        {
+          "start": "2027-04-17",
+          "end": "2027-04-23",
+          "amount": 814.5,
+          "currency": "USD",
+          "fare": "Per adult in two double rooms, land only",
+          "general": "Offered in checkout",
+          "generalEvidence": "The dated Standard inventory opened a checkout. The operator guarantees operation once two guests are booked.",
+          "party": "Two double rooms priced together",
+          "partyEvidence": "The dated checkout showed two double rooms for four guests at US$3,258. The reservation team issues the final confirmation. The required domestic flight is extra.",
+          "roomQuote": {
+            "seller": "On The Go Tours",
+            "total": 3258
+          },
+          "checked": "2026-11-26",
+          "sources": [
+            {
+              "label": "Dated two-double-room checkout",
+              "url": "https://www.onthegotours.com/checkout/3267?year=2027&month=4&day=17&numberOfAdults=4&numberOfChildren=0&accommodationStandardType=Standard"
+            },
+            {
+              "label": "Itinerary and date picker",
+              "url": "https://www.onthegotours.com/us/Peru/Lima-to-Cusco-7-days"
+            }
+          ]
+        },
+        {
+          "start": "2027-05-01",
+          "end": "2027-05-07",
+          "amount": 814.5,
+          "currency": "USD",
+          "fare": "Per adult in two double rooms, land only",
+          "general": "Offered in checkout",
+          "generalEvidence": "The dated Standard inventory opened a checkout. The operator guarantees operation once two guests are booked.",
+          "party": "Two double rooms priced together",
+          "partyEvidence": "The dated checkout showed two double rooms for four guests at US$3,258. The reservation team issues the final confirmation. The required domestic flight is extra.",
+          "roomQuote": {
+            "seller": "On The Go Tours",
+            "total": 3258
+          },
+          "checked": "2026-11-26",
+          "sources": [
+            {
+              "label": "Dated two-double-room checkout",
+              "url": "https://www.onthegotours.com/checkout/3267?year=2027&month=5&day=1&numberOfAdults=4&numberOfChildren=0&accommodationStandardType=Standard"
+            },
+            {
+              "label": "Itinerary and date picker",
+              "url": "https://www.onthegotours.com/us/Peru/Lima-to-Cusco-7-days"
+            }
+          ]
+        },
+        {
+          "start": "2027-05-22",
+          "end": "2027-05-28",
+          "amount": 814.5,
+          "currency": "USD",
+          "fare": "Per adult in two double rooms, land only",
+          "general": "Offered in checkout",
+          "generalEvidence": "The dated Standard inventory opened a checkout. The operator guarantees operation once two guests are booked.",
+          "party": "Two double rooms priced together",
+          "partyEvidence": "The dated checkout showed two double rooms for four guests at US$3,258. The reservation team issues the final confirmation. The required domestic flight is extra.",
+          "roomQuote": {
+            "seller": "On The Go Tours",
+            "total": 3258
+          },
+          "checked": "2026-11-26",
+          "sources": [
+            {
+              "label": "Dated two-double-room checkout",
+              "url": "https://www.onthegotours.com/checkout/3267?year=2027&month=5&day=22&numberOfAdults=4&numberOfChildren=0&accommodationStandardType=Standard"
+            },
+            {
+              "label": "Itinerary and date picker",
+              "url": "https://www.onthegotours.com/us/Peru/Lima-to-Cusco-7-days"
+            }
+          ]
+        },
+        {
+          "start": "2027-06-05",
+          "end": "2027-06-11",
+          "amount": 814.5,
+          "currency": "USD",
+          "fare": "Per adult in two double rooms, land only",
+          "general": "Offered in checkout",
+          "generalEvidence": "The dated Standard inventory opened a checkout. The operator guarantees operation once two guests are booked.",
+          "party": "Two double rooms priced together",
+          "partyEvidence": "The dated checkout showed two double rooms for four guests at US$3,258. The reservation team issues the final confirmation. The required domestic flight is extra.",
+          "roomQuote": {
+            "seller": "On The Go Tours",
+            "total": 3258
+          },
+          "checked": "2026-11-26",
+          "sources": [
+            {
+              "label": "Dated two-double-room checkout",
+              "url": "https://www.onthegotours.com/checkout/3267?year=2027&month=6&day=5&numberOfAdults=4&numberOfChildren=0&accommodationStandardType=Standard"
+            },
+            {
+              "label": "Itinerary and date picker",
+              "url": "https://www.onthegotours.com/us/Peru/Lima-to-Cusco-7-days"
             }
           ]
         }
@@ -1816,39 +2090,52 @@
     },
     {
       "id": 726,
-      "name": "Treasures of Peru with Machu Picchu & Lake Titicaca",
+      "name": "Treasures of Peru · Machu Picchu and Lake Titicaca",
       "operator": "Odysseys Unlimited",
       "style": "Escorted rail tours",
-      "itinerary": "Fly from the US to Lima. Tour the Sacred Valley and visit Machu Picchu twice, followed by Cusco, Lake Titicaca and a return via Lima. The last night is on the flight to the US.",
-      "accommodation": "Nine hotel nights. Examples include AC Hotel Lima Miraflores, Sonesta Posada del Inca Sacred Valley, Sumaq Machu Picchu Hotel, Palacio del Inka and GHL Hotel Lago Titicaca. The Lima airport hotel on day ten precedes an overnight flight.",
-      "costs": "From Miami the dated air-inclusive fares are US$5,187 or US$5,487 per adult sharing, including estimated airline taxes and fees. That gives US$20,748 or US$21,948 for four before extra costs. Other gateways differ. Includes internal flights, nine hotel nights, tours, admissions, 22 meals and specified gratuities. Insurance and optional extensions are extra.",
-      "terms": "US$650 deposit per person for 2027. Balance due 125 days before departure. Cancellation through that deadline is fully refundable. Later cancellation charges follow the operator’s schedule.",
-      "operatorReview": "Trustpilot showed 3.5/5 from 18 company-wide reviews, with two in the last twelve months. A 2026 traveler praised the guide and balance of guided and free time on an Italy tour. This small sample gives limited evidence for Peru.",
-      "operatorReviewShort": "3.5/5 · 18 company reviews",
-      "accommodationReview": "Booking.com’s Sumaq property page showed guests rated staff 9.3/10 and location 8.4/10. These scores cover the Machu Picchu hotel only. The sample size and latest stay date were not verified.",
-      "accommodationReviewShort": "Sumaq staff 9.3/10",
+      "itinerary": "Eleven days on the US air-inclusive schedule, with nine hotel nights. Travel via Lima, the Sacred Valley and Aguas Calientes, visit Machu Picchu twice, and continue via Cusco to Puno and Lake Titicaca, including the Uros islands and Taquile. Fly via Lima on day ten and arrive in the US on day eleven.",
+      "accommodation": "The itinerary lists AC Hotel Lima Miraflores, Sonesta Posada del Inca Sacred Valley, Sumaq Machu Picchu Hotel, Palacio del Inka and GHL Hotel Lago Titicaca. The day-ten schedule lists Wyndham Grand Costa del Sol Lima Airport before the overnight flight to the US. Check the hotels assigned to each departure and how the departure-day room is used.",
+      "costs": "Land-only twin-share fares are US$4,395 per adult in April and US$4,695 in May, or an estimated US$17,580 and US$18,780 for four. From Miami, the advertised air-inclusive fares are US$5,187 and US$5,487 respectively, including airline taxes and fees subject to change. The package includes 22 meals, guided visits, entrance fees and stated gratuities. Confirm internal-flight coverage on a land-only invoice. The Miami fares imply US$20,748 in April or US$21,948 in May for four. Insurance and optional extensions are extra.",
+      "terms": "For 2027, US$650 deposit per person, refundable through 125 days before departure. Full payment is due at that point. Cancellation costs 25% at 124–95 days, 50% at 94–65, 75% at 64–30, and the full price closer in.",
+      "operatorReview": "Travelstride scores Odysseys Unlimited 4.9/5 across 53 reviews. Travelers praise knowledgeable directors and the small groups. Some report long bus rides. This operator-wide sample does not isolate Peru or establish recent performance on these departures. Trustpilot showed 3.5/5 from 18 company-wide reviews, with two in the last twelve months. A 2026 traveler praised the guide and balance of guided and free time on an Italy tour. This small sample gives limited evidence for Peru.",
+      "operatorReviewShort": "4.9/5 Travelstride · 3.5/5 Trustpilot",
+      "accommodationReview": "Booking.com’s 2026 snapshot for Sumaq scored 8.5/10 from 107 reviews. One guest described staff helping with Machu Picchu admission. This covers one property on the route. Guests rated staff 9.3/10 and location 8.4/10.",
+      "accommodationReviewShort": "8.5/10 · Sumaq",
       "reviewChecked": "2026-11-26",
       "locations": [
         "lima",
         "cusco",
+        "yucay",
         "pisac",
         "pueblo",
         "machupicchu",
         "puno",
-        "yucay"
+        "taquile"
       ],
       "sources": [
-        {
-          "label": "2027 availability and Miami gateway fares",
-          "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/#tours-available-dates-2027"
-        },
         {
           "label": "Operator itinerary and reservation request",
           "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/"
         },
         {
-          "label": "2027 cancellation and payment terms",
+          "label": "Agency seat counts",
+          "url": "https://pavlus.com/odysseys-unlimited/"
+        },
+        {
+          "label": "2027 cancellation terms",
           "url": "https://www.odysseys-unlimited.com/terms/"
+        },
+        {
+          "label": "Operator reviews",
+          "url": "https://www.travelstride.com/tour-operators/odysseys-unlimited"
+        },
+        {
+          "label": "Sumaq guest reviews",
+          "url": "https://www.booking.com/hotel/pe/sumaq-machu-picchu.html"
+        },
+        {
+          "label": "2027 availability and Miami gateway fares",
+          "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/#tours-available-dates-2027"
         },
         {
           "label": "Independent operator reviews",
@@ -1863,15 +2150,19 @@
         {
           "start": "2027-04-19",
           "end": "2027-04-29",
-          "amount": 5187,
+          "amount": 4395,
           "currency": "USD",
-          "fare": "Per adult double occupancy, Miami air included",
-          "general": "Limited availability",
-          "generalEvidence": "Operator’s own 2027 calendar lists this status and Miami gateway price.",
+          "fare": "Land only, per adult sharing",
+          "general": "Limited · call operator",
+          "generalEvidence": "The operator marked the date limited and directed travelers to call. No count appeared. The Miami air-inclusive fare on this date was US$5,187 per adult.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The pricing selector covers one or two guests. The operator handles limited departures by phone and requires counselor confirmation of online requests. No public joint two-room allocation.",
+          "partyEvidence": "The guest selector stopped at two. A reservation request requires later acceptance. The page supplied no simultaneous quote or room allocation for four.",
           "checked": "2026-11-26",
           "sources": [
+            {
+              "label": "Operator itinerary and reservation request",
+              "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/"
+            },
             {
               "label": "2027 availability and Miami gateway fares",
               "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/#tours-available-dates-2027"
@@ -1881,15 +2172,19 @@
         {
           "start": "2027-04-26",
           "end": "2027-05-06",
-          "amount": 5187,
+          "amount": 4395,
           "currency": "USD",
-          "fare": "Per adult double occupancy, Miami air included",
-          "general": "Space available",
-          "generalEvidence": "Operator’s own 2027 calendar lists this status and Miami gateway price.",
+          "fare": "Land only, per adult sharing",
+          "general": "Places advertised",
+          "generalEvidence": "The operator marked the date Space Available and offered a reservation request. The Miami air-inclusive fare on this date was US$5,187 per adult.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The pricing selector covers one or two guests. The operator handles limited departures by phone and requires counselor confirmation of online requests. No public joint two-room allocation.",
+          "partyEvidence": "The guest selector stopped at two. A reservation request requires later acceptance. The page supplied no simultaneous quote or room allocation for four.",
           "checked": "2026-11-26",
           "sources": [
+            {
+              "label": "Operator itinerary and reservation request",
+              "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/"
+            },
             {
               "label": "2027 availability and Miami gateway fares",
               "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/#tours-available-dates-2027"
@@ -1899,15 +2194,19 @@
         {
           "start": "2027-05-03",
           "end": "2027-05-13",
-          "amount": 5487,
+          "amount": 4695,
           "currency": "USD",
-          "fare": "Per adult double occupancy, Miami air included",
-          "general": "Limited availability",
-          "generalEvidence": "Operator’s own 2027 calendar lists this status and Miami gateway price.",
+          "fare": "Land only, per adult sharing",
+          "general": "Limited · call operator",
+          "generalEvidence": "The operator marked the date limited and directed travelers to call. No count appeared. The Miami air-inclusive fare on this date was US$5,487 per adult.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The pricing selector covers one or two guests. The operator handles limited departures by phone and requires counselor confirmation of online requests. No public joint two-room allocation.",
+          "partyEvidence": "The guest selector stopped at two. A reservation request requires later acceptance. The page supplied no simultaneous quote or room allocation for four.",
           "checked": "2026-11-26",
           "sources": [
+            {
+              "label": "Operator itinerary and reservation request",
+              "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/"
+            },
             {
               "label": "2027 availability and Miami gateway fares",
               "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/#tours-available-dates-2027"
@@ -1917,15 +2216,19 @@
         {
           "start": "2027-05-31",
           "end": "2027-06-10",
-          "amount": 5487,
+          "amount": 4695,
           "currency": "USD",
-          "fare": "Per adult double occupancy, Miami air included",
-          "general": "Space available",
-          "generalEvidence": "Operator’s own 2027 calendar lists this status and Miami gateway price.",
+          "fare": "Land only, per adult sharing",
+          "general": "Places advertised",
+          "generalEvidence": "The operator marked the date Space Available and offered a reservation request. The Miami air-inclusive fare on this date was US$5,487 per adult.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The pricing selector covers one or two guests. The operator handles limited departures by phone and requires counselor confirmation of online requests. No public joint two-room allocation.",
+          "partyEvidence": "The guest selector stopped at two. A reservation request requires later acceptance. The page supplied no simultaneous quote or room allocation for four.",
           "checked": "2026-11-26",
           "sources": [
+            {
+              "label": "Operator itinerary and reservation request",
+              "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/"
+            },
             {
               "label": "2027 availability and Miami gateway fares",
               "url": "https://www.odysseys-unlimited.com/tours/central-south-america/treasures-of-peru/#tours-available-dates-2027"
@@ -2044,7 +2347,7 @@
           "fare": "Per adult sharing incl. internal air",
           "general": "Good availability",
           "generalEvidence": "The operator’s dated 2027 calendar reported this status.",
-          "party": "Two doubles priced together",
+          "party": "Two double rooms priced together",
           "partyEvidence": "The dated screen showed four adults in two double rooms, each with one bed, two guests per room, for US$32,076 including US$2,496 internal air. The screen marked the combination Available.",
           "checked": "2026-11-26",
           "sources": [
@@ -2096,7 +2399,7 @@
           "fare": "Per adult sharing incl. internal air",
           "general": "Good availability",
           "generalEvidence": "The operator’s dated 2027 calendar reported this status.",
-          "party": "Two doubles priced together",
+          "party": "Two double rooms priced together",
           "partyEvidence": "The dated screen showed four adults in two double rooms, each with one bed, two guests per room, for US$32,076 including US$2,496 internal air. The screen marked the combination Available.",
           "checked": "2026-11-26",
           "sources": [
@@ -2122,7 +2425,7 @@
           "fare": "Per adult sharing incl. internal air",
           "general": "Good availability",
           "generalEvidence": "The operator’s dated 2027 calendar reported this status.",
-          "party": "Two doubles priced together",
+          "party": "Two double rooms priced together",
           "partyEvidence": "The dated screen showed four adults in two double rooms, each with one bed, two guests per room, for US$32,076 including US$2,496 internal air. The screen marked the combination Available.",
           "checked": "2026-11-26",
           "sources": [
@@ -2148,7 +2451,7 @@
           "fare": "Per adult sharing incl. internal air",
           "general": "Good availability",
           "generalEvidence": "The operator’s dated 2027 calendar reported this status.",
-          "party": "Two doubles priced together",
+          "party": "Two double rooms priced together",
           "partyEvidence": "The dated screen showed four adults in two double rooms, each with one bed, two guests per room, for US$32,076 including US$2,496 internal air. The screen marked the combination Available.",
           "checked": "2026-11-26",
           "sources": [
@@ -2423,7 +2726,7 @@
       "status": "Scheduled only",
       "reason": "World Expeditions lists May 10–19 and June 7–16, 2027 for its ten-day hotel-based walk. Its public calendar exposed start and end dates without a departure-specific room count or a successful two-room quote.",
       "next": "Open the booking calendar for these two starts. Confirm live places, fare, accommodation and the KM 104 day-walk permit.",
-      "checked": "2026-11-23",
+      "checked": "2026-11-26",
       "sources": [
         {
           "label": "World Expeditions itinerary and dates",
@@ -2455,21 +2758,6 @@
       ]
     },
     {
-      "id": 765,
-      "name": "On The Go Tours · Lima to Cusco",
-      "style": "Short rail trips",
-      "status": "Dated inventory unverified",
-      "reason": "Seven-day partially guided trip by rail with Sacred Valley sightseeing. The provider displayed 2027 month options, but the initial calendar was outside the requested window.",
-      "next": "Select April, May and June 2027 and test four adults in two standard rooms. Verify pricing for the Lima–Cusco flight.",
-      "checked": "2026-11-23",
-      "sources": [
-        {
-          "label": "Itinerary and date picker",
-          "url": "https://www.onthegotours.com/us/Peru/Lima-to-Cusco-7-days"
-        }
-      ]
-    },
-    {
       "id": 358,
       "name": "Exodus — The Inca Trail",
       "style": "Classic Inca Trail camping",
@@ -2491,7 +2779,7 @@
       "status": "Insufficient space or on request",
       "reason": "The seven-day Sacred Valley and short Inca Trail calendar showed request-only for Apr 30–May 6 and one place for Jun 13–19. Other listed starts in the travel window were sold out. Earlier indexed versions showed more availability.",
       "next": "Recheck the official calendar for four guests and two rooms, particularly Apr 30.",
-      "checked": "2026-11-23",
+      "checked": "2026-11-26",
       "sources": [
         {
           "label": "Seven-day Backroads calendar",
@@ -3088,6 +3376,22 @@
       "type": "Restaurant",
       "address": "Comunidad de Huchuy Qosqo, Lamay District, Calca Province, Cusco, Peru",
       "source": "https://aloftandaway.com/place/parwa-community-restaurant/"
+    },
+    "juliaca": {
+      "name": "Inca Manco Cápac International Airport",
+      "lat": -15.46667,
+      "lng": -70.15833,
+      "type": "Transport",
+      "address": "Juliaca, San Román Province, Puno, Peru (JUL)",
+      "source": "https://en.wikipedia.org/wiki/Inca_Manco_C%C3%A1pac_International_Airport"
+    },
+    "taquile": {
+      "name": "Taquile Island",
+      "lat": -15.76928,
+      "lng": -69.68525,
+      "type": "Island",
+      "address": "Lake Titicaca, Amantaní District, Puno, Peru (island reference point)",
+      "source": "https://unstats.un.org/unsd/envstats/Compendia/Peru_2024.pdf"
     }
   }
 }

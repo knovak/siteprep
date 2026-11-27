@@ -33,7 +33,7 @@ A departure with a public room quote can set `roomQuote` to an object with
 renderer lists these dates before the comparison. Use the fare from the same
 seller in that row and record any alternative direct quote in the evidence.
 Distinguish an explicit two-room selection from four people in a category
-whose terms pair travel partners. Record whether the two-room price covers two doubles or a double and a twin. A calculated on-request combination belongs in the departure evidence only. A price for one pair does not qualify.
+whose terms pair travel partners. For an explicit double-room quote, use “Two double rooms priced together” and record any later operator confirmation in the dated evidence. Use “Double + twin priced together” for a mixed bed configuration. Keep an on-request calculation in the dated evidence and omit it from the room-quote list. A price for one pair does not qualify.
 
 The table opens grouped by style and sorted by start date. Selecting the date
 heading orders departures across styles. The browser script in
