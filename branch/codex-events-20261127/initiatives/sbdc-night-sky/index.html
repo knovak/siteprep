@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SBDC Night-Sky Simulator</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative</p>
+      <h1>SBDC Night-Sky Simulator</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="../index.html">All initiatives</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="initiative-purpose">
+    <div class="card-header">
+      <h2 id="initiative-purpose">Purpose</h2>
+    </div>
+    <div class="card-content">
+<h3>2026-09-08</h3>
+<p>A tool shows you what the sky would look like if a very large constellation of space-based data centers (SBDCs) were in orbit — from anywhere on Earth, on any date, at any time. It runs from a single file, entirely in any browser, no internet needed.</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-status">
+    <div class="card-header">
+      <h2 id="initiative-status">Status</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li>Stage: <span class="tag">dormant</span></li>
+        <li>Value: medium</li>
+        <li>Last activity: yesterday</li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-stands">
+    <div class="card-header">
+      <h2 id="initiative-stands">Where this stands</h2>
+    </div>
+    <div class="card-content">
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><ul>
+          <li>explicit production release authorization after user testing <em>(Release the adopted simulator after testing and explicit approval — <code>permission:</code>)</em></li>
+          <li>the user must explicitly choose to resume this optional later work <em>(Optional later: revisit the inherited mobile sky positioning — <code>permission:</code>)</em></li>
+        </ul></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
+        <dt>Done</dt>
+        <dd><p>The released simulator is the July 2026 package adopted byte-identical on 2026-09-08 (11 outer files, 29 source files and 2 demo snapshot files, each SHA-256 in <code>adoption-manifest.json</code>), unchanged since; user testing of its preview had a satisfactory outcome on 2026-09-11.</p>
+<p>The beta line in <code>beta/</code>, published at <code>demos/SBDC Night Sky/beta/</code> on every merge since 2026-11-11, has settings files and links, six presets with descriptions and a preset browser, the five units of <code>beta/PLAN.md</code> (corrected twilight sky, ambient light, the Moon, light ratios, hours of significant light, perspective view), all four fix packages of the 2026-11-20 review, and a control panel with Details sections. It has 158 Node tests and 36 browser tests (<code>beta/docs/BETA_REPORT.md</code>).</p>
+<p>The beta has its own README, tutorial, specification and report in <code>beta/docs/</code>, with 35 screenshots and 5 animations; copies and a beta slide tutorial are in the Drive folder&#39;s <code>beta</code> folder (<code>log.md</code>, 2026-11-26).</p></dd>
+        <dt>Waiting on others</dt>
+        <dd><p>The review&#39;s implementation record leaves two acceptance items open: a screen-reader session on a physical phone, and a domain review of the brightness assumptions before any hours are cited externally (<code>notes/beta-audit-implementation-2026-11-20.md</code>).</p></dd>
+        <dt>Remaining work</dt>
+        <dd><p>None scheduled: the initiative is dormant and the five units of <code>beta/PLAN.md</code> are complete.</p></dd>
+      </dl>
+      <p class="meta">The last four rows are a written summary of this initiative's own documents, written some time ago and now out of date (2026-11-26). Correct the document it summarises rather than the summary.</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-deployments">
+    <div class="card-header">
+      <h2 id="initiative-deployments">Deployments</h2>
+    </div>
+    <div class="card-content">
+      <p><strong>Demo</strong></p>
+      <ul>
+        <li>Test — <a href="https://knovak.github.io/siteprep/branch/codex-events-20261127/preview/initiatives/sbdc-night-sky/index.html">https://knovak.github.io/siteprep/branch/codex-events-20261127/preview/initiatives/sbdc-night-sky/index.html</a> <em>(built from the initiative source)</em></li>
+        <li>Production — <a href="https://knovak.github.io/siteprep/demos/SBDC%20Night%20Sky/">https://knovak.github.io/siteprep/demos/SBDC%20Night%20Sky/</a></li>
+        <li>Beta — <a href="https://knovak.github.io/siteprep/branch/codex-events-20261127/demos/SBDC%20Night%20Sky/beta/">https://knovak.github.io/siteprep/branch/codex-events-20261127/demos/SBDC%20Night%20Sky/beta/</a> <em>(built from initiatives/sbdc-night-sky/beta on every build, changed 2026-11-26)</em></li>
+      </ul>
+      <ul class="currency">
+        <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — built from the source on every build</li>
+        <li><strong>Production</strong> <span class="verdict verdict-unknown">unknown</span> — nothing recorded to compare</li>
+      </ul>
+      <p class="deployment-status">test has main · released, but the released commit is unknown</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-outputs">
+    <div class="card-header">
+      <h2 id="initiative-outputs">Outputs</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li><a href="../../demos/SBDC%20Night%20Sky/">demos/SBDC Night Sky</a> — demo, published</li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-overview">
+    <div class="card-header">
+      <h2 id="initiative-overview">In detail</h2>
+    </div>
+    <div class="card-content">
+<h2>Existing simulator, adopted with its history</h2>
+<p>SBDC Night-Sky Simulator is a standalone exploration of how a large assumed space-based data-center constellation might appear in the sky. The supplied July 2026 package includes its tutorial, specification, implementation and upgrade plans, phase reports, full source, tests, and assumptions.</p>
+<p>The adoption preserves the working demo and all supplied material. Since 2026-11-11 there is also a beta simulator, published from its own copy of the code in <code>beta/</code> on every merge. The released simulator and its source do not change when the beta does. Each copy shows &quot;Released&quot; or &quot;Beta&quot; and the date it last changed at the end of its credit line. The <a href="README.html">README</a> describes the arrangement, and the <a href="test-plan.html">test plan</a> separates adoption checks from real-device testing.</p>
+<p>The initiative remains dormant at the user&#39;s request, with no release of the beta planned. The mobile sky positioning follow-up is an optional later todo, recorded in the <a href="notes.html">notes</a>.</p>
+<h3>History</h3>
+<div class="table-scroll"><table><thead><tr><th>Date</th><th>What happened</th><th>Where to read more</th></tr></thead><tbody><tr><td>July 2026</td><td>The simulator was built outside this repository in three versions: v1 (closed July 9), v2 with the long-exposure camera and French, v3 (July 18) with clustering, the brightness slider and real-time playback. The package was finished as the &quot;draft for review 2026-07-20&quot;</td><td><a href="https://drive.google.com/drive/folders/16PhbeOYaiJ0jW0xzjBQepQEtJHVmfPRc">Released documents</a>, <a href="https://docs.google.com/presentation/d/1s5RMg8Ek9pe_ytUlJmQ_ldRwIZpm_apK7Mjhm_pCsC8/edit">slide tutorial</a></td></tr><tr><td>2026-09-08</td><td>The package was adopted unchanged, with a manifest of every file&#39;s checksum, and published as the demo</td><td><a href="log.html">Log</a>, <a href="plan.html">plan</a></td></tr><tr><td>2026-09-11</td><td>The user tested the preview with a satisfactory outcome; the initiative went dormant</td><td><a href="notes.html">Notes</a></td></tr><tr><td>2026-11-11</td><td>The beta line was created, with settings export, import and presets</td><td><a href="https://github.com/knovak/siteprep/pull/643">knovak/siteprep#643</a></td></tr><tr><td>2026-11-15</td><td>Five units of upgrade to the beta, after a comparison with the sdross0 simulator: faults corrected, settings and presets for that simulator&#39;s setups, a corrected twilight sky, ambient light, the Moon and moonlight, the ratio of SBDC light to the Moon&#39;s, the hours of significant light, a perspective view</td><td><a href="decisions.html">Decisions</a>, <a href="https://github.com/knovak/siteprep/pull/652">knovak/siteprep#652</a> to <a href="https://github.com/knovak/siteprep/pull/656">#656</a></td></tr><tr><td>2026-11-16</td><td>The beta page kept at a phone&#39;s width</td><td><a href="https://github.com/knovak/siteprep/pull/661">knovak/siteprep#661</a></td></tr><tr><td>2026-11-20</td><td>An independent review of the published beta, and all four packages of its fixes</td><td><a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-2026-11-20.md">Review</a>, <a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/notes/beta-audit-implementation-2026-11-20.md">implementation</a>, <a href="https://github.com/knovak/siteprep/pull/671">knovak/siteprep#671</a></td></tr><tr><td>2026-11-26</td><td>The beta&#39;s control panel shows a few controls per group with the rest under Details; presets gained descriptions and a preset browser; the Moon is on by default</td><td><a href="https://github.com/knovak/siteprep/pull/687">knovak/siteprep#687</a></td></tr><tr><td>2026-11-26</td><td>Documents for the beta: README, tutorial, specification, report and a slide tutorial, in the repository and in Drive</td><td><a href="https://drive.google.com/drive/folders/1x0nnagEYqlsBVhjR4IMs3tkTjnjSChgU">Beta documents</a></td></tr></tbody></table></div>
+<p>The <a href="log.html">log</a> has every step, and <a href="decisions.html">Decisions</a> the reasons for each choice.</p>
+<h3>Links</h3>
+<p><strong>Simulators</strong></p>
+<ul><li><a href="../../demos/SBDC%20Night%20Sky/">Released simulator</a> — the July package, as adopted</li><li><a href="../../demos/SBDC%20Night%20Sky/beta/">Beta simulator</a> — the beta line, updated on every merge</li><li><a href="../../preview/initiatives/sbdc-night-sky/index.html">Test preview</a> — the released line&#39;s source, rebuilt on every build</li></ul>
+<p><strong>For the released simulator</strong></p>
+<ul><li><a href="https://drive.google.com/drive/folders/16PhbeOYaiJ0jW0xzjBQepQEtJHVmfPRc">Documentation and code folder</a> in Drive</li><li><a href="https://docs.google.com/presentation/d/1s5RMg8Ek9pe_ytUlJmQ_ldRwIZpm_apK7Mjhm_pCsC8/edit">Slide tutorial</a></li><li><a href="README.html">README and tutorial</a> in this initiative</li></ul>
+<p><strong>For the beta</strong></p>
+<ul><li><a href="https://drive.google.com/drive/folders/1x0nnagEYqlsBVhjR4IMs3tkTjnjSChgU">Beta documentation folder</a> in Drive: the documents as Google Docs, the page, its data file and its source</li><li><a href="https://docs.google.com/presentation/d/1aKs2W20J9ixJlvAotCNw85hKo_v_U1MPxK2g_xvOCt4/edit">Beta slide tutorial</a></li><li>The documents in the repository: <a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/docs/README.md">README</a>, <a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/docs/TUTORIAL.md">tutorial</a>, <a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/docs/SPECIFICATION.md">specification</a>, <a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/docs/BETA_REPORT.md">report</a></li><li><a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/README.md">The beta&#39;s developer reference</a> and its <a href="https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/PLAN.md">upgrade plan</a></li></ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-documents">
+    <div class="card-header">
+      <h2 id="initiative-documents">Documents</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li><a href="./README.html">README</a></li>
+        <li><a href="./wish.html">Wish</a></li>
+        <li><a href="./objectives.html">Objectives</a></li>
+        <li><a href="./decisions.html">Decisions</a></li>
+        <li><a href="./spec.html">Specification</a></li>
+        <li><a href="./plan.html">Implementation plan</a></li>
+        <li><a href="./test-plan.html">Test plan</a></li>
+        <li><a href="./log.html">Log</a></li>
+        <li><a href="./notes.html">Notes</a></li>
+      </ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/events-20261127" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
