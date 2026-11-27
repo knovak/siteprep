@@ -112,3 +112,19 @@ availability paragraph includes the observed date-display conflict. Historical
 prices and availability stay in dated details and research notes; review dates
 remain independent. The existing focused browser suite checks the 37-row count,
 sorts, filters, source extraction and narrow-screen containment.
+
+## 26 November 2026 inventory review
+
+The inventory contains 38 offers, adding Temple World {722}; holding contains
+259 records. Zero {323} now has only two places and its party paragraph starts
+with No so the existing cannot-fit filter includes it. Royal, Dragoman, Adonis
+and the three Insight records use `data-status="recheck-needed"` and state the
+limits of the latest retrieval; this attribute is provenance, not a second
+inventory or a new UI status. Quotes not repeated after Chrome disconnected
+remain explicitly dated 25 November. No booking behavior was changed.
+
+The map adds official-source orientation points for Media City, El Gouna and
+Helwan, with coordinates in research notes. The broad Luxor marker also labels
+the unassigned Grand Sun boarding region. Source paragraphs still drive all
+38 table rows, filters and sorts; earlier reviews and holding records retain
+their original dates unless specifically revisited.
