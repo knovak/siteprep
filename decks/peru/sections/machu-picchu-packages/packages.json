@@ -425,7 +425,7 @@
           "currency": "USD",
           "fare": "Per adult, double occupancy",
           "general": "Available",
-          "generalEvidence": "The November 26 lodge-trek calendar listed this departure as available. The last two-room selection and fare check was November 23.",
+          "generalEvidence": "The November 27 lodge-trek calendar listed this departure as available. The last two-room selection and fare check was November 23.",
           "party": "Two rooms selected · unconfirmed",
           "partyEvidence": "November 23 room check: Cloud Chromium accepted room 1 and room 2 together, each set to two adults and one bed. Continuing opened the Backroads account site before a final price or room allocation appeared. The four-person cost is calculated from the published double-occupancy fare.",
           "checked": "2026-11-27",
@@ -447,7 +447,7 @@
           "currency": "USD",
           "fare": "Per adult, double occupancy",
           "general": "Available",
-          "generalEvidence": "The November 26 lodge-trek calendar listed this departure as available. The last two-room selection and fare check was November 23.",
+          "generalEvidence": "The November 27 lodge-trek calendar listed this departure as available. The last two-room selection and fare check was November 23.",
           "party": "Two rooms selected · unconfirmed",
           "partyEvidence": "November 23 room check: Cloud Chromium accepted room 1 and room 2 together, each set to two adults and one bed. Continuing opened the Backroads account site before a final price or room allocation appeared. The four-person cost is calculated from the published double-occupancy fare.",
           "checked": "2026-11-27",
@@ -2857,7 +2857,7 @@
           "general": "Open group · minimum six",
           "generalEvidence": "The departure appears in the operator’s calendar of groups with space. Six confirmed travelers are required to run it. The trail group caps at seven.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
+          "partyEvidence": "November 26 enquiry check. The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
           "sources": [
             {
               "label": "Operator itinerary and inclusions",
@@ -2879,7 +2879,7 @@
           "general": "Open group · minimum six",
           "generalEvidence": "The departure appears in the operator’s calendar of groups with space. Six confirmed travelers are required to run it. The trail group caps at seven.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
+          "partyEvidence": "November 26 enquiry check. The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
           "sources": [
             {
               "label": "Operator itinerary and inclusions",
@@ -2944,7 +2944,7 @@
           "general": "Open group · minimum six",
           "generalEvidence": "The departure appears in the operator’s calendar of groups with space. Six confirmed travelers are required to run it.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
+          "partyEvidence": "November 26 enquiry check. The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
           "sources": [
             {
               "label": "Operator itinerary and inclusions",
@@ -3011,7 +3011,7 @@
           "general": "Open group · minimum six",
           "generalEvidence": "The departure appears in the operator’s calendar of groups with space. Six confirmed travelers are required to run it.",
           "party": "Rooms unconfirmed",
-          "partyEvidence": "The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
+          "partyEvidence": "November 26 enquiry check. The public calendar routes to a date enquiry. It gives no remaining room count and cannot allocate two bedrooms simultaneously.",
           "sources": [
             {
               "label": "Operator itinerary and inclusions",
@@ -3031,21 +3031,24 @@
       "name": "Journeys: Explore Machu Picchu",
       "operator": "National Geographic Journeys with G Adventures",
       "style": "Escorted rail tours",
-      "itinerary": "Eight days from Lima back to Lima. Fly to Cusco, visit Parque de la Papa above Pisac, travel by rail to Aguas Calientes for a guided citadel visit, then return through Cusco. The optional short Inca Trail hike requires separate arrangements.",
-      "accommodation": "Seven hotel nights. The seller lists Hotel Mabey Urubamba and Hotel Taypikala Machupicchu among the properties. Final hotels and bed arrangements depend on the departure.",
+      "itinerary": "Eight days from Lima back to Lima. Fly to Cusco for Maras, Moray and the Sacred Valley. Visit the Potato Park near Pisac and Ollantaytambo, take the train to Aguas Calientes and tour Machu Picchu with a guide on day five. Spend time in Cusco before the flight to Lima. The optional short Inca Trail hike requires separate arrangements.",
+      "accommodation": "Seven hotel nights. The seller lists Hotel Mabey Urubamba, Hotel Taypikala Machupicchu and Taypikala Hotel Cusco as examples. Final properties, the two couples’ bedrooms and bedding depend on the departure.",
       "costs": "Ten April and May departures quoted US$11,596 for four, and June 5 quoted US$12,596. Domestic flights, trains, guides, seven breakfasts, one lunch and one dinner are included. International air, travel insurance, other meals, tips and optional activities are extra.",
-      "terms": "Standard deposit US$350 per adult. Under the standard terms, cancellations at least 60 days ahead retain the deposit as credit. At 30–59 days the refund is 50% of payments after the deposit. Within 30 days only the deposit credit remains.",
+      "terms": "US$350 deposit per traveler under the U.S. National Geographic Journeys terms. The balance is due 60 days before departure. At least 60 days out the lifetime deposit is kept on file. At 30–59 days half the remainder paid is refunded. Within 30 days no further refund is due.",
       "operatorReview": "TourRadar rates this itinerary 4.7/5 from 13 reviews, most recently June 2025. Travelers praised guides and drivers. Several described a fast pace or wanted more advance detail about the walking.",
       "operatorReviewShort": "4.7/5 · 13 trip reviews",
-      "accommodationReview": "Expedia rates Taypikala Boutique Machupicchu 8.8/10 from 1,003 guest reviews, including 2026 stays. Guests mention helpful staff and the uphill walk. This is one possible hotel on the route.",
+      "accommodationReview": "Two November 27 Expedia views of Taypikala Boutique Machupicchu showed 8.8/10 from 1,002–1,003 reviews, including 2026 stays. Guests mentioned early breakfasts, staff help with luggage and the uphill walk. This covers one possible hotel on the route.",
       "accommodationReviewShort": "8.8/10 · Taypikala",
       "reviewChecked": "2026-11-27",
       "locations": [
         "lima",
         "cusco",
-        "pisac",
-        "potatopark",
+        "maras",
+        "moray",
         "urubamba",
+        "potatopark",
+        "parwa",
+        "pisac",
         "ollantaytambo",
         "pueblo",
         "machupicchu"
@@ -3056,16 +3059,24 @@
           "url": "https://www.gadventures.com/trips/explore-machu-picchu/SPENG/"
         },
         {
-          "label": "Booking and cancellation terms",
-          "url": "https://www.gadventures.com/terms-conditions/booking-terms/row-booking-terms/"
-        },
-        {
           "label": "Itinerary reviews and listed hotels",
           "url": "https://www.tourradar.com/t/85797"
         },
         {
           "label": "Taypikala guest reviews",
           "url": "https://www.expedia.com/Machu-Picchu-Hotels-Taypikala-Boutique-Machupicchu.h4617307.Hotel-Information"
+        },
+        {
+          "label": "Taypikala Boutique Machupicchu guest reviews",
+          "url": "https://www.expedia.com/Machu-Picchu-Hotels-Taypikala-Boutique-Machupicchu.h4617307.Hotel-Information?equalTargetTab=tab-1"
+        },
+        {
+          "label": "G Adventures U.S. booking terms",
+          "url": "https://www.gadventures.com/terms-conditions/booking-terms/usa-booking-terms/"
+        },
+        {
+          "label": "Potato Park communities, Peru environment ministry",
+          "url": "https://sinia.minam.gob.pe/normas/reconocen-zona-agrobiodiversidad-denominada-parque-papa-ubicada-distrito"
         }
       ],
       "departureDefaults": {
@@ -3275,6 +3286,92 @@
           ]
         }
       ]
+    },
+    {
+      "id": 173,
+      "name": "7 Day Peru & Machu Picchu · Tuesday departures",
+      "operator": "Gate 1 Travel",
+      "style": "Escorted rail tours",
+      "itinerary": "Seven days from Lima back to Lima. Fly to Cusco, stay in the Sacred Valley and take the Voyager train for a guided visit to Machu Picchu. Spend two nights in Cusco before flying back to Lima.",
+      "accommodation": "Both dated service summaries itemized two rooms at every stop. The itinerary uses Jose Antonio Executive Hotel in Lima on the first and last nights, Hotel Agusto’s in Urubamba for one night, El MaPi by Inkaterra in Aguas Calientes for one night, and Jose Antonio Cuzco Hotel for two nights. The seller treats bedding as a preference subject to each hotel.",
+      "costs": "June 1 and June 15 each cost US$6,796 for four on the land-only rate. The price includes round-trip domestic flights, train, six nights, six breakfasts, three dinners, scheduled sightseeing and included entrance fees. International flights, airport transfers on land-only bookings, optional outings and unspecified gratuities are extra. June 8 priced one pair at US$3,598. The search for four calculated US$7,196 but flagged the June 10 train and package inventory as unavailable.",
+      "terms": "US$300 nonrefundable deposit per person. Standard balance is due 90 days before departure. The cancellation fee is US$300 per traveler through 91 days before departure, 50% at 90–31 days, 90% at 30–2 days and 100% from one day before departure. Issued airline tickets can carry additional charges. For Machu Picchu the operator requires passport details 180 days before travel, or at booking inside that window.",
+      "operatorReview": "Trustpilot displayed 4.6/5 across 942 Gate 1 reviews, including reports in November 2026. Travelers commonly praised guides and organization. Some found hotels, meals or long outings uneven. The sample covers several countries.",
+      "operatorReviewShort": "4.6/5 · 942 operator reviews",
+      "accommodationReview": "Booking.com displayed 7.5/10 overall from 362 reviews for El MaPi, including 9.2 for location and 7.2 for value. These scores cover the advertised Machu Picchu hotel only. The other three properties have separate guest histories.",
+      "accommodationReviewShort": "El MaPi 7.5/10 · 362 reviews",
+      "reviewChecked": "2026-11-27",
+      "locations": [
+        "lima",
+        "urubamba",
+        "pueblo",
+        "machupicchu",
+        "cusco"
+      ],
+      "sources": [
+        {
+          "label": "Gate 1 departure calendar and room search",
+          "url": "https://www.gate1travel.com/Cms/Package/PE-7DPEMFT-PKG-27#prices"
+        },
+        {
+          "label": "US booking and cancellation terms",
+          "url": "https://www.gate1travel.com/terms"
+        },
+        {
+          "label": "Gate 1 traveler reviews",
+          "url": "https://www.trustpilot.com/review/gate1travel.com"
+        },
+        {
+          "label": "El MaPi guest reviews",
+          "url": "https://www.booking.com/hotel/pe/el-mapi-byinkaterra.html"
+        }
+      ],
+      "departures": [
+        {
+          "start": "2027-06-01",
+          "end": "2027-06-07",
+          "amount": 1699,
+          "currency": "USD",
+          "fare": "Per adult sharing, including domestic air",
+          "general": "Offered in checkout",
+          "generalEvidence": "The dated service summary included the Voyager train for four and both domestic flights.",
+          "party": "Two double rooms priced together",
+          "partyEvidence": "Separate searches priced two double rooms and two twin rooms at US$6,796 for four. The service summary itemized rooms for all six nights. Bed configurations are requests. Choose the Tuesday date, two rooms, two adults per room and no international flights, then continue to Services.",
+          "roomQuote": {
+            "seller": "Gate 1 Travel",
+            "total": 6796
+          },
+          "checked": "2026-11-27",
+          "sources": [
+            {
+              "label": "Gate 1 departure calendar and room search",
+              "url": "https://www.gate1travel.com/Cms/Package/PE-7DPEMFT-PKG-27#prices"
+            }
+          ]
+        },
+        {
+          "start": "2027-06-15",
+          "end": "2027-06-21",
+          "amount": 1699,
+          "currency": "USD",
+          "fare": "Per adult sharing, including domestic air",
+          "general": "Offered in checkout",
+          "generalEvidence": "The dated service summary included the Voyager train for four and both domestic flights.",
+          "party": "Two double rooms priced together",
+          "partyEvidence": "The land-only service summary priced two double rooms at US$6,796 for four, with the requested room category itemized at every hotel for all six nights. The earlier two-twin search returned the same total. Each hotel confirms the bedding. Select June 15, two rooms, two adults per room and no international flights, then continue to Services.",
+          "roomQuote": {
+            "seller": "Gate 1 Travel",
+            "total": 6796
+          },
+          "checked": "2026-11-27",
+          "sources": [
+            {
+              "label": "Gate 1 departure calendar and room search",
+              "url": "https://www.gate1travel.com/Cms/Package/PE-7DPEMFT-PKG-27#prices"
+            }
+          ]
+        }
+      ]
     }
   ],
   "holding": [
@@ -3362,10 +3459,10 @@
       "id": 791,
       "name": "Backroads — Peru Hiking & Walking Tour",
       "style": "Walking and rail",
-      "status": "Insufficient space or on request",
-      "reason": "The seven-day Sacred Valley and short Inca Trail calendar showed request-only for Apr 30–May 6 and one place for Jun 13–19. Other listed starts in the travel window were sold out. Earlier indexed versions showed more availability.",
-      "next": "Recheck the official calendar for four guests and two rooms, particularly Apr 30.",
-      "checked": "2026-11-26",
+      "status": "Insufficient space",
+      "reason": "June 13–19 had one place. All other listed starts from April 15 through June 15 showed sold out on November 27, including April 30–May 6, previously on request.",
+      "next": "Check the June 13 seat count and whether any sold-out dates reopen for four with two rooms.",
+      "checked": "2026-11-27",
       "sources": [
         {
           "label": "Seven-day Backroads calendar",
@@ -3378,9 +3475,9 @@
       "name": "Terra Quechua Peru — Short Inca Trail to Machu Picchu",
       "style": "Walking and rail",
       "status": "Dated inventory unverified",
-      "reason": "Two days from Cusco, with the KM104 hike, Wiñay Wayna, the Sun Gate, two citadel entries and one night in an unnamed three-star hotel in Aguas Calientes. In 2027 group service is US$560 per adult, or US$600 per person for a private party of four (US$2,400). The permit calendar did not return dated room stock.",
+      "reason": "Two days from Cusco, with the KM104 hike, Wiñay Wayna, the Sun Gate, two citadel entries and one night in an unnamed three-star hotel in Aguas Calientes. In 2027 group service is US$560 per adult, or US$600 per person for a private party of four (US$2,400). The permit calendar did not return dated room stock. On November 27 every May date showed an early-booking allowance of 250 permits per day. The operator takes a 30% deposit and buys permits when the official sale opens. The May 5 calendar did not establish four issued permits or two rooms.",
       "next": "Check a specific start for four short-trail permits and two exclusive double rooms. The last downhill bus and several meals are extra.",
-      "checked": "2026-11-23",
+      "checked": "2026-11-27",
       "sources": [
         {
           "label": "Terra Quechua short Inca Trail and price for four",
@@ -3651,9 +3748,9 @@
       "name": "Adios · The One & Only Adventure Trip of a Lifetime",
       "style": "Amazon lodge and rail",
       "status": "Overnight itinerary needs clarification",
-      "reason": "The open-group calendar lists May 27–June 7, a 12-day trip from Lima to Juliaca, at US$2,792 per adult sharing. The daily itinerary places the last overnight in Cusco before a 45-minute transfer to Juliaca, while the previous day is in Puno. Hotel and lodge availability also depends on six confirmed participants.",
+      "reason": "The open-group calendar lists May 27–June 7, a 12-day trip from Lima to Juliaca, at US$2,792 per adult sharing. The daily itinerary places the last overnight in Cusco before a 45-minute transfer to Juliaca, while the previous day is in Puno. Hotel and lodge availability also depends on six confirmed participants. The November 27 itinerary still named both Puno and Cusco for day 11.",
       "next": "Verify the final overnight, transfer, all domestic flights and two bedrooms at the jungle lodge before including this route.",
-      "checked": "2026-11-26",
+      "checked": "2026-11-27",
       "sources": [
         {
           "label": "Day-by-day itinerary",
@@ -3662,6 +3759,29 @@
         {
           "label": "Groups with space",
           "url": "https://www.adiosadventuretravel.com/trips/small-group/"
+        }
+      ]
+    },
+    {
+      "id": 652,
+      "name": "Globus · Peru Splendors",
+      "style": "Escorted rail tours",
+      "status": "Conflicting departure dates",
+      "reason": "The 2027 operator itinerary describes eight days from Lima back to Lima. For the trip ending May 2, AffordableTours listed April 25 at US$3,484 and Pavlus listed April 24 at US$2,729. Both displayed a guarantee to operate. The operator’s date selector presented a browser verification screen, leaving the start, comparable fare including domestic air and stock for four unresolved.",
+      "next": "Use the operator’s season 2027 date and room selector to verify day one, included airfare and a simultaneous two-room price.",
+      "checked": "2026-11-27",
+      "sources": [
+        {
+          "label": "Globus 2027 itinerary",
+          "url": "https://www.globusjourneys.com/tour/peru-splendors/SO/?season=2027"
+        },
+        {
+          "label": "AffordableTours dates",
+          "url": "https://www.affordabletours.com/t/210244"
+        },
+        {
+          "label": "Pavlus dates",
+          "url": "https://fast.pavlus.com/tours/globus-tours/peru-splendors-2027-8-days-from-lima-to-lima/"
         }
       ]
     }
