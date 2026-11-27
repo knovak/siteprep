@@ -1,10 +1,10 @@
 # Eclipse 2027 package research and upkeep
 
-Availability refresh: 25 November 2026 (America/Los_Angeles). All 36 previously
-included offers were revisited; 37 are now included after one closure and two
-additions. Earlier review assessments retain their dates. New SOAR/Gloria
-assessments and the Abela train refresh are separately dated 25 November.
-
+Availability review: 26 November 2026 (America/Los_Angeles). All 37 previously
+included records were revisited or their exact retrieval attempted; 38 are now
+included after one addition. Some live quotes remain dated 25 November because
+Chrome disconnected. Earlier reviews retain their dates; Temple World and its
+accommodation evidence are separately assessed 26 November.
 
 The deck compares packages that include viewing the 2 August 2027 total solar
 eclipse. The five topics are classified by the eclipse viewing country/region,
@@ -48,6 +48,157 @@ Every main-page description has `.package-availability` and
 The first records general stock; the second records the strongest evidence for
 the requested party. Unknown room stock is not sold out. See
 `../../ECLIPSE_PACKAGES_TECHDOC.md` for the extraction and validation contract.
+
+## 26 November 2026 refresh
+
+Reviewed 26 November, America/Los_Angeles. PR #683 was verified merged and
+`origin/main` refreshed before creating an isolated worktree. All 37 included
+records were revisited or their exact source retrieval attempted. The comparison
+now has **38 offers**: Spain 5, Morocco 2, Algeria 2, Tunisia 1, Egypt 28. Retained
+IDs/order and all 255 previous holding records; four new holdings make 259.
+Descriptions remain the only source for comparison rows and room-evidence filters.
+
+### Material findings and evidence limits
+
+- **Zero Spain {323}** now publishes **only two places**, so it cannot take four.
+  The [direct homepage](https://spainsolareclipse2027.com/) retrieved this run
+  says two in both stock statements; search-tool extraction still said four.
+  The direct [double-sharing product](https://spainsolareclipse2027.com/tour/spain-solar-eclipse-full-tour-for-1-assistant-reservation-fee/)
+  remains in stock at €4,799 full fare, without a two-room allocation.
+- **Al Wadi {240}** still publishes four two-person rooms, including the
+  €6,800 + €7,000 Double packages. **Villa Kamose {973}** still lists two suites
+  at US$10,000 each; Dar Habu remains fully sold out. These are published
+  operator room counts, not held or simultaneously confirmed rooms.
+- **Encounters C {366}**: the directly retrieved page still says two GEM Plaza
+  rooms, now without the female-share text. Its public form definition retains
+  `maxTravellers: 3`; no new live calculation was completed. The previous
+  three-person £17,985 result stays dated 25 November. Search extraction showed
+  an older seven-place row and must not supersede the direct page/form conflict.
+- **Virgin {815}** still advertises limited availability, now with a US$10,268
+  cabin headline. The exact checkout could not be reproduced; do not substitute
+  this headline for a priced cabin or claim that ordinary cabins reopened.
+  The US$27,478 guarantee-suite result stays dated 25 November.
+- **Six general inventories could not be fully reconfirmed:** Royal Morocco
+  {234}, Dragoman {462}, Adonis {403}, and Insight {972}/{891}/{880}. Their
+  descriptions/table rows say so, retain the prior evidence dates and use
+  `data-status="recheck-needed"`. Failed retrieval is not a closure and does
+  not erase yesterday's evidence. Royal's shared-gîte mismatch remains.
+
+Chrome initially worked: inspected Al Wadi, expanded Dabuka to 23/23 and tested
+10 dated four-adult calculators. During the next calculator group, it timed out;
+a fresh tab and subsequent recovery failed, finally reporting Chrome unavailable.
+No completed results are claimed for that failed group. Continued with direct
+public HTTP retrieval and web extraction, without submitting forms or weakening
+TLS checks. WeTravel returned a JavaScript shell; Royal's CMS returned only a
+shell. Some web-tool fetches failed but direct operator pages succeeded. Direct
+Dabuka HTTP requests failed TLS negotiation; the earlier rendered catalogue is
+the fresh stock evidence for those offers. A browser-dependent quote last tested
+25 November remains historical even where its programme was retrieved today.
+
+### Dabuka: all included stock, ten fresh party calculators
+
+The full [23-trip catalogue](https://eclipse-2027.com/trips) still contains 21
+eclipse trips and two meteor trips outside eclipse day. The five closed eclipse
+trips remain Fully booked. The date display remains one day earlier than the
+retained product/ISO dates. The possible timezone explanation remains inference.
+None of the calculators allocates private rooms/cabins/tents.
+
+| ID | Current catalogue places | Four-adult evidence |
+|---|---|---|
+| {683} | 15 | Reproduced 26 Nov: €6,280 |
+| {546} | 14 | Reproduced 26 Nov: €8,240 |
+| {798} | 18 | Reproduced 26 Nov: €13,400 |
+| {974} | 14 | Reproduced 26 Nov: €11,580 |
+| {938} | 14 | Reproduced 26 Nov: €13,720 |
+| {161} | 10 | Reproduced 26 Nov: €17,880 |
+| {920} | 7 | Reproduced 26 Nov: €15,024; whole-charter scope still unresolved |
+| {936} | 8 | Reproduced 26 Nov: €7,440 |
+| {789} | 9 | Reproduced 26 Nov: €14,260 |
+| {708} | 9 | Reproduced 26 Nov: €10,440 |
+| {369} | 3 | Cannot take four; calculator not retested |
+| {575} | 2 | Cannot take four; calculator not retested |
+| {413} | 10 | €19,620 last tested 25 Nov, not reproduced today |
+| {778} | 6 | €17,700 last tested 25 Nov, not reproduced today |
+| {127} | 9 | €18,440 last tested 25 Nov, not reproduced today |
+
+Exact dated calculator URLs remain beside each description. Selecting four adult
+places is a price calculation, not proof of two private rooms. No Confirm Booking
+control was submitted.
+
+### Other retained departures
+
+Spice {691} still lists 4 own-flight, 2 double, 10 twin-share and 6 single places
+(overlapping pools). Balmoral {559} G/E fares and limited-cabin labels persist.
+Hotel Valentin {519} still explicitly offers four available room categories;
+its contact form was last inspected 25 November. Joe Capobianco {592} still
+advertises five places. RJ Algeria {750} still has the dated Available/16 row.
+Astro Trails {301} remains Last few spaces, Mara Hathor {284} available with
+Junior Suites taken, and SOAR {271}'s early-bird tier remains available now.
+No new simultaneous two-room allocation was established for these departures.
+
+META's direct programme/initial checkout retrievals succeeded for {270}/{214}/{555}.
+Current initial **one-package/two-guest** base/deposit-with-card-fee amounts are
+US$4,738/1,464, US$13,980/4,320 and US$6,980/2,157 respectively. Their **four-guest**
+results were last exercised 25 November. No present four-person selection is
+claimed from those initial quotes. The non-refundable 30/30/40 schedule and 3%
+card fees remain; assignments and exact viewing sites still need confirmation.
+The shared provider/property review dates were not advanced.
+
+### Missed offers and holding records
+
+Added **Temple World {722}**, following the wider search. Its description has
+complete dated stock/cost/terms, party limitations and separate review evidence.
+[Cambridge's listing](https://www.alumni.cam.ac.uk/travel/total-solar-eclipse-with-nile-cruise)
+was indexed but direct retrieval was blocked; its eight-day label differs from
+the nine inclusive calendar days in the operator's dates. The operator's
+instalment schedule contains a past year and needs correction before payment.
+The proposed Orient Grand Sun refit is not verified completed. Exact berth and
+the abbreviated Steigenberger hotel name need confirmation. New review searches
+found no dependable independent Temple World operator aggregate; operator
+selected testimonials are separate from hotel reviews. The linked 2018 Grand Sun
+report is old and may not establish the identity or condition of the refitted ship.
+
+New holdings: Bestway Algeria {714}, Trèfle bridge/eclipse {866}, NRIAG Qena
+accommodation {242} and sold-out Dahabiya 1899/Kingfisher {252}. Their exact
+sources, party-price arithmetic, missing stock/rooming evidence and next checks
+are on the holding page. NRIAG's generic registration and limited-places notice
+do not establish two available guesthouse rooms; no passport/photo form was
+submitted. Its old lower-price press reports do not override current organizer
+rates. Revisited Dar Habu {603}, duplicate InLuxor {918}, Nordnile {847} and the
+META grouped lead {509}; other historical holding records keep their dates and
+content. No user-rejected offer was restored.
+
+Discovery covered Spain, Morocco, Algeria, Tunisia and Egypt; land/hotel, ocean
+and Nile boats, rail and local/scientific organizers. Repeated the
+[National Eclipse directory](https://nationaleclipse.com/events/2027-total-solar-eclipse-tours.html),
+[META catalogue](https://eclipse.travel/tours), Dabuka 23/23, and specialist/local
+queries: `2027 eclipse tour Spain Morocco Tunisia Algeria available places rooms
+package`, `2027 solar eclipse Luxor Nile new package available August 2027`,
+`2027 eclipse Tunisia package available new rooms tour`, and `2027 eclipse
+Algeria package available tour hotel rooms`. Tember and Solar Eclipse Tours were
+lead sources only; direct operator statements decide stock. Dar Jbel remains a
+previously documented partial-eclipse mismatch, not a new totality option.
+This is not a fresh audit of all 259 holding records or every reseller.
+
+### Map provenance and next checks
+
+Added hotel orientation points from official Accor GPS fields:
+[Mövenpick Media City](https://all.accor.com/hotel/B4L4/index.en.shtml)
+29.965727, 31.021363 and
+[Steigenberger Golf Resort El Gouna](https://all.accor.com/hotel/C723/index.en.shtml)
+27.390947, 33.677822 (the abbreviated itinerary hotel match is unconfirmed).
+[Helwan Observatory's NASA/ILRS station coordinates](https://ilrs.cddis.eosdis.nasa.gov/network/stations/inactive/HLWL_general.html)
+29.8590, 31.3427 supply an excursion marker outside totality. The broad Luxor
+marker also labels the unassigned Grand Sun boarding region; it is not an exact
+mooring. No new map is added to holding.
+
+Priorities: recover fresh Royal/Dragoman/Adonis/Insight stock and all simultaneous
+room selections; resolve Encounters' three-person cap; reconfirm Zero's scarce
+stock; obtain Temple World eligibility, corrected payment dates, hotel/ship match
+and a safe eclipse-day transfer plan; verify NRIAG's exact guesthouse allocation,
+arrival dates and terms; resolve Dabuka written dates and private rooms. No
+provider messages, personal-data submissions, holds, terms acceptance or payments
+were made.
 
 ## 25 November 2026 refresh
 
