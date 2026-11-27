@@ -262,8 +262,8 @@ test('Delfina date-specific booking lead is distinct from actual two-cabin proof
 test('June records follow current stock and fare evidence with unverified two-cabin status', async ({ page }) => {
   await page.goto(url);
   const cases = [
-    ['711', '2027-06-03', '4659'],
-    ['715', '2027-06-09', '5724'],
+    ['711', '2027-06-03', '4893'],
+    ['715', '2027-06-09', '5385'],
     ['716', '2027-06-17', '5616'],
   ];
   for (const [id, date, price] of cases) {
@@ -271,7 +271,7 @@ test('June records follow current stock and fare evidence with unverified two-ca
     await expect(detail).toHaveCount(1);
     await expect(detail.locator('.package-dates')).toHaveAttribute('data-start', date);
     await expect(detail.locator('.package-price')).toHaveAttribute('data-usd', price);
-    await expect(detail.locator('.package-availability')).toContainText('November 25, 2026');
+    await expect(detail.locator('.package-availability')).toContainText('November 26, 2026');
     await expect(detail.locator('.package-availability a[href*="galapagosdanatours.com"]').first()).toHaveAttribute('href', /galapagosdanatours.com/);
     await expect(detail.locator('.party-availability')).toContainText('unverified');
     await expect(page.locator(`${rows}[data-package-id="package-${id}"]`)).toHaveCount(1);

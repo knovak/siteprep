@@ -125,6 +125,17 @@ agency pair no longer reproduces; the current quote filter excludes it.
 Integrity, Isabela II and four Natural Habitat pairs have fresh two-room
 calculations, never reservations.
 
+The November 26 refresh has 53 main and 81 holding records (134 permanent
+IDs). Evolution May 29 {429} returned on a four-place Dana allocation; new
+Cachalote Explorer {808} remains in holding because the minimum fare applies
+to only one cabin. Thirty main records have newly read exact-date stock; 23
+retain older successful dates after retrieval limits. No cabin pair was newly
+reproduced. Current Isabela seller-price keys use Dana's US$4,673 fare plus
+US$220 park/TCT, while separately dated agency alternatives remain visible.
+Coral June 9 uses the directly retrieved US$5,165 fare plus park/TCT; a cached
+higher fare is explicitly recorded. Do not upgrade the room-evidence date when
+only a general catalogue was reread.
+
 The original six June seller-stock records retain their IDs. On November 19,
 Grace June 1 {710} moved to insufficient-stock holding (two places). On November 25, Natural Paradise June 8 {713} moved to holding after Royal
 showed zero available and four held, and EcoGalaxy June 10 {714} moved to
