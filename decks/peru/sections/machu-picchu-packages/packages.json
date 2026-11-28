@@ -447,7 +447,7 @@
           "currency": "USD",
           "fare": "Per adult, double occupancy",
           "general": "Available",
-          "generalEvidence": "The November 28 lodge-trek calendar listed this departure as available. The last two-room selection and fare check was November 23.",
+          "generalEvidence": "The operator’s dated calendar showed Available at US$7,999 per adult sharing. The last simultaneous selection of two one-bed rooms was November 23.",
           "party": "Two rooms selected · unconfirmed",
           "partyEvidence": "November 23 room check: Cloud Chromium accepted room 1 and room 2 together, each set to two adults and one bed. Continuing opened the Backroads account site before a final price or room allocation appeared. The four-person cost is calculated from the published double-occupancy fare.",
           "checked": "2026-11-28",
@@ -538,7 +538,7 @@
       "style": "Wellness retreat",
       "itinerary": "Eight nights based in Arín, with daily yoga, a guided Machu Picchu rail day trip, outings to Pisac, Moray and Maras, weaving and a traditional farm lunch. A group of 8–12, designed for travelers who prefer a quiet pace. Scheduled shuttles connect with Cusco airport.",
       "accommodation": "Nine ensuite bedrooms across five houses. The host lists one private king bedroom and asks couples to enquire about sharing it. The shared category has a king and a double bed and accepts solo travelers seeking roommates. Private casitas are sold out.",
-      "costs": "US$10,400 for four sharing at the published rates, subject to a suitable allocation. Scheduled shuttles, admissions, train excursion, guiding, most meals and lodging are included. Add flights, required insurance, two or three lunches and estimated tips of US$80–120 per person. Card fees may apply.",
+      "costs": "The US$2,600 shared-room fare applies to two remaining places. The king is listed at US$3,100 for one occupant and requires a separate quote for two. A total for both couples is unknown. Scheduled shuttles, admissions, train excursion, guiding, most meals and lodging are included. Add flights, required insurance, two or three lunches and estimated tips of US$80–120 per person. Card fees may apply.",
       "terms": "US$550 nonrefundable deposit; half of the balance is due 120 days before arrival and the remainder 60 days before. At 60–119 days, paid amounts above the deposit can transfer to another retreat within 12 months. Within 59 days, no refund or transfer. Passport copies for tickets are due December 15, 2026.",
       "operatorReview": "115 organizer reviews on WeTravel. September 2026 participants on another retreat described a flexible pace and supportive leadership. Overall score was not visible.",
       "accommodationReview": "Two verified Expedia guests at the Arín compound matching the host, waterfall and meditation hall gave it 10/10. Guests noted the quiet and the host’s help arranging transport. Latest stay August 2026, with no individual room identified.",
@@ -1961,7 +1961,7 @@
           "general": "Definite departure",
           "generalEvidence": "The dated Trafalgar checkout returned a four-adult trip summary with two twin rooms in the recommended configuration.",
           "party": "Two twin rooms priced together",
-          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$17,704 and carried through to Passenger Details. No traveler details were entered and no rooms were held. On November 27 the trip summary again priced four in two twin rooms, including US$904 in intra-trip air and a US$200 surcharge across the party.",
+          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$17,704 and carried through to Passenger Details. No traveler details were entered and no rooms were held. On November 28 the trip summary again priced four in two twin rooms, including US$904 in intra-trip air and a US$200 surcharge across the party.",
           "roomQuote": {
             "seller": "Trafalgar",
             "total": 17704
@@ -1987,7 +1987,7 @@
           "general": "Offered in checkout",
           "generalEvidence": "The dated Trafalgar checkout returned a four-adult trip summary with two twin rooms in the recommended configuration.",
           "party": "Two twin rooms priced together",
-          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$16,044 and carried through to Passenger Details. No traveler details were entered and no rooms were held. On November 27 the trip summary again priced four in two twin rooms, including US$904 in intra-trip air and a US$200 surcharge across the party.",
+          "partyEvidence": "The booking selected four adults and two twin rooms, two adults per room. The total was US$16,044 and carried through to Passenger Details. No traveler details were entered and no rooms were held. On November 28 the trip summary again priced four in two twin rooms, including US$904 in intra-trip air and a US$200 surcharge across the party.",
           "roomQuote": {
             "seller": "Trafalgar",
             "total": 16044
@@ -3277,13 +3277,17 @@
           "fare": "Per adult sharing, domestic air extra",
           "general": "Operator lists available",
           "generalEvidence": "The May 22–29 row was marked available. Domestic air was listed as TBC.",
-          "party": "Rooms unconfirmed",
-          "partyEvidence": "Opening the May booking button produced no room selector or simultaneous quote. The party total is calculated from the sharing rate.",
+          "party": "Four selected · rooms unconfirmed",
+          "partyEvidence": "The May 22 WeTravel checkout priced four US$2,000 deposits at US$8,000. It offered no room or bed selection. The full land fare for four is estimated at US$26,560 before domestic airfare.",
           "checked": "2026-11-28",
           "sources": [
             {
               "label": "May 22 pricing and booking status",
               "url": "https://npexpeditions.com/expeditions/machu-picchu-cusco/#Check-Availability"
+            },
+            {
+              "label": "May 22 WeTravel deposit selection",
+              "url": "https://www.wetravel.com/checkout_embed?uuid=9129246608&source=widget_book_now"
             }
           ]
         }
@@ -3338,7 +3342,7 @@
           "general": "Offered in checkout",
           "generalEvidence": "The dated service summary included the Voyager train for four and both domestic flights.",
           "party": "Two double rooms priced together",
-          "partyEvidence": "On November 28 the dated service summary priced four adults in two double rooms at US$6,796 and itemized the rooms across all six nights. A separate November 27 search priced two twin rooms at the same total. Hotels confirm the final bedding.",
+          "partyEvidence": "The November 28 service summary priced four guests in two double rooms at US$6,796, itemized the room type for all six nights and included the train for all four. The November 27 two-twin quote was also US$6,796. Each hotel confirms bedding.",
           "roomQuote": {
             "seller": "Gate 1 Travel",
             "total": 6796
@@ -3360,12 +3364,12 @@
           "general": "Offered in checkout",
           "generalEvidence": "The dated service summary included the Voyager train for four and both domestic flights.",
           "party": "Two double rooms priced together",
-          "partyEvidence": "The land-only service summary priced two double rooms at US$6,796 for four, with the requested room category itemized at every hotel for all six nights. The earlier two-twin search returned the same total. Each hotel confirms the bedding. Select June 15, two rooms, two adults per room and no international flights, then continue to Services.",
+          "partyEvidence": "The November 28 service summary priced four guests in two double rooms at US$6,796, itemized the room type for all six nights and included the train for all four. The November 27 two-twin quote was also US$6,796. Each hotel confirms bedding.",
           "roomQuote": {
             "seller": "Gate 1 Travel",
             "total": 6796
           },
-          "checked": "2026-11-27",
+          "checked": "2026-11-28",
           "sources": [
             {
               "label": "Gate 1 departure calendar and room search",
@@ -3380,17 +3384,18 @@
       "name": "Peru with Machu Picchu · nine-day Lima round trip",
       "operator": "Caravan Tours",
       "style": "Escorted rail tours",
-      "itinerary": "Three nights in Lima, followed by Chinchero, Moray and Ollantaytambo in the Sacred Valley. Take the train to Machu Picchu on day six for a 2½-hour visit. Continue to Cusco and fly back to Lima. The operator allows up to 28 guests.",
-      "accommodation": "Courtyard by Marriott Lima Miraflores for the first three nights and the last night, Rustica Hotel Urubamba for three nights and JW Marriott El Convento Cusco for one. The room selector describes each double as a private room with two beds. Hotels may be substituted.",
-      "costs": "US$2,095 per person, US$8,380 for four. Includes both domestic flights, round-trip train, guided visits, scheduled departure transfer and listed meals. Add international flights, the arrival transfer, unlisted meals and guide, driver and housekeeping tips. Optional travel protection adds US$556 for four.",
+      "itinerary": "Visit Museo Larco during the first three nights in Lima, then travel to Chinchero, Moray and Ollantaytambo in the Sacred Valley. Take the train to Machu Picchu on day six for a 2½-hour visit. Continue to Cusco and fly back to Lima. The operator allows up to 28 guests.",
+      "accommodation": "Three nights at Courtyard by Marriott Lima Miraflores, three at Rustica Hotel Cusco Urubamba, one at JW Marriott El Convento Cusco and one at Hotel Indigo Lima Miraflores. Caravan’s double rooms have two beds and a private bathroom. Hotels may be substituted.",
+      "costs": "US$2,095 per person sharing, US$8,380 for four. The itinerary includes both domestic flights, rail, visits, eight breakfasts, three lunches, three dinners and a scheduled departure transfer. International flights, arrival taxi (about US$25–35 per vehicle), other meals and discretionary guide, driver and housekeeping gratuities are extra. Optional protection is US$139 per person, bringing the group total to US$8,936.",
       "terms": "Peru normally requires a US$300 deposit per guest and full payment 150 days ahead. The April 23 price screen required full payment within 24 hours of opening a hold. The operator requires passport details and booking at least 120 days ahead. Cancellation fees depend on the tour and protection selected. Caravan specifies a US$300 per-person refund if train disruption prevents the visit.",
-      "operatorReview": "One Tripadvisor traveler rated the earlier Peru tour 5/5 after a June 2026 trip. They praised the coordination of flights, buses and rail, and found the pace and altitude demanding. One account cannot establish how consistently the 2027 program runs.",
-      "accommodationReview": "Expedia guests rated Courtyard Lima Miraflores 9.4/10 (612 reviews), highlighting its walkable location, clean rooms and helpful staff in July–September 2026. JW Marriott El Convento Cusco scored 9.8/10 (1,007). Rustica Urubamba scored 7.0/10 from only four Expedia reviews. A July 2026 Tripadvisor guest found the location isolated, with limited dinner alternatives. Rustica accounts for three of the eight nights.",
-      "operatorReviewShort": "5/5 · one Peru traveler",
+      "operatorReview": "One Tripadvisor traveler rated the earlier Peru tour 5/5 after a June 2026 trip. They praised the coordination of flights, buses and rail, and found the pace and altitude demanding. Travelstride scored Caravan Tours 4.6/5 from 41 reviews, including a March 2026 report. Travelers praised guides and value. Others reported difficulty rescheduling or disappointing lodging. The sample spans several countries and does not isolate this Peru itinerary.",
+      "accommodationReview": "Expedia guests rated Courtyard Lima Miraflores 9.4/10 (612 reviews), highlighting its walkable location, clean rooms and helpful staff in July–September 2026. JW Marriott El Convento Cusco scored 9.8/10 (1,007). Rustica Urubamba scored 7.0/10 from only four Expedia reviews. A July 2026 Tripadvisor guest found the location isolated, with limited dinner alternatives. Rustica accounts for three of the eight nights. Hotel Indigo guests praised the attentive staff in 2026 reports.",
+      "operatorReviewShort": "5/5 · one Peru traveler. 4.6/5 · 41 across tours",
       "accommodationReviewShort": "Rustica 7.0/10 (4) · Lima 9.4 · Cusco 9.8",
       "reviewChecked": "2026-11-28",
       "locations": [
         "lima",
+        "larco",
         "chinchero",
         "moray",
         "ollantaytambo",
@@ -3400,12 +3405,13 @@
         "cusco",
         "courtyard-miraflores",
         "rustica-urubamba",
-        "el-convento-cusco"
+        "el-convento-cusco",
+        "indigo-miraflores"
       ],
       "sources": [
         {
-          "label": "2027 itinerary and April 23 room selector",
-          "url": "https://www.caravan.com/tour/peru"
+          "label": "2027 itinerary, hotel list, availability and four-guest price",
+          "url": "https://www.caravan.com/tour/peru?y=2027"
         },
         {
           "label": "How to check dates, prices and room availability",
@@ -3430,6 +3436,26 @@
         {
           "label": "Rustica Urubamba guest accounts",
           "url": "https://www.tripadvisor.in/Hotel_Review-g294321-d28657495-Reviews-Rustica_Hoteles_Urubamba-Urubamba_Sacred_Valley_Cusco_Region.html"
+        },
+        {
+          "label": "Operator terms and cancellation fees",
+          "url": "https://www.caravan.com/caravan-terms-of-travel.pdf"
+        },
+        {
+          "label": "Caravan traveler reviews",
+          "url": "https://www.travelstride.com/tour-operators/caravan-tours"
+        },
+        {
+          "label": "Courtyard Lima guest reviews",
+          "url": "https://www.booking.com/hotel/pe/courtyard-by-marriott-lima-miraflores.html"
+        },
+        {
+          "label": "JW Marriott Cusco guest reviews",
+          "url": "https://www.booking.com/hotel/pe/jw-marriott-cusco.en-gb.html"
+        },
+        {
+          "label": "Hotel Indigo Lima guest reviews",
+          "url": "https://www.tripadvisor.com/Hotel_Review-g294316-d33234885-Reviews-Hotel_Indigo_Lima_Miraflores_by_IHG-Lima_Lima_Region.html"
         }
       ],
       "departures": [
@@ -3450,8 +3476,8 @@
           "checked": "2026-11-28",
           "sources": [
             {
-              "label": "2027 itinerary and April 23 room selector",
-              "url": "https://www.caravan.com/tour/peru"
+              "label": "2027 itinerary, hotel list, availability and four-guest price",
+              "url": "https://www.caravan.com/tour/peru?y=2027"
             },
             {
               "label": "How to check dates, prices and room availability",
@@ -3979,6 +4005,44 @@
           "url": "https://culturalperu.com/en/machu-picchu-and-sacred-valley-tour/"
         }
       ]
+    },
+    {
+      "id": 725,
+      "name": "Gate 1 · 10 Day Classic Peru, Plan A hotels",
+      "style": "Escorted rail tours",
+      "status": "Citadel tickets on request on tested departures",
+      "reason": "The May 5–14 and May 7–16 services screens calculated US$10,196 for four in two double rooms for nine nights. The Vistadome train and Machu Picchu admission were on request. Both domestic flights are included. April 23 and 28, May 12 and June 4 and 11 had selectable calendar fares, but the browser could not verify the services. May 19 was sold out and May 21 had one seat. The April and June 11 fares were US$2,449 per adult. The May and June 4 fares were US$2,549.",
+      "next": "Reopen each departure in Services and verify the train, Machu Picchu entry and two private rooms together. The Plan A route includes Puno and Lake Titicaca.",
+      "checked": "2026-11-28",
+      "sources": [
+        {
+          "label": "Plan A calendar and service selection",
+          "url": "https://www.gate1travel.com/tour/peru-tours-10daffpea27.aspx#prices"
+        },
+        {
+          "label": "Gate 1 terms",
+          "url": "https://www.gate1travel.com/terms"
+        }
+      ]
+    },
+    {
+      "id": 200,
+      "name": "Brian Judd Tours · Wonders of Peru with Lake Titicaca and the Amazon",
+      "style": "Escorted rail tours",
+      "status": "Waitlist only",
+      "reason": "The live May 10–25 operator page says waitlist only. The 2027 brochure still invites reservations. The current land fare is US$4,985 per person sharing and airfare is extra. The brochure requests a US$1,200 deposit per person. No four-person room allocation is shown.",
+      "next": "Recheck the operator’s waitlist notice and updated air package before assessing bedrooms, including the three Amazon lodge nights.",
+      "checked": "2026-11-28",
+      "sources": [
+        {
+          "label": "Live departure status",
+          "url": "https://www.brianjuddtours.com/Peru"
+        },
+        {
+          "label": "2027 itinerary and registration brochure",
+          "url": "https://www.brianjuddtours.com/file/1dab17a8-590a-45ab-bb90-bd86fee09fc3"
+        }
+      ]
     }
   ],
   "locations": {
@@ -4357,6 +4421,22 @@
       "type": "Package hotel",
       "address": "Plazoleta Nazarenas 223, Cusco, Peru",
       "source": "https://www.expedia.com/Cusco-Hotels-Palacio-Nazarenas.h4985858.Hotel-Information"
+    },
+    "larco": {
+      "name": "Museo Larco",
+      "lat": -12.0725,
+      "lng": -77.07086,
+      "type": "Cultural site",
+      "address": "Avenida Simón Bolívar 1515, Pueblo Libre, Lima. Entrance on Calle Navarra.",
+      "source": "https://www.museolarco.org/en/plan-your-visit/"
+    },
+    "indigo-miraflores": {
+      "name": "Hotel Indigo Lima Miraflores",
+      "lat": -12.133,
+      "lng": -77.0285,
+      "type": "Package hotel",
+      "address": "Calle Alcanfores 1332, Miraflores, Lima, Peru",
+      "source": "https://www.ihg.com/hotelindigo/hotels/us/en/lima/limmd/hoteldetail/directions"
     }
   }
 }
