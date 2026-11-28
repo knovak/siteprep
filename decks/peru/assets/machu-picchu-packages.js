@@ -57,6 +57,7 @@
             'Four on calendar · rooms unconfirmed': 'The calendar showed this date and per-person fare for four adults. Room assignments and a group quote are still open.',
             'Four selected · rooms unconfirmed': 'The form accepted four adults on this departure. It did not show a combined price or bedroom assignments.',
             'Two twin rooms priced together': 'The dated checkout priced two twin rooms in one order for four adults before passenger details. No booking was made.',
+            'Two private two-bed rooms priced together': 'The operator quoted both private rooms together for four adults. Each couple has its own room with two separate beds.',
             'Two double rooms priced together': 'The dated checkout listed two double rooms for four adults in one quote. The operator issues final confirmation.',
             'Double + twin priced together': 'One order priced a private one-bed room for one couple and a private two-bed room for the other.',
             'Two rooms on request': 'The form calculated a total for the selected rooms and referred the party to the operator for availability.',
